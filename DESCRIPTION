@@ -1,0 +1,28 @@
+Package: MolgenisArmadillo
+Type: Package
+Version: 0.0.1
+Title: Armadillo client for the Armadillo service
+Authors@R:
+    c(person(given = "Sido",
+             family = "Haakma",
+             role = c("aut", "cre"),
+             email = "s.haakma@rug.nl"),
+      person(given = "Tommy",
+             family = "de Boer",
+             role = c("aut"),
+             email = "t.de.boer01@umcg.nl"),
+      person(given = "Fleur",
+             family = "Kelpin",
+             role = c("aut"),
+             email = "f.kelpin@umcg.nl"))
+Depends:
+    R (>= 3.6)
+Suggests:
+    knitr
+Description: An Armadillo client for the Armadillo DataSHIELD service. Part of the MOLGENIS suite.
+License: LGPL (>= 2.1)
+URL: https://github.com/molgenis/molgenis-r-armadillo
+BugReports: https://github.com/molgenis/molgenis-r-armadillo
+RoxygenNote: 7.1.0
+VignetteBuilder: knitr
+Encoding: UTF-8
