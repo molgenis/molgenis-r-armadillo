@@ -12,7 +12,7 @@ In this project we manage the data in the Armadillo suite.
 
 ## Decision
 
-We will use the MolgenisAramdillo client to manage data in the Armadillo suite. This means managing folders and files in the data backend based on R-data.
+We will use the MolgenisArmadillo client to manage data in the Armadillo suite. This means managing folders and files in the data backend based on R-data.
 
 ## Consequences
 Managing data using the client entitles the following consequenses
