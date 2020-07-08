@@ -5,5 +5,12 @@
 #'
 #'@export
 login <- function(username, password) {
-  message("Login to: https://datashield.dev.molgenis.org")
+    message("Login to: https://datashield.dev.molgenis.org")
+}
+
+
+#' Log out of the Armadillo service
+#'
+#'@export
+logout <- function() {
 }
