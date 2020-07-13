@@ -26,3 +26,4 @@ BugReports: https://github.com/molgenis/molgenis-r-armadillo
 RoxygenNote: 7.1.0
 VignetteBuilder: knitr
 Encoding: UTF-8
+Imports: minio.s3, rlang
