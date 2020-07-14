@@ -31,8 +31,9 @@ pipeline {
                 sh "git fetch --tags"
                 container('r') {
                     sh "Rscript -e \"git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')\""
-                    sh "install2.r --error --repo https://registry.molgenis.org/repository/R DSI"
-                    sh "install2.r remotes"
+                    sh "install2.r remotes httr urltools xml2"
+                    sh "install2.r --repo http://cloudyr.github.io/drat aws.iam aws.s3"
+                    sh "install2.r --error --repo https://registry.molgenis.org/repository/R DSI MolgenisAuth"
                     sh "installGithub.r fdlk/lintr"
                 }
             }
