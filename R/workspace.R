@@ -30,18 +30,18 @@ create_workspace <- function(folder, name, dataset) {
 }
 
 #' List the workspaces
-#' 
+#'
 #' @param folder the folder in which the workspaces are located
-#' 
+#'
 #' @importFrom minio.s3 get_bucket
-#' 
-#' @examples 
+#'
+#' @examples
 #' \dontrun{
 #' list_workspaces(
 #'   folder = "gecko"
 #' )
 #' }
-#' 
+#'
 #' @export
 list_workspaces <- function(folder) {
   bucket_name <- .to_shared_bucket_name(folder)
@@ -55,20 +55,20 @@ list_workspaces <- function(folder) {
 }
 
 #' Delete workspace
-#' 
+#'
 #' @param folder folder to delete the workspace from
 #' @param name workspace name
-#' 
+#'
 #' @importFrom minio.s3 delete_object
-#' 
-#' @examples 
+#'
+#' @examples
 #' \dontrun{
 #' delete_workspace(
 #'   folder = "gecko",
 #'   name = "johan_subset_1"
 #' )
 #' }
-#' 
+#'
 #' @export
 delete_workspace <- function(folder, name) {
   bucket_name <- .to_shared_bucket_name(folder)
@@ -82,14 +82,14 @@ delete_workspace <- function(folder, name) {
 }
 
 #' Copy workspace
-#' 
+#'
 #' @param folder study or other variable collection
 #' @param name specific workspace for copy action
 #' @param new_folder new location of study or other variable collection
-#' 
+#'
 #' @importFrom minio.s3 copy_object
-#' 
-#' @examples 
+#'
+#' @examples
 #' \dontrun{
 #' copy_worspace(
 #'   folder = "gecko",
@@ -97,7 +97,7 @@ delete_workspace <- function(folder, name) {
 #'   new_folder = "gecko_subset_1"
 #' )
 #' }
-#' 
+#'
 #' @export
 copy_workspace <- function(folder, name, new_folder) {
   bucket_name <- .to_shared_bucket_name(folder)
@@ -121,20 +121,20 @@ copy_workspace <- function(folder, name, new_folder) {
 }
 
 #' Load workspace based upon study folder and tableset
-#' 
+#'
 #' @param folder study or collection variables
 #' @param name tableset containing the subset
-#' 
+#'
 #' @importFrom minio.s3 s3load
-#' 
-#' @examples 
+#'
+#' @examples
 #' \dontrun{
 #' load_workspace(
 #'   folder = "gecko",
 #'   name = "lc_core_1"
 #' )
 #' }
-#' 
+#'
 #' @export
 load_workspace <- function(folder, name) {
   bucket_name <- .to_shared_bucket_name(folder)
@@ -147,20 +147,20 @@ load_workspace <- function(folder, name) {
 }
 
 #' Move the workspace
-#' 
+#'
 #' @param folder a study or collection of variables
 #' @param name a tableset to move
 #' @param new_folder a subset of the studies new location
-#' 
-#' @examples 
+#'
+#' @examples
 #' \dontrun{
 #' move_workspace(
 #'   folder = "",
 #'   name = "",
-#'   new_folder = ""    
+#'   new_folder = ""
 #' )
 #' }
-#' 
+#'
 #' @export
 move_workspace <- function(folder, name, new_folder) {
   suppressMessages(copy_workspace(folder, name, new_folder))

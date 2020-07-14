@@ -1,5 +1,5 @@
 #' Add RData extension
-#' 
+#'
 #' @param name filename to add extension to
 #'
 #' @keywords internal
@@ -7,7 +7,7 @@
   paste0(name, ".RData")
 }
 
-#' Change bucketname to readable bucket name 
+#' Change bucketname to readable bucket name
 #'
 #' @param bucket_name folder name
 #'
@@ -18,7 +18,7 @@
 }
 
 #' Add 'shared-' prefix
-#' 
+#'
 #' @param folder_name shared foldername
 #'
 #' @keywords internal
@@ -27,7 +27,7 @@
 }
 
 #' Add 'user-' prefix
-#' 
+#'
 #' @param folder_name user foldername
 #'
 #' @keywords internal
@@ -36,9 +36,9 @@
 }
 
 #' Foldername check
-#' 
+#'
 #' For empty and can not contain underscores and dashes
-#' 
+#'
 #' @param name foldername
 #'
 #' @keywords internal
@@ -52,7 +52,7 @@
 }
 
 #' Check the workspace name
-#' 
+#'
 #' Name can not be empty and may not contain a slash
 #'
 #' @param name workspace name

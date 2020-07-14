@@ -1,5 +1,5 @@
 #' Check if bucket / folder exists
-#' 
+#'
 #' @param bucket_name name of the folder
 #'
 #' @keywords internal
@@ -20,7 +20,7 @@
 #'
 #' @param bucket_name folder name
 #' @param workspace_name workspace name
-#' 
+#'
 #' @keywords internal
 .check_if_workspace_exists <- function(bucket_name, workspace_name) {
   .check_if_bucket_exists(bucket_name)
