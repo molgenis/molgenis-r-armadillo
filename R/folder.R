@@ -80,7 +80,7 @@ delete_user_folder <- function(user_name) {
 #'
 #' @param bucket_name name of the bucket, usually a collection of variables
 #'
-#' @keywords internal
+#' @noRd
 .delete_bucket <- function(bucket_name) {
   .check_if_bucket_exists(bucket_name)
   aws.s3::delete_bucket(bucket_name,
@@ -94,7 +94,6 @@ delete_user_folder <- function(user_name) {
 #' @return all shared buckets
 #'
 #' @noRd
-#' @keywords internal
 .get_shared_buckets <- function() {
   .get_buckets("shared-")
 }
@@ -104,7 +103,6 @@ delete_user_folder <- function(user_name) {
 #' @return user buckets
 #'
 #' @noRd
-#' @keywords internal
 .get_user_buckets <- function() {
   .get_buckets("user-")
 }
@@ -114,7 +112,6 @@ delete_user_folder <- function(user_name) {
 #' @param prefix can be 'shared-' or 'user-'
 #'
 #' @noRd
-#' @keywords internal
 .get_buckets <- function(prefix) {
   buckets <- aws.s3::bucketlist(
     use_https = getOption("MolgenisArmadillo.s3.use_https")

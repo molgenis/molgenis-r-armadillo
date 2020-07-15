@@ -106,7 +106,6 @@ get_token <- function(server) {
 #' @return structured list with info items
 #'
 #' @noRd
-#' @keywords internal
 .get_info <- function(armadillo_server) {
   info_url <- armadillo_server
   urltools::path(info_url) <- "actuator/info"

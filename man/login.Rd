@@ -20,9 +20,11 @@ the id token
 Interactively obtains a token and logs in to the Armadillo MinIO server.
 }
 \examples{
-\dontrun{ 
-login("https://armadillo.dev.molgenis.org", 
-      "https://armadillo-minio.dev.molgenis.org")
+\dontrun{
+login(
+  "https://armadillo.dev.molgenis.org",
+  "https://armadillo-minio.dev.molgenis.org"
+)
 login("http://localhost:8080", "http://localhost:9000")
 }
 
