@@ -1,9 +1,36 @@
-#' Login to the Armadillo MinIO filestore
+#' Login
+#' 
+#' Interactively obtains a token and logs in to the Armadillo MinIO server.
+#' 
+#' @param armadillo URL of the Armadillo server,
+#' @param minio URL of the Armadillo MinIO server
+#' @param duration MinIO session duration in seconds
+#' 
+#' @return the id token
+#' 
+#' @examples 
+#' \dontrun{ 
+#' login("https://armadillo.dev.molgenis.org", 
+#'       "https://armadillo-minio.dev.molgenis.org")
+#' login("http://localhost:8080", "http://localhost:9000")
+#' }
+#' 
+#' @importFrom urltools scheme domain
+#' @export
+login <- function(armadillo, minio, duration = 900) {
+  token <- get_token(armadillo)
+  assume_role_with_web_identity(token, minio, duration)
+  invisible(token)
+}
+
+#' Retrieve temporary credentials from Armadillo MinIO filestore
 #'
-#' @param token oAuth ID token
+#' @param token ID token
 #' @param server url of the MinIO server
 #' @param duration duration in seconds
-#' @param use boolean indicating if the credentials should be set
+#' @param use boolean start using the credentials, default TRUE
+#' 
+#' @return list of credentials, fit for use with \code{\link{set_credentials}}
 #'
 #' @importFrom aws.iam set_credentials
 #' @importFrom httr POST stop_for_status content
@@ -12,7 +39,7 @@
 #' @export
 assume_role_with_web_identity <-
   function(token,
-           server = Sys.getenv("AWS_S3_ENDPOINT"),
+           server,
            duration = 900,
            use = TRUE) {
     if (duration < 900 | duration > 129600) {
@@ -38,6 +65,10 @@ assume_role_with_web_identity <-
     )
     if (isTRUE(use)) {
       aws.iam::set_credentials(credentials)
+      use_https = urltools::scheme(server) == "https"
+      options(MolgenisArmadillo.s3.use_https = use_https,
+              cloudyr.aws.default_region = "")
+      Sys.setenv(AWS_S3_ENDPOINT = urltools::domain(server))
     }
     invisible(credentials)
   }
@@ -69,6 +100,7 @@ get_token <- function(server) {
 #' Retrieves server info from Armadillo server's info endpoint
 #' 
 #' @return structured list with info items
+#' 
 #' @noRd
 #' @keywords internal
 .get_info <- function(armadillo_server) {

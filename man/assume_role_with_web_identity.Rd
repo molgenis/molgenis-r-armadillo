@@ -2,24 +2,22 @@
 % Please edit documentation in R/auth.R
 \name{assume_role_with_web_identity}
 \alias{assume_role_with_web_identity}
-\title{Login to the Armadillo MinIO filestore}
+\title{Retrieve temporary credentials from Armadillo MinIO filestore}
 \usage{
-assume_role_with_web_identity(
-  token,
-  server = Sys.getenv("AWS_S3_ENDPOINT"),
-  duration = 900,
-  use = TRUE
-)
+assume_role_with_web_identity(token, server, duration = 900, use = TRUE)
 }
 \arguments{
-\item{token}{oAuth ID token}
+\item{token}{ID token}
 
 \item{server}{url of the MinIO server}
 
 \item{duration}{duration in seconds}
 
-\item{use}{boolean indicating if the credentials should be set}
+\item{use}{boolean start using the credentials, default TRUE}
+}
+\value{
+list of credentials, fit for use with \code{\link{set_credentials}}
 }
 \description{
-Login to the Armadillo MinIO filestore
+Retrieve temporary credentials from Armadillo MinIO filestore
 }
