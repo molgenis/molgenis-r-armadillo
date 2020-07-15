@@ -17,7 +17,8 @@ login(armadillo, minio, duration = 900)
 the id token
 }
 \description{
-Interactively obtains a token and logs in to the Armadillo MinIO server.
+Interactively obtains an id token and uses it to create a session token on
+the minio server.
 }
 \examples{
 \dontrun{

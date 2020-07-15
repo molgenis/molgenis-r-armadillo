@@ -4,14 +4,14 @@
 \alias{create_workspace}
 \title{Combines tables in an .Rdata file and uploads them to a folder.}
 \usage{
-create_workspace(folder, name, dataset)
+create_workspace(folder, name, ...)
 }
 \arguments{
-\item{folder}{foldername to upload to}
+\item{folder}{the folder to upload to}
 
-\item{name}{name of the .Rdata file}
+\item{name}{name of the workspace to create}
 
-\item{dataset}{vector of tables}
+\item{...}{tables to upload to the dataset}
 }
 \description{
 Combines tables in an .Rdata file and uploads them to a folder.
@@ -21,7 +21,8 @@ Combines tables in an .Rdata file and uploads them to a folder.
 create_workspace(
   folder = "gecko",
   name = "johan_subset_1",
-  dataset = "table1and2"
+  table1,
+  table2
 )
 }
 

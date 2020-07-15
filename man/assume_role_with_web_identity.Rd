@@ -21,3 +21,4 @@ list of credentials, fit for use with \code{\link{set_credentials}}
 \description{
 Retrieve temporary credentials from Armadillo MinIO filestore
 }
+\keyword{internal}
