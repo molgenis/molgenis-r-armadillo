@@ -1,10 +1,10 @@
 .onLoad <- function(libname, pkgname) {
   op <- options()
-  op.MolgenisArmadillo <- list(
+  defaults <- list(
     MolgenisArmadillo.s3.use_https = TRUE
   )
-  toset <- !(names(op.MolgenisArmadillo) %in% names(op))
-  if (any(toset)) options(op.MolgenisArmadillo[toset])
+  toset <- !(names(defaults) %in% names(op))
+  if (any(toset)) options(defaults[toset])
 
   invisible()
 }
