@@ -2,7 +2,18 @@
 #'
 #' @param folder foldername to upload to
 #' @param name name of the .Rdata file
-#' @param datasets vector of tables
+#' @param dataset vector of tables
+#' 
+#' @importFrom aws.s3 s3save
+#'
+#' @examples
+#' \dontrun{
+#' create_workspace(
+#'   folder = "gecko",
+#'   name = "johan_subset_1",
+#'   dataset = "table1and2"
+#' )
+#' }
 #'
 #' @export
 create_workspace <- function(folder, name, dataset, ...) {
@@ -21,6 +32,19 @@ create_workspace <- function(folder, name, dataset, ...) {
   message(paste0("Created workspace '", name, "'"))
 }
 
+#' List the workspaces
+#'
+#' @param folder the folder in which the workspaces are located
+#'
+#' @importFrom aws.s3 get_bucket
+#'
+#' @examples
+#' \dontrun{
+#' list_workspaces(
+#'   folder = "gecko"
+#' )
+#' }
+#'
 #' @export
 list_workspaces <- function(folder, ...) {
   bucket_name <- .to_shared_bucket_name(folder)
@@ -33,6 +57,21 @@ list_workspaces <- function(folder, ...) {
   # TODO strip .RData from file names?
 }
 
+#' Delete workspace
+#'
+#' @param folder folder to delete the workspace from
+#' @param name workspace name
+#'
+#' @importFrom aws.s3 delete_object
+#'
+#' @examples
+#' \dontrun{
+#' delete_workspace(
+#'   folder = "gecko",
+#'   name = "johan_subset_1"
+#' )
+#' }
+#'
 #' @export
 delete_workspace <- function(folder, name, ...) {
   bucket_name <- .to_shared_bucket_name(folder)
@@ -46,6 +85,23 @@ delete_workspace <- function(folder, name, ...) {
   message(paste0("Deleted workspace '", name, "'"))
 }
 
+#' Copy workspace
+#'
+#' @param folder study or other variable collection
+#' @param name specific workspace for copy action
+#' @param new_folder new location of study or other variable collection
+#'
+#' @importFrom aws.s3 copy_object
+#'
+#' @examples
+#' \dontrun{
+#' copy_worspace(
+#'   folder = "gecko",
+#'   name = "tim_subset_1",
+#'   new_folder = "gecko_subset_1"
+#' )
+#' }
+#'
 #' @export
 copy_workspace <- function(folder, name, new_folder, ...) {
   bucket_name <- .to_shared_bucket_name(folder)
@@ -67,6 +123,21 @@ copy_workspace <- function(folder, name, new_folder, ...) {
   ))
 }
 
+#' Load workspace based upon study folder and tableset
+#'
+#' @param folder study or collection variables
+#' @param name tableset containing the subset
+#'
+#' @importFrom aws.s3 s3load
+#'
+#' @examples
+#' \dontrun{
+#' load_workspace(
+#'   folder = "gecko",
+#'   name = "lc_core_1"
+#' )
+#' }
+#'
 #' @export
 load_workspace <- function(folder, name, ...) {
   bucket_name <- .to_shared_bucket_name(folder)
@@ -79,6 +150,21 @@ load_workspace <- function(folder, name, ...) {
   )
 }
 
+#' Move the workspace
+#'
+#' @param folder a study or collection of variables
+#' @param name a tableset to move
+#' @param new_folder a subset of the studies new location
+#'
+#' @examples
+#' \dontrun{
+#' move_workspace(
+#'   folder = "",
+#'   name = "",
+#'   new_folder = ""
+#' )
+#' }
+#'
 #' @export
 move_workspace <- function(folder, name, new_folder, ...) {
   suppressMessages(copy_workspace(folder, name, new_folder, ...))

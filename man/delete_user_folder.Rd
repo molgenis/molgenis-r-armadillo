@@ -4,11 +4,19 @@
 \alias{delete_user_folder}
 \title{Deletes a user's folder from the Users bucket}
 \usage{
-delete_user_folder(user_name)
+delete_user_folder(user_name, ...)
 }
 \arguments{
-\item{username}{the folder to delete}
+\item{user_name}{the folder of the user to delete}
 }
 \description{
 Deletes a user's folder from the Users bucket
+}
+\examples{
+\dontrun{
+delete_user_folder(
+  user_name = "sido"
+)
+}
+
 }
