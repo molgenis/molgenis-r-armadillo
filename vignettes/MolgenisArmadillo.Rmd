@@ -17,3 +17,16 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(MolgenisArmadillo)
 ```
+
+```{r eval=FALSE}
+login("http://localhost:8080", "http://localhost:9000")
+
+list_folders()
+list_workspaces("gecko")
+list_workspaces("next")
+delete_workspace("next", "patient")
+delete_folder("next")
+create_folder("next")
+copy_workspace("diabetes", "patient", "next")
+move_workspace("next", "patient", "gecko")
+```
