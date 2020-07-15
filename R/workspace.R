@@ -1,8 +1,8 @@
 #' Combines tables in an .Rdata file and uploads them to a folder.
 #'
-#' @param folder foldername to upload to
-#' @param name name of the .Rdata file
-#' @param dataset vector of tables
+#' @param folder the folder to upload to
+#' @param name name of the workspace to create
+#' @param ... tables to upload to the dataset
 #'
 #' @importFrom aws.s3 s3save
 #'
@@ -11,22 +11,25 @@
 #' create_workspace(
 #'   folder = "gecko",
 #'   name = "johan_subset_1",
-#'   dataset = "table1and2"
+#'   table1,
+#'   table2
 #' )
 #' }
 #'
 #' @export
-create_workspace <- function(folder, name, dataset) {
+create_workspace <- function(folder, name, ...) {
   # TODO check dataset not empty
   # TODO multiple datasets
   .check_workspace_name(name)
   bucket_name <- .to_shared_bucket_name(folder)
   .check_if_bucket_exists(bucket_name)
 
-  aws.s3::s3save(dataset,
+  aws.s3::s3save(...,
     object = .to_file_name(name),
     bucket = bucket_name,
-    use_https = getOption("MolgenisArmadillo.s3.use_https")
+    opts = c(
+      use_https = getOption("MolgenisArmadillo.s3.use_https")
+    )
   )
 
   message(paste0("Created workspace '", name, "'"))
