@@ -1,6 +1,7 @@
 #' Login
 #'
-#' Interactively obtains a token and logs in to the Armadillo MinIO server.
+#' Interactively obtains an id token and uses it to create a session token on
+#' the minio server.
 #'
 #' @param armadillo URL of the Armadillo server,
 #' @param minio URL of the Armadillo MinIO server
@@ -38,6 +39,7 @@ login <- function(armadillo, minio, duration = 900) {
 #' @importFrom httr POST stop_for_status content
 #' @importFrom xml2 xml_text xml_find_first xml_ns_strip
 #'
+#' @keywords internal
 #' @export
 assume_role_with_web_identity <-
   function(token,
@@ -88,6 +90,7 @@ assume_role_with_web_identity <-
 #' @importFrom MolgenisAuth discover device_flow_auth
 #' @importFrom httr GET stop_for_status content
 #'
+#' @keywords internal
 #' @export
 get_token <- function(server) {
   auth_info <- .get_info(server)$auth
