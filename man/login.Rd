@@ -2,15 +2,30 @@
 % Please edit documentation in R/auth.R
 \name{login}
 \alias{login}
-\title{Login to the Armadillo service}
+\title{Login}
 \usage{
-login(username, password)
+login(armadillo, minio, duration = 900)
 }
 \arguments{
-\item{username}{username for Armadillo service (using oAuth)}
+\item{armadillo}{URL of the Armadillo server,}
 
-\item{password}{password for Armadillo service (using oAuth)}
+\item{minio}{URL of the Armadillo MinIO server}
+
+\item{duration}{MinIO session duration in seconds}
+}
+\value{
+the id token
 }
 \description{
-Login to the Armadillo service
+Interactively obtains a token and logs in to the Armadillo MinIO server.
+}
+\examples{
+\dontrun{
+login(
+  "https://armadillo.dev.molgenis.org",
+  "https://armadillo-minio.dev.molgenis.org"
+)
+login("http://localhost:8080", "http://localhost:9000")
+}
+
 }

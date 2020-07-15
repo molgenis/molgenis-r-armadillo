@@ -17,13 +17,24 @@ Authors@R:
              email = "f.kelpin@umcg.nl"))
 Depends:
     R (>= 3.6)
+Imports:
+    rlang,
+    httr,
+    urltools,
+    xml2,
+    aws.iam,
+    aws.s3,
+    MolgenisAuth
 Suggests:
-    knitr
+    knitr,
+    testthat,
+    mockery,
+    datasets
 Description: An Armadillo client for the Armadillo DataSHIELD service. Part of the MOLGENIS suite.
 License: LGPL (>= 2.1)
 URL: https://github.com/molgenis/molgenis-r-armadillo
-BugReports: https://github.com/molgenis/molgenis-r-armadillo
-RoxygenNote: 7.1.0
+BugReports: https://github.com/molgenis/molgenis-r-armadillo/issues
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 Encoding: UTF-8
-Imports: minio.s3, rlang
+

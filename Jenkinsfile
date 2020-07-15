@@ -19,7 +19,8 @@ pipeline {
                 container('vault') {
                     script {
                         env.GITHUB_TOKEN = sh(script: 'vault read -field=value secret/ops/token/github', returnStdout: true)
-                        env.CODECOV_TOKEN = sh(script: 'vault read -field=molgenis-r-datashield secret/ops/token/codecov', returnStdout: true)
+                        env.GITHUB_DEPLOY_PRIVATE_KEY_BASE64 = sh(script: 'vault read -field=ssh_private_base64 secret/ops/account/github', returnStdout: true)                        
+                        env.CODECOV_TOKEN = sh(script: 'vault read -field=molgenis-r-armadillo secret/ops/token/codecov', returnStdout: true)
                         env.NEXUS_USER = sh(script: 'vault read -field=username secret/ops/account/nexus', returnStdout: true)
                         env.NEXUS_PASS = sh(script: 'vault read -field=password secret/ops/account/nexus', returnStdout: true)
                     }
@@ -34,6 +35,8 @@ pipeline {
                     sh "install2.r --repo https://cloud.r-project.org remotes httr urltools xml2 aws.iam aws.s3"
                     sh "install2.r --repo https://registry.molgenis.org/repository/R MolgenisAuth"
                     sh "installGithub.r fdlk/lintr"
+                    sh "mkdir -m 700 -p /root/.ssh"
+                    sh "ssh-keyscan -H -t rsa github.com  > ~/.ssh/known_hosts"
                 }
             }
         }
@@ -143,6 +146,7 @@ pipeline {
                     }
                     sh "git tag v${TAG}"
                     sh "git push --tags origin master"
+                    sh "set +x; Rscript -e \"pkgdown::deploy_site_github(ssh_id = '${GITHUB_DEPLOY_PRIVATE_KEY_BASE64}', tarball = '${PACKAGE}_${TAG}.tar.gz', repo_slug='${REPOSITORY}')\""
                 }
             }
             post {
