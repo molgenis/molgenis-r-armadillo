@@ -4,7 +4,7 @@
 \alias{create_workspace}
 \title{Combines tables in an .Rdata file and uploads them to a folder.}
 \usage{
-create_workspace(folder, name, dataset, ...)
+create_workspace(folder, name, dataset)
 }
 \arguments{
 \item{folder}{foldername to upload to}
@@ -12,8 +12,6 @@ create_workspace(folder, name, dataset, ...)
 \item{name}{name of the .Rdata file}
 
 \item{dataset}{vector of tables}
-
-\item{...}{Additional arguments passed to \code{\link{s3HTTP}}}
 }
 \description{
 Combines tables in an .Rdata file and uploads them to a folder.

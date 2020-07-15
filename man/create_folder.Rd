@@ -4,21 +4,17 @@
 \alias{create_folder}
 \title{Create a folder for a variable collection}
 \usage{
-create_folder(folder_name, ...)
+create_folder(folder_name)
 }
 \arguments{
 \item{folder_name}{name of the folder to create variable collection}
-
-\item{...}{Additional arguments passed to \code{\link{s3HTTP}}}
 }
 \description{
 Create a folder for a variable collection
 }
 \examples{
 \dontrun{
-create_folder(
-  folder_name = "gecko"
-)
+create_folder(folder_name = "gecko")
 }
 
 }

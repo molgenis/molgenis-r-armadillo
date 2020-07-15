@@ -4,7 +4,7 @@
 \alias{move_workspace}
 \title{Move the workspace}
 \usage{
-move_workspace(folder, name, new_folder, ...)
+move_workspace(folder, name, new_folder)
 }
 \arguments{
 \item{folder}{a study or collection of variables}
@@ -12,8 +12,6 @@ move_workspace(folder, name, new_folder, ...)
 \item{name}{a tableset to move}
 
 \item{new_folder}{a subset of the studies new location}
-
-\item{...}{Additional arguments passed to \code{\link{s3HTTP}}}
 }
 \description{
 Move the workspace

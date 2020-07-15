@@ -4,10 +4,7 @@
 \alias{list_folders}
 \title{List all folders}
 \usage{
-list_folders(...)
-}
-\arguments{
-\item{...}{Arguments passed to \code{\link{s3HTTP}}}
+list_folders()
 }
 \value{
 list all folders (user and shared)

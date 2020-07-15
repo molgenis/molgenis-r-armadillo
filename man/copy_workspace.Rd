@@ -4,7 +4,7 @@
 \alias{copy_workspace}
 \title{Copy workspace}
 \usage{
-copy_workspace(folder, name, new_folder, ...)
+copy_workspace(folder, name, new_folder)
 }
 \arguments{
 \item{folder}{study or other variable collection}
@@ -12,8 +12,6 @@ copy_workspace(folder, name, new_folder, ...)
 \item{name}{specific workspace for copy action}
 
 \item{new_folder}{new location of study or other variable collection}
-
-\item{...}{Additional arguments passed to \code{\link{s3HTTP}}}
 }
 \description{
 Copy workspace

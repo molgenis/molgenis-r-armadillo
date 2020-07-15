@@ -4,21 +4,17 @@
 \alias{delete_folder}
 \title{Delete folder}
 \usage{
-delete_folder(folder_name, ...)
+delete_folder(folder_name)
 }
 \arguments{
 \item{folder_name}{study or collection of variables name}
-
-\item{...}{Additional arguments passed to \code{\link{s3HTTP}}}
 }
 \description{
 A folder represents usually a study or collection of variables
 }
 \examples{
 \dontrun{
-delete_folder(
-  folder_name = "gecko"
-)
+delete_folder(folder_name = "gecko")
 }
 
 }

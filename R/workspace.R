@@ -3,7 +3,6 @@
 #' @param folder foldername to upload to
 #' @param name name of the .Rdata file
 #' @param dataset vector of tables
-#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
 #' @importFrom aws.s3 s3save
 #'
@@ -17,17 +16,17 @@
 #' }
 #'
 #' @export
-create_workspace <- function(folder, name, dataset, ...) {
+create_workspace <- function(folder, name, dataset) {
   # TODO check dataset not empty
   # TODO multiple datasets
   .check_workspace_name(name)
   bucket_name <- .to_shared_bucket_name(folder)
-  .check_if_bucket_exists(bucket_name, ...)
+  .check_if_bucket_exists(bucket_name)
 
   aws.s3::s3save(dataset,
     object = .to_file_name(name),
     bucket = bucket_name,
-    ...
+    use_https = getOption("MolgenisArmadillo.s3.use_https")
   )
 
   message(paste0("Created workspace '", name, "'"))
@@ -36,7 +35,6 @@ create_workspace <- function(folder, name, dataset, ...) {
 #' List the workspaces
 #'
 #' @param folder the folder in which the workspaces are located
-#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
 #' @importFrom aws.s3 get_bucket
 #'
@@ -48,11 +46,13 @@ create_workspace <- function(folder, name, dataset, ...) {
 #' }
 #'
 #' @export
-list_workspaces <- function(folder, ...) {
+list_workspaces <- function(folder) {
   bucket_name <- .to_shared_bucket_name(folder)
-  .check_if_bucket_exists(bucket_name, ...)
+  .check_if_bucket_exists(bucket_name)
 
-  objects <- aws.s3::get_bucket(bucket_name, ...)
+  objects <- aws.s3::get_bucket(bucket_name,
+    use_https = getOption("MolgenisArmadillo.s3.use_https")
+  )
   object_names <- lapply(objects, function(obj) obj$Key)
   unlist(object_names, use.names = FALSE)
 
@@ -63,7 +63,6 @@ list_workspaces <- function(folder, ...) {
 #'
 #' @param folder folder to delete the workspace from
 #' @param name workspace name
-#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
 #' @importFrom aws.s3 delete_object
 #'
@@ -76,14 +75,14 @@ list_workspaces <- function(folder, ...) {
 #' }
 #'
 #' @export
-delete_workspace <- function(folder, name, ...) {
+delete_workspace <- function(folder, name) {
   bucket_name <- .to_shared_bucket_name(folder)
-  .check_if_workspace_exists(bucket_name, name, ...)
+  .check_if_workspace_exists(bucket_name, name)
 
   aws.s3::delete_object(
     object = .to_file_name(name),
     bucket = bucket_name,
-    ...
+    use_https = getOption("MolgenisArmadillo.s3.use_https")
   )
   message(paste0("Deleted workspace '", name, "'"))
 }
@@ -93,7 +92,6 @@ delete_workspace <- function(folder, name, ...) {
 #' @param folder study or other variable collection
 #' @param name specific workspace for copy action
 #' @param new_folder new location of study or other variable collection
-#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
 #' @importFrom aws.s3 copy_object
 #'
@@ -107,18 +105,18 @@ delete_workspace <- function(folder, name, ...) {
 #' }
 #'
 #' @export
-copy_workspace <- function(folder, name, new_folder, ...) {
+copy_workspace <- function(folder, name, new_folder) {
   bucket_name <- .to_shared_bucket_name(folder)
   new_bucket_name <- .to_shared_bucket_name(new_folder)
-  .check_if_workspace_exists(bucket_name, name, ...)
-  .check_if_bucket_exists(new_bucket_name, ...)
+  .check_if_workspace_exists(bucket_name, name)
+  .check_if_bucket_exists(new_bucket_name)
 
   aws.s3::copy_object(
     from_object = .to_file_name(name),
     to_object = .to_file_name(name),
     from_bucket = bucket_name,
     to_bucket = new_bucket_name,
-    ...
+    use_https = getOption("MolgenisArmadillo.s3.use_https")
   )
 
   message(paste0(
@@ -131,7 +129,6 @@ copy_workspace <- function(folder, name, new_folder, ...) {
 #'
 #' @param folder study or collection variables
 #' @param name tableset containing the subset
-#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
 #' @importFrom aws.s3 s3load
 #'
@@ -144,14 +141,14 @@ copy_workspace <- function(folder, name, new_folder, ...) {
 #' }
 #'
 #' @export
-load_workspace <- function(folder, name, ...) {
+load_workspace <- function(folder, name) {
   bucket_name <- .to_shared_bucket_name(folder)
-  .check_if_workspace_exists(bucket_name, name, ...)
+  .check_if_workspace_exists(bucket_name, name)
 
   aws.s3::s3load(
     object = .to_file_name(name),
     bucket = bucket_name,
-    ...
+    use_https = getOption("MolgenisArmadillo.s3.use_https")
   )
 }
 
@@ -160,7 +157,6 @@ load_workspace <- function(folder, name, ...) {
 #' @param folder a study or collection of variables
 #' @param name a tableset to move
 #' @param new_folder a subset of the studies new location
-#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
 #' @examples
 #' \dontrun{
@@ -172,9 +168,9 @@ load_workspace <- function(folder, name, ...) {
 #' }
 #'
 #' @export
-move_workspace <- function(folder, name, new_folder, ...) {
-  suppressMessages(copy_workspace(folder, name, new_folder, ...))
-  suppressMessages(delete_workspace(folder, name, ...))
+move_workspace <- function(folder, name, new_folder) {
+  suppressMessages(copy_workspace(folder, name, new_folder))
+  suppressMessages(delete_workspace(folder, name))
   message(paste0(
     "Moved workspace '", name, "' to folder '",
     new_folder, "'"

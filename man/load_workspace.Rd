@@ -4,14 +4,12 @@
 \alias{load_workspace}
 \title{Load workspace based upon study folder and tableset}
 \usage{
-load_workspace(folder, name, ...)
+load_workspace(folder, name)
 }
 \arguments{
 \item{folder}{study or collection variables}
 
 \item{name}{tableset containing the subset}
-
-\item{...}{Additional arguments passed to \code{\link{s3HTTP}}}
 }
 \description{
 Load workspace based upon study folder and tableset

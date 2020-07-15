@@ -4,10 +4,7 @@
 \alias{list_user_folders}
 \title{List the user folders}
 \usage{
-list_user_folders(...)
-}
-\arguments{
-\item{...}{Additional arguments passed to \code{\link{s3HTTP}}}
+list_user_folders()
 }
 \value{
 list of user folders

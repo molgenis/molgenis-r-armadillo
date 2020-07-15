@@ -4,12 +4,10 @@
 \alias{.delete_bucket}
 \title{Delete bucket}
 \usage{
-.delete_bucket(bucket_name, ...)
+.delete_bucket(bucket_name)
 }
 \arguments{
 \item{bucket_name}{name of the bucket, usually a collection of variables}
-
-\item{...}{Additional arguments passed to \code{\link{s3HTTP}}}
 }
 \description{
 Delete bucket

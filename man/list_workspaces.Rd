@@ -4,12 +4,10 @@
 \alias{list_workspaces}
 \title{List the workspaces}
 \usage{
-list_workspaces(folder, ...)
+list_workspaces(folder)
 }
 \arguments{
 \item{folder}{the folder in which the workspaces are located}
-
-\item{...}{Additional arguments passed to \code{\link{s3HTTP}}}
 }
 \description{
 List the workspaces

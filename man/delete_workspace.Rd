@@ -4,14 +4,12 @@
 \alias{delete_workspace}
 \title{Delete workspace}
 \usage{
-delete_workspace(folder, name, ...)
+delete_workspace(folder, name)
 }
 \arguments{
 \item{folder}{folder to delete the workspace from}
 
 \item{name}{workspace name}
-
-\item{...}{Additional arguments passed to \code{\link{s3HTTP}}}
 }
 \description{
 Delete workspace
