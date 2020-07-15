@@ -6,6 +6,9 @@
 \usage{
 list_user_folders(...)
 }
+\arguments{
+\item{...}{Additional arguments passed to \code{\link{s3HTTP}}}
+}
 \value{
 list of user folders
 }

@@ -64,6 +64,13 @@ get_token <- function(server) {
   return(credentials$id_token)
 }
 
+#' Fetch server info
+#' 
+#' Retrieves server info from Armadillo server's info endpoint
+#' 
+#' @return structured list with info items
+#' @noRd
+#' @keywords internal
 .get_info <- function(armadillo_server) {
   info_url <- armadillo_server
   urltools::path(info_url) <- "actuator/info"

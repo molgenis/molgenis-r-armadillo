@@ -6,6 +6,9 @@
 \usage{
 list_folders(...)
 }
+\arguments{
+\item{...}{Arguments passed to \code{\link{s3HTTP}}}
+}
 \value{
 list all folders (user and shared)
 }

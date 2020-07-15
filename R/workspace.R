@@ -3,7 +3,8 @@
 #' @param folder foldername to upload to
 #' @param name name of the .Rdata file
 #' @param dataset vector of tables
-#' 
+#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
+#'
 #' @importFrom aws.s3 s3save
 #'
 #' @examples
@@ -35,6 +36,7 @@ create_workspace <- function(folder, name, dataset, ...) {
 #' List the workspaces
 #'
 #' @param folder the folder in which the workspaces are located
+#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
 #' @importFrom aws.s3 get_bucket
 #'
@@ -61,6 +63,7 @@ list_workspaces <- function(folder, ...) {
 #'
 #' @param folder folder to delete the workspace from
 #' @param name workspace name
+#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
 #' @importFrom aws.s3 delete_object
 #'
@@ -90,6 +93,7 @@ delete_workspace <- function(folder, name, ...) {
 #' @param folder study or other variable collection
 #' @param name specific workspace for copy action
 #' @param new_folder new location of study or other variable collection
+#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
 #' @importFrom aws.s3 copy_object
 #'
@@ -127,6 +131,7 @@ copy_workspace <- function(folder, name, new_folder, ...) {
 #'
 #' @param folder study or collection variables
 #' @param name tableset containing the subset
+#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
 #' @importFrom aws.s3 s3load
 #'
@@ -155,6 +160,7 @@ load_workspace <- function(folder, name, ...) {
 #' @param folder a study or collection of variables
 #' @param name a tableset to move
 #' @param new_folder a subset of the studies new location
+#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
 #' @examples
 #' \dontrun{

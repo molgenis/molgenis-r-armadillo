@@ -2,6 +2,7 @@
 #'
 #' @param name filename to add extension to
 #'
+#' @noRd
 #' @keywords internal
 .to_file_name <- function(name) {
   paste0(name, ".RData")
@@ -11,6 +12,7 @@
 #'
 #' @param bucket_name folder name
 #'
+#' @noRd
 #' @keywords internal
 .to_readable_name <- function(bucket_name) {
   name_parts <- unlist(strsplit(bucket_name, "-"))
@@ -21,6 +23,7 @@
 #'
 #' @param folder_name shared foldername
 #'
+#' @noRd
 #' @keywords internal
 .to_shared_bucket_name <- function(folder_name) {
   paste0("shared-", tolower(folder_name))
@@ -30,6 +33,7 @@
 #'
 #' @param folder_name user foldername
 #'
+#' @noRd
 #' @keywords internal
 .to_user_bucket_name <- function(user_name) {
   paste0("user-", tolower(user_name))
@@ -41,6 +45,7 @@
 #'
 #' @param name foldername
 #'
+#' @noRd
 #' @keywords internal
 .check_folder_name <- function(name) {
   if (rlang::is_empty(name)) {
@@ -57,6 +62,7 @@
 #'
 #' @param name workspace name
 #'
+#' @noRd
 #' @keywords internal
 .check_workspace_name <- function(name) {
   if (rlang::is_empty(name)) {

@@ -10,6 +10,8 @@ delete_workspace(folder, name, ...)
 \item{folder}{folder to delete the workspace from}
 
 \item{name}{workspace name}
+
+\item{...}{Additional arguments passed to \code{\link{s3HTTP}}}
 }
 \description{
 Delete workspace

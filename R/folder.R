@@ -1,6 +1,7 @@
 #' Create a folder for a variable collection
 #'
 #' @param folder_name name of the folder to create variable collection
+#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
 #' @importFrom aws.s3 put_bucket
 #'
@@ -20,6 +21,8 @@ create_folder <- function(folder_name, ...) {
 
 #' List all folders
 #'
+#' @param ... Arguments passed to \code{\link{s3HTTP}}
+#'
 #' @return list all folders (user and shared)
 #'
 #' @examples
@@ -37,6 +40,7 @@ list_folders <- function(...) {
 #' A folder represents usually a study or collection of variables
 #'
 #' @param folder_name study or collection of variables name
+#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
 #' @examples
 #' \dontrun{
@@ -53,6 +57,7 @@ delete_folder <- function(folder_name, ...) {
 #' List the user folders
 #'
 #' @return list of user folders
+#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
 #' @examples
 #' \dontrun{
@@ -67,6 +72,7 @@ list_user_folders <- function(...) {
 #' Deletes a user's folder from the Users bucket
 #'
 #' @param user_name the folder of the user to delete
+#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
 #' @examples
 #' \dontrun{
@@ -82,7 +88,8 @@ delete_user_folder <- function(user_name, ...) {
 
 #' Delete bucket
 #'
-#' @param bucket_name specify name of the bucket usually a collection of variables
+#' @param bucket_name name of the bucket, usually a collection of variables
+#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
 #' @keywords internal
 .delete_bucket <- function(bucket_name, ...) {
@@ -93,8 +100,11 @@ delete_user_folder <- function(user_name, ...) {
 
 #' Get shared buckets
 #'
+#' @param ... Arguments passed to \code{\link{s3HTTP}}
+#'
 #' @return all shared buckets
 #'
+#' @noRd
 #' @keywords internal
 .get_shared_buckets <- function(...) {
   .get_buckets("shared-", ...)
@@ -102,8 +112,11 @@ delete_user_folder <- function(user_name, ...) {
 
 #' Get the user buckets
 #'
+#' @param ... Arguments passed to \code{\link{s3HTTP}}
+#'
 #' @return user buckets
 #'
+#' @noRd
 #' @keywords internal
 .get_user_buckets <- function(...) {
   .get_buckets("user-", ...)
@@ -112,7 +125,9 @@ delete_user_folder <- function(user_name, ...) {
 #' Get buckets
 #'
 #' @param prefix can be 'shared-' or 'user-'
+#' @param ... Additional arguments passed to \code{\link{s3HTTP}}
 #'
+#' @noRd
 #' @keywords internal
 .get_buckets <- function(prefix, ...) {
   buckets <- aws.s3::bucketlist(...)

@@ -12,6 +12,8 @@ move_workspace(folder, name, new_folder, ...)
 \item{name}{a tableset to move}
 
 \item{new_folder}{a subset of the studies new location}
+
+\item{...}{Additional arguments passed to \code{\link{s3HTTP}}}
 }
 \description{
 Move the workspace

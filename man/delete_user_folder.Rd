@@ -8,6 +8,8 @@ delete_user_folder(user_name, ...)
 }
 \arguments{
 \item{user_name}{the folder of the user to delete}
+
+\item{...}{Additional arguments passed to \code{\link{s3HTTP}}}
 }
 \description{
 Deletes a user's folder from the Users bucket

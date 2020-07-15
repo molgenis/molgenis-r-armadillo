@@ -8,6 +8,8 @@ delete_folder(folder_name, ...)
 }
 \arguments{
 \item{folder_name}{study or collection of variables name}
+
+\item{...}{Additional arguments passed to \code{\link{s3HTTP}}}
 }
 \description{
 A folder represents usually a study or collection of variables

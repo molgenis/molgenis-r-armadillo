@@ -12,6 +12,8 @@ create_workspace(folder, name, dataset, ...)
 \item{name}{name of the .Rdata file}
 
 \item{dataset}{vector of tables}
+
+\item{...}{Additional arguments passed to \code{\link{s3HTTP}}}
 }
 \description{
 Combines tables in an .Rdata file and uploads them to a folder.
