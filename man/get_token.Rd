@@ -15,3 +15,4 @@ The ID token string
 \description{
 Get an ID token to log in on an Armadillo server or its MinIO filestore.
 }
+\keyword{internal}
