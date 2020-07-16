@@ -56,7 +56,7 @@ pipeline {
             post {
                 always {
                     container('r') {
-                        sh "Rscript -e 'lintr::lint_package()'"
+                        sh "Rscript -e 'lintr::lint_package(linters=lintr::with_defaults(object_usage_linter = NULL))'"
                         sh "Rscript -e 'library(covr);codecov()'"
                     }
                 }
@@ -81,7 +81,7 @@ pipeline {
                     sh "echo 'Building ${PACKAGE} v${TAG}'"
                     sh "R CMD build ."
                     sh "R CMD check ${PACKAGE}_${TAG}.tar.gz"
-                    sh "Rscript -e 'quit(save = \"no\", status = length(lintr::lint_package()))'"
+                    sh "Rscript -e 'quit(save = \"no\", status = length(lintr::lint_package(linters=lintr::with_defaults(object_usage_linter = NULL))))'"
                 }
             }
             post {
