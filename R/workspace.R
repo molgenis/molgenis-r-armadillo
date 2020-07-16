@@ -8,7 +8,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' create_workspace(
+#' armadillo.create_workspace(
 #'   folder = "gecko",
 #'   name = "johan_subset_1",
 #'   table1,
@@ -17,7 +17,7 @@
 #' }
 #'
 #' @export
-create_workspace <- function(folder, name, ...) {
+armadillo.create_workspace <- function(folder, name, ...) {
   # TODO check dataset not empty
   # TODO multiple datasets
   .check_workspace_name(name)
@@ -43,13 +43,13 @@ create_workspace <- function(folder, name, ...) {
 #'
 #' @examples
 #' \dontrun{
-#' list_workspaces(
+#' armadillo.list_workspaces(
 #'   folder = "gecko"
 #' )
 #' }
 #'
 #' @export
-list_workspaces <- function(folder) {
+armadillo.list_workspaces <- function(folder) {
   bucket_name <- .to_shared_bucket_name(folder)
   .check_if_bucket_exists(bucket_name)
 
@@ -71,14 +71,14 @@ list_workspaces <- function(folder) {
 #'
 #' @examples
 #' \dontrun{
-#' delete_workspace(
+#' armadillo.delete_workspace(
 #'   folder = "gecko",
 #'   name = "johan_subset_1"
 #' )
 #' }
 #'
 #' @export
-delete_workspace <- function(folder, name) {
+armadillo.delete_workspace <- function(folder, name) {
   bucket_name <- .to_shared_bucket_name(folder)
   .check_if_workspace_exists(bucket_name, name)
 
@@ -100,7 +100,7 @@ delete_workspace <- function(folder, name) {
 #'
 #' @examples
 #' \dontrun{
-#' copy_worspace(
+#' armadillo.copy_worspace(
 #'   folder = "gecko",
 #'   name = "tim_subset_1",
 #'   new_folder = "gecko_subset_1"
@@ -108,7 +108,7 @@ delete_workspace <- function(folder, name) {
 #' }
 #'
 #' @export
-copy_workspace <- function(folder, name, new_folder) {
+armadillo.copy_workspace <- function(folder, name, new_folder) {
   bucket_name <- .to_shared_bucket_name(folder)
   new_bucket_name <- .to_shared_bucket_name(new_folder)
   .check_if_workspace_exists(bucket_name, name)
@@ -137,14 +137,14 @@ copy_workspace <- function(folder, name, new_folder) {
 #'
 #' @examples
 #' \dontrun{
-#' load_workspace(
+#' armadillo.load_workspace(
 #'   folder = "gecko",
 #'   name = "lc_core_1"
 #' )
 #' }
 #'
 #' @export
-load_workspace <- function(folder, name) {
+armadillo.load_workspace <- function(folder, name) {
   bucket_name <- .to_shared_bucket_name(folder)
   .check_if_workspace_exists(bucket_name, name)
 
@@ -163,7 +163,7 @@ load_workspace <- function(folder, name) {
 #'
 #' @examples
 #' \dontrun{
-#' move_workspace(
+#' armadillo.move_workspace(
 #'   folder = "",
 #'   name = "",
 #'   new_folder = ""
@@ -171,9 +171,9 @@ load_workspace <- function(folder, name) {
 #' }
 #'
 #' @export
-move_workspace <- function(folder, name, new_folder) {
-  suppressMessages(copy_workspace(folder, name, new_folder))
-  suppressMessages(delete_workspace(folder, name))
+armadillo.move_workspace <- function(folder, name, new_folder) {
+  suppressMessages(armadillo.copy_workspace(folder, name, new_folder))
+  suppressMessages(armadillo.delete_workspace(folder, name))
   message(paste0(
     "Moved workspace '", name, "' to folder '",
     new_folder, "'"

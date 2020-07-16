@@ -11,18 +11,18 @@
 #'
 #' @examples
 #' \dontrun{
-#' login(
+#' armadillo.login(
 #'   "https://armadillo.dev.molgenis.org",
 #'   "https://armadillo-minio.dev.molgenis.org"
 #' )
-#' login("http://localhost:8080", "http://localhost:9000")
+#' armadillo.login("http://localhost:8080", "http://localhost:9000")
 #' }
 #'
 #' @importFrom urltools scheme domain
 #' @export
-login <- function(armadillo, minio, duration = 900) {
-  token <- get_token(armadillo)
-  assume_role_with_web_identity(token, minio, duration)
+armadillo.login <- function(armadillo, minio, duration = 900) {
+  token <- armadillo.get_token(armadillo)
+  armadillo.assume_role_with_web_identity(token, minio, duration)
   invisible(token)
 }
 
@@ -41,7 +41,7 @@ login <- function(armadillo, minio, duration = 900) {
 #'
 #' @keywords internal
 #' @export
-assume_role_with_web_identity <-
+armadillo.assume_role_with_web_identity <-
   function(token,
            server,
            duration = 900,
@@ -92,7 +92,7 @@ assume_role_with_web_identity <-
 #'
 #' @keywords internal
 #' @export
-get_token <- function(server) {
+armadillo.get_token <- function(server) {
   auth_info <- .get_info(server)$auth
   endpoint <- MolgenisAuth::discover(auth_info$issuerUri)
   credentials <- MolgenisAuth::device_flow_auth(

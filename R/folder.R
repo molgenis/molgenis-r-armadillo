@@ -6,11 +6,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' create_folder(folder_name = "gecko")
+#' armadillo.create_folder(folder_name = "gecko")
 #' }
 #'
 #' @export
-create_folder <- function(folder_name) {
+armadillo.create_folder <- function(folder_name) {
   .check_folder_name(folder_name)
 
   aws.s3::put_bucket(.to_shared_bucket_name(folder_name),
@@ -24,11 +24,11 @@ create_folder <- function(folder_name) {
 #'
 #' @examples
 #' \dontrun{
-#' list_folders()
+#' armadillo.list_folders()
 #' }
 #'
 #' @export
-list_folders <- function() {
+armadillo.list_folders <- function() {
   .get_shared_buckets()
 }
 
@@ -40,11 +40,11 @@ list_folders <- function() {
 #'
 #' @examples
 #' \dontrun{
-#' delete_folder(folder_name = "gecko")
+#' armadillo.delete_folder(folder_name = "gecko")
 #' }
 #'
 #' @export
-delete_folder <- function(folder_name) {
+armadillo.delete_folder <- function(folder_name) {
   .delete_bucket(.to_shared_bucket_name(folder_name))
 }
 
@@ -54,11 +54,11 @@ delete_folder <- function(folder_name) {
 #'
 #' @examples
 #' \dontrun{
-#' list_user_folders()
+#' armadillo.list_user_folders()
 #' }
 #'
 #' @export
-list_user_folders <- function() {
+armadillo.list_user_folders <- function() {
   .get_user_buckets()
 }
 
@@ -68,11 +68,11 @@ list_user_folders <- function() {
 #'
 #' @examples
 #' \dontrun{
-#' delete_user_folder(user_name = "sido")
+#' armadillo.delete_user_folder(user_name = "sido")
 #' }
 #'
 #' @export
-delete_user_folder <- function(user_name) {
+armadillo.delete_user_folder <- function(user_name) {
   .delete_bucket(.to_user_bucket_name(user_name))
 }
 

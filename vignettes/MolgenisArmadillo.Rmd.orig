@@ -36,7 +36,7 @@ The login method needs the URLs of the Armadillo server and the MinIO
 server. It will open a browser window where you can identify yourself with
 the ID provider.
 ```{r}
-login("https://armadillo.dev.molgenis.org",
+armadillo.login("https://armadillo.dev.molgenis.org",
       "https://armadillo-minio.dev.molgenis.org")
 ```
 
@@ -53,6 +53,6 @@ getOption("cloudyr.aws.default_region")
 Now you can create a shared folder and upload datasets to it
 ```{r}
 library(datasets)
-create_folder("shared.folder")
-create_workspace("shared.folder", "test-data", iris, iris3)
+armadillo.create_folder("shared.folder")
+armadillo.create_workspace("shared.folder", "test-data", iris, iris3)
 ```
