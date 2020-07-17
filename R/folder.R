@@ -1,6 +1,7 @@
 #' Create a folder for a variable collection
 #'
 #' @param folder_name name of the folder to create variable collection
+#' @return TRUE if successful
 #'
 #' @importFrom aws.s3 put_bucket
 #'
@@ -10,12 +11,17 @@
 #' }
 #'
 #' @export
-armadillo.create_folder <- function(folder_name) { #nolint
+armadillo.create_folder <- function(folder_name) { # nolint
   .check_folder_name(folder_name)
 
-  aws.s3::put_bucket(.to_shared_bucket_name(folder_name),
+  success <- aws.s3::put_bucket(.to_shared_bucket_name(folder_name),
     use_https = getOption("MolgenisArmadillo.s3.use_https")
   )
+
+  if (success) {
+    message(paste0("Created folder '", folder_name, "'"))
+  }
+  invisible(success)
 }
 
 #' List all folders
@@ -28,7 +34,7 @@ armadillo.create_folder <- function(folder_name) { #nolint
 #' }
 #'
 #' @export
-armadillo.list_folders <- function() { #nolint
+armadillo.list_folders <- function() { # nolint
   .get_shared_buckets()
 }
 
@@ -44,7 +50,7 @@ armadillo.list_folders <- function() { #nolint
 #' }
 #'
 #' @export
-armadillo.delete_folder <- function(folder_name) { #nolint
+armadillo.delete_folder <- function(folder_name) { # nolint
   .delete_bucket(.to_shared_bucket_name(folder_name))
 }
 
@@ -58,7 +64,7 @@ armadillo.delete_folder <- function(folder_name) { #nolint
 #' }
 #'
 #' @export
-armadillo.list_user_folders <- function() { #nolint
+armadillo.list_user_folders <- function() { # nolint
   .get_user_buckets()
 }
 
@@ -72,7 +78,7 @@ armadillo.list_user_folders <- function() { #nolint
 #' }
 #'
 #' @export
-armadillo.delete_user_folder <- function(user_name) { #nolint
+armadillo.delete_user_folder <- function(user_name) { # nolint
   .delete_bucket(.to_user_bucket_name(user_name))
 }
 
