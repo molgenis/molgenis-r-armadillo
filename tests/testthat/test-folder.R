@@ -1,7 +1,7 @@
 test_that("armadillo.create_folder checks folder name", {
   expect_error(
-    session <- armadillo.create_folder("example-folder"),
-    "Folder name can't contain any of \\[/_-\\]"
+    session <- armadillo.create_folder("example_folder"),
+    "Folder name must consist of lowercase letters and numbers"
   )
 })
 
