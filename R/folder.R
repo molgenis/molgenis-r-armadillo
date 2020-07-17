@@ -35,7 +35,7 @@ armadillo.create_folder <- function(folder_name) { # nolint
 #'
 #' @export
 armadillo.list_folders <- function() { # nolint
-  .get_shared_buckets()
+  .get_buckets("")
 }
 
 #' Delete folder
@@ -65,7 +65,21 @@ armadillo.delete_folder <- function(folder_name) { # nolint
 #'
 #' @export
 armadillo.list_user_folders <- function() { # nolint
-  .get_user_buckets()
+  .get_buckets("user-")
+}
+
+#' List the shared folders
+#'
+#' @return list of shared folders
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.list_shared_folders()
+#' }
+#'
+#' @export
+armadillo.list_shared_folders <- function() { # nolint
+  .get_buckets("shared-")
 }
 
 #' Deletes a user's folder from the Users bucket
@@ -95,36 +109,16 @@ armadillo.delete_user_folder <- function(user_name) { # nolint
   message(paste0("Deleted folder '", .to_readable_name(bucket_name), "'"))
 }
 
-#' Get shared buckets
-#'
-#' @return all shared buckets
-#'
-#' @noRd
-.get_shared_buckets <- function() {
-  .get_buckets("shared-")
-}
-
-#' Get the user buckets
-#'
-#' @return user buckets
-#'
-#' @noRd
-.get_user_buckets <- function() {
-  .get_buckets("user-")
-}
-
 #' Get buckets
 #'
 #' @param prefix can be 'shared-' or 'user-'
 #'
 #' @noRd
 .get_buckets <- function(prefix) {
-  buckets <- aws.s3::bucketlist(
-    use_https = .use_https()
-  )
+  buckets <- aws.s3::bucketlist(use_https = .use_https())
   bucket_names <- buckets[["Bucket"]]
-  shared_buckets <- bucket_names[startsWith(bucket_names, prefix)]
-  sapply(shared_buckets,
+  filtered_buckets <- bucket_names[startsWith(bucket_names, prefix)]
+  sapply(filtered_buckets,
     function(name) gsub(prefix, "", name),
     USE.NAMES = FALSE
   )
