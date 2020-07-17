@@ -33,9 +33,9 @@ server. It will open a browser window where you can identify yourself with
 the ID provider.
 
 ```r
-login("https://armadillo.dev.molgenis.org",
+armadillo.login("https://armadillo.dev.molgenis.org",
       "https://armadillo-minio.dev.molgenis.org")
-#> [1] "We're opening a browser so you can log in with code 46F6RQ"
+#> [1] "We're opening a browser so you can log in with code TR7HKS"
 #> No encoding supplied: defaulting to UTF-8.
 ```
 
@@ -45,11 +45,11 @@ It will create a session and store the credentials in the environment:
 Sys.getenv("AWS_S3_ENDPOINT")
 #> [1] "armadillo-minio.dev.molgenis.org"
 Sys.getenv("AWS_ACCESS_KEY_ID")
-#> [1] "E2H8C7V870MGX82LOO78"
+#> [1] "RF4Y6JV8KBBBLL7L1FOU"
 Sys.getenv("AWS_SECRET_ACCESS_KEY")
-#> [1] "CdSZFKMZhbp9eZh4TYEdddbk3RrTuzyI4LrZtyLZ"
+#> [1] "2BgAaWkyN3HeP3WJJJXtxKaPSl1FrTAsN7qV0E0m"
 Sys.getenv("AWS_SESSION_TOKEN")
-#> [1] "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJFMkg4QzdWODcwTUdYODJMT083OCIsImFwcGxpY2F0aW9uSWQiOiI3ODliOTQxNy1jYTJiLTQ3MDctYWI5Yy00NzEzNzNkOTFiYTAiLCJhdF9oYXNoIjoibU83bVZZdXMwZXpwOTBqdHRsY1o1QSIsImF1ZCI6Ijc4OWI5NDE3LWNhMmItNDcwNy1hYjljLTQ3MTM3M2Q5MWJhMCIsImF1dGhlbnRpY2F0aW9uVHlwZSI6IlBBU1NXT1JEIiwiZW1haWwiOiJmbGV1ckBrZWxwaW4ubmwiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoiMTU5NDg0MzQ0MSIsImlhdCI6MTU5NDg0MjU0MSwiaXNzIjoiaHR0cHM6Ly9hdXRoLm1vbGdlbmlzLm9yZyIsInBvbGljeSI6InJlYWR3cml0ZSIsInByZWZlcnJlZF91c2VybmFtZSI6ImZsZXVyIiwicm9sZXMiOlsiU1UiXSwic3ViIjoiODdmZjcyMTEtNTA1MC00NTY1LTkxMzctZjI1NDcyMDdjODUyIn0.3ZIZxm1K99m4zor96QVNUUP0TmRZbqNqvCZV_SsABaL0LlPzEyp1bXfBAfft-iMGu7IlAZxiXKeMkonNQFPpXQ"
+#> [1] "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJSRjRZNkpWOEtCQkJMTDdMMUZPVSIsImFwcGxpY2F0aW9uSWQiOiI3ODliOTQxNy1jYTJiLTQ3MDctYWI5Yy00NzEzNzNkOTFiYTAiLCJhdF9oYXNoIjoidkRlREVBdW80LUh0Q2tsQXlqb1pBZyIsImF1ZCI6Ijc4OWI5NDE3LWNhMmItNDcwNy1hYjljLTQ3MTM3M2Q5MWJhMCIsImF1dGhlbnRpY2F0aW9uVHlwZSI6IlBBU1NXT1JEIiwiZW1haWwiOiJzLmhhYWttYUBydWcubmwiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoiMTU5NDkxNTI5NiIsImlhdCI6MTU5NDkxNDM5NiwiaXNzIjoiaHR0cHM6Ly9hdXRoLm1vbGdlbmlzLm9yZyIsInBvbGljeSI6InJlYWR3cml0ZSIsInByZWZlcnJlZF91c2VybmFtZSI6InNpZG8iLCJyb2xlcyI6WyJTVSJdLCJzdWIiOiJjNWRkZTFlMS05NWM1LTRlYjctOGMzNC0xMjk2YWM1MzU2MmUifQ.JihCJL274kr8DXwJVM8GzNV1P_DYH_1LP_RsgZHOBsa99Ipta1lvzmQy9cmEUgpMS_B_vFqIFX096Pag1h63oQ"
 getOption("MolgenisArmadillo.s3.use_https")
 #> [1] TRUE
 getOption("cloudyr.aws.default_region")
@@ -60,8 +60,8 @@ Now you can create a shared folder and upload datasets to it
 
 ```r
 library(datasets)
-create_folder("shared.folder")
+armadillo.create_folder("shared.folder")
 #> [1] TRUE
-create_workspace("shared.folder", "test-data", iris, iris3)
+armadillo.create_workspace("shared.folder", "test-data", iris, iris3)
 #> Created workspace 'test-data'
 ```

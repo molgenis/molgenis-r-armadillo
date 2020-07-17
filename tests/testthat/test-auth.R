@@ -25,7 +25,7 @@ test_that("assume_role_with_webidentity_retrieves_credentials", {
   httr_content <- mock(content)
 
   with_mock(
-    session <- assume_role_with_web_identity(
+    session <- armadillo.assume_role_with_web_identity(
       "abcde", "https://example.org", 900
     ),
     "httr::POST" = httr_post,
