@@ -12,7 +12,7 @@ test_that("armadillo.create_folder creates a folder", {
   with_mock(
     result <- armadillo.create_folder("examplefolder"),
     "aws.s3::put_bucket" = put_bucket,
-    ".use_https" = use_https
+    "MolgenisArmadillo:::.use_https" = use_https
   )
 
   expect_true(result)
@@ -26,7 +26,7 @@ test_that("armadillo.list_folders lists all buckets, user and shared", {
   with_mock(
     folders <- armadillo.list_folders(),
     "aws.s3::bucketlist" = bucketlist,
-    ".use_https" = use_https
+    "MolgenisArmadillo:::.use_https" = use_https
   )
 
   expect_equal(
@@ -46,7 +46,7 @@ test_that("armadillo.list_user_folders lists all user buckets", {
   with_mock(
     folders <- armadillo.list_user_folders(),
     "aws.s3::bucketlist" = bucketlist,
-    ".use_https" = use_https
+    "MolgenisArmadillo:::.use_https" = use_https
   )
 
   expect_equal(
@@ -63,7 +63,7 @@ test_that("armadillo.list_shared_folders lists all shared buckets", {
   with_mock(
     folders <- armadillo.list_shared_folders(),
     "aws.s3::bucketlist" = bucketlist,
-    ".use_https" = use_https
+    "MolgenisArmadillo:::.use_https" = use_https
   )
 
   expect_equal(
