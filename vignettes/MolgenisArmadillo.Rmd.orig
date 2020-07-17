@@ -53,6 +53,6 @@ getOption("cloudyr.aws.default_region")
 Now you can create a shared folder and upload datasets to it
 ```{r}
 library(datasets)
-armadillo.create_folder("shared.folder")
-armadillo.create_workspace("shared.folder", "test-data", iris, iris3)
+armadillo.create_folder("shared-folder")
+armadillo.create_workspace("shared-folder", "test-data", iris, iris3)
 ```
