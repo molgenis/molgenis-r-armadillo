@@ -132,26 +132,36 @@ armadillo.copy_workspace <- function(folder, name, new_folder) { #nolint
 #'
 #' @param folder study or collection variables
 #' @param name tableset containing the subset
+#' @param env the environment in which you want to load the workspaces
+#' 
+#' The default environment is `parent.frame()` which means always the calling environment (usually known as `.GlobalEnv`).
 #'
 #' @importFrom aws.s3 s3load
 #'
 #' @examples
 #' \dontrun{
-#' armadillo.load_workspace(
+#' load_workspace(
 #'   folder = "gecko",
 #'   name = "lc_core_1"
+#' )
+#' 
+#' armadillo.load_workspace(
+#'   folder = "gecko",
+#'   name = "lc_core_1",
+#'   env = globalenv()
 #' )
 #' }
 #'
 #' @export
-armadillo.load_workspace <- function(folder, name) { #nolint
+armadillo.load_workspace <- function(folder, name, env = parent.frame()) { #nolint
   bucket_name <- .to_shared_bucket_name(folder)
   .check_if_workspace_exists(bucket_name, name)
-
+  
   aws.s3::s3load(
     object = .to_file_name(name),
     bucket = bucket_name,
-    use_https = getOption("MolgenisArmadillo.s3.use_https")
+    use_https = getOption("MolgenisArmadillo.s3.use_https"),
+    envir = env
   )
 }
 
