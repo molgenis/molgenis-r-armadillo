@@ -28,7 +28,7 @@ armadillo.create_workspace <- function(folder, name, ...) { # nolint
     object = .to_file_name(name),
     bucket = bucket_name,
     opts = c(
-      use_https = getOption("MolgenisArmadillo.s3.use_https")
+      use_https = .use_https()
     )
   )
 
@@ -54,7 +54,7 @@ armadillo.list_workspaces <- function(folder) { # nolint
   .check_if_bucket_exists(bucket_name)
 
   objects <- aws.s3::get_bucket(bucket_name,
-    use_https = getOption("MolgenisArmadillo.s3.use_https")
+    use_https = .use_https()
   )
   object_names <- lapply(objects, function(obj) obj$Key)
   unlist(object_names, use.names = FALSE)
@@ -85,7 +85,7 @@ armadillo.delete_workspace <- function(folder, name) { # nolint
   aws.s3::delete_object(
     object = .to_file_name(name),
     bucket = bucket_name,
-    use_https = getOption("MolgenisArmadillo.s3.use_https")
+    use_https = .use_https()
   )
   message(paste0("Deleted workspace '", name, "'"))
 }
@@ -119,7 +119,7 @@ armadillo.copy_workspace <- function(folder, name, new_folder) { # nolint
     to_object = .to_file_name(name),
     from_bucket = bucket_name,
     to_bucket = new_bucket_name,
-    use_https = getOption("MolgenisArmadillo.s3.use_https")
+    use_https = .use_https()
   )
 
   message(paste0(
@@ -151,7 +151,7 @@ armadillo.load_workspace <- function(folder, name) { # nolint
   aws.s3::s3load(
     object = .to_file_name(name),
     bucket = bucket_name,
-    use_https = getOption("MolgenisArmadillo.s3.use_https")
+    use_https = .use_https()
   )
 }
 

@@ -15,7 +15,7 @@ armadillo.create_folder <- function(folder_name) { # nolint
   .check_folder_name(folder_name)
 
   success <- aws.s3::put_bucket(.to_shared_bucket_name(folder_name),
-    use_https = getOption("MolgenisArmadillo.s3.use_https")
+    use_https = .use_https()
   )
 
   if (success) {
@@ -90,7 +90,7 @@ armadillo.delete_user_folder <- function(user_name) { # nolint
 .delete_bucket <- function(bucket_name) {
   .check_if_bucket_exists(bucket_name)
   aws.s3::delete_bucket(bucket_name,
-    use_https = getOption("MolgenisArmadillo.s3.use_https")
+    use_https = .use_https()
   )
   message(paste0("Deleted folder '", .to_readable_name(bucket_name), "'"))
 }
@@ -120,7 +120,7 @@ armadillo.delete_user_folder <- function(user_name) { # nolint
 #' @noRd
 .get_buckets <- function(prefix) {
   buckets <- aws.s3::bucketlist(
-    use_https = getOption("MolgenisArmadillo.s3.use_https")
+    use_https = .use_https()
   )
   bucket_names <- buckets[["Bucket"]]
   shared_buckets <- bucket_names[startsWith(bucket_names, prefix)]
