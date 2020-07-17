@@ -20,7 +20,7 @@
 #'
 #' @importFrom urltools scheme domain
 #' @export
-armadillo.login <- function(armadillo, minio, duration = 900) {
+armadillo.login <- function(armadillo, minio, duration = 900) { #nolint
   token <- armadillo.get_token(armadillo)
   armadillo.assume_role_with_web_identity(token, minio, duration)
   invisible(token)
@@ -41,13 +41,13 @@ armadillo.login <- function(armadillo, minio, duration = 900) {
 #'
 #' @keywords internal
 #' @export
-armadillo.assume_role_with_web_identity <-
+armadillo.assume_role_with_web_identity <- #nolint
   function(token,
            server,
            duration = 900,
-           use = TRUE) {
+           use = TRUE) { #nolint
     if (duration < 900 | duration > 129600) {
-      stop("'duration' must be a value in seconds between 900 and 129600")
+      stop("'duration' must be a value in seconds between 900 and 129600") #nolint
     }
     query <- list(
       Action = "AssumeRoleWithWebIdentity",
@@ -92,7 +92,7 @@ armadillo.assume_role_with_web_identity <-
 #'
 #' @keywords internal
 #' @export
-armadillo.get_token <- function(server) {
+armadillo.get_token <- function(server) { #nolint
   auth_info <- .get_info(server)$auth
   endpoint <- MolgenisAuth::discover(auth_info$issuerUri)
   credentials <- MolgenisAuth::device_flow_auth(

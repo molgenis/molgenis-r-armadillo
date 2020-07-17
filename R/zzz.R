@@ -1,4 +1,4 @@
-.onLoad <- function(libname, pkgname) { #nolint
+.onLoad <- function(libname, pkgname) { # nolint
   op <- options()
   defaults <- list(
     MolgenisArmadillo.s3.use_https = TRUE
