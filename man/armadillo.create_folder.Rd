@@ -9,6 +9,9 @@ armadillo.create_folder(folder_name)
 \arguments{
 \item{folder_name}{name of the folder to create variable collection}
 }
+\value{
+TRUE if successful
+}
 \description{
 Create a folder for a variable collection
 }
