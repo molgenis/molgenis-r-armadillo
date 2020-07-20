@@ -295,3 +295,18 @@ test_that("armadillo.load_workspace loads the workspace", {
     envir = environment
   )
 })
+
+test_that("armadillo.move_workspace calls copy and delete", {
+  copy_workspace <- mock(TRUE)
+  delete_workspace <- mock(TRUE)
+  expect_message(
+    with_mock(
+      armadillo.move_workspace("example", "test", "example2"),
+      "MolgenisArmadillo::armadillo.copy_workspace" = copy_workspace,
+      "MolgenisArmadillo::armadillo.delete_workspace" = delete_workspace
+    ), "Moved workspace 'test' to folder 'example2'\\."
+  )
+
+  expect_args(copy_workspace, 1, "example", "test", "example2")
+  expect_args(delete_workspace, 1, "example", "test")
+})

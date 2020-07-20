@@ -202,6 +202,6 @@ armadillo.move_workspace <- function(folder, name, new_folder) { # nolint
   suppressMessages(armadillo.delete_workspace(folder, name))
   message(paste0(
     "Moved workspace '", name, "' to folder '",
-    new_folder, "'"
+    new_folder, "'."
   ))
 }
