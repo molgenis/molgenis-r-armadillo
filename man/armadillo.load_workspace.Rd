@@ -14,6 +14,9 @@ armadillo.load_workspace(folder, name, env = parent.frame())
 \item{env}{The environment in which you want to load the objects in the
 workspace. Default is the parent.frame() from which the function is called.}
 }
+\value{
+NULL, invisibly
+}
 \description{
 Load workspace based upon study folder and tableset
 }
