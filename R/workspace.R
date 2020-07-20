@@ -41,15 +41,13 @@ armadillo.create_workspace <- function(folder, name, ...) { # nolint
 
 #' List the workspaces
 #'
-#' @param folder the folder in which the workspaces are located
+#' @param folder the shared folder in which the workspaces are located
 #'
 #' @importFrom aws.s3 get_bucket
 #'
 #' @examples
 #' \dontrun{
-#' armadillo.list_workspaces(
-#'   folder = "gecko"
-#' )
+#' armadillo.list_workspaces("gecko")
 #' }
 #'
 #' @export
