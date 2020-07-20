@@ -4,12 +4,15 @@
 \alias{armadillo.load_workspace}
 \title{Load workspace based upon study folder and tableset}
 \usage{
-armadillo.load_workspace(folder, name)
+armadillo.load_workspace(folder, name, env = parent.frame())
 }
 \arguments{
 \item{folder}{study or collection variables}
 
 \item{name}{tableset containing the subset}
+
+\item{env}{The environment in which you want to load the objects in the
+workspace. Default is the parent.frame() from which the function is called.}
 }
 \description{
 Load workspace based upon study folder and tableset
@@ -19,6 +22,12 @@ Load workspace based upon study folder and tableset
 armadillo.load_workspace(
   folder = "gecko",
   name = "lc_core_1"
+)
+
+armadillo.load_workspace(
+  folder = "gecko",
+  name = "lc_core_1",
+  env = globalenv()
 )
 }
 

@@ -132,6 +132,8 @@ armadillo.copy_workspace <- function(folder, name, new_folder) { # nolint
 #'
 #' @param folder study or collection variables
 #' @param name tableset containing the subset
+#' @param env The environment in which you want to load the objects in the
+#' workspace. Default is the parent.frame() from which the function is called.
 #'
 #' @importFrom aws.s3 s3load
 #'
@@ -141,17 +143,24 @@ armadillo.copy_workspace <- function(folder, name, new_folder) { # nolint
 #'   folder = "gecko",
 #'   name = "lc_core_1"
 #' )
+#'
+#' armadillo.load_workspace(
+#'   folder = "gecko",
+#'   name = "lc_core_1",
+#'   env = globalenv()
+#' )
 #' }
 #'
 #' @export
-armadillo.load_workspace <- function(folder, name) { # nolint
+armadillo.load_workspace <- function(folder, name, env = parent.frame()) { # nolint
   bucket_name <- .to_shared_bucket_name(folder)
   .check_if_workspace_exists(bucket_name, name)
 
   aws.s3::s3load(
     object = .to_file_name(name),
     bucket = bucket_name,
-    use_https = .use_https()
+    use_https = .use_https(),
+    envir = env
   )
 }
 
