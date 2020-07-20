@@ -20,7 +20,7 @@ Load workspace based upon study folder and tableset
 }
 \examples{
 \dontrun{
-load_workspace(
+armadillo.load_workspace(
   folder = "gecko",
   name = "lc_core_1"
 )

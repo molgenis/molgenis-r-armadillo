@@ -140,7 +140,7 @@ armadillo.copy_workspace <- function(folder, name, new_folder) { # nolint
 #'
 #' @examples
 #' \dontrun{
-#' load_workspace(
+#' armadillo.load_workspace(
 #'   folder = "gecko",
 #'   name = "lc_core_1"
 #' )
