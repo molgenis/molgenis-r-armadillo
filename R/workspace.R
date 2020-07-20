@@ -119,7 +119,7 @@ armadillo.delete_workspace <- function(folder, name) { # nolint
 #' @export
 armadillo.copy_workspace <- # nolint
   function(folder, name, new_folder, new_name = name) {
-    if(folder == new_folder && name == new_name) {
+    if (folder == new_folder && name == new_name) {
       stop("Cannot copy workspace onto itself.", call. = FALSE)
     }
     bucket_name <- .to_shared_bucket_name(folder)
@@ -150,6 +150,7 @@ armadillo.copy_workspace <- # nolint
 #' @param name tableset containing the subset
 #' @param env The environment in which you want to load the objects in the
 #' workspace. Default is the parent.frame() from which the function is called.
+#' @return NULL, invisibly
 #'
 #' @importFrom aws.s3 s3load
 #'

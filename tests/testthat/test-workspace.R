@@ -223,9 +223,75 @@ test_that("armadillo.copy_workspace copies workspace", {
 
   expect_true(result)
   expect_args(copy_object, 1,
-              from_object = "test.RData",
-              to_object = "test.RData",
-              from_bucket = "shared-example",
-              to_bucket = "shared-target",
-              use_https = TRUE)
+    from_object = "test.RData",
+    to_object = "test.RData",
+    from_bucket = "shared-example",
+    to_bucket = "shared-target",
+    use_https = TRUE
+  )
+})
+
+test_that("armadillo.load_workspace checks if the folder exists", {
+  bucket_exists <- mock(FALSE)
+
+  expect_error(
+    with_mock(
+      armadillo.load_workspace(
+        folder = "example",
+        name = "tim_subset_1"
+      ),
+      "aws.s3::bucket_exists" = bucket_exists,
+      "MolgenisArmadillo:::.use_https" = mock(TRUE)
+    ),
+    "Folder 'example' doesnot exist\\."
+  )
+
+  expect_args(bucket_exists, 1, "shared-example", use_https = TRUE)
+})
+
+test_that("armadillo.load_workspace checks if the workspace exists", {
+  head_object <- mock(FALSE)
+
+  expect_error(
+    with_mock(
+      armadillo.copy_workspace(
+        folder = "example",
+        name = "test",
+        new_folder = "gecko_subset_1"
+      ),
+      "aws.s3::bucket_exists" = mock(TRUE),
+      "aws.s3::head_object" = head_object,
+      "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
+    ),
+    "Workspace 'test' doesnot exist\\."
+  )
+
+  expect_args(head_object, 1, "test.RData", "shared-example", use_https = TRUE)
+})
+
+test_that("armadillo.load_workspace loads the workspace", {
+  s3load <- mock(invisible(NULL))
+  environment <- new.env()
+
+  expect_silent(
+    with_mock(
+      result <- armadillo.load_workspace(
+        folder = "example",
+        name = "test",
+        env = environment
+      ),
+      "aws.s3::bucket_exists" = mock(TRUE),
+      "aws.s3::head_object" = mock(TRUE),
+      "aws.s3::s3load" = s3load,
+      "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
+    )
+  )
+
+  expect_equal(result, invisible(NULL))
+  expect_args(s3load, 1,
+    object = "test.RData",
+    bucket = "shared-example",
+    use_https = TRUE,
+    envir = environment
+  )
 })
