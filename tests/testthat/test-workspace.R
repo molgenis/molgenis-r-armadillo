@@ -101,13 +101,12 @@ test_that("armadillo.delete_workspace checks if the shared folder exists", {
 })
 
 test_that("armadillo.delete_workspace checks if the workspace exists", {
-  bucket_exists <- mock(TRUE)
   head_object <- mock(FALSE)
 
   expect_error(
     with_mock(
       armadillo.delete_workspace("example", "test"),
-      "aws.s3::bucket_exists" = bucket_exists,
+      "aws.s3::bucket_exists" = mock(TRUE),
       "aws.s3::head_object" = head_object,
       "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
     ),
@@ -115,4 +114,118 @@ test_that("armadillo.delete_workspace checks if the workspace exists", {
   )
 
   expect_args(head_object, 1, "test.RData", "shared-example", use_https = TRUE)
+})
+
+test_that("armadillo.delete_workspace deletes a workspace", {
+  delete_object <- mock(TRUE)
+
+  expect_message(
+    result <- with_mock(
+      armadillo.delete_workspace("example", "test"),
+      "aws.s3::bucket_exists" = mock(TRUE),
+      "aws.s3::head_object" = mock(TRUE),
+      "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE),
+      "aws.s3::delete_object" = delete_object
+    ),
+    "Deleted workspace 'test'\\."
+  )
+
+  expect_true(result)
+})
+
+test_that("armadillo.delete_workspace checks if the source folder exists", {
+  bucket_exists <- mock(FALSE)
+
+  expect_error(
+    with_mock(
+      armadillo.copy_workspace(
+        folder = "example",
+        name = "tim_subset_1",
+        new_folder = "gecko_subset_1"
+      ),
+      "aws.s3::bucket_exists" = bucket_exists,
+      "MolgenisArmadillo:::.use_https" = mock(TRUE)
+    ),
+    "Folder 'example' doesnot exist\\."
+  )
+
+  expect_args(bucket_exists, 1, "shared-example", use_https = TRUE)
+})
+
+test_that("armadillo.copy_workspace checks if the source workspace exists", {
+  head_object <- mock(FALSE)
+
+  expect_error(
+    with_mock(
+      armadillo.copy_workspace(
+        folder = "example",
+        name = "test",
+        new_folder = "gecko_subset_1"
+      ),
+      "aws.s3::bucket_exists" = mock(TRUE),
+      "aws.s3::head_object" = head_object,
+      "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
+    ),
+    "Workspace 'test' doesnot exist\\."
+  )
+
+  expect_args(head_object, 1, "test.RData", "shared-example", use_https = TRUE)
+})
+
+test_that("armadillo.copy_workspace checks if the target folder exists", {
+  bucket_exists <- mock(TRUE, FALSE)
+
+  expect_error(
+    with_mock(
+      armadillo.copy_workspace(
+        folder = "example",
+        name = "test",
+        new_folder = "target"
+      ),
+      "aws.s3::bucket_exists" = bucket_exists,
+      "aws.s3::head_object" = mock(TRUE),
+      "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
+    ),
+    "Folder 'target' doesnot exist\\."
+  )
+
+  expect_args(bucket_exists, 2, "shared-target", use_https = TRUE)
+})
+
+test_that("armadillo.copy_workspace warns if you copy object onto itself", {
+  expect_error(
+    armadillo.copy_workspace(
+      folder = "example",
+      name = "test",
+      new_folder = "example"
+    ),
+    "Cannot copy workspace onto itself\\."
+  )
+})
+
+test_that("armadillo.copy_workspace copies workspace", {
+  copy_object <- mock(TRUE)
+
+  expect_message(
+    with_mock(
+      result <- armadillo.copy_workspace(
+        folder = "example",
+        name = "test",
+        new_folder = "target"
+      ),
+      "aws.s3::bucket_exists" = mock(TRUE, cycle = TRUE),
+      "aws.s3::head_object" = mock(TRUE),
+      "aws.s3::copy_object" = copy_object,
+      "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
+    ),
+    "Copied workspace 'test' to folder 'target'\\."
+  )
+
+  expect_true(result)
+  expect_args(copy_object, 1,
+              from_object = "test.RData",
+              to_object = "test.RData",
+              from_bucket = "shared-example",
+              to_bucket = "shared-target",
+              use_https = TRUE)
 })

@@ -68,6 +68,8 @@ armadillo.list_workspaces <- function(folder) { # nolint
 #'
 #' @param folder folder to delete the workspace from
 #' @param name workspace name
+#' @return TRUE if successful, otherwise an object of class aws_error details
+#' if not.
 #'
 #' @importFrom aws.s3 delete_object
 #'
@@ -84,12 +86,16 @@ armadillo.delete_workspace <- function(folder, name) { # nolint
   bucket_name <- .to_shared_bucket_name(folder)
   .check_if_workspace_exists(bucket_name, name)
 
-  aws.s3::delete_object(
+  result <- aws.s3::delete_object(
     object = .to_file_name(name),
     bucket = bucket_name,
     use_https = .use_https()
   )
-  message(paste0("Deleted workspace '", name, "'"))
+
+  if (isTRUE(result)) {
+    message(paste0("Deleted workspace '", name, "'."))
+  }
+  invisible(result)
 }
 
 #' Copy workspace
@@ -97,6 +103,7 @@ armadillo.delete_workspace <- function(folder, name) { # nolint
 #' @param folder study or other variable collection
 #' @param name specific workspace for copy action
 #' @param new_folder new location of study or other variable collection
+#' @param new_name name of the copy, defaults to name
 #'
 #' @importFrom aws.s3 copy_object
 #'
@@ -110,25 +117,32 @@ armadillo.delete_workspace <- function(folder, name) { # nolint
 #' }
 #'
 #' @export
-armadillo.copy_workspace <- function(folder, name, new_folder) { # nolint
-  bucket_name <- .to_shared_bucket_name(folder)
-  new_bucket_name <- .to_shared_bucket_name(new_folder)
-  .check_if_workspace_exists(bucket_name, name)
-  .check_if_bucket_exists(new_bucket_name)
+armadillo.copy_workspace <- # nolint
+  function(folder, name, new_folder, new_name = name) {
+    if(folder == new_folder && name == new_name) {
+      stop("Cannot copy workspace onto itself.", call. = FALSE)
+    }
+    bucket_name <- .to_shared_bucket_name(folder)
+    new_bucket_name <- .to_shared_bucket_name(new_folder)
+    .check_if_workspace_exists(bucket_name, name)
+    .check_if_bucket_exists(new_bucket_name)
 
-  aws.s3::copy_object(
-    from_object = .to_file_name(name),
-    to_object = .to_file_name(name),
-    from_bucket = bucket_name,
-    to_bucket = new_bucket_name,
-    use_https = .use_https()
-  )
+    result <- aws.s3::copy_object(
+      from_object = .to_file_name(name),
+      to_object = .to_file_name(new_name),
+      from_bucket = bucket_name,
+      to_bucket = new_bucket_name,
+      use_https = .use_https()
+    )
 
-  message(paste0(
-    "Copied workspace '", name, "' to folder '",
-    new_folder, "'"
-  ))
-}
+    if (isTRUE(result)) {
+      message(paste0(
+        "Copied workspace '", name, "' to folder '",
+        new_folder, "'."
+      ))
+    }
+    invisible(result)
+  }
 
 #' Load workspace based upon study folder and tableset
 #'
