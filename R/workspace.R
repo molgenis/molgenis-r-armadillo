@@ -132,9 +132,8 @@ armadillo.copy_workspace <- function(folder, name, new_folder) { # nolint
 #'
 #' @param folder study or collection variables
 #' @param name tableset containing the subset
-#' @param env the environment in which you want to load the workspaces
-#'
-#' The default environment is `parent.frame()` which means always the calling environment (usually known as `.GlobalEnv`).
+#' @param env The environment in which you want to load the objects in the
+#' workspace. Default is the parent.frame() from which the function is called.
 #'
 #' @importFrom aws.s3 s3load
 #'

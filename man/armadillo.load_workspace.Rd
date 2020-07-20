@@ -11,9 +11,8 @@ armadillo.load_workspace(folder, name, env = parent.frame())
 
 \item{name}{tableset containing the subset}
 
-\item{env}{the environment in which you want to load the workspaces
-
-The default environment is `parent.frame()` which means always the calling environment (usually known as `.GlobalEnv`).}
+\item{env}{The environment in which you want to load the objects in the
+workspace. Default is the parent.frame() from which the function is called.}
 }
 \description{
 Load workspace based upon study folder and tableset
