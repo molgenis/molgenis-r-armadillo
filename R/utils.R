@@ -11,7 +11,7 @@
   if (!exists) {
     stop(paste0(
       "Folder '", .to_readable_name(bucket_name),
-      "' doesn't exist"
+      "' doesnot exist."
     ), call. = FALSE)
   }
 }
@@ -34,7 +34,7 @@
   )
 
   if (!exists) {
-    stop(paste0("Workspace ", workspace_name, " doesn't exist"),
+    stop(paste0("Workspace ", workspace_name, " doesnot exist."),
       call. = FALSE
     )
   }

@@ -46,16 +46,16 @@
 .check_folder_name <- function(name) {
   stopifnot(is.character(name), length(name) == 1)
   if (nchar(name) == 0) {
-    stop("Folder name cannot be empty", call. = FALSE)
+    stop("Folder name cannot be empty.", call. = FALSE)
   }
   if (nchar(name) > 56) {
-    stop("Folder name has max 56 characters", call. = FALSE)
+    stop("Folder name has max 56 characters.", call. = FALSE)
   }
   if (grepl("-$", name)) {
-    stop("Folder name cannot end with a '-'", call. = FALSE)
+    stop("Folder name cannot end with a '-'.", call. = FALSE)
   }
   if (!grepl("^[a-z0-9-]{0,55}[a-z0-9]$", name)) {
-    stop("Folder name must consist of lowercase letters and numbers",
+    stop("Folder name must consist of lowercase letters and numbers.",
       call. = FALSE
     )
   }

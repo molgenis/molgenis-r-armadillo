@@ -1,7 +1,7 @@
 test_that("armadillo.create_folder checks folder name", {
   expect_error(
     session <- armadillo.create_folder("example_folder"),
-    "Folder name must consist of lowercase letters and numbers"
+    "Folder name must consist of lowercase letters and numbers\\."
   )
 })
 
@@ -71,4 +71,15 @@ test_that("armadillo.list_shared_folders lists all shared buckets", {
     c("diabetes", "gecko")
   )
   expect_args(bucketlist, 1, use_https = FALSE)
+})
+
+test_that("armadillo.delete_user_folder checks if folder exists", {
+  bucketexists <- mock(FALSE)
+
+  expect_error(
+    with_mock(
+      "aws.s3::bucket_exists" = bucketexists,
+      armadillo.delete_user_folder("admin")
+    ), "Folder 'admin' doesnot exist."
+  )
 })
