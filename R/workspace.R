@@ -17,7 +17,7 @@
 #' }
 #'
 #' @export
-armadillo.create_workspace <- function(folder, name, ...) { #nolint
+armadillo.create_workspace <- function(folder, name, ...) { # nolint
   # TODO check dataset not empty
   # TODO multiple datasets
   .check_workspace_name(name)
@@ -49,7 +49,7 @@ armadillo.create_workspace <- function(folder, name, ...) { #nolint
 #' }
 #'
 #' @export
-armadillo.list_workspaces <- function(folder) { #nolint
+armadillo.list_workspaces <- function(folder) { # nolint
   bucket_name <- .to_shared_bucket_name(folder)
   .check_if_bucket_exists(bucket_name)
 
@@ -78,7 +78,7 @@ armadillo.list_workspaces <- function(folder) { #nolint
 #' }
 #'
 #' @export
-armadillo.delete_workspace <- function(folder, name) { #nolint
+armadillo.delete_workspace <- function(folder, name) { # nolint
   bucket_name <- .to_shared_bucket_name(folder)
   .check_if_workspace_exists(bucket_name, name)
 
@@ -108,7 +108,7 @@ armadillo.delete_workspace <- function(folder, name) { #nolint
 #' }
 #'
 #' @export
-armadillo.copy_workspace <- function(folder, name, new_folder) { #nolint
+armadillo.copy_workspace <- function(folder, name, new_folder) { # nolint
   bucket_name <- .to_shared_bucket_name(folder)
   new_bucket_name <- .to_shared_bucket_name(new_folder)
   .check_if_workspace_exists(bucket_name, name)
@@ -133,7 +133,7 @@ armadillo.copy_workspace <- function(folder, name, new_folder) { #nolint
 #' @param folder study or collection variables
 #' @param name tableset containing the subset
 #' @param env the environment in which you want to load the workspaces
-#' 
+#'
 #' The default environment is `parent.frame()` which means always the calling environment (usually known as `.GlobalEnv`).
 #'
 #' @importFrom aws.s3 s3load
@@ -144,7 +144,7 @@ armadillo.copy_workspace <- function(folder, name, new_folder) { #nolint
 #'   folder = "gecko",
 #'   name = "lc_core_1"
 #' )
-#' 
+#'
 #' armadillo.load_workspace(
 #'   folder = "gecko",
 #'   name = "lc_core_1",
@@ -153,10 +153,10 @@ armadillo.copy_workspace <- function(folder, name, new_folder) { #nolint
 #' }
 #'
 #' @export
-armadillo.load_workspace <- function(folder, name, env = parent.frame()) { #nolint
+armadillo.load_workspace <- function(folder, name, env = parent.frame()) { # nolint
   bucket_name <- .to_shared_bucket_name(folder)
   .check_if_workspace_exists(bucket_name, name)
-  
+
   aws.s3::s3load(
     object = .to_file_name(name),
     bucket = bucket_name,
@@ -181,7 +181,7 @@ armadillo.load_workspace <- function(folder, name, env = parent.frame()) { #noli
 #' }
 #'
 #' @export
-armadillo.move_workspace <- function(folder, name, new_folder) { #nolint
+armadillo.move_workspace <- function(folder, name, new_folder) { # nolint
   suppressMessages(armadillo.copy_workspace(folder, name, new_folder))
   suppressMessages(armadillo.delete_workspace(folder, name))
   message(paste0(

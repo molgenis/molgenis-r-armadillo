@@ -10,7 +10,7 @@
 #' }
 #'
 #' @export
-armadillo.create_folder <- function(folder_name) { #nolint
+armadillo.create_folder <- function(folder_name) { # nolint
   .check_folder_name(folder_name)
 
   aws.s3::put_bucket(.to_shared_bucket_name(folder_name),
@@ -28,7 +28,7 @@ armadillo.create_folder <- function(folder_name) { #nolint
 #' }
 #'
 #' @export
-armadillo.list_folders <- function() { #nolint
+armadillo.list_folders <- function() { # nolint
   .get_shared_buckets()
 }
 
@@ -44,7 +44,7 @@ armadillo.list_folders <- function() { #nolint
 #' }
 #'
 #' @export
-armadillo.delete_folder <- function(folder_name) { #nolint
+armadillo.delete_folder <- function(folder_name) { # nolint
   .delete_bucket(.to_shared_bucket_name(folder_name))
 }
 
@@ -58,7 +58,7 @@ armadillo.delete_folder <- function(folder_name) { #nolint
 #' }
 #'
 #' @export
-armadillo.list_user_folders <- function() { #nolint
+armadillo.list_user_folders <- function() { # nolint
   .get_user_buckets()
 }
 
@@ -72,7 +72,7 @@ armadillo.list_user_folders <- function() { #nolint
 #' }
 #'
 #' @export
-armadillo.delete_user_folder <- function(user_name) { #nolint
+armadillo.delete_user_folder <- function(user_name) { # nolint
   .delete_bucket(.to_user_bucket_name(user_name))
 }
 
