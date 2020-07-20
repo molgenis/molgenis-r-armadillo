@@ -18,13 +18,14 @@
 #'
 #' @export
 armadillo.create_workspace <- function(folder, name, ...) { # nolint
-  # TODO check dataset not empty
-  # TODO multiple datasets
+  if (length(list(...)) == 0) {
+    stop("No tables were provided to upload.")
+  }
   .check_workspace_name(name)
   bucket_name <- .to_shared_bucket_name(folder)
   .check_if_bucket_exists(bucket_name)
 
-  aws.s3::s3save(...,
+  result <- aws.s3::s3save(...,
     object = .to_file_name(name),
     bucket = bucket_name,
     opts = c(
@@ -32,7 +33,10 @@ armadillo.create_workspace <- function(folder, name, ...) { # nolint
     )
   )
 
-  message(paste0("Created workspace '", name, "'"))
+  if (isTRUE(result)) {
+    message(paste0("Created workspace '", name, "'."))
+  }
+  invisible(result)
 }
 
 #' List the workspaces
