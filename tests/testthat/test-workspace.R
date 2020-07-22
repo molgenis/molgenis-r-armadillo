@@ -94,7 +94,7 @@ test_that("armadillo.delete_workspace checks if the shared folder exists", {
       "aws.s3::bucket_exists" = bucket_exists,
       "MolgenisArmadillo:::.use_https" = mock(TRUE)
     ),
-    "Folder 'example' doesnot exist\\."
+    "Folder 'example' does not exist\\."
   )
 
   expect_args(bucket_exists, 1, "shared-example", use_https = TRUE)
@@ -110,7 +110,7 @@ test_that("armadillo.delete_workspace checks if the workspace exists", {
       "aws.s3::head_object" = head_object,
       "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
     ),
-    "Workspace 'test' doesnot exist\\."
+    "Workspace 'test' does not exist\\."
   )
 
   expect_args(head_object, 1, "test.RData", "shared-example", use_https = TRUE)

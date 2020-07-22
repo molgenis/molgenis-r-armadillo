@@ -38,8 +38,10 @@ test_that(".check_folder_name allows valid names", {
 
 test_that(".check_workspace_name checks for single character argument", {
   expect_error(.check_workspace_name(NA), "is.character\\(name\\) is not TRUE")
-  expect_error(.check_workspace_name(NULL),
-               "is.character\\(name\\) is not TRUE")
+  expect_error(
+    .check_workspace_name(NULL),
+    "is.character\\(name\\) is not TRUE"
+  )
   expect_error(
     .check_workspace_name(list("abc", "def")),
     "is.character\\(name\\) is not TRUE"
