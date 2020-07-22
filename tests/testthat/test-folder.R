@@ -80,6 +80,6 @@ test_that("armadillo.delete_user_folder checks if folder exists", {
     with_mock(
       "aws.s3::bucket_exists" = bucketexists,
       armadillo.delete_user_folder("admin")
-    ), "Folder 'admin' doesnot exist."
+    ), "Folder 'admin' does not exist."
   )
 })
