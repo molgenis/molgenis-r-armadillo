@@ -263,7 +263,7 @@ test_that("armadillo.load_workspace checks if the workspace exists", {
       "aws.s3::head_object" = head_object,
       "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
     ),
-    "Workspace 'test' doesnot exist\\."
+    "Workspace 'test' does not exist\\."
   )
 
   expect_args(head_object, 1, "test.RData", "shared-example", use_https = TRUE)
