@@ -186,7 +186,7 @@ test_that("armadillo.copy_workspace checks if the target folder exists", {
       "aws.s3::head_object" = mock(TRUE),
       "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
     ),
-    "Folder 'target' doesnot exist\\."
+    "Folder 'target' does not exist\\."
   )
 
   expect_args(bucket_exists, 2, "shared-target", use_https = TRUE)
