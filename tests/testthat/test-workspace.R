@@ -18,7 +18,7 @@ test_that("armadillo.create_workspace checks if the shared bucket exists", {
       "aws.s3::bucket_exists" = bucket_exists,
       "MolgenisArmadillo:::.use_https" = mock(TRUE)
     ),
-    "Folder 'example' doesnot exist\\."
+    "Folder 'example' does not exist\\."
   )
 
   expect_args(bucket_exists, 1, "shared-example", use_https = TRUE)
