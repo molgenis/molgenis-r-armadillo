@@ -34,7 +34,7 @@
   )
 
   if (!exists) {
-    stop(paste0("Workspace '", workspace_name, "' doesnot exist."),
+    stop(paste0("Workspace '", workspace_name, "' does not exist."),
       call. = FALSE
     )
   }
