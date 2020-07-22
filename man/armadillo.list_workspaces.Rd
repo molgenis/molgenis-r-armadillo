@@ -7,16 +7,14 @@
 armadillo.list_workspaces(folder)
 }
 \arguments{
-\item{folder}{the folder in which the workspaces are located}
+\item{folder}{the shared folder in which the workspaces are located}
 }
 \description{
 List the workspaces
 }
 \examples{
 \dontrun{
-armadillo.list_workspaces(
-  folder = "gecko"
-)
+armadillo.list_workspaces("gecko")
 }
 
 }

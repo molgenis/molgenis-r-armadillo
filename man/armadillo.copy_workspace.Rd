@@ -4,7 +4,7 @@
 \alias{armadillo.copy_workspace}
 \title{Copy workspace}
 \usage{
-armadillo.copy_workspace(folder, name, new_folder)
+armadillo.copy_workspace(folder, name, new_folder, new_name = name)
 }
 \arguments{
 \item{folder}{study or other variable collection}
@@ -12,6 +12,8 @@ armadillo.copy_workspace(folder, name, new_folder)
 \item{name}{specific workspace for copy action}
 
 \item{new_folder}{new location of study or other variable collection}
+
+\item{new_name}{name of the copy, defaults to name}
 }
 \description{
 Copy workspace

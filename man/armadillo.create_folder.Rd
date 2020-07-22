@@ -7,14 +7,23 @@
 armadillo.create_folder(folder_name)
 }
 \arguments{
-\item{folder_name}{name of the folder to create variable collection}
+\item{folder_name}{The name of the folder to create. The folder name
+\itemize{
+  \item{cannot be empty.}
+  \item{must be no more than 56 characters.}
+  \item{cannot end with a \code{-}.}
+  \item{must consist of lowercase letters and numbers.}
+  }}
+}
+\value{
+TRUE if successful
 }
 \description{
 Create a folder for a variable collection
 }
 \examples{
 \dontrun{
-armadillo.create_folder(folder_name = "gecko")
+armadillo.create_folder("gecko")
 }
 
 }

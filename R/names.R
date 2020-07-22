@@ -35,19 +35,29 @@
   paste0("user-", tolower(user_name))
 }
 
-#' Foldername check
+#' Check folder name
 #'
-#' For empty and can not contain underscores and dashes
+#' It should match the regex \code{"^[a-z0-9-]{0,55}[a-z0-9]$"}.
+#' But we give human readable messages
 #'
 #' @param name foldername
 #'
 #' @noRd
 .check_folder_name <- function(name) {
-  if (rlang::is_empty(name)) {
-    stop("Folder name can't be empty", call. = FALSE)
+  stopifnot(is.character(name), length(name) == 1)
+  if (nchar(name) == 0) {
+    stop("Folder name cannot be empty.", call. = FALSE)
   }
-  if (grepl("[/_-]", name)) {
-    stop("Folder name can't contain any of [/_-]", call. = FALSE)
+  if (nchar(name) > 56) {
+    stop("Folder name has max 56 characters.", call. = FALSE)
+  }
+  if (grepl("-$", name, perl = TRUE)) {
+    stop("Folder name cannot end with a '-'.", call. = FALSE)
+  }
+  if (!grepl("^[a-z0-9-]{0,55}[a-z0-9]$", name, perl = TRUE)) {
+    stop("Folder name must consist of lowercase letters and numbers.",
+      call. = FALSE
+    )
   }
 }
 
@@ -59,10 +69,19 @@
 #'
 #' @noRd
 .check_workspace_name <- function(name) {
-  if (rlang::is_empty(name)) {
-    stop("Workspace name can't be empty", call. = FALSE)
+  stopifnot(is.character(name), length(name) == 1)
+  if (nchar(name) == 0) {
+    stop("Workspace name cannot be empty.", call. = FALSE)
   }
-  if (grepl("/", name)) {
-    stop("Workspace name can't contain a '/'", call. = FALSE)
+  if (nchar(name) > 1018) {
+    stop("Workspace name cannot be longer than 1018 characters.", call. = FALSE)
+  }
+  if (!grepl("^[a-zA-Z0-9_:-]+$", name, perl = TRUE)) {
+    stop(paste0(
+      "Valid workspace name characters are ",
+      "ASCII letters, digits, '_', '-' and ':'"
+    ),
+    call. = FALSE
+    )
   }
 }

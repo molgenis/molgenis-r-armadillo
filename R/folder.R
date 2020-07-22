@@ -1,21 +1,33 @@
 #' Create a folder for a variable collection
 #'
-#' @param folder_name name of the folder to create variable collection
+#' @param folder_name The name of the folder to create. The folder name
+#' \itemize{
+#'   \item{cannot be empty.}
+#'   \item{must be no more than 56 characters.}
+#'   \item{cannot end with a \code{-}.}
+#'   \item{must consist of lowercase letters and numbers.}
+#'   }
+#' @return TRUE if successful
 #'
 #' @importFrom aws.s3 put_bucket
 #'
 #' @examples
 #' \dontrun{
-#' armadillo.create_folder(folder_name = "gecko")
+#' armadillo.create_folder("gecko")
 #' }
 #'
 #' @export
 armadillo.create_folder <- function(folder_name) { # nolint
   .check_folder_name(folder_name)
 
-  aws.s3::put_bucket(.to_shared_bucket_name(folder_name),
-    use_https = getOption("MolgenisArmadillo.s3.use_https")
+  success <- aws.s3::put_bucket(.to_shared_bucket_name(folder_name),
+    use_https = .use_https()
   )
+
+  if (success) {
+    message(paste0("Created folder '", folder_name, "'"))
+  }
+  invisible(success)
 }
 
 #' List all folders
@@ -29,7 +41,7 @@ armadillo.create_folder <- function(folder_name) { # nolint
 #'
 #' @export
 armadillo.list_folders <- function() { # nolint
-  .get_shared_buckets()
+  .get_buckets("")
 }
 
 #' Delete folder
@@ -59,7 +71,21 @@ armadillo.delete_folder <- function(folder_name) { # nolint
 #'
 #' @export
 armadillo.list_user_folders <- function() { # nolint
-  .get_user_buckets()
+  .get_buckets("user-")
+}
+
+#' List the shared folders
+#'
+#' @return list of shared folders
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.list_shared_folders()
+#' }
+#'
+#' @export
+armadillo.list_shared_folders <- function() { # nolint
+  .get_buckets("shared-")
 }
 
 #' Deletes a user's folder from the Users bucket
@@ -84,27 +110,9 @@ armadillo.delete_user_folder <- function(user_name) { # nolint
 .delete_bucket <- function(bucket_name) {
   .check_if_bucket_exists(bucket_name)
   aws.s3::delete_bucket(bucket_name,
-    use_https = getOption("MolgenisArmadillo.s3.use_https")
+    use_https = .use_https()
   )
   message(paste0("Deleted folder '", .to_readable_name(bucket_name), "'"))
-}
-
-#' Get shared buckets
-#'
-#' @return all shared buckets
-#'
-#' @noRd
-.get_shared_buckets <- function() {
-  .get_buckets("shared-")
-}
-
-#' Get the user buckets
-#'
-#' @return user buckets
-#'
-#' @noRd
-.get_user_buckets <- function() {
-  .get_buckets("user-")
 }
 
 #' Get buckets
@@ -113,12 +121,10 @@ armadillo.delete_user_folder <- function(user_name) { # nolint
 #'
 #' @noRd
 .get_buckets <- function(prefix) {
-  buckets <- aws.s3::bucketlist(
-    use_https = getOption("MolgenisArmadillo.s3.use_https")
-  )
+  buckets <- aws.s3::bucketlist(use_https = .use_https())
   bucket_names <- buckets[["Bucket"]]
-  shared_buckets <- bucket_names[startsWith(bucket_names, prefix)]
-  sapply(shared_buckets,
+  filtered_buckets <- bucket_names[startsWith(bucket_names, prefix)]
+  sapply(filtered_buckets,
     function(name) gsub(prefix, "", name),
     USE.NAMES = FALSE
   )

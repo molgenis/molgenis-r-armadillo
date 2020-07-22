@@ -11,6 +11,10 @@ armadillo.delete_workspace(folder, name)
 
 \item{name}{workspace name}
 }
+\value{
+TRUE if successful, otherwise an object of class aws_error details
+if not.
+}
 \description{
 Delete workspace
 }

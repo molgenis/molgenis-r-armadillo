@@ -18,34 +18,36 @@
 #'
 #' @export
 armadillo.create_workspace <- function(folder, name, ...) { # nolint
-  # TODO check dataset not empty
-  # TODO multiple datasets
+  if (length(list(...)) == 0) {
+    stop("No tables were provided to upload.")
+  }
   .check_workspace_name(name)
   bucket_name <- .to_shared_bucket_name(folder)
   .check_if_bucket_exists(bucket_name)
 
-  aws.s3::s3save(...,
+  result <- aws.s3::s3save(...,
     object = .to_file_name(name),
     bucket = bucket_name,
     opts = c(
-      use_https = getOption("MolgenisArmadillo.s3.use_https")
+      use_https = .use_https()
     )
   )
 
-  message(paste0("Created workspace '", name, "'"))
+  if (isTRUE(result)) {
+    message(paste0("Created workspace '", name, "'."))
+  }
+  invisible(result)
 }
 
 #' List the workspaces
 #'
-#' @param folder the folder in which the workspaces are located
+#' @param folder the shared folder in which the workspaces are located
 #'
 #' @importFrom aws.s3 get_bucket
 #'
 #' @examples
 #' \dontrun{
-#' armadillo.list_workspaces(
-#'   folder = "gecko"
-#' )
+#' armadillo.list_workspaces("gecko")
 #' }
 #'
 #' @export
@@ -54,7 +56,7 @@ armadillo.list_workspaces <- function(folder) { # nolint
   .check_if_bucket_exists(bucket_name)
 
   objects <- aws.s3::get_bucket(bucket_name,
-    use_https = getOption("MolgenisArmadillo.s3.use_https")
+    use_https = .use_https()
   )
   object_names <- lapply(objects, function(obj) obj$Key)
   unlist(object_names, use.names = FALSE)
@@ -66,6 +68,8 @@ armadillo.list_workspaces <- function(folder) { # nolint
 #'
 #' @param folder folder to delete the workspace from
 #' @param name workspace name
+#' @return TRUE if successful, otherwise an object of class aws_error details
+#' if not.
 #'
 #' @importFrom aws.s3 delete_object
 #'
@@ -82,12 +86,16 @@ armadillo.delete_workspace <- function(folder, name) { # nolint
   bucket_name <- .to_shared_bucket_name(folder)
   .check_if_workspace_exists(bucket_name, name)
 
-  aws.s3::delete_object(
+  result <- aws.s3::delete_object(
     object = .to_file_name(name),
     bucket = bucket_name,
-    use_https = getOption("MolgenisArmadillo.s3.use_https")
+    use_https = .use_https()
   )
-  message(paste0("Deleted workspace '", name, "'"))
+
+  if (isTRUE(result)) {
+    message(paste0("Deleted workspace '", name, "'."))
+  }
+  invisible(result)
 }
 
 #' Copy workspace
@@ -95,6 +103,7 @@ armadillo.delete_workspace <- function(folder, name) { # nolint
 #' @param folder study or other variable collection
 #' @param name specific workspace for copy action
 #' @param new_folder new location of study or other variable collection
+#' @param new_name name of the copy, defaults to name
 #'
 #' @importFrom aws.s3 copy_object
 #'
@@ -108,25 +117,32 @@ armadillo.delete_workspace <- function(folder, name) { # nolint
 #' }
 #'
 #' @export
-armadillo.copy_workspace <- function(folder, name, new_folder) { # nolint
-  bucket_name <- .to_shared_bucket_name(folder)
-  new_bucket_name <- .to_shared_bucket_name(new_folder)
-  .check_if_workspace_exists(bucket_name, name)
-  .check_if_bucket_exists(new_bucket_name)
+armadillo.copy_workspace <- # nolint
+  function(folder, name, new_folder, new_name = name) {
+    if (folder == new_folder && name == new_name) {
+      stop("Cannot copy workspace onto itself.", call. = FALSE)
+    }
+    bucket_name <- .to_shared_bucket_name(folder)
+    new_bucket_name <- .to_shared_bucket_name(new_folder)
+    .check_if_workspace_exists(bucket_name, name)
+    .check_if_bucket_exists(new_bucket_name)
 
-  aws.s3::copy_object(
-    from_object = .to_file_name(name),
-    to_object = .to_file_name(name),
-    from_bucket = bucket_name,
-    to_bucket = new_bucket_name,
-    use_https = getOption("MolgenisArmadillo.s3.use_https")
-  )
+    result <- aws.s3::copy_object(
+      from_object = .to_file_name(name),
+      to_object = .to_file_name(new_name),
+      from_bucket = bucket_name,
+      to_bucket = new_bucket_name,
+      use_https = .use_https()
+    )
 
-  message(paste0(
-    "Copied workspace '", name, "' to folder '",
-    new_folder, "'"
-  ))
-}
+    if (isTRUE(result)) {
+      message(paste0(
+        "Copied workspace '", name, "' to folder '",
+        new_folder, "'."
+      ))
+    }
+    invisible(result)
+  }
 
 #' Load workspace based upon study folder and tableset
 #'
@@ -134,6 +150,7 @@ armadillo.copy_workspace <- function(folder, name, new_folder) { # nolint
 #' @param name tableset containing the subset
 #' @param env The environment in which you want to load the objects in the
 #' workspace. Default is the parent.frame() from which the function is called.
+#' @return NULL, invisibly
 #'
 #' @importFrom aws.s3 s3load
 #'
@@ -159,7 +176,7 @@ armadillo.load_workspace <- function(folder, name, env = parent.frame()) { # nol
   aws.s3::s3load(
     object = .to_file_name(name),
     bucket = bucket_name,
-    use_https = getOption("MolgenisArmadillo.s3.use_https"),
+    use_https = .use_https(),
     envir = env
   )
 }
@@ -185,6 +202,6 @@ armadillo.move_workspace <- function(folder, name, new_folder) { # nolint
   suppressMessages(armadillo.delete_workspace(folder, name))
   message(paste0(
     "Moved workspace '", name, "' to folder '",
-    new_folder, "'"
+    new_folder, "'."
   ))
 }
