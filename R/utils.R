@@ -11,7 +11,7 @@
   if (!exists) {
     stop(paste0(
       "Folder '", .to_readable_name(bucket_name),
-      "' doesnot exist."
+      "' does not exist."
     ), call. = FALSE)
   }
 }
