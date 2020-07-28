@@ -59,9 +59,8 @@ armadillo.list_workspaces <- function(folder) { # nolint
     use_https = .use_https()
   )
   object_names <- lapply(objects, function(obj) obj$Key)
-  unlist(object_names, use.names = FALSE)
-
-  # TODO strip .RData from file names?
+  workspace <- unlist(object_names, use.names = FALSE)
+  tools::file_path_sans_ext(workspace)
 }
 
 #' Delete workspace

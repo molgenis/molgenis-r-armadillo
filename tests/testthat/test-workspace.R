@@ -78,7 +78,7 @@ test_that("armadillo.list_workspaces lists the workspaces in a folder", {
     "MolgenisArmadillo:::.use_https" = mock(FALSE, cycle = TRUE)
   )
 
-  expect_equal(result, c("patient.RData", "test.RData"))
+  expect_equal(result, c("patient", "test"))
   expect_args(get_bucket, 1,
     bucket = "shared-example",
     use_https = FALSE
