@@ -55,4 +55,5 @@ Now you can create a shared folder and upload datasets to it
 library(datasets)
 armadillo.create_folder("shared-folder")
 armadillo.create_workspace("shared-folder", "test-data", iris, iris3)
+armadillo.list_workspaces("shared-folder")
 ```
