@@ -55,9 +55,10 @@ armadillo.assume_role_with_web_identity <- # nolint
       WebIdentityToken = token,
       Version = "2011-06-15"
     )
+
     response <- httr::POST(url = server, query = query)
     httr::stop_for_status(response, "assume role on S3 server")
-    content <- xml2::xml_ns_strip(httr::content(response))
+    content <- xml2::xml_ns_strip(httr::content(response, encoding = "UTF-8"))
 
     credentials <- list(
       AccessKeyId =
@@ -67,6 +68,7 @@ armadillo.assume_role_with_web_identity <- # nolint
       SessionToken =
         xml2::xml_text(xml2::xml_find_first(content, "//SessionToken"))
     )
+
     if (isTRUE(use)) {
       aws.iam::set_credentials(credentials)
       use_https <- urltools::scheme(server) == "https"
