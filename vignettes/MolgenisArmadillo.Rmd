@@ -36,7 +36,6 @@ the ID provider.
 armadillo.login("https://armadillo.dev.molgenis.org",
       "https://armadillo-minio.dev.molgenis.org")
 #> [1] "We're opening a browser so you can log in with code P5Z8SB"
-#> No encoding supplied: defaulting to UTF-8.
 ```
 
 It will create a session and store the credentials in the environment:
