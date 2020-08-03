@@ -63,4 +63,6 @@ armadillo.create_folder("shared-folder")
 #> Created folder 'shared-folder'
 armadillo.create_workspace("shared-folder", "test-data", iris, iris3)
 #> Created workspace 'test-data'.
+armadillo.list_workspaces("shared-folder")
+#> [1] "test-data"
 ```
