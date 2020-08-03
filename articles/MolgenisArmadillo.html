@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MolgenisArmadillo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
       </span>
     </div>
 
@@ -95,29 +95,30 @@
 <h1 class="hasAnchor">
 <a href="#login" class="anchor"></a>Login</h1>
 <p>In order to access the files as a data manager, you need to log in. The login method needs the URLs of the Armadillo server and the MinIO server. It will open a browser window where you can identify yourself with the ID provider.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="../reference/login.html">login</a></span>(<span class="st">"https://armadillo.dev.molgenis.org"</span>,</a>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="../reference/armadillo.login.html">armadillo.login</a></span>(<span class="st">"https://armadillo.dev.molgenis.org"</span>,</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2">      <span class="st">"https://armadillo-minio.dev.molgenis.org"</span>)</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">#&gt; [1] "We're opening a browser so you can log in with code 46F6RQ"</span></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co">#&gt; No encoding supplied: defaulting to UTF-8.</span></a></code></pre></div>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">#&gt; [1] "We're opening a browser so you can log in with code P5Z8SB"</span></a></code></pre></div>
 <p>It will create a session and store the credentials in the environment:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Sys.getenv.html">Sys.getenv</a></span>(<span class="st">"AWS_S3_ENDPOINT"</span>)</a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co">#&gt; [1] "armadillo-minio.dev.molgenis.org"</span></a>
 <a class="sourceLine" id="cb3-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/Sys.getenv.html">Sys.getenv</a></span>(<span class="st">"AWS_ACCESS_KEY_ID"</span>)</a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co">#&gt; [1] "E2H8C7V870MGX82LOO78"</span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co">#&gt; [1] "YEUVNK4Z3BJCYV16DE3Y"</span></a>
 <a class="sourceLine" id="cb3-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/base/Sys.getenv.html">Sys.getenv</a></span>(<span class="st">"AWS_SECRET_ACCESS_KEY"</span>)</a>
-<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co">#&gt; [1] "CdSZFKMZhbp9eZh4TYEdddbk3RrTuzyI4LrZtyLZ"</span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co">#&gt; [1] "YM+dI2GlmlCjVMYZm5AKP1rUskV2bF+KnN7zVvSC"</span></a>
 <a class="sourceLine" id="cb3-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/Sys.getenv.html">Sys.getenv</a></span>(<span class="st">"AWS_SESSION_TOKEN"</span>)</a>
-<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co">#&gt; [1] "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJFMkg4QzdWODcwTUdYODJMT083OCIsImFwcGxpY2F0aW9uSWQiOiI3ODliOTQxNy1jYTJiLTQ3MDctYWI5Yy00NzEzNzNkOTFiYTAiLCJhdF9oYXNoIjoibU83bVZZdXMwZXpwOTBqdHRsY1o1QSIsImF1ZCI6Ijc4OWI5NDE3LWNhMmItNDcwNy1hYjljLTQ3MTM3M2Q5MWJhMCIsImF1dGhlbnRpY2F0aW9uVHlwZSI6IlBBU1NXT1JEIiwiZW1haWwiOiJmbGV1ckBrZWxwaW4ubmwiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoiMTU5NDg0MzQ0MSIsImlhdCI6MTU5NDg0MjU0MSwiaXNzIjoiaHR0cHM6Ly9hdXRoLm1vbGdlbmlzLm9yZyIsInBvbGljeSI6InJlYWR3cml0ZSIsInByZWZlcnJlZF91c2VybmFtZSI6ImZsZXVyIiwicm9sZXMiOlsiU1UiXSwic3ViIjoiODdmZjcyMTEtNTA1MC00NTY1LTkxMzctZjI1NDcyMDdjODUyIn0.3ZIZxm1K99m4zor96QVNUUP0TmRZbqNqvCZV_SsABaL0LlPzEyp1bXfBAfft-iMGu7IlAZxiXKeMkonNQFPpXQ"</span></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co">#&gt; [1] "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJZRVVWTks0WjNCSkNZVjE2REUzWSIsImFwcGxpY2F0aW9uSWQiOiI3ODliOTQxNy1jYTJiLTQ3MDctYWI5Yy00NzEzNzNkOTFiYTAiLCJhdF9oYXNoIjoiT2V6MnZ3MDhrY3JneVVkeU54dDd6dyIsImF1ZCI6Ijc4OWI5NDE3LWNhMmItNDcwNy1hYjljLTQ3MTM3M2Q5MWJhMCIsImF1dGhlbnRpY2F0aW9uVHlwZSI6IlBBU1NXT1JEIiwiZW1haWwiOiJmbGV1ckBrZWxwaW4ubmwiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjoiMTU5NTAwMzQ3OSIsImlhdCI6MTU5NTAwMjU3OSwiaXNzIjoiaHR0cHM6Ly9hdXRoLm1vbGdlbmlzLm9yZyIsInBvbGljeSI6InJlYWR3cml0ZSIsInByZWZlcnJlZF91c2VybmFtZSI6ImZsZXVyIiwicm9sZXMiOlsiU1UiXSwic3ViIjoiODdmZjcyMTEtNTA1MC00NTY1LTkxMzctZjI1NDcyMDdjODUyIn0.1dEqEYyfbVTjSl504VZ9B65Te1ntF03cGCRnBT8DUs1084ABSQI4phycdS4MCbKuQKBA7xI9PJ39TXhDyEbyZg"</span></a>
 <a class="sourceLine" id="cb3-9" data-line-number="9"><span class="kw"><a href="https://rdrr.io/r/base/options.html">getOption</a></span>(<span class="st">"MolgenisArmadillo.s3.use_https"</span>)</a>
 <a class="sourceLine" id="cb3-10" data-line-number="10"><span class="co">#&gt; [1] TRUE</span></a>
 <a class="sourceLine" id="cb3-11" data-line-number="11"><span class="kw"><a href="https://rdrr.io/r/base/options.html">getOption</a></span>(<span class="st">"cloudyr.aws.default_region"</span>)</a>
 <a class="sourceLine" id="cb3-12" data-line-number="12"><span class="co">#&gt; [1] ""</span></a></code></pre></div>
 <p>Now you can create a shared folder and upload datasets to it</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(datasets)</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw"><a href="../reference/create_folder.html">create_folder</a></span>(<span class="st">"shared.folder"</span>)</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt; [1] TRUE</span></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="kw"><a href="../reference/create_workspace.html">create_workspace</a></span>(<span class="st">"shared.folder"</span>, <span class="st">"test-data"</span>, iris, iris3)</a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt; Created workspace 'test-data'</span></a></code></pre></div>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw"><a href="../reference/armadillo.create_folder.html">armadillo.create_folder</a></span>(<span class="st">"shared-folder"</span>)</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt; Created folder 'shared-folder'</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="kw"><a href="../reference/armadillo.create_workspace.html">armadillo.create_workspace</a></span>(<span class="st">"shared-folder"</span>, <span class="st">"test-data"</span>, iris, iris3)</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt; Created workspace 'test-data'.</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="kw"><a href="../reference/armadillo.list_workspaces.html">armadillo.list_workspaces</a></span>(<span class="st">"shared-folder"</span>)</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co">#&gt; [1] "test-data"</span></a></code></pre></div>
 </div>
   </div>
 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • MolgenisArmadillo</title>
+<title>Get ID Token — armadillo.get_token • MolgenisArmadillo</title>
 
 
 <!-- jquery -->
@@ -35,7 +35,9 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Get ID Token — armadillo.get_token" />
+<meta property="og:description" content="Get an ID token to log in on an Armadillo server or its MinIO filestore." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -54,7 +56,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -104,114 +106,40 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Get ID Token</h1>
+    <small class="dont-index">Source: <a href='https://github.com/molgenis/molgenis-r-armadillo/blob/master/R/auth.R'><code>R/auth.R</code></a></small>
+    <div class="hidden name"><code>armadillo.get_token.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Get an ID token to log in on an Armadillo server or its MinIO filestore.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>armadillo.get_token</span>(<span class='no'>server</span>)</pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="armadillo.copy_workspace.html">armadillo.copy_workspace()</a></code> </p>
-        </td>
-        <td><p>Copy workspace</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="armadillo.create_folder.html">armadillo.create_folder()</a></code> </p>
-        </td>
-        <td><p>Create a folder for a variable collection</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="armadillo.create_workspace.html">armadillo.create_workspace()</a></code> </p>
-        </td>
-        <td><p>Combines tables in an .Rdata file and uploads them to a folder.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="armadillo.delete_folder.html">armadillo.delete_folder()</a></code> </p>
-        </td>
-        <td><p>Delete folder</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="armadillo.delete_user_folder.html">armadillo.delete_user_folder()</a></code> </p>
-        </td>
-        <td><p>Deletes a user's folder from the Users bucket</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="armadillo.delete_workspace.html">armadillo.delete_workspace()</a></code> </p>
-        </td>
-        <td><p>Delete workspace</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="armadillo.list_folders.html">armadillo.list_folders()</a></code> </p>
-        </td>
-        <td><p>List all folders</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="armadillo.list_shared_folders.html">armadillo.list_shared_folders()</a></code> </p>
-        </td>
-        <td><p>List the shared folders</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="armadillo.list_user_folders.html">armadillo.list_user_folders()</a></code> </p>
-        </td>
-        <td><p>List the user folders</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="armadillo.list_workspaces.html">armadillo.list_workspaces()</a></code> </p>
-        </td>
-        <td><p>List the workspaces</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="armadillo.load_workspace.html">armadillo.load_workspace()</a></code> </p>
-        </td>
-        <td><p>Load workspace based upon study folder and tableset</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="armadillo.login.html">armadillo.login()</a></code> </p>
-        </td>
-        <td><p>Login</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="armadillo.move_workspace.html">armadillo.move_workspace()</a></code> </p>
-        </td>
-        <td><p>Move the workspace</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>server</th>
+      <td><p>the URL of the Armadillo server</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>The ID token string</p>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
     </ul>
+
   </div>
 </div>
 
