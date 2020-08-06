@@ -2,15 +2,15 @@
 % Please edit documentation in R/folder.R
 \name{armadillo.list_folders}
 \alias{armadillo.list_folders}
-\title{List all folders}
+\title{List the shared folders}
 \usage{
 armadillo.list_folders()
 }
 \value{
-list all folders (user and shared)
+list of shared folders
 }
 \description{
-List all folders
+List the shared folders
 }
 \examples{
 \dontrun{
