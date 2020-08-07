@@ -29,7 +29,8 @@ armadillo.create_workspace <- function(folder, name, ...) { # nolint
     object = .to_file_name(name),
     bucket = bucket_name,
     opts = c(
-      use_https = .use_https()
+      use_https = .use_https(),
+      show_progress = interactive()
     )
   )
 

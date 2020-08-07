@@ -48,7 +48,7 @@ test_that("armadillo.create_workspace creates a workspace", {
     d,
     object = "data.RData",
     bucket = "shared-example",
-    opts = c(use_https = FALSE)
+    opts = c(use_https = FALSE, show_progress = interactive())
   )
 })
 
