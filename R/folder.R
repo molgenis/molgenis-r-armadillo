@@ -30,20 +30,6 @@ armadillo.create_folder <- function(folder_name) { # nolint
   invisible(success)
 }
 
-#' List all folders
-#'
-#' @return list all folders (user and shared)
-#'
-#' @examples
-#' \dontrun{
-#' armadillo.list_folders()
-#' }
-#'
-#' @export
-armadillo.list_folders <- function() { # nolint
-  .get_buckets("")
-}
-
 #' Delete folder
 #'
 #' A folder represents usually a study or collection of variables
@@ -80,11 +66,11 @@ armadillo.list_user_folders <- function() { # nolint
 #'
 #' @examples
 #' \dontrun{
-#' armadillo.list_shared_folders()
+#' armadillo.list_folders()
 #' }
 #'
 #' @export
-armadillo.list_shared_folders <- function() { # nolint
+armadillo.list_folders <- function() { # nolint
   .get_buckets("shared-")
 }
 
