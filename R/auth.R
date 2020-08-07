@@ -76,7 +76,12 @@ armadillo.assume_role_with_web_identity <- # nolint
         MolgenisArmadillo.s3.use_https = use_https,
         cloudyr.aws.default_region = ""
       )
-      Sys.setenv(AWS_S3_ENDPOINT = urltools::domain(server))
+      s3_endpoint <- urltools::domain(server)
+      port <- urltools::port(server)
+      if (!is.na(port)) {
+        s3_endpoint <- paste0(s3_endpoint, ":", port)
+      }
+      Sys.setenv(AWS_S3_ENDPOINT = s3_endpoint)
     }
     invisible(credentials)
   }
