@@ -6,15 +6,18 @@ Authors@R:
     c(person(given = "Sido",
              family = "Haakma",
              role = c("aut", "cre"),
-             email = "s.haakma@rug.nl"),
+             email = "s.haakma@rug.nl",
+             comment = c(ORCID = "0000-0003-1278-9144")),
       person(given = "Tommy",
              family = "de Boer",
              role = c("aut"),
-             email = "t.de.boer01@umcg.nl"),
+             email = "t.de.boer01@umcg.nl",
+             comment = c(ORCID = "0000-0002-4492-7225")),
       person(given = "Fleur",
              family = "Kelpin",
              role = c("aut"),
-             email = "f.kelpin@umcg.nl"))
+             email = "f.kelpin@umcg.nl"),
+             comment = c(ORCID = "0000-0003-1527-5130")))
 Depends:
     R (>= 3.6)
 Imports:
