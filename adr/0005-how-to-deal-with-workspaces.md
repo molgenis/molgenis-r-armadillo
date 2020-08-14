@@ -1,4 +1,4 @@
-# 5. How to deal with shared workspaces
+# 5. How to deal with workspaces
 
 Date: 2020-08-12
 
@@ -67,14 +67,15 @@ Within the Armadillo we have the ability to nest the dictionaries. Which makes i
     - non-rep
     - yearly-rep
 
-Three levels can be distingueshed:
-1. The data scope level
-   Is it all the data or a specific study. On this level we can manage permissions.
-2. Workspace level
-   The second level contains the collection of data.frame or tables you want to expose. This usually contains the version of the model and data release as well.
-3. The objects that contain the actual data. 
-   You can interpreter this level as the data level containing tables that can be queried.
+Three levels can be distinguished:
+### 1. Folder level
+This can be all the data or a study specific data. On this level we can manage permissions.
+### 2. Workspace level
+The second level contains the collection of data.frame or tables you want to expose. This usually contains the version of the model and data release as well.
+### 3. Table level 
+You can interpret this level as the data level containing tables that can be queried.
   
 ## Consequences
 - You can only manage permissions on the toplevel. Which results in a folder per study or cohort.
 - Versioning is not implemented in the tables. Which results in minimal impact for the researcher to upgrade to a new model or data version
+- You cannot load different version of the same data in one R session.
