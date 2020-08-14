@@ -48,8 +48,8 @@ In the RData solution all the data in the private and the analysis environment i
 - You can implement resources fairly easy in `.RData` files
 
 #### Disadvantages
-- It uses large ammounts per user of data for large files. Which means you can not work with a large number of users at the same time.
-- Logging in takes a lot of time, because workspaces are `.RData` files and contain all the tables. Tables need to be loaded to be checked.
+- It uses large amounts of data per user when loading large files. Which means you can not work with a large number of users at the same time on the Armadillo.
+- Logging in takes a lot of time, because workspaces are `.RData` files and contain all the tables. Tables need to be loaded to be checked by the DataSHIELD package.
 
 ### Managing data in `.parquet` files
 Managing data in `.parquet` files allows us to deal with larger data more efficiently. This changes the concepts a little within our file storage (minio). We already work with buckets as described above. Parquet does not allow to have more than one data.frame in a parquet file. The parquet files are more or less substitutes for RData files. The logical structure is the same, however the technical structure is somewhat different.
@@ -67,19 +67,20 @@ Managing data in `.parquet` files allows us to deal with larger data more effici
     - yearly_rep.parquet
 
 #### Make the data available
-When you login to the Armadillo you specify which `.parquet` files you want to have available in your analysis environment. 
+When you login to the Armadillo you specify which the folder from which you want to load `.parquet` files.
 
 `workspace=gecko-diabetes/1_0_core_1_1&workspace=gecko-all/1_0_outcome_1_1`
 
-Specifying these workspaces allows you to assign all the columns that are available in the data frames that are in the `.parquet` files.
-This is not loading the workspaces in memory, but puts the files on the RServer instance.
+Specifying these workspaces allows you to assign all the columns that are available in the data.frames that are in the `.parquet` files.
+This is not loading the workspaces in memory, but loads them when you assign the tables. At login time you only check wether you may access the folders.
 
 #### Assigning the data
 The difference with the RData solution is that the files will not be loaded in memory initially only when the data is assigned. More specifically only the selected data will be assigned. You do not have a copy of the whole data in memory in a private environment.
 
 #### Advantages
-- You are able to delay loading the data in the R environment which makes it faster to login and assign data
-- When you specify specific columns from the dataset it is highly efficient with selecting the columns and loading it into the R environment
+- You are able to delay loading the data in the R environment, which makes it faster to login and assign data
+- When you specify specific columns from the dataset it is highly efficient to load the data in the R environment
+- Loading and saving parquet files is faster. So data handling actions will be more efficient.
 
 #### Disadvantages
 - An extra dependency in the package
@@ -92,3 +93,5 @@ We are going to use `.parquet` for table-like data and `.RData` for more complex
 - Logging in will be a lot faster 
 - Assigning data will be a lot faster
 - Creating datasets as a datamanager will be a lot faster
+- You can update single tables with `.parquet`
+- In MOLGENIS you can build a parquet exporter fairly easy
