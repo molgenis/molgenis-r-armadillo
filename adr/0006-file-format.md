@@ -84,11 +84,13 @@ The difference with the RData solution is that the files will not be loaded in m
 
 #### Disadvantages
 - An extra dependency in the package
+- More risk when converting that is not R-native (think of dates, number of significant bits, etc.)
 
 ## Decision
-We are going to use `.parquet` for table-like data and `.RData` for more complex data such as *resources* (used in Opal).
+We are going to use `.parquet` for table-like data and `.RData` for more complex data such as *resources* (used in Opal). We are going to use the parquet files in the Armadillo package but you do not have to work with that format on the client side.
 
 ## Consequences
+- Restriction on table names (depending on Minio file restrictions)
 - `.parquet` files require a package to be added to the depenency list
 - Logging in will be a lot faster 
 - Assigning data will be a lot faster
