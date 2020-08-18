@@ -45,7 +45,7 @@ In the RData solution all the data in the private and the analysis environment i
 
 #### Advantages
 - You can use native `R` components to get the data available for your analysis
-- You can implement resources fairly easy in `.RData` files
+- You can implement resources fairly easy in `.RData` or `rds` files
 
 #### Disadvantages
 - It uses large amounts of data per user when loading large files. Which means you can not work with a large number of users at the same time on the Armadillo.
@@ -67,9 +67,13 @@ Managing data in `.parquet` files allows us to deal with larger data more effici
     - yearly_rep.parquet
 
 #### Make the data available
-When you login to the Armadillo you specify which the folder from which you want to load `.parquet` files.
+When you login you only specify the tables you want to load. You need specify the fully quelified names of the tables you want to load:
 
-`workspace=gecko-diabetes/1_0_core_1_1&workspace=gecko-all/1_0_outcome_1_1`
+`folder/workspace/table.parquet`
+
+For example:
+
+`gecko-all/1_0-core-1_1/non-rep.parquet`
 
 Specifying these workspaces allows you to assign all the columns that are available in the data.frames that are in the `.parquet` files.
 This is not loading the workspaces in memory, but loads them when you assign the tables. At login time you only check wether you may access the folders.
@@ -77,7 +81,11 @@ This is not loading the workspaces in memory, but loads them when you assign the
 #### Assigning the data
 The difference with the RData solution is that the files will not be loaded in memory initially only when the data is assigned. More specifically only the selected data will be assigned. You do not have a copy of the whole data in memory in a private environment.
 
+#### Storing complex structures
+Another format to store complex structures is `rds`. The `rds` format is capable to store 1 object in 1 file. You can directly see what is in the file. With `RData` you need to load the file when you want to know what it is containing. In `rds` you see directly what the contents is. 
+
 #### Advantages
+- You do not need to specify the workspace(s) or table(s) during login which makes it faster
 - You are able to delay loading the data in the R environment, which makes it faster to login and assign data
 - When you specify specific columns from the dataset it is highly efficient to load the data in the R environment
 - Loading and saving parquet files is faster. So data handling actions will be more efficient.
@@ -87,13 +95,15 @@ The difference with the RData solution is that the files will not be loaded in m
 - More risk when converting that is not R-native (think of dates, number of significant bits, etc.)
 
 ## Decision
-We are going to use `.parquet` for table-like data and `.RData` for more complex data such as *resources* (used in Opal). We are going to use the parquet files in the Armadillo package but you do not have to work with that format on the client side.
+The principle we are going implement is to store 1 object per file. Which means that for table-like object we are going to use `.parquet`and for more complex structures we are going to use `.rds` (such as *resources* used in Opal). 
+We are going to use the parquet files in the Armadillo package. As data manager you do not *have* to work with the parquet format.
 
 ## Consequences
 - Restriction on table names (depending on Minio file restrictions)
 - `.parquet` files require a package to be added to the depenency list
-- Logging in will be a lot faster 
+- You do not need to specify workspace(s) or table(s) during login
 - Assigning data will be a lot faster
 - Creating datasets as a datamanager will be a lot faster
 - You can update single tables with `.parquet`
-- In MOLGENIS you can build a parquet exporter fairly easy
+- In MOLGENIS you can build a parquet exporter fairly easy, usefull when using MOLGENIS as data provider
+- Users work with fully qualified table names
