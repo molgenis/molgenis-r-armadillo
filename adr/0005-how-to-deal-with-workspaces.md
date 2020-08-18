@@ -8,7 +8,7 @@ Accepted
 
 ## Context
 
-In LifeCycle we are a 2 step approach to share the data within the LifeCycle project.
+In LifeCycle we use a 2 step approach to share the data within the LifeCycle project.
 
 **Step 1** - Datasets containing all the harmonised data within LifeCycle
 - lc_core_gecko_1_1 - *projects in Opal, workspaces in the Armadillo*
@@ -49,7 +49,7 @@ In Opal you need both datasets.
 These views do not contain the data, only the representation of the variables. In Opal you can manage permissions per view, which makes it possible to put all the tables and views related to one dictionary version in one project.
 
 ## Decision
-Within the Armadillo we have the ability to nest the dictionaries. Which makes it ppossible to specify the dictionary version and data version on a sublevel. The structure in the Armadillo will be used in the following manner:
+Within the Armadillo we have the ability to nest the dictionaries. Which makes it possible to specify the dictionary version and data version on a sublevel. The structure in the Armadillo will be used in the following manner:
 
 - gecko-all 
   - 2_1-core-1_0
