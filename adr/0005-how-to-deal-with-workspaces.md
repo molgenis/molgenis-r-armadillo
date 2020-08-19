@@ -8,7 +8,7 @@ Accepted
 
 ## Context
 
-In LifeCycle we are a 2 step approach to share the data within the LifeCycle project.
+In LifeCycle we use a 2 step approach to share the data within the LifeCycle project.
 
 **Step 1** - Datasets containing all the harmonised data within LifeCycle
 - lc_core_gecko_1_1 - *projects in Opal, workspaces in the Armadillo*
