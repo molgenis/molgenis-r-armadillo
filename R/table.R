@@ -25,15 +25,14 @@ armadillo.upload_table <- function(project, folder, table, name = NULL) {
     name <- deparse(substitute(table))
   }
   bucket_name <- .to_shared_bucket_name(project)
-
+  .check_fully_qualified_table_name(folder, name)
+  
   file <- tempfile()
   on.exit(unlink(file))
-  
   message("Compressing table...")
   arrow::write_parquet(table, file)
 
   full_name <- paste0(folder, "/", name)
-
   result <- aws.s3::put_object(file = file,
                                object = paste0(full_name, ".parquet"),
                                bucket = bucket_name,
@@ -142,6 +141,7 @@ armadillo.copy_table <- # nolint
     new_bucket_name <- .to_shared_bucket_name(new_project)
     .check_if_table_exists(bucket_name, folder, name)
     .check_if_bucket_exists(new_bucket_name)
+    .check_fully_qualified_table_name(new_folder, new_name)
 
     result <- aws.s3::copy_object(
       from_object = .to_table_name(folder, name),
