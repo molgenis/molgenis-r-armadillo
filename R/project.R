@@ -81,9 +81,13 @@ armadillo.list_projects <- function() { # nolint
 .get_buckets <- function(prefix) {
   buckets <- aws.s3::bucketlist(use_https = .use_https())
   bucket_names <- buckets[["Bucket"]]
-  filtered_buckets <- bucket_names[startsWith(bucket_names, prefix)]
-  sapply(filtered_buckets,
-    function(name) gsub(prefix, "", name),
-    USE.NAMES = FALSE
-  )
+  if (length(bucket_names) == 0) {
+    NULL
+  }else{
+    filtered_buckets <- bucket_names[startsWith(bucket_names, prefix)]
+    sapply(filtered_buckets,
+           function(name) gsub(prefix, "", name),
+           USE.NAMES = FALSE
+    )
+  }
 }
