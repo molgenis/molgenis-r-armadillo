@@ -16,9 +16,14 @@ armadillo.copy_table(
 \arguments{
 \item{project}{study or other variable collection}
 
+\item{folder}{the folder containing the table}
+
 \item{name}{specific table for copy action}
 
 \item{new_project}{new location of study or other variable collection}
+
+\item{new_folder}{name of the folder in which to place the copy, defaults to
+folder}
 
 \item{new_name}{name of the copy, defaults to name}
 }

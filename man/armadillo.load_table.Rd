@@ -2,7 +2,7 @@
 % Please edit documentation in R/table.R
 \name{armadillo.load_table}
 \alias{armadillo.load_table}
-\title{Load table based upon study project and tableset}
+\title{Load a table from a project}
 \usage{
 armadillo.load_table(project, folder, name, env = parent.frame())
 }
@@ -20,7 +20,7 @@ Default is the parent.frame() from which the function is called.}
 NULL, invisibly
 }
 \description{
-Load table based upon study project and tableset
+Load a table from a project
 }
 \examples{
 \dontrun{

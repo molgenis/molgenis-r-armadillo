@@ -16,9 +16,15 @@ armadillo.move_table(
 \arguments{
 \item{project}{a study or collection of variables}
 
-\item{name}{a tableset to move}
+\item{folder}{the folder containing the table to move}
 
-\item{new_project}{a subset of the studies new location}
+\item{name}{a table to move}
+
+\item{new_project}{the project to move the table to}
+
+\item{new_folder}{the folder to move the table to, defaults to folder}
+
+\item{new_name}{use to rename the file, defaults to name}
 }
 \description{
 Move the table

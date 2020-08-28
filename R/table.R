@@ -21,7 +21,7 @@
 #'
 #' @export
 armadillo.upload_table <- function(project, folder, table, name = NULL) {
-  if (is.null(name)) {
+  if (is.null(name)) { # nolint
     name <- deparse(substitute(table))
   }
   bucket_name <- .to_shared_bucket_name(project)
@@ -111,8 +111,11 @@ armadillo.delete_table <- function(project, folder, name) { # nolint
 #' Copy table
 #'
 #' @param project study or other variable collection
+#' @param folder the folder containing the table
 #' @param name specific table for copy action
 #' @param new_project new location of study or other variable collection
+#' @param new_folder name of the folder in which to place the copy, defaults to
+#' folder
 #' @param new_name name of the copy, defaults to name
 #'
 #' @importFrom aws.s3 copy_object
@@ -161,7 +164,7 @@ armadillo.copy_table <- # nolint
     invisible(result)
   }
 
-#' Load table based upon study project and tableset
+#' Load a table from a project
 #'
 #' @param project study or collection variables
 #' @param folder the folder containing the table
@@ -210,8 +213,11 @@ armadillo.load_table <- function(project, folder, name, env = parent.frame()) { 
 #' Move the table
 #'
 #' @param project a study or collection of variables
-#' @param name a tableset to move
-#' @param new_project a subset of the studies new location
+#' @param folder the folder containing the table to move
+#' @param name a table to move
+#' @param new_project the project to move the table to
+#' @param new_folder the folder to move the table to, defaults to folder
+#' @param new_name use to rename the file, defaults to name 
 #'
 #' @examples
 #' \dontrun{

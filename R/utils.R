@@ -16,10 +16,11 @@
   }
 }
 
-#' Check if workspace exists
+#' Check if table exists
 #'
-#' @param bucket_name folder name
-#' @param workspace_name workspace name
+#' @param bucket_name bucket name
+#' @param folder_name the name of the folder the table is in
+#' @param table_name the name of the table
 #'
 #' @noRd
 .check_if_table_exists <- function(bucket_name, folder_name, table_name) {
