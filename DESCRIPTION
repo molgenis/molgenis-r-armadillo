@@ -18,6 +18,11 @@ Authors@R:
              role = c("aut"),
              email = "f.kelpin@umcg.nl",
              comment = c(ORCID = "0000-0003-1527-5130")))
+      person(given = "Morris",
+             family = "Swertz",
+             role = c("aut"),
+             email = "m.a.swertz@rug.nl",
+             comment = c(ORCID = "0000-0002-0979-3401")))
 Depends:
     R (>= 3.6)
 Imports:
