@@ -7,6 +7,15 @@
   paste0(name, ".RData")
 }
 
+#' To full qualified table name
+#'
+#' @param name filename to add extension to
+#'
+#' @noRd
+.to_table_name <- function(folder, name) {
+  paste0(folder, "/", name, ".parquet")
+}
+
 #' Change bucketname to readable bucket name
 #'
 #' @param bucket_name folder name
@@ -35,27 +44,27 @@
   paste0("user-", tolower(user_name))
 }
 
-#' Check folder name
+#' Check project name
 #'
 #' It should match the regex \code{"^[a-z0-9-]{0,55}[a-z0-9]$"}.
 #' But we give human readable messages
 #'
-#' @param name foldername
+#' @param name project name
 #'
 #' @noRd
-.check_folder_name <- function(name) {
+.check_project_name <- function(name) {
   stopifnot(is.character(name), length(name) == 1)
   if (nchar(name) == 0) {
-    stop("Folder name cannot be empty.", call. = FALSE)
+    stop("Project name cannot be empty.", call. = FALSE)
   }
   if (nchar(name) > 56) {
-    stop("Folder name has max 56 characters.", call. = FALSE)
+    stop("Project name has max 56 characters.", call. = FALSE)
   }
   if (grepl("-$", name, perl = TRUE)) {
-    stop("Folder name cannot end with a '-'.", call. = FALSE)
+    stop("Project name cannot end with a '-'.", call. = FALSE)
   }
   if (!grepl("^[a-z0-9-]{0,55}[a-z0-9]$", name, perl = TRUE)) {
-    stop("Folder name must consist of lowercase letters and numbers.",
+    stop("Project name must consist of lowercase letters and numbers.",
       call. = FALSE
     )
   }
@@ -68,7 +77,7 @@
 #' @param name workspace name
 #'
 #' @noRd
-.check_workspace_name <- function(name) {
+.check_folder_name <- function(name) {
   stopifnot(is.character(name), length(name) == 1)
   if (nchar(name) == 0) {
     stop("Workspace name cannot be empty.", call. = FALSE)

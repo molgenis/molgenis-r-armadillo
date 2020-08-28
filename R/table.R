@@ -1,0 +1,240 @@
+#' Uploads a table to a folder in a project
+#'
+#' @param project the project to upload to
+#' @param folder the folder to upload to
+#' @param table the table to upload
+#' @param name name of the table (optional)
+#'
+#' @return TRUE if successful, otherwise an object of class aws_error details
+#' if not.
+#'
+#' @importFrom aws.s3 put_object
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.upload_table(
+#'   project = "gecko",
+#'   folder = "core_all",
+#'   table1
+#' )
+#' }
+#'
+#' @export
+armadillo.upload_table <- function(project, folder, table, name = NULL) {
+  if (is.null(name)) {
+    name <- deparse(substitute(table))
+  }
+  bucket_name <- .to_shared_bucket_name(project)
+
+  file <- tempfile()
+  on.exit(unlink(file))
+  
+  message("Compressing table...")
+  arrow::write_parquet(table, file)
+
+  full_name <- paste0(folder, "/", name)
+
+  result <- aws.s3::put_object(file = file,
+                               object = paste0(full_name, ".parquet"),
+                               bucket = bucket_name,
+                               multipart = TRUE,
+                               show_progress = interactive(),
+                               use_https = .use_https())
+
+  if (isTRUE(result)) {
+    message(paste0("Uploaded table ", full_name))
+  }
+  invisible(result)
+}
+
+#' List the tables in a project
+#'
+#' @param project the shared project in which the tables are located
+#'
+#' @importFrom aws.s3 get_bucket
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.list_tables("gecko")
+#' }
+#'
+#' @export
+armadillo.list_tables <- function(project) { # nolint
+  bucket_name <- .to_shared_bucket_name(project)
+  .check_if_bucket_exists(bucket_name)
+
+  objects <- aws.s3::get_bucket(bucket_name,
+                                use_https = .use_https()
+  )
+  object_names <- lapply(objects, function(obj) obj$Key)
+  project <- unlist(object_names, use.names = FALSE)
+  tools::file_path_sans_ext(project)
+}
+
+#' Delete table
+#'
+#' @param project project to delete the table from
+#' @param folder folder to delete the table from
+#' @param name table name
+#' @return TRUE if successful, otherwise an object of class aws_error details
+#' if not.
+#'
+#' @importFrom aws.s3 delete_object
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.delete_table(
+#'   project = "gecko",
+#'   folder = "core_all",
+#'   name = "table1"
+#' )
+#' }
+#'
+#' @export
+armadillo.delete_table <- function(project, folder, name) { # nolint
+  bucket_name <- .to_shared_bucket_name(project)
+  .check_if_table_exists(bucket_name, folder, name)
+
+  full_name <- paste0(folder, "/", name)
+
+  result <- aws.s3::delete_object(
+    object = paste0(full_name, ".parquet"),
+    bucket = bucket_name,
+    use_https = .use_https()
+  )
+
+  if (isTRUE(result)) {
+    message(paste0("Deleted table '", full_name, "'."))
+  }
+  invisible(result)
+}
+
+#' Copy table
+#'
+#' @param project study or other variable collection
+#' @param name specific table for copy action
+#' @param new_project new location of study or other variable collection
+#' @param new_name name of the copy, defaults to name
+#'
+#' @importFrom aws.s3 copy_object
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.copy_worspace(
+#'   project = "gecko",
+#'   folder = "core_all",
+#'   name = "table1",
+#'   new_project = "gecko",
+#'   new_folder = "core_all_v2",
+#' )
+#' }
+#'
+#' @export
+armadillo.copy_table <- # nolint
+  function(project, folder, name, new_project, new_folder = folder,
+           new_name = name) {
+    if (project == new_project &&
+      folder == new_folder &&
+      name == new_name) {
+      stop("Cannot copy table onto itself.", call. = FALSE)
+    }
+    bucket_name <- .to_shared_bucket_name(project)
+    new_bucket_name <- .to_shared_bucket_name(new_project)
+    .check_if_table_exists(bucket_name, folder, name)
+    .check_if_bucket_exists(new_bucket_name)
+
+    result <- aws.s3::copy_object(
+      from_object = .to_table_name(folder, name),
+      to_object = .to_table_name(new_folder, new_name),
+      from_bucket = bucket_name,
+      to_bucket = new_bucket_name,
+      use_https = .use_https()
+    )
+
+    full_name <- paste0(folder, "/", name)
+    new_full_name <- paste0(new_folder, "/", new_name)
+
+    message(paste0(
+      "Copied table '", full_name, "' in project '", project, "' to '",
+      new_full_name, "' in project '", new_project, "'."))
+
+    invisible(result)
+  }
+
+#' Load table based upon study project and tableset
+#'
+#' @param project study or collection variables
+#' @param folder the folder containing the table
+#' @param name name of the table
+#' @param env The environment in which you want to load the table.
+#' Default is the parent.frame() from which the function is called.
+#' @return NULL, invisibly
+#'
+#' @importFrom aws.s3 s3load
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.load_table(
+#'   project = "gecko",
+#'   folder = "core_all",
+#'   name = "lc_core_1"
+#' )
+#'
+#' armadillo.load_table(
+#'   project = "gecko",
+#'   folder = "core_all",
+#'   name = "lc_core_1",
+#'   env = globalenv()
+#' )
+#' }
+#'
+#' @export
+armadillo.load_table <- function(project, folder, name, env = parent.frame()) { # nolint
+  bucket_name <- .to_shared_bucket_name(project)
+  .check_if_table_exists(bucket_name, folder, name)
+
+  file <- aws.s3::get_object(
+    object = .to_table_name(folder, name),
+    bucket = bucket_name,
+    use_https = .use_https()
+  )
+  on.exit(unlink(file))
+
+  assign(
+    name,
+    arrow::read_parquet(file),
+    envir = env
+  )
+}
+
+#' Move the table
+#'
+#' @param project a study or collection of variables
+#' @param name a tableset to move
+#' @param new_project a subset of the studies new location
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.move_folder(
+#'   project = "gecko",
+#'   folder = "core_all",
+#'   name = "table1",
+#'   new_project = "gecko",
+#'   new_folder = "core_all_v2",
+#' )
+#' }
+#'
+#' @export
+armadillo.move_table <- function(project, folder, name, new_project, new_folder,
+                                 new_name = name) { # nolint
+  suppressMessages(armadillo.copy_table(project, folder, name, new_project,
+                                        new_folder, new_name))
+  suppressMessages(armadillo.delete_table(project, folder, name))
+
+  full_name <- paste0(folder, "/", name)
+  new_full_name <- paste0(new_folder, "/", new_name)
+
+  message(paste0(
+    "Moved table '", full_name, "' in project '", project, "' to '",
+    new_full_name, "' in project '", new_project, "'."))
+}
