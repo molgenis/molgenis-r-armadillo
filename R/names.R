@@ -82,14 +82,14 @@
 #' @param name table name
 #'
 #' @noRd
-.check_fully_qualified_table_name <- function(folder, name){
+.check_full_table_name <- function(folder, name) {
   .check_name(folder)
   .check_name(name)
-  
+
   full_name <- paste0(folder, "/", name)
-  
+
   if (nchar(full_name) > 1018) {
-    stop("Folder + table name cannot be longer than 1018 characters.", 
+    stop("Folder + table name cannot be longer than 1018 characters.",
          call. = FALSE)
   }
 }

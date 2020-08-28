@@ -20,13 +20,13 @@
 #' }
 #'
 #' @export
-armadillo.upload_table <- function(project, folder, table, name = NULL) {
+armadillo.upload_table <- function(project, folder, table, name = NULL) { # nolint
   if (is.null(name)) { # nolint
     name <- deparse(substitute(table))
   }
   bucket_name <- .to_shared_bucket_name(project)
-  .check_fully_qualified_table_name(folder, name)
-  
+  .check_full_table_name(folder, name)
+
   file <- tempfile()
   on.exit(unlink(file))
   message("Compressing table...")
@@ -144,7 +144,7 @@ armadillo.copy_table <- # nolint
     new_bucket_name <- .to_shared_bucket_name(new_project)
     .check_if_table_exists(bucket_name, folder, name)
     .check_if_bucket_exists(new_bucket_name)
-    .check_fully_qualified_table_name(new_folder, new_name)
+    .check_full_table_name(new_folder, new_name)
 
     result <- aws.s3::copy_object(
       from_object = .to_table_name(folder, name),
@@ -217,7 +217,7 @@ armadillo.load_table <- function(project, folder, name, env = parent.frame()) { 
 #' @param name a table to move
 #' @param new_project the project to move the table to
 #' @param new_folder the folder to move the table to, defaults to folder
-#' @param new_name use to rename the file, defaults to name 
+#' @param new_name use to rename the file, defaults to name
 #'
 #' @examples
 #' \dontrun{
@@ -231,8 +231,8 @@ armadillo.load_table <- function(project, folder, name, env = parent.frame()) { 
 #' }
 #'
 #' @export
-armadillo.move_table <- function(project, folder, name, new_project, new_folder,
-                                 new_name = name) { # nolint
+armadillo.move_table <- # nolint
+  function(project, folder, name, new_project, new_folder, new_name = name) {
   suppressMessages(armadillo.copy_table(project, folder, name, new_project,
                                         new_folder, new_name))
   suppressMessages(armadillo.delete_table(project, folder, name))
