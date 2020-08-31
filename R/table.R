@@ -21,11 +21,14 @@
 #'
 #' @export
 armadillo.upload_table <- function(project, folder, table, name = NULL) { # nolint
+  stopifnot(!is.na(project), !is.na(folder), !is.na(table))
   if (is.null(name)) { # nolint
     name <- deparse(substitute(table))
   }
-  bucket_name <- .to_shared_bucket_name(project)
   .check_full_table_name(folder, name)
+  
+  bucket_name <- .to_shared_bucket_name(project)
+  .check_if_bucket_exists(bucket_name)
 
   file <- tempfile()
   on.exit(unlink(file))

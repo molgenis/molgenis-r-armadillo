@@ -1,78 +1,91 @@
-test_that("armadillo.create_workspace checks if datasets are provided", {
+test_that("armadillo.upload_table checks if table is provided", {
   expect_error(
-    armadillo.create_workspace("example", "data"),
-    "No tables were provided to upload\\."
+    armadillo.upload_table(project="project", folder = "folder"),
+    "argument \"table\" is missing, with no default"
   )
 })
 
-test_that("armadillo.create_workspace checks if the shared bucket exists", {
-  bucket_exists <- mock(FALSE)
+test_that("armadillo.upload_table checks if folder is provided", {
+  expect_error(
+    armadillo.upload_table(project="project", table = datasets::iris),
+    "argument \"folder\" is missing, with no default"
+  )
+})
 
+test_that("armadillo.upload_table checks if the project exists", {
+  bucket_exists <- mock(FALSE)
+  
   expect_error(
     with_mock(
-      armadillo.create_workspace(
+      armadillo.upload_table(
+        project = "project",
         folder = "example",
-        name = "data",
-        d <- 5
+        table = datasets::iris
       ),
       "aws.s3::bucket_exists" = bucket_exists,
       "MolgenisArmadillo:::.use_https" = mock(TRUE)
     ),
-    "Folder 'example' does not exist\\."
+    "Project 'project' does not exist\\."
   )
 
-  expect_args(bucket_exists, 1, "shared-example", use_https = TRUE)
+  expect_args(bucket_exists, 1, "shared-project", use_https = TRUE)
 })
 
-test_that("armadillo.create_workspace creates a workspace", {
-  s3save <- mock(TRUE)
+test_that("armadillo.upload_table uploads table", {
+  put_object <- mock(TRUE)
   bucket_exists <- mock(TRUE)
-  d <- 5
+  file <- tempfile()
+  # Cannot mock base functions, so stub it instead
+  stub(armadillo.upload_table, "tempfile", file)
 
   expect_message(
     with_mock(
-      result <- armadillo.create_workspace(
-        folder = "example",
-        name = "data",
-        d
+      result <- armadillo.upload_table(
+        project = "project",
+        folder = "folder",
+        table = datasets::iris
       ),
-      "aws.s3::s3save" = s3save,
+      "aws.s3::put_object" = put_object,
       "aws.s3::bucket_exists" = bucket_exists,
       "MolgenisArmadillo:::.use_https" = mock(FALSE, cycle = TRUE)
     ),
-    "Created workspace 'data'\\."
+    "Compressing table...|Uploaded table folder/datasets::iris",
+    all=TRUE
   )
 
   expect_true(result)
-  expect_args(s3save, 1,
-    d,
-    object = "data.RData",
-    bucket = "shared-example",
-    opts = c(use_https = FALSE, show_progress = interactive())
+  
+  expect_args(put_object, 1,
+              file = file,
+              object = "folder/datasets::iris.parquet",
+              bucket = "shared-project",
+              multipart = TRUE,
+              show_progress = interactive(),
+              use_https = FALSE
   )
 })
 
-test_that("armadillo.list_workspaces checks if the shared folder exists", {
+test_that("armadillo.list_tables checks if the project exists", {
   bucket_exists <- mock(FALSE)
 
   expect_error(
     with_mock(
-      armadillo.list_workspaces("example"),
+      armadillo.list_tables("project"),
       "aws.s3::bucket_exists" = bucket_exists,
       "MolgenisArmadillo:::.use_https" = mock(TRUE)
     ),
-    "Folder 'example' does not exist\\."
+    "Project 'project' does not exist\\."
   )
 
-  expect_args(bucket_exists, 1, "shared-example", use_https = TRUE)
+  expect_args(bucket_exists, 1, "shared-project", use_https = TRUE)
 })
 
-test_that("armadillo.list_workspaces lists the workspaces in a folder", {
+test_that("armadillo.list_tables lists the tables in a project", {
   bucket_exists <- mock(TRUE)
-  get_bucket <- mock(workspaces)
+  get_bucket <- mock(tables)
 
   with_mock(
-    result <- armadillo.list_workspaces("example"),
+    result <- armadillo.list_tables("project"),
     "aws.s3::get_bucket" = get_bucket,
     "aws.s3::bucket_exists" = bucket_exists,
     "MolgenisArmadillo:::.use_https" = mock(FALSE, cycle = TRUE)
@@ -80,40 +93,40 @@ test_that("armadillo.list_workspaces lists the workspaces in a folder", {
 
   expect_equal(result, c("patient", "test"))
   expect_args(get_bucket, 1,
-    bucket = "shared-example",
+    bucket = "shared-project",
     use_https = FALSE
   )
 })
 
-test_that("armadillo.delete_workspace checks if the shared folder exists", {
+test_that("armadillo.delete_table checks if the project exists", {
   bucket_exists <- mock(FALSE)
 
   expect_error(
     with_mock(
-      armadillo.delete_workspace("example"),
+      armadillo.delete_table("project", "test"),
       "aws.s3::bucket_exists" = bucket_exists,
       "MolgenisArmadillo:::.use_https" = mock(TRUE)
     ),
-    "Folder 'example' does not exist\\."
+    "Project 'project' does not exist\\."
   )
 
-  expect_args(bucket_exists, 1, "shared-example", use_https = TRUE)
+  expect_args(bucket_exists, 1, "shared-project", use_https = TRUE)
 })
 
-test_that("armadillo.delete_workspace checks if the workspace exists", {
+test_that("armadillo.delete_table checks if the table exists", {
   head_object <- mock(FALSE)
 
   expect_error(
     with_mock(
-      armadillo.delete_workspace("example", "test"),
+      armadillo.delete_table("project", "folder", "test"),
       "aws.s3::bucket_exists" = mock(TRUE),
       "aws.s3::head_object" = head_object,
       "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
     ),
-    "Workspace 'test' does not exist\\."
+    "Table 'folder/test' does not exist\\."
   )
 
-  expect_args(head_object, 1, "test.RData", "shared-example", use_https = TRUE)
+  expect_args(head_object, 1, "folder/test.parquet", "shared-project", use_https = TRUE)
 })
 
 test_that("armadillo.delete_workspace deletes a workspace", {

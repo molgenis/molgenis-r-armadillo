@@ -36,7 +36,9 @@
   )
 
   if (!exists) {
-    stop(paste0("Table '", table_name, "' does not exist."),
+    stop(paste0("Table '",
+                tools::file_path_sans_ext(table_name),
+                "' does not exist."),
       call. = FALSE
     )
   }
