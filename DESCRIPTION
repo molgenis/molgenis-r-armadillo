@@ -17,7 +17,7 @@ Authors@R:
              family = "Kelpin",
              role = c("aut"),
              email = "f.kelpin@umcg.nl",
-             comment = c(ORCID = "0000-0003-1527-5130")))
+             comment = c(ORCID = "0000-0003-1527-5130"))),
       person(given = "Morris",
              family = "Swertz",
              role = c("aut"),
