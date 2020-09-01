@@ -36,7 +36,7 @@ test_that(".check_project_name allows valid names", {
   expect_silent(.check_project_name("x"))
 })
 
-test_that(".check_full_table_name checks folder for single character argument", {
+test_that(".check_full_table_name checks folder for single character arg", {
   expect_error(
     .check_full_table_name(folder = NA, name = "name"),
     "is.character\\(folder\\) is not TRUE"
