@@ -292,7 +292,9 @@ test_that("armadillo.load_workspace checks if the table exists", {
   )
 
   expect_args(head_object, 1,
-              "folder/test.parquet", "shared-project", use_https = TRUE)
+    "folder/test.parquet", "shared-project",
+    use_https = TRUE
+  )
 })
 
 test_that("armadillo.load_table loads the table from file", {
