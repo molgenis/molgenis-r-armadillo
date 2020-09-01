@@ -11,7 +11,7 @@ buckets <- structure(list(Bucket = c(
 
 tables <- structure(list(
   Contents = structure(list(
-    Key = "patient.parquet",
+    Key = "folder/patient.parquet",
     LastModified = "2020-07-15T18:14:35.324Z",
     ETag = "\"8479a0fce51a4bb731cbe99a8287510b\"",
     Size = 3312, Owner = list(
@@ -20,7 +20,7 @@ tables <- structure(list(
     ), StorageClass = "STANDARD", Bucket = "shared-diabetes"
   ), class = "s3_object"),
   Contents = structure(list(
-    Key = "test.parquet", LastModified = "2020-07-20T13:30:41.015Z",
+    Key = "folder/test.parquet", LastModified = "2020-07-20T13:30:41.015Z",
     ETag = "\"a27785cb22af9dba331b53dadfa136b2\"", Size = 1040,
     Owner = list(
       ID = "02d6176db174dc93cb1b899f7c6078f08654445fe8cf1b6ce98d8855f66bdbf4",

@@ -161,12 +161,10 @@ armadillo.copy_table <- # nolint
       use_https = .use_https()
     )
 
-    full_name <- paste0(folder, "/", name)
-    new_full_name <- paste0(new_folder, "/", new_name)
-
     message(paste0(
-      "Copied table '", full_name, "' in project '", project, "' to '",
-      new_full_name, "' in project '", new_project, "'."))
+      "Copied table '", project, "/", folder, "/", name, "' to '",
+      new_project, "/", new_folder, "/", new_name, "'."
+    ))
 
     invisible(result)
   }
@@ -215,6 +213,7 @@ armadillo.load_table <- function(project, folder, name, env = parent.frame()) { 
     arrow::read_parquet(file),
     envir = env
   )
+  invisible(NULL)
 }
 
 #' Move the table
@@ -239,15 +238,16 @@ armadillo.load_table <- function(project, folder, name, env = parent.frame()) { 
 #'
 #' @export
 armadillo.move_table <- # nolint
-  function(project, folder, name, new_project, new_folder, new_name = name) {
-  suppressMessages(armadillo.copy_table(project, folder, name, new_project,
-                                        new_folder, new_name))
-  suppressMessages(armadillo.delete_table(project, folder, name))
+  function(project, folder, name,
+           new_project = project, new_folder = folder, new_name = name) {
+    suppressMessages(armadillo.copy_table(
+      project, folder, name, new_project,
+      new_folder, new_name
+    ))
+    suppressMessages(armadillo.delete_table(project, folder, name))
 
-  full_name <- paste0(folder, "/", name)
-  new_full_name <- paste0(new_folder, "/", new_name)
-
-  message(paste0(
-    "Moved table '", full_name, "' in project '", project, "' to '",
-    new_full_name, "' in project '", new_project, "'."))
-}
+    message(paste0(
+      "Moved table '", project, "/", folder, "/", name,
+      "' to '", new_project, "/", new_folder, "/", new_name, "'."
+    ))
+  }
