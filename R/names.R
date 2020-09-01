@@ -76,20 +76,26 @@
 }
 
 
-#' Check the fully qualified name of a table
+#' Check the object name of a table
 #'
 #' @param folder folder name
 #' @param name table name
 #'
 #' @noRd
 .check_full_table_name <- function(folder, name) {
+  stopifnot(
+    is.character(name),
+    length(name) == 1,
+    is.character(folder),
+    length(folder) == 1
+  )
   .check_name(folder)
   .check_name(name)
 
   full_name <- paste0(folder, "/", name)
 
-  if (nchar(full_name) > 1018) {
-    stop("Folder + table name cannot be longer than 1018 characters.",
+  if (nchar(full_name) > 1024) {
+    stop("Folder + table name cannot be longer than 1024 characters.",
       call. = FALSE
     )
   }
