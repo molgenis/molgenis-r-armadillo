@@ -9,6 +9,7 @@
 #' if not.
 #'
 #' @importFrom aws.s3 put_object
+#' @importFrom arrow write_parquet
 #'
 #' @examples
 #' \dontrun{
@@ -178,7 +179,8 @@ armadillo.copy_table <- # nolint
 #' Default is the parent.frame() from which the function is called.
 #' @return NULL, invisibly
 #'
-#' @importFrom aws.s3 s3load
+#' @importFrom aws.s3 get_object
+#' @importFrom arrow read_parquet
 #'
 #' @examples
 #' \dontrun{

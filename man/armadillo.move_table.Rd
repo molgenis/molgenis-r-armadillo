@@ -8,8 +8,8 @@ armadillo.move_table(
   project,
   folder,
   name,
-  new_project,
-  new_folder,
+  new_project = project,
+  new_folder = folder,
   new_name = name
 )
 }

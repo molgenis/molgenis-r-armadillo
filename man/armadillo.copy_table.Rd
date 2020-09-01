@@ -8,7 +8,7 @@ armadillo.copy_table(
   project,
   folder,
   name,
-  new_project,
+  new_project = project,
   new_folder = folder,
   new_name = name
 )

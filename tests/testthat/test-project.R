@@ -55,7 +55,7 @@ test_that("armadillo.delete_project deletes project", {
       armadillo.delete_project("project"),
       "aws.s3::bucket_exists" = mock(TRUE),
       "aws.s3::delete_bucket" = deletebucket,
-      ".use_https" = mock(TRUE, cycle = TRUE)
+      "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
     ), "Deleted project 'project'"
   )
 
