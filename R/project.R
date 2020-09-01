@@ -83,11 +83,11 @@ armadillo.list_projects <- function() { # nolint
   bucket_names <- buckets[["Bucket"]]
   if (length(bucket_names) == 0) {
     NULL
-  }else{
+  } else {
     filtered_buckets <- bucket_names[startsWith(bucket_names, prefix)]
     sapply(filtered_buckets,
-           function(name) gsub(prefix, "", name),
-           USE.NAMES = FALSE
+      function(name) gsub(prefix, "", name),
+      USE.NAMES = FALSE
     )
   }
 }

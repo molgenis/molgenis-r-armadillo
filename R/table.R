@@ -26,7 +26,7 @@ armadillo.upload_table <- function(project, folder, table, name = NULL) { # noli
     name <- deparse(substitute(table))
   }
   .check_full_table_name(folder, name)
-  
+
   bucket_name <- .to_shared_bucket_name(project)
   .check_if_bucket_exists(bucket_name)
 
@@ -36,12 +36,14 @@ armadillo.upload_table <- function(project, folder, table, name = NULL) { # noli
   arrow::write_parquet(table, file)
 
   full_name <- paste0(folder, "/", name)
-  result <- aws.s3::put_object(file = file,
-                               object = paste0(full_name, ".parquet"),
-                               bucket = bucket_name,
-                               multipart = TRUE,
-                               show_progress = interactive(),
-                               use_https = .use_https())
+  result <- aws.s3::put_object(
+    file = file,
+    object = paste0(full_name, ".parquet"),
+    bucket = bucket_name,
+    multipart = TRUE,
+    show_progress = interactive(),
+    use_https = .use_https()
+  )
 
   if (isTRUE(result)) {
     message(paste0("Uploaded table ", full_name))
@@ -66,7 +68,7 @@ armadillo.list_tables <- function(project) { # nolint
   .check_if_bucket_exists(bucket_name)
 
   objects <- aws.s3::get_bucket(bucket_name,
-                                use_https = .use_https()
+    use_https = .use_https()
   )
   object_names <- lapply(objects, function(obj) obj$Key)
   project <- unlist(object_names, use.names = FALSE)
@@ -136,7 +138,9 @@ armadillo.delete_table <- function(project, folder, name) { # nolint
 #'
 #' @export
 armadillo.copy_table <- # nolint
-  function(project, folder, name, new_project, new_folder = folder,
+  function(project, folder, name,
+           new_project = project,
+           new_folder = folder,
            new_name = name) {
     if (project == new_project &&
       folder == new_folder &&

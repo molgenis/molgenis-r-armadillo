@@ -90,6 +90,7 @@
 
   if (nchar(full_name) > 1018) {
     stop("Folder + table name cannot be longer than 1018 characters.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 }
