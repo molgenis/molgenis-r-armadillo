@@ -46,3 +46,18 @@ test_that("armadillo.delete_project checks if project exists", {
     ), "Project 'project' does not exist."
   )
 })
+
+test_that("armadillo.delete_project deletes project", {
+  deletebucket <- mock(TRUE)
+
+  expect_message(
+    with_mock(
+      armadillo.delete_project("project"),
+      "aws.s3::bucket_exists" = mock(TRUE),
+      "aws.s3::delete_bucket" = deletebucket,
+      ".use_https" = mock(TRUE, cycle = TRUE)
+    ), "Deleted project 'project'"
+  )
+
+  expect_args(deletebucket, 1, "shared-project", use_https = TRUE)
+})
