@@ -1,10 +1,10 @@
-#' Add RData extension
+#' To full qualified table name
 #'
 #' @param name filename to add extension to
 #'
 #' @noRd
-.to_file_name <- function(name) {
-  paste0(name, ".RData")
+.to_table_name <- function(folder, name) {
+  paste0(folder, "/", name, ".parquet")
 }
 
 #' Change bucketname to readable bucket name
@@ -26,62 +26,77 @@
   paste0("shared-", tolower(folder_name))
 }
 
-#' Add 'user-' prefix
-#'
-#' @param folder_name user foldername
-#'
-#' @noRd
-.to_user_bucket_name <- function(user_name) {
-  paste0("user-", tolower(user_name))
-}
-
-#' Check folder name
+#' Check project name
 #'
 #' It should match the regex \code{"^[a-z0-9-]{0,55}[a-z0-9]$"}.
 #' But we give human readable messages
 #'
-#' @param name foldername
+#' @param name project name
 #'
 #' @noRd
-.check_folder_name <- function(name) {
+.check_project_name <- function(name) {
   stopifnot(is.character(name), length(name) == 1)
   if (nchar(name) == 0) {
-    stop("Folder name cannot be empty.", call. = FALSE)
+    stop("Project name cannot be empty.", call. = FALSE)
   }
   if (nchar(name) > 56) {
-    stop("Folder name has max 56 characters.", call. = FALSE)
+    stop("Project name has max 56 characters.", call. = FALSE)
   }
   if (grepl("-$", name, perl = TRUE)) {
-    stop("Folder name cannot end with a '-'.", call. = FALSE)
+    stop("Project name cannot end with a '-'.", call. = FALSE)
   }
   if (!grepl("^[a-z0-9-]{0,55}[a-z0-9]$", name, perl = TRUE)) {
-    stop("Folder name must consist of lowercase letters and numbers.",
+    stop("Project name must consist of lowercase letters and numbers.",
       call. = FALSE
     )
   }
 }
 
-#' Check the workspace name
+#' Check a folder or table name
 #'
 #' Name can not be empty and may not contain a slash
 #'
-#' @param name workspace name
+#' @param name folder or table name
 #'
 #' @noRd
-.check_workspace_name <- function(name) {
+.check_name <- function(name) {
   stopifnot(is.character(name), length(name) == 1)
   if (nchar(name) == 0) {
-    stop("Workspace name cannot be empty.", call. = FALSE)
+    stop("Folder or table name cannot be empty.", call. = FALSE)
   }
-  if (nchar(name) > 1018) {
-    stop("Workspace name cannot be longer than 1018 characters.", call. = FALSE)
-  }
+
   if (!grepl("^[a-zA-Z0-9_:-]+$", name, perl = TRUE)) {
     stop(paste0(
-      "Valid workspace name characters are ",
+      "Valid folder and table name characters are ",
       "ASCII letters, digits, '_', '-' and ':'"
     ),
     call. = FALSE
+    )
+  }
+}
+
+
+#' Check the object name of a table
+#'
+#' @param folder folder name
+#' @param name table name
+#'
+#' @noRd
+.check_full_table_name <- function(folder, name) {
+  stopifnot(
+    is.character(name),
+    length(name) == 1,
+    is.character(folder),
+    length(folder) == 1
+  )
+  .check_name(folder)
+  .check_name(name)
+
+  full_name <- paste0(folder, "/", name)
+
+  if (nchar(full_name) > 1024) {
+    stop("Folder + table name cannot be longer than 1024 characters.",
+      call. = FALSE
     )
   }
 }

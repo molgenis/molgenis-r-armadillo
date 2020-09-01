@@ -1,72 +1,97 @@
-test_that(".check_folder_name checks for single character argument", {
-  expect_error(.check_folder_name(NA), "is.character\\(name\\) is not TRUE")
-  expect_error(.check_folder_name(NULL), "is.character\\(name\\) is not TRUE")
+test_that(".check_project_name checks for single character argument", {
+  expect_error(.check_project_name(NA), "is.character\\(name\\) is not TRUE")
+  expect_error(.check_project_name(NULL), "is.character\\(name\\) is not TRUE")
   expect_error(
-    .check_folder_name(list("abc", "def")),
+    .check_project_name(list("abc", "def")),
     "is.character\\(name\\) is not TRUE"
   )
 })
 
-test_that(".check_folder_name checks name length", {
-  expect_error(.check_folder_name(""), "Folder name cannot be empty")
+test_that(".check_project_name checks name length", {
+  expect_error(.check_project_name(""), "Project name cannot be empty")
   expect_error(
-    .check_folder_name(strrep("x", 57)),
-    "Folder name has max 56 characters\\."
+    .check_project_name(strrep("x", 57)),
+    "Project name has max 56 characters\\."
   )
 })
 
-test_that(".check_folder_name checks for invalid characters", {
+test_that(".check_project_name checks for invalid characters", {
   expect_error(
-    .check_folder_name("A"),
-    "Folder name must consist of lowercase letters and numbers\\."
+    .check_project_name("A"),
+    "Project name must consist of lowercase letters and numbers\\."
   )
   expect_error(
-    .check_folder_name("\U72B0"),
-    "Folder name must consist of lowercase letters and numbers\\."
+    .check_project_name("\U72B0"),
+    "Project name must consist of lowercase letters and numbers\\."
   )
   expect_error(
-    .check_folder_name("ármadïllø"),
-    "Folder name must consist of lowercase letters and numbers\\."
+    .check_project_name("ármadïllø"),
+    "Project name must consist of lowercase letters and numbers\\."
   )
 })
 
 
-test_that(".check_folder_name allows valid names", {
-  expect_silent(.check_folder_name(strrep("x", 56)))
-  expect_silent(.check_folder_name("x"))
+test_that(".check_project_name allows valid names", {
+  expect_silent(.check_project_name(strrep("x", 56)))
+  expect_silent(.check_project_name("x"))
 })
 
-test_that(".check_workspace_name checks for single character argument", {
-  expect_error(.check_workspace_name(NA), "is.character\\(name\\) is not TRUE")
+test_that(".check_full_table_name checks folder for single character arg", {
   expect_error(
-    .check_workspace_name(NULL),
+    .check_full_table_name(folder = NA, name = "name"),
+    "is.character\\(folder\\) is not TRUE"
+  )
+  expect_error(
+    .check_full_table_name(folder = NULL, name = "name"),
+    "is.character\\(folder\\) is not TRUE"
+  )
+  expect_error(
+    .check_full_table_name(folder = list("abc", "def"), name = "name"),
+    "is.character\\(folder\\) is not TRUE"
+  )
+})
+
+test_that(".check_full_table_name checks name for single character argument", {
+  expect_error(
+    .check_full_table_name(folder = "folder", name = NA),
     "is.character\\(name\\) is not TRUE"
   )
   expect_error(
-    .check_workspace_name(list("abc", "def")),
+    .check_full_table_name(folder = "folder", name = NULL),
+    "is.character\\(name\\) is not TRUE"
+  )
+  expect_error(
+    .check_full_table_name(folder = "folder", name = list("abc", "def")),
     "is.character\\(name\\) is not TRUE"
   )
 })
 
-test_that(".check_workspace_name checks name length", {
-  expect_error(.check_workspace_name(""), "Workspace name cannot be empty")
+test_that(".check_full_table_name checks name length", {
   expect_error(
-    .check_workspace_name(strrep("x", 1019)),
-    "Workspace name cannot be longer than 1018 characters\\."
+    .check_full_table_name("", "name"),
+    "Folder or table name cannot be empty"
+  )
+  expect_error(
+    .check_full_table_name("folder", ""),
+    "Folder or table name cannot be empty"
+  )
+  expect_error(
+    .check_full_table_name(strrep("x", 1000), strrep("y", 24)),
+    "Folder \\+ table name cannot be longer than 1024 characters\\."
   )
 })
 
-test_that(".check_workspace_name checks for valid characters", {
+test_that(".check_full_table_name checks for valid characters", {
   expected <- paste0(
-    "Valid workspace name characters are ",
+    "Valid folder and table name characters are ",
     "ASCII letters, digits, '_', '-' and ':'"
   )
-  expect_error(.check_workspace_name("\U72B0"), expected)
-  expect_error(.check_workspace_name("ármadïllø"), expected)
-  expect_error(.check_workspace_name("A b"), expected)
+  expect_error(.check_full_table_name("folder", "\U72B0"), expected)
+  expect_error(.check_full_table_name("folder", "ármadïllø"), expected)
+  expect_error(.check_full_table_name("folder", "A b"), expected)
 })
 
-test_that(".check_workspace_name allows valid names", {
-  expect_silent(.check_workspace_name("Example_0-9:__BACKUP__"))
-  expect_silent(.check_workspace_name(strrep("x", 1018)))
+test_that(".check_full_table_name allows valid names", {
+  expect_silent(.check_full_table_name("folder", "Example_0-9:__BACKUP__"))
+  expect_silent(.check_full_table_name(strrep("x", 1000), strrep("y", 23)))
 })

@@ -18,12 +18,12 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Sido Haakma \email{s.haakma@rug.nl}
+\strong{Maintainer}: Sido Haakma \email{s.haakma@rug.nl} (\href{https://orcid.org/0000-0003-1278-9144}{ORCID})
 
 Authors:
 \itemize{
-  \item Tommy de Boer \email{t.de.boer01@umcg.nl}
-  \item Fleur Kelpin \email{f.kelpin@umcg.nl}
+  \item Tommy de Boer \email{t.de.boer01@umcg.nl} (\href{https://orcid.org/0000-0002-4492-7225}{ORCID})
+  \item Fleur Kelpin \email{f.kelpin@umcg.nl} (\href{https://orcid.org/0000-0003-1527-5130}{ORCID})
 }
 
 }
