@@ -22,7 +22,7 @@
 #'
 #' @export
 armadillo.upload_table <- function(project, folder, table, name = NULL) { # nolint
-  stopifnot(!is.na(project), !is.na(folder), !is.na(table))
+  stopifnot(!is.na(project), !is.na(folder), is.data.frame(table))
   if (is.null(name)) { # nolint
     name <- deparse(substitute(table))
   }

@@ -5,6 +5,13 @@ test_that("armadillo.upload_table checks if table is provided", {
   )
 })
 
+test_that("armadillo.upload_table checks if table is a data frame", {
+  expect_error(
+    armadillo.upload_table(project = "project", folder = "folder", table = 5),
+    "is\\.data\\.frame\\(table\\) is not TRUE"
+  )
+})
+
 test_that("armadillo.upload_table checks if folder is provided", {
   expect_error(
     armadillo.upload_table(project = "project", table = datasets::iris),
