@@ -26,7 +26,7 @@ Armadillo server has access to the file store and can load the data sets into
 a shielded RServe environment so that researchers can call DataSHIELD analysis
 methods on the data.
 
-# Login
+# Usage
 In order to access the files as a data manager, you need to log in.
 The login method needs the URLs of the Armadillo server and the MinIO
 fileserver. It will open a browser window where you can identify yourself with
@@ -47,7 +47,11 @@ armadillo.create_project("project")
 #> Created project 'project'
 armadillo.upload_table("project", "folder", iris)
 #> Compressing table...
-#>   |                                                                                                                    |                                                                                                            |   0%  |                                                                                                                    |============================================================================================================| 100%
+#> 
+  |                                                                                                                  
+  |                                                                                                            |   0%
+  |                                                                                                                  
+  |============================================================================================================| 100%
 #> Uploaded table folder/iris
 armadillo.list_tables("project")
 #> [1] "folder/iris"
