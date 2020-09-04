@@ -33,27 +33,18 @@ methods on the data.
 # Login
 In order to access the files as a data manager, you need to log in.
 The login method needs the URLs of the Armadillo server and the MinIO
-server. It will open a browser window where you can identify yourself with
+fileserver. It will open a browser window where you can identify yourself with
 the ID provider.
 ```{r}
 armadillo.login("https://armadillo.dev.molgenis.org",
       "https://armadillo-minio.dev.molgenis.org")
 ```
+It will create a session and store the credentials in the environment.
 
-It will create a session and store the credentials in the environment:
-```{r}
-Sys.getenv("AWS_S3_ENDPOINT")
-Sys.getenv("AWS_ACCESS_KEY_ID")
-Sys.getenv("AWS_SECRET_ACCESS_KEY")
-Sys.getenv("AWS_SESSION_TOKEN")
-getOption("MolgenisArmadillo.s3.use_https")
-getOption("cloudyr.aws.default_region")
-```
-
-Now you can create a shared folder and upload datasets to it
+Now you can create a project and upload datasets to it to share them
 ```{r}
 library(datasets)
-armadillo.create_folder("shared-folder")
-armadillo.create_workspace("shared-folder", "test-data", iris, iris3)
-armadillo.list_workspaces("shared-folder")
+armadillo.create_project("project")
+armadillo.upload_table("project", "folder", iris)
+armadillo.list_tables("project")
 ```
