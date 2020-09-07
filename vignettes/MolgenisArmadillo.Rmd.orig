@@ -18,33 +18,111 @@ knitr::opts_chunk$set(
 library(MolgenisArmadillo)
 ```
 
-# Purpose
-This library can be used by data managers to share datasets on a
-MOLGENIS Armadillo server.
-Researchers can then analyse these datasets and datasets shared on other servers
-using DataSHIELD.
+To share your data using Armadillo, you can see the different relevant steps you can take before the shared data can be transfered to the researchers.
 
-# Overview
-The datasets are stored in shared folders on a MinIO file store. The MOLGENIS
-Armadillo server has access to the file store and can load the data sets into
-a shielded RServe environment so that researchers can call DataSHIELD analysis
-methods on the data.
+## Login
+In order to access the files as a data manager, you need to log in. The login method needs the URLs of the Armadillo server and the MinIO fileserver. It will open a browser window where you can identify yourself with the ID provider.
 
-# Login
-In order to access the files as a data manager, you need to log in.
-The login method needs the URLs of the Armadillo server and the MinIO
-fileserver. It will open a browser window where you can identify yourself with
-the ID provider.
-```{r}
+```{r, login to the armadillo storage server}
 armadillo.login("https://armadillo.dev.molgenis.org",
       "https://armadillo-minio.dev.molgenis.org")
 ```
+
 It will create a session and store the credentials in the environment.
 
-Now you can create a project and upload datasets to it to share them
-```{r}
-library(datasets)
-armadillo.create_project("project")
-armadillo.upload_table("project", "folder", iris)
-armadillo.list_tables("project")
+## Structure
+If you need to share data via Armadillo you can have a nested structure to save you data.
+
+We distinguish:
+- projects
+- folders
+- tables
+
+### Projects
+Projects are a sort of root-folders you can give persons permissions on. you can imagine that you will use a seperate project for each study you need to support. This way you make sure people can not see eachothers variables.
+
+### Folders
+Folder objects can be used to version the different tables you want to share in Armadillo. This is not mandatory and are free to use the folder level as you see fit. In our examples we will go into the versioning part a bit deeper.
+
+@## Tables 
+Tables are actual tables in R which contain the data you want to share. This can be all the data on a certain subject, mostly used in consortia or a specific study you want to expose.
+
+## Sharing data
+Let's asume you are in a consortia which has core-variables and outcome-variables. You want to share and version the whole dataset to all researchers which applied to access your data.
+
+First we will create the project. In our case the cohort of GECKO (http://www.geckodrenthe.umcg.nl/). We will use GECKO as an example to setup the shared data in Armadillo.
+
+```{r, create the toplevel project}
+armadillo.create_project("gecko")
+```
+
+Secondly we will load the table(s) we want to upload to Armadillo in the R-environment. We have test data which is in `arrow` format, the upload will take any object that has a table like structure to upload into the Armadillo. This can be SPSS, STATA, SAS or R-based data as well.
+
+```{r, load your own data}
+library(arrow)
+
+# load the core data
+nonrep <- arrow::read_parquet("data/core/nonrep.parquet")
+yearlyrep <- arrow::read_parquet("data/core/yearlyrep.parquet")
+monthlyrep <- arrow::read_parquet("data/core/monthlyrep.parquet")
+trimesterrep <- arrow::read_parquet("data/core/trimesterrep.parquet")
+```
+
+The third step is determining the second level, which contains in this case the datamodel-version the type of variables and the data-version.
+
+y_y-#variable-type#-x_x
+
+y_y = datamodel version
+x_x = data version
+
+```{r, uploading tables into the Armadillo}
+# upload the core variables
+armadillo.upload_table("gecko", "2_1-core-1_0", nonrep)
+armadillo.upload_table("gecko", "2_1-core-1_0", yearlyrep)
+armadillo.upload_table("gecko", "2_1-core-1_0", monthlyrep)
+armadillo.upload_table("gecko", "2_1-core-1_0", trimesterrep)
+```
+
+If you more tables containing the same naming scheme you need to drop the data frames in memory and then you can reassign them. See the example below.
+
+```{r, load tables with the same name}
+# drop the old assignments
+rm(nonrep, yearlyrep, monthlyrep, trimesterrep)
+
+# load the outcome data
+yearlyrep <- arrow::read_parquet("data/outcome/yearlyrep.parquet")
+nonrep <- arrow::read_parquet("data/outcome/nonrep.parquet")
+
+# upload the outcome variables
+armadillo.upload_table("gecko", "1_1-outcome-1_0", nonrep)
+armadillo.upload_table("gecko", "1_1-outcome-1_0", yearlyrep)
+```
+
+## Looking at the data
+There are a few helper functions to help you determine what is in the storage.
+
+```{r, listing the tables in a project}
+# listing tables per project
+armadillo.list_tables("gecko")
+```
+
+You can look at the files in the userinterface as well. In this case: https://armadillo-minio.dev.molgenis.org
+
+## Deleting the data
+To delete the data you need to throw away the contents first.
+
+```{r, remove the tables}
+# throw away the core tables
+armadillo.delete_table("gecko", "2_1-core-1_0", "nonrep")
+armadillo.delete_table("gecko", "2_1-core-1_0", "yearlyrep")
+armadillo.delete_table("gecko", "2_1-core-1_0", "trimesterrep")
+armadillo.delete_table("gecko", "2_1-core-1_0", "monthlyrep")
+
+# throw away the outcome tables
+armadillo.delete_table("gecko", "1_1-outcome-1_0", "nonrep")
+armadillo.delete_table("gecko", "1_1-outcome-1_0", "yearlyrep")
+```
+Now you can delete the project.
+```{r, delete the project}
+armadillo.delete_project("gecko")
 ```
