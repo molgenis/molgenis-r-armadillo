@@ -99,11 +99,26 @@ armadillo.upload_table("gecko", "1_1-outcome-1_0", yearlyrep)
 ```
 
 ## Looking at the data
-There are a few helper functions to help you determine what is in the storage.
+There are helper functions to help you determine what is in the storage server. You can list projects and tables to what's in the storage.
+
+```{r, listing projects}
+# listing tables per project
+armadillo.list_projects()
+```
 
 ```{r, listing the tables in a project}
 # listing tables per project
 armadillo.list_tables("gecko")
+```
+
+You can download the data in the R-environment as well.
+
+```{r, download table to local R environment}
+# download table to local R environment
+armadillo.load_table("gecko", "2_1-core-1_0", "trimesterrep")
+
+# check the column names from the local environment
+colnames(trimesterrep)
 ```
 
 You can look at the files in the userinterface as well. In this case: https://armadillo-minio.dev.molgenis.org

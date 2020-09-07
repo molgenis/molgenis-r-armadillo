@@ -23,7 +23,8 @@ In order to access the files as a data manager, you need to log in. The login me
 ```r
 armadillo.login("https://armadillo.dev.molgenis.org",
       "https://armadillo-minio.dev.molgenis.org")
-#> [1] "We're opening a browser so you can log in with code 26NMZT"
+#> [1] "We're opening a browser so you can log in with code D4LSTF"
+#> Error in armadillo.assume_role_with_web_identity(token, minio, duration): Service Unavailable (HTTP 503). Failed to assume role on S3 server.
 ```
 
 It will create a session and store the credentials in the environment.
@@ -53,7 +54,69 @@ First we will create the project. In our case the cohort of GECKO (http://www.ge
 
 ```r
 armadillo.create_project("gecko")
-#> Created project 'gecko'
+#> List of 10
+#>  $ url        : chr "https://armadillo-minio.dev.molgenis.org/shared-gecko/"
+#>  $ status_code: int 503
+#>  $ headers    :List of 5
+#>   ..$ server        : chr "nginx/1.17.10"
+#>   ..$ date          : chr "Mon, 07 Sep 2020 13:06:38 GMT"
+#>   ..$ content-type  : chr "text/html"
+#>   ..$ content-length: chr "198"
+#>   ..$ connection    : chr "keep-alive"
+#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  $ all_headers:List of 1
+#>   ..$ :List of 3
+#>   .. ..$ status : int 503
+#>   .. ..$ version: chr "HTTP/1.1"
+#>   .. ..$ headers:List of 5
+#>   .. .. ..$ server        : chr "nginx/1.17.10"
+#>   .. .. ..$ date          : chr "Mon, 07 Sep 2020 13:06:38 GMT"
+#>   .. .. ..$ content-type  : chr "text/html"
+#>   .. .. ..$ content-length: chr "198"
+#>   .. .. ..$ connection    : chr "keep-alive"
+#>   .. .. ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  $ cookies    :'data.frame':	1 obs. of  7 variables:
+#>   ..$ domain    : chr "#HttpOnly_armadillo-minio.dev.molgenis.org"
+#>   ..$ flag      : logi FALSE
+#>   ..$ path      : chr "/"
+#>   ..$ secure    : logi TRUE
+#>   ..$ expiration: POSIXct[1:1], format: NA
+#>   ..$ name      : chr "BIGipServerwebhost_pool_gcc_http"
+#>   ..$ value     : chr "2537597120.20480.0000"
+#>  $ content    : raw [1:198] 3c 68 74 6d ...
+#>  $ date       : POSIXct[1:1], format: "2020-09-07 13:06:38"
+#>  $ times      : Named num [1:6] 0 0.00141 0.01988 0.0485 0 ...
+#>   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
+#>  $ request    :List of 7
+#>   ..$ method    : chr "PUT"
+#>   ..$ url       : chr "https://armadillo-minio.dev.molgenis.org/shared-gecko/"
+#>   ..$ headers   : Named chr [1:7] "application/json, text/xml, application/xml, */*" "" "private" "20200907T130638Z" ...
+#>   .. ..- attr(*, "names")= chr [1:7] "Accept" "Content-Type" "x-amz-acl" "x-amz-date" ...
+#>   ..$ fields    : NULL
+#>   ..$ options   :List of 5
+#>   .. ..$ useragent    : chr "libcurl/7.64.1 r-curl/4.3 httr/1.4.2"
+#>   .. ..$ post         : logi TRUE
+#>   .. ..$ postfieldsize: int 144
+#>   .. ..$ postfields   : raw [1:144] 3c 43 72 65 ...
+#>   .. ..$ customrequest: chr "PUT"
+#>   ..$ auth_token: NULL
+#>   ..$ output    : list()
+#>   .. ..- attr(*, "class")= chr [1:2] "write_memory" "write_function"
+#>   ..- attr(*, "class")= chr "request"
+#>  $ handle     :Class 'curl_handle' <externalptr> 
+#>  - attr(*, "class")= chr "aws_error"
+#>  - attr(*, "headers")=List of 5
+#>   ..$ server        : chr "nginx/1.17.10"
+#>   ..$ date          : chr "Mon, 07 Sep 2020 13:06:38 GMT"
+#>   ..$ content-type  : chr "text/html"
+#>   ..$ content-length: chr "198"
+#>   ..$ connection    : chr "keep-alive"
+#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  - attr(*, "request_canonical")= chr "PUT\n/shared-gecko/\n\nhost:armadillo-minio.dev.molgenis.org\nx-amz-acl:private\nx-amz-date:20200907T130638Z\nx"| __truncated__
+#>  - attr(*, "request_string_to_sign")= chr "AWS4-HMAC-SHA256\n20200907T130638Z\n20200907//s3/aws4_request\ndf2172bf2ccf85201e805e96a95bf40ec56e3cf2d7d57b25"| __truncated__
+#>  - attr(*, "request_signature")= chr "AWS4-HMAC-SHA256 Credential=KQ4911BNN1DEU26Y1722/20200907//s3/aws4_request,SignedHeaders=host;x-amz-acl;x-amz-d"| __truncated__
+#> NULL
+#> Error in parse_aws_s3_response(r, Sig, verbose = verbose): Service Unavailable (HTTP 503).
 ```
 
 Secondly we will load the table(s) we want to upload to Armadillo in the R-environment. We have test data which is in `arrow` format, the upload will take any object that has a table like structure to upload into the Armadillo. This can be SPSS, STATA, SAS or R-based data as well.
@@ -81,20 +144,273 @@ x_x = data version
 # upload the core variables
 armadillo.upload_table("gecko", "2_1-core-1_0", nonrep)
 #> Compressing table...
-#>   |                                                                                                         |                                                                                                 |   0%  |                                                                                                         |=============================                                                                    |  30%  |                                                                                                         |==========================================================                                       |  60%  |                                                                                                         |========================================================================================         |  90%  |                                                                                                         |=================================================================================================| 100%
-#> Uploaded table 2_1-core-1_0/nonrep
+#>   |                                                                                                         |                                                                                                 |   0%  |                                                                                                         |=============================                                                                    |  30%  |                                                                                                         |==========================================================                                       |  60%List of 10
+#>  $ url        : chr "https://armadillo-minio.dev.molgenis.org/shared-gecko/2_1-core-1_0/nonrep.parquet"
+#>  $ status_code: int 503
+#>  $ headers    :List of 5
+#>   ..$ server        : chr "nginx/1.17.10"
+#>   ..$ date          : chr "Mon, 07 Sep 2020 13:06:38 GMT"
+#>   ..$ content-type  : chr "text/html"
+#>   ..$ content-length: chr "198"
+#>   ..$ connection    : chr "close"
+#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  $ all_headers:List of 1
+#>   ..$ :List of 3
+#>   .. ..$ status : int 503
+#>   .. ..$ version: chr "HTTP/1.1"
+#>   .. ..$ headers:List of 5
+#>   .. .. ..$ server        : chr "nginx/1.17.10"
+#>   .. .. ..$ date          : chr "Mon, 07 Sep 2020 13:06:38 GMT"
+#>   .. .. ..$ content-type  : chr "text/html"
+#>   .. .. ..$ content-length: chr "198"
+#>   .. .. ..$ connection    : chr "close"
+#>   .. .. ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  $ cookies    :'data.frame':	1 obs. of  7 variables:
+#>   ..$ domain    : chr "#HttpOnly_armadillo-minio.dev.molgenis.org"
+#>   ..$ flag      : logi FALSE
+#>   ..$ path      : chr "/"
+#>   ..$ secure    : logi TRUE
+#>   ..$ expiration: POSIXct[1:1], format: NA
+#>   ..$ name      : chr "BIGipServerwebhost_pool_gcc_http"
+#>   ..$ value     : chr "2537597120.20480.0000"
+#>  $ content    : raw [1:198] 3c 68 74 6d ...
+#>  $ date       : POSIXct[1:1], format: "2020-09-07 13:06:38"
+#>  $ times      : Named num [1:6] 0 0.000031 0.000033 0.0001 0.000402 ...
+#>   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
+#>  $ request    :List of 7
+#>   ..$ method    : chr "PUT"
+#>   ..$ url       : chr "https://armadillo-minio.dev.molgenis.org/shared-gecko/2_1-core-1_0/nonrep.parquet"
+#>   ..$ headers   : Named chr [1:8] "application/json, text/xml, application/xml, */*" "text/plain" "private" "217379" ...
+#>   .. ..- attr(*, "names")= chr [1:8] "Accept" "Content-Type" "x-amz-acl" "Content-Length" ...
+#>   ..$ fields    : NULL
+#>   ..$ options   :List of 7
+#>   .. ..$ useragent          : chr "libcurl/7.64.1 r-curl/4.3 httr/1.4.2"
+#>   .. ..$ post               : logi TRUE
+#>   .. ..$ readfunction       :function (nbytes, ...)  
+#>   .. ..$ postfieldsize_large: num 217379
+#>   .. ..$ noprogress         : logi FALSE
+#>   .. ..$ progressfunction   :function (down, up)  
+#>   .. ..$ customrequest      : chr "PUT"
+#>   ..$ auth_token: NULL
+#>   ..$ output    : list()
+#>   .. ..- attr(*, "class")= chr [1:2] "write_memory" "write_function"
+#>   ..- attr(*, "class")= chr "request"
+#>  $ handle     :Class 'curl_handle' <externalptr> 
+#>  - attr(*, "class")= chr "aws_error"
+#>  - attr(*, "headers")=List of 5
+#>   ..$ server        : chr "nginx/1.17.10"
+#>   ..$ date          : chr "Mon, 07 Sep 2020 13:06:38 GMT"
+#>   ..$ content-type  : chr "text/html"
+#>   ..$ content-length: chr "198"
+#>   ..$ connection    : chr "close"
+#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  - attr(*, "request_canonical")= chr "PUT\n/shared-gecko/2_1-core-1_0/nonrep.parquet\n\ncontent-length:217379\nhost:armadillo-minio.dev.molgenis.org\"| __truncated__
+#>  - attr(*, "request_string_to_sign")= chr "AWS4-HMAC-SHA256\n20200907T130638Z\n20200907//s3/aws4_request\n506abe586bf03c6264159992448424305d77a926f2258f13"| __truncated__
+#>  - attr(*, "request_signature")= chr "AWS4-HMAC-SHA256 Credential=KQ4911BNN1DEU26Y1722/20200907//s3/aws4_request,SignedHeaders=content-length;host;x-"| __truncated__
+#> NULL
+#> Error in parse_aws_s3_response(r, Sig, verbose = verbose): Service Unavailable (HTTP 503).
 armadillo.upload_table("gecko", "2_1-core-1_0", yearlyrep)
 #> Compressing table...
-#>   |                                                                                                         |                                                                                                 |   0%  |                                                                                                         |===========                                                                                      |  11%  |                                                                                                         |======================                                                                           |  23%  |                                                                                                         |=================================                                                                |  34%  |                                                                                                         |============================================                                                     |  46%  |                                                                                                         |=======================================================                                          |  57%  |                                                                                                         |===================================================================                              |  69%  |                                                                                                         |==============================================================================                   |  80%  |                                                                                                         |=========================================================================================        |  92%  |                                                                                                         |=================================================================================================| 100%
-#> Uploaded table 2_1-core-1_0/yearlyrep
+#>   |                                                                                                         |                                                                                                 |   0%  |                                                                                                         |===========                                                                                      |  11%  |                                                                                                         |======================                                                                           |  23%List of 10
+#>  $ url        : chr "https://armadillo-minio.dev.molgenis.org/shared-gecko/2_1-core-1_0/yearlyrep.parquet"
+#>  $ status_code: int 503
+#>  $ headers    :List of 5
+#>   ..$ server        : chr "nginx/1.17.10"
+#>   ..$ date          : chr "Mon, 07 Sep 2020 13:06:39 GMT"
+#>   ..$ content-type  : chr "text/html"
+#>   ..$ content-length: chr "198"
+#>   ..$ connection    : chr "close"
+#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  $ all_headers:List of 1
+#>   ..$ :List of 3
+#>   .. ..$ status : int 503
+#>   .. ..$ version: chr "HTTP/1.1"
+#>   .. ..$ headers:List of 5
+#>   .. .. ..$ server        : chr "nginx/1.17.10"
+#>   .. .. ..$ date          : chr "Mon, 07 Sep 2020 13:06:39 GMT"
+#>   .. .. ..$ content-type  : chr "text/html"
+#>   .. .. ..$ content-length: chr "198"
+#>   .. .. ..$ connection    : chr "close"
+#>   .. .. ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  $ cookies    :'data.frame':	1 obs. of  7 variables:
+#>   ..$ domain    : chr "#HttpOnly_armadillo-minio.dev.molgenis.org"
+#>   ..$ flag      : logi FALSE
+#>   ..$ path      : chr "/"
+#>   ..$ secure    : logi TRUE
+#>   ..$ expiration: POSIXct[1:1], format: NA
+#>   ..$ name      : chr "BIGipServerwebhost_pool_gcc_http"
+#>   ..$ value     : chr "2537597120.20480.0000"
+#>  $ content    : raw [1:198] 3c 68 74 6d ...
+#>  $ date       : POSIXct[1:1], format: "2020-09-07 13:06:39"
+#>  $ times      : Named num [1:6] 0 0.000029 0.039923 0.069423 0.069673 ...
+#>   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
+#>  $ request    :List of 7
+#>   ..$ method    : chr "PUT"
+#>   ..$ url       : chr "https://armadillo-minio.dev.molgenis.org/shared-gecko/2_1-core-1_0/yearlyrep.parquet"
+#>   ..$ headers   : Named chr [1:8] "application/json, text/xml, application/xml, */*" "text/plain" "private" "572856" ...
+#>   .. ..- attr(*, "names")= chr [1:8] "Accept" "Content-Type" "x-amz-acl" "Content-Length" ...
+#>   ..$ fields    : NULL
+#>   ..$ options   :List of 7
+#>   .. ..$ useragent          : chr "libcurl/7.64.1 r-curl/4.3 httr/1.4.2"
+#>   .. ..$ post               : logi TRUE
+#>   .. ..$ readfunction       :function (nbytes, ...)  
+#>   .. ..$ postfieldsize_large: num 572856
+#>   .. ..$ noprogress         : logi FALSE
+#>   .. ..$ progressfunction   :function (down, up)  
+#>   .. ..$ customrequest      : chr "PUT"
+#>   ..$ auth_token: NULL
+#>   ..$ output    : list()
+#>   .. ..- attr(*, "class")= chr [1:2] "write_memory" "write_function"
+#>   ..- attr(*, "class")= chr "request"
+#>  $ handle     :Class 'curl_handle' <externalptr> 
+#>  - attr(*, "class")= chr "aws_error"
+#>  - attr(*, "headers")=List of 5
+#>   ..$ server        : chr "nginx/1.17.10"
+#>   ..$ date          : chr "Mon, 07 Sep 2020 13:06:39 GMT"
+#>   ..$ content-type  : chr "text/html"
+#>   ..$ content-length: chr "198"
+#>   ..$ connection    : chr "close"
+#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  - attr(*, "request_canonical")= chr "PUT\n/shared-gecko/2_1-core-1_0/yearlyrep.parquet\n\ncontent-length:572856\nhost:armadillo-minio.dev.molgenis.o"| __truncated__
+#>  - attr(*, "request_string_to_sign")= chr "AWS4-HMAC-SHA256\n20200907T130638Z\n20200907//s3/aws4_request\n6d66c2d70751b17321f9edf5b933297382fddbfcfc300eef"| __truncated__
+#>  - attr(*, "request_signature")= chr "AWS4-HMAC-SHA256 Credential=KQ4911BNN1DEU26Y1722/20200907//s3/aws4_request,SignedHeaders=content-length;host;x-"| __truncated__
+#> NULL
+#> Error in parse_aws_s3_response(r, Sig, verbose = verbose): Service Unavailable (HTTP 503).
 armadillo.upload_table("gecko", "2_1-core-1_0", monthlyrep)
 #> Compressing table...
-#>   |                                                                                                         |                                                                                                 |   0%  |                                                                                                         |===                                                                                              |   3%  |                                                                                                         |======                                                                                           |   6%  |                                                                                                         |========                                                                                         |   9%  |                                                                                                         |===========                                                                                      |  11%  |                                                                                                         |==============                                                                                   |  14%  |                                                                                                         |=================                                                                                |  17%  |                                                                                                         |===================                                                                              |  20%  |                                                                                                         |======================                                                                           |  23%  |                                                                                                         |=========================                                                                        |  26%  |                                                                                                         |============================                                                                     |  29%  |                                                                                                         |==============================                                                                   |  31%  |                                                                                                         |=================================                                                                |  34%  |                                                                                                         |====================================                                                             |  37%  |                                                                                                         |=======================================                                                          |  40%  |                                                                                                         |==========================================                                                       |  43%  |                                                                                                         |============================================                                                     |  46%  |                                                                                                         |===============================================                                                  |  49%  |                                                                                                         |==================================================                                               |  51%  |                                                                                                         |=====================================================                                            |  54%  |                                                                                                         |=======================================================                                          |  57%  |                                                                                                         |==========================================================                                       |  60%  |                                                                                                         |=============================================================                                    |  63%  |                                                                                                         |================================================================                                 |  66%  |                                                                                                         |===================================================================                              |  69%  |                                                                                                         |=====================================================================                            |  71%  |                                                                                                         |========================================================================                         |  74%  |                                                                                                         |===========================================================================                      |  77%  |                                                                                                         |==============================================================================                   |  80%  |                                                                                                         |================================================================================                 |  83%  |                                                                                                         |===================================================================================              |  86%  |                                                                                                         |======================================================================================           |  89%  |                                                                                                         |=========================================================================================        |  91%  |                                                                                                         |===========================================================================================      |  94%  |                                                                                                         |==============================================================================================   |  97%  |                                                                                                         |=================================================================================================| 100%
-#> Uploaded table 2_1-core-1_0/monthlyrep
+#>   |                                                                                                         |                                                                                                 |   0%  |                                                                                                         |===                                                                                              |   3%  |                                                                                                         |======                                                                                           |   6%List of 10
+#>  $ url        : chr "https://armadillo-minio.dev.molgenis.org/shared-gecko/2_1-core-1_0/monthlyrep.parquet"
+#>  $ status_code: int 503
+#>  $ headers    :List of 5
+#>   ..$ server        : chr "nginx/1.17.10"
+#>   ..$ date          : chr "Mon, 07 Sep 2020 13:06:39 GMT"
+#>   ..$ content-type  : chr "text/html"
+#>   ..$ content-length: chr "198"
+#>   ..$ connection    : chr "close"
+#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  $ all_headers:List of 1
+#>   ..$ :List of 3
+#>   .. ..$ status : int 503
+#>   .. ..$ version: chr "HTTP/1.1"
+#>   .. ..$ headers:List of 5
+#>   .. .. ..$ server        : chr "nginx/1.17.10"
+#>   .. .. ..$ date          : chr "Mon, 07 Sep 2020 13:06:39 GMT"
+#>   .. .. ..$ content-type  : chr "text/html"
+#>   .. .. ..$ content-length: chr "198"
+#>   .. .. ..$ connection    : chr "close"
+#>   .. .. ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  $ cookies    :'data.frame':	1 obs. of  7 variables:
+#>   ..$ domain    : chr "#HttpOnly_armadillo-minio.dev.molgenis.org"
+#>   ..$ flag      : logi FALSE
+#>   ..$ path      : chr "/"
+#>   ..$ secure    : logi TRUE
+#>   ..$ expiration: POSIXct[1:1], format: NA
+#>   ..$ name      : chr "BIGipServerwebhost_pool_gcc_http"
+#>   ..$ value     : chr "2537597120.20480.0000"
+#>  $ content    : raw [1:198] 3c 68 74 6d ...
+#>  $ date       : POSIXct[1:1], format: "2020-09-07 13:06:39"
+#>  $ times      : Named num [1:6] 0 0.000035 0.016661 0.052367 0.052701 ...
+#>   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
+#>  $ request    :List of 7
+#>   ..$ method    : chr "PUT"
+#>   ..$ url       : chr "https://armadillo-minio.dev.molgenis.org/shared-gecko/2_1-core-1_0/monthlyrep.parquet"
+#>   ..$ headers   : Named chr [1:8] "application/json, text/xml, application/xml, */*" "text/plain" "private" "2293465" ...
+#>   .. ..- attr(*, "names")= chr [1:8] "Accept" "Content-Type" "x-amz-acl" "Content-Length" ...
+#>   ..$ fields    : NULL
+#>   ..$ options   :List of 7
+#>   .. ..$ useragent          : chr "libcurl/7.64.1 r-curl/4.3 httr/1.4.2"
+#>   .. ..$ post               : logi TRUE
+#>   .. ..$ readfunction       :function (nbytes, ...)  
+#>   .. ..$ postfieldsize_large: num 2293465
+#>   .. ..$ noprogress         : logi FALSE
+#>   .. ..$ progressfunction   :function (down, up)  
+#>   .. ..$ customrequest      : chr "PUT"
+#>   ..$ auth_token: NULL
+#>   ..$ output    : list()
+#>   .. ..- attr(*, "class")= chr [1:2] "write_memory" "write_function"
+#>   ..- attr(*, "class")= chr "request"
+#>  $ handle     :Class 'curl_handle' <externalptr> 
+#>  - attr(*, "class")= chr "aws_error"
+#>  - attr(*, "headers")=List of 5
+#>   ..$ server        : chr "nginx/1.17.10"
+#>   ..$ date          : chr "Mon, 07 Sep 2020 13:06:39 GMT"
+#>   ..$ content-type  : chr "text/html"
+#>   ..$ content-length: chr "198"
+#>   ..$ connection    : chr "close"
+#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  - attr(*, "request_canonical")= chr "PUT\n/shared-gecko/2_1-core-1_0/monthlyrep.parquet\n\ncontent-length:2293465\nhost:armadillo-minio.dev.molgenis"| __truncated__
+#>  - attr(*, "request_string_to_sign")= chr "AWS4-HMAC-SHA256\n20200907T130639Z\n20200907//s3/aws4_request\n3f8c285f0c464678e4cce8b53c8eb4d1cb338024061e63ba"| __truncated__
+#>  - attr(*, "request_signature")= chr "AWS4-HMAC-SHA256 Credential=KQ4911BNN1DEU26Y1722/20200907//s3/aws4_request,SignedHeaders=content-length;host;x-"| __truncated__
+#> NULL
+#> Error in parse_aws_s3_response(r, Sig, verbose = verbose): Service Unavailable (HTTP 503).
 armadillo.upload_table("gecko", "2_1-core-1_0", trimesterrep)
 #> Compressing table...
 #>   |                                                                                                         |                                                                                                 |   0%  |                                                                                                         |=================================================================================================| 100%
-#> Uploaded table 2_1-core-1_0/trimesterrep
+#> List of 10
+#>  $ url        : chr "https://armadillo-minio.dev.molgenis.org/shared-gecko/2_1-core-1_0/trimesterrep.parquet"
+#>  $ status_code: int 503
+#>  $ headers    :List of 5
+#>   ..$ server        : chr "nginx/1.17.10"
+#>   ..$ date          : chr "Mon, 07 Sep 2020 13:06:39 GMT"
+#>   ..$ content-type  : chr "text/html"
+#>   ..$ content-length: chr "198"
+#>   ..$ connection    : chr "close"
+#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  $ all_headers:List of 1
+#>   ..$ :List of 3
+#>   .. ..$ status : int 503
+#>   .. ..$ version: chr "HTTP/1.1"
+#>   .. ..$ headers:List of 5
+#>   .. .. ..$ server        : chr "nginx/1.17.10"
+#>   .. .. ..$ date          : chr "Mon, 07 Sep 2020 13:06:39 GMT"
+#>   .. .. ..$ content-type  : chr "text/html"
+#>   .. .. ..$ content-length: chr "198"
+#>   .. .. ..$ connection    : chr "close"
+#>   .. .. ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  $ cookies    :'data.frame':	1 obs. of  7 variables:
+#>   ..$ domain    : chr "#HttpOnly_armadillo-minio.dev.molgenis.org"
+#>   ..$ flag      : logi FALSE
+#>   ..$ path      : chr "/"
+#>   ..$ secure    : logi TRUE
+#>   ..$ expiration: POSIXct[1:1], format: NA
+#>   ..$ name      : chr "BIGipServerwebhost_pool_gcc_http"
+#>   ..$ value     : chr "2537597120.20480.0000"
+#>  $ content    : raw [1:198] 3c 68 74 6d ...
+#>  $ date       : POSIXct[1:1], format: "2020-09-07 13:06:39"
+#>  $ times      : Named num [1:6] 0 0.000074 0.041373 0.074033 0.074732 ...
+#>   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
+#>  $ request    :List of 7
+#>   ..$ method    : chr "PUT"
+#>   ..$ url       : chr "https://armadillo-minio.dev.molgenis.org/shared-gecko/2_1-core-1_0/trimesterrep.parquet"
+#>   ..$ headers   : Named chr [1:8] "application/json, text/xml, application/xml, */*" "text/plain" "private" "32588" ...
+#>   .. ..- attr(*, "names")= chr [1:8] "Accept" "Content-Type" "x-amz-acl" "Content-Length" ...
+#>   ..$ fields    : NULL
+#>   ..$ options   :List of 7
+#>   .. ..$ useragent          : chr "libcurl/7.64.1 r-curl/4.3 httr/1.4.2"
+#>   .. ..$ post               : logi TRUE
+#>   .. ..$ readfunction       :function (nbytes, ...)  
+#>   .. ..$ postfieldsize_large: num 32588
+#>   .. ..$ noprogress         : logi FALSE
+#>   .. ..$ progressfunction   :function (down, up)  
+#>   .. ..$ customrequest      : chr "PUT"
+#>   ..$ auth_token: NULL
+#>   ..$ output    : list()
+#>   .. ..- attr(*, "class")= chr [1:2] "write_memory" "write_function"
+#>   ..- attr(*, "class")= chr "request"
+#>  $ handle     :Class 'curl_handle' <externalptr> 
+#>  - attr(*, "class")= chr "aws_error"
+#>  - attr(*, "headers")=List of 5
+#>   ..$ server        : chr "nginx/1.17.10"
+#>   ..$ date          : chr "Mon, 07 Sep 2020 13:06:39 GMT"
+#>   ..$ content-type  : chr "text/html"
+#>   ..$ content-length: chr "198"
+#>   ..$ connection    : chr "close"
+#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  - attr(*, "request_canonical")= chr "PUT\n/shared-gecko/2_1-core-1_0/trimesterrep.parquet\n\ncontent-length:32588\nhost:armadillo-minio.dev.molgenis"| __truncated__
+#>  - attr(*, "request_string_to_sign")= chr "AWS4-HMAC-SHA256\n20200907T130639Z\n20200907//s3/aws4_request\nfccc69704a14a1b800122f6745f9e2d7e962fb9035a310f2"| __truncated__
+#>  - attr(*, "request_signature")= chr "AWS4-HMAC-SHA256 Credential=KQ4911BNN1DEU26Y1722/20200907//s3/aws4_request,SignedHeaders=content-length;host;x-"| __truncated__
+#> NULL
+#> Error in parse_aws_s3_response(r, Sig, verbose = verbose): Service Unavailable (HTTP 503).
 ```
 
 If you more tables containing the same naming scheme you need to drop the data frames in memory and then you can reassign them. See the example below.
@@ -112,22 +428,228 @@ nonrep <- arrow::read_parquet("data/outcome/nonrep.parquet")
 armadillo.upload_table("gecko", "1_1-outcome-1_0", nonrep)
 #> Compressing table...
 #>   |                                                                                                         |                                                                                                 |   0%  |                                                                                                         |=================================================================================================| 100%
-#> Uploaded table 1_1-outcome-1_0/nonrep
+#> List of 10
+#>  $ url        : chr "https://armadillo-minio.dev.molgenis.org/shared-gecko/1_1-outcome-1_0/nonrep.parquet"
+#>  $ status_code: int 503
+#>  $ headers    :List of 5
+#>   ..$ server        : chr "nginx/1.17.10"
+#>   ..$ date          : chr "Mon, 07 Sep 2020 13:06:39 GMT"
+#>   ..$ content-type  : chr "text/html"
+#>   ..$ content-length: chr "198"
+#>   ..$ connection    : chr "close"
+#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  $ all_headers:List of 1
+#>   ..$ :List of 3
+#>   .. ..$ status : int 503
+#>   .. ..$ version: chr "HTTP/1.1"
+#>   .. ..$ headers:List of 5
+#>   .. .. ..$ server        : chr "nginx/1.17.10"
+#>   .. .. ..$ date          : chr "Mon, 07 Sep 2020 13:06:39 GMT"
+#>   .. .. ..$ content-type  : chr "text/html"
+#>   .. .. ..$ content-length: chr "198"
+#>   .. .. ..$ connection    : chr "close"
+#>   .. .. ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  $ cookies    :'data.frame':	1 obs. of  7 variables:
+#>   ..$ domain    : chr "#HttpOnly_armadillo-minio.dev.molgenis.org"
+#>   ..$ flag      : logi FALSE
+#>   ..$ path      : chr "/"
+#>   ..$ secure    : logi TRUE
+#>   ..$ expiration: POSIXct[1:1], format: NA
+#>   ..$ name      : chr "BIGipServerwebhost_pool_gcc_http"
+#>   ..$ value     : chr "2537597120.20480.0000"
+#>  $ content    : raw [1:198] 3c 68 74 6d ...
+#>  $ date       : POSIXct[1:1], format: "2020-09-07 13:06:39"
+#>  $ times      : Named num [1:6] 0 0.00002 0.02149 0.05313 0.05353 ...
+#>   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
+#>  $ request    :List of 7
+#>   ..$ method    : chr "PUT"
+#>   ..$ url       : chr "https://armadillo-minio.dev.molgenis.org/shared-gecko/1_1-outcome-1_0/nonrep.parquet"
+#>   ..$ headers   : Named chr [1:8] "application/json, text/xml, application/xml, */*" "text/plain" "private" "15863" ...
+#>   .. ..- attr(*, "names")= chr [1:8] "Accept" "Content-Type" "x-amz-acl" "Content-Length" ...
+#>   ..$ fields    : NULL
+#>   ..$ options   :List of 7
+#>   .. ..$ useragent          : chr "libcurl/7.64.1 r-curl/4.3 httr/1.4.2"
+#>   .. ..$ post               : logi TRUE
+#>   .. ..$ readfunction       :function (nbytes, ...)  
+#>   .. ..$ postfieldsize_large: num 15863
+#>   .. ..$ noprogress         : logi FALSE
+#>   .. ..$ progressfunction   :function (down, up)  
+#>   .. ..$ customrequest      : chr "PUT"
+#>   ..$ auth_token: NULL
+#>   ..$ output    : list()
+#>   .. ..- attr(*, "class")= chr [1:2] "write_memory" "write_function"
+#>   ..- attr(*, "class")= chr "request"
+#>  $ handle     :Class 'curl_handle' <externalptr> 
+#>  - attr(*, "class")= chr "aws_error"
+#>  - attr(*, "headers")=List of 5
+#>   ..$ server        : chr "nginx/1.17.10"
+#>   ..$ date          : chr "Mon, 07 Sep 2020 13:06:39 GMT"
+#>   ..$ content-type  : chr "text/html"
+#>   ..$ content-length: chr "198"
+#>   ..$ connection    : chr "close"
+#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  - attr(*, "request_canonical")= chr "PUT\n/shared-gecko/1_1-outcome-1_0/nonrep.parquet\n\ncontent-length:15863\nhost:armadillo-minio.dev.molgenis.or"| __truncated__
+#>  - attr(*, "request_string_to_sign")= chr "AWS4-HMAC-SHA256\n20200907T130639Z\n20200907//s3/aws4_request\n9017ae08d7c34ef54c3a907f68b28f104a97a7261d979e3a"| __truncated__
+#>  - attr(*, "request_signature")= chr "AWS4-HMAC-SHA256 Credential=KQ4911BNN1DEU26Y1722/20200907//s3/aws4_request,SignedHeaders=content-length;host;x-"| __truncated__
+#> NULL
+#> Error in parse_aws_s3_response(r, Sig, verbose = verbose): Service Unavailable (HTTP 503).
 armadillo.upload_table("gecko", "1_1-outcome-1_0", yearlyrep)
 #> Compressing table...
 #>   |                                                                                                         |                                                                                                 |   0%  |                                                                                                         |=================================================================================================| 100%
-#> Uploaded table 1_1-outcome-1_0/yearlyrep
+#> List of 10
+#>  $ url        : chr "https://armadillo-minio.dev.molgenis.org/shared-gecko/1_1-outcome-1_0/yearlyrep.parquet"
+#>  $ status_code: int 503
+#>  $ headers    :List of 5
+#>   ..$ server        : chr "nginx/1.17.10"
+#>   ..$ date          : chr "Mon, 07 Sep 2020 13:06:39 GMT"
+#>   ..$ content-type  : chr "text/html"
+#>   ..$ content-length: chr "198"
+#>   ..$ connection    : chr "close"
+#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  $ all_headers:List of 1
+#>   ..$ :List of 3
+#>   .. ..$ status : int 503
+#>   .. ..$ version: chr "HTTP/1.1"
+#>   .. ..$ headers:List of 5
+#>   .. .. ..$ server        : chr "nginx/1.17.10"
+#>   .. .. ..$ date          : chr "Mon, 07 Sep 2020 13:06:39 GMT"
+#>   .. .. ..$ content-type  : chr "text/html"
+#>   .. .. ..$ content-length: chr "198"
+#>   .. .. ..$ connection    : chr "close"
+#>   .. .. ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  $ cookies    :'data.frame':	1 obs. of  7 variables:
+#>   ..$ domain    : chr "#HttpOnly_armadillo-minio.dev.molgenis.org"
+#>   ..$ flag      : logi FALSE
+#>   ..$ path      : chr "/"
+#>   ..$ secure    : logi TRUE
+#>   ..$ expiration: POSIXct[1:1], format: NA
+#>   ..$ name      : chr "BIGipServerwebhost_pool_gcc_http"
+#>   ..$ value     : chr "2537597120.20480.0000"
+#>  $ content    : raw [1:198] 3c 68 74 6d ...
+#>  $ date       : POSIXct[1:1], format: "2020-09-07 13:06:39"
+#>  $ times      : Named num [1:6] 0 0.000024 0.018101 0.049711 0.050018 ...
+#>   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
+#>  $ request    :List of 7
+#>   ..$ method    : chr "PUT"
+#>   ..$ url       : chr "https://armadillo-minio.dev.molgenis.org/shared-gecko/1_1-outcome-1_0/yearlyrep.parquet"
+#>   ..$ headers   : Named chr [1:8] "application/json, text/xml, application/xml, */*" "text/plain" "private" "58301" ...
+#>   .. ..- attr(*, "names")= chr [1:8] "Accept" "Content-Type" "x-amz-acl" "Content-Length" ...
+#>   ..$ fields    : NULL
+#>   ..$ options   :List of 7
+#>   .. ..$ useragent          : chr "libcurl/7.64.1 r-curl/4.3 httr/1.4.2"
+#>   .. ..$ post               : logi TRUE
+#>   .. ..$ readfunction       :function (nbytes, ...)  
+#>   .. ..$ postfieldsize_large: num 58301
+#>   .. ..$ noprogress         : logi FALSE
+#>   .. ..$ progressfunction   :function (down, up)  
+#>   .. ..$ customrequest      : chr "PUT"
+#>   ..$ auth_token: NULL
+#>   ..$ output    : list()
+#>   .. ..- attr(*, "class")= chr [1:2] "write_memory" "write_function"
+#>   ..- attr(*, "class")= chr "request"
+#>  $ handle     :Class 'curl_handle' <externalptr> 
+#>  - attr(*, "class")= chr "aws_error"
+#>  - attr(*, "headers")=List of 5
+#>   ..$ server        : chr "nginx/1.17.10"
+#>   ..$ date          : chr "Mon, 07 Sep 2020 13:06:39 GMT"
+#>   ..$ content-type  : chr "text/html"
+#>   ..$ content-length: chr "198"
+#>   ..$ connection    : chr "close"
+#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  - attr(*, "request_canonical")= chr "PUT\n/shared-gecko/1_1-outcome-1_0/yearlyrep.parquet\n\ncontent-length:58301\nhost:armadillo-minio.dev.molgenis"| __truncated__
+#>  - attr(*, "request_string_to_sign")= chr "AWS4-HMAC-SHA256\n20200907T130639Z\n20200907//s3/aws4_request\ncb1c2b438dcae1c93f2ede2ae729cbf74deb0a29af407547"| __truncated__
+#>  - attr(*, "request_signature")= chr "AWS4-HMAC-SHA256 Credential=KQ4911BNN1DEU26Y1722/20200907//s3/aws4_request,SignedHeaders=content-length;host;x-"| __truncated__
+#> NULL
+#> Error in parse_aws_s3_response(r, Sig, verbose = verbose): Service Unavailable (HTTP 503).
 ```
 
 ## Looking at the data
-There are a few helper functions to help you determine what is in the storage.
+There are helper functions to help you determine what is in the storage server. You can list projects and tables to what's in the storage.
+
+
+```r
+# listing tables per project
+armadillo.list_projects()
+#> List of 10
+#>  $ url        : chr "https://armadillo-minio.dev.molgenis.org/"
+#>  $ status_code: int 503
+#>  $ headers    :List of 5
+#>   ..$ server        : chr "nginx/1.17.10"
+#>   ..$ date          : chr "Mon, 07 Sep 2020 13:06:40 GMT"
+#>   ..$ content-type  : chr "text/html"
+#>   ..$ content-length: chr "198"
+#>   ..$ connection    : chr "keep-alive"
+#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  $ all_headers:List of 1
+#>   ..$ :List of 3
+#>   .. ..$ status : int 503
+#>   .. ..$ version: chr "HTTP/1.1"
+#>   .. ..$ headers:List of 5
+#>   .. .. ..$ server        : chr "nginx/1.17.10"
+#>   .. .. ..$ date          : chr "Mon, 07 Sep 2020 13:06:40 GMT"
+#>   .. .. ..$ content-type  : chr "text/html"
+#>   .. .. ..$ content-length: chr "198"
+#>   .. .. ..$ connection    : chr "keep-alive"
+#>   .. .. ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  $ cookies    :'data.frame':	1 obs. of  7 variables:
+#>   ..$ domain    : chr "#HttpOnly_armadillo-minio.dev.molgenis.org"
+#>   ..$ flag      : logi FALSE
+#>   ..$ path      : chr "/"
+#>   ..$ secure    : logi TRUE
+#>   ..$ expiration: POSIXct[1:1], format: NA
+#>   ..$ name      : chr "BIGipServerwebhost_pool_gcc_http"
+#>   ..$ value     : chr "2537597120.20480.0000"
+#>  $ content    : raw [1:198] 3c 68 74 6d ...
+#>  $ date       : POSIXct[1:1], format: "2020-09-07 13:06:40"
+#>  $ times      : Named num [1:6] 0 0.000022 0.018351 0.052559 0.076306 ...
+#>   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
+#>  $ request    :List of 7
+#>   ..$ method    : chr "GET"
+#>   ..$ url       : chr "https://armadillo-minio.dev.molgenis.org/"
+#>   ..$ headers   : Named chr [1:5] "application/json, text/xml, application/xml, */*" "20200907T130640Z" "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJLUTQ5MTFCTk4xREVVMjZZMTcyMiIsImFwcGxpY2F0aW9uSWQiOiI3OD"| __truncated__ ...
+#>   .. ..- attr(*, "names")= chr [1:5] "Accept" "x-amz-date" "x-amz-content-sha256" "x-amz-security-token" ...
+#>   ..$ fields    : NULL
+#>   ..$ options   :List of 2
+#>   .. ..$ useragent: chr "libcurl/7.64.1 r-curl/4.3 httr/1.4.2"
+#>   .. ..$ httpget  : logi TRUE
+#>   ..$ auth_token: NULL
+#>   ..$ output    : list()
+#>   .. ..- attr(*, "class")= chr [1:2] "write_memory" "write_function"
+#>   ..- attr(*, "class")= chr "request"
+#>  $ handle     :Class 'curl_handle' <externalptr> 
+#>  - attr(*, "class")= chr "aws_error"
+#>  - attr(*, "headers")=List of 5
+#>   ..$ server        : chr "nginx/1.17.10"
+#>   ..$ date          : chr "Mon, 07 Sep 2020 13:06:40 GMT"
+#>   ..$ content-type  : chr "text/html"
+#>   ..$ content-length: chr "198"
+#>   ..$ connection    : chr "keep-alive"
+#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
+#>  - attr(*, "request_canonical")= chr "GET\n/\n\nhost:armadillo-minio.dev.molgenis.org\nx-amz-date:20200907T130640Z\nx-amz-security-token:eyJhbGciOiJI"| __truncated__
+#>  - attr(*, "request_string_to_sign")= chr "AWS4-HMAC-SHA256\n20200907T130640Z\n20200907//s3/aws4_request\n820f29aa9ad13fdb2d7a41c2831aa19c33246a84bc192e63"| __truncated__
+#>  - attr(*, "request_signature")= chr "AWS4-HMAC-SHA256 Credential=KQ4911BNN1DEU26Y1722/20200907//s3/aws4_request,SignedHeaders=host;x-amz-date;x-amz-"| __truncated__
+#> NULL
+#> Error in parse_aws_s3_response(r, Sig, verbose = verbose): Service Unavailable (HTTP 503).
+```
 
 
 ```r
 # listing tables per project
 armadillo.list_tables("gecko")
-#> [1] "1_1-outcome-1_0/nonrep"    "1_1-outcome-1_0/yearlyrep" "2_1-core-1_0/monthlyrep"  
-#> [4] "2_1-core-1_0/nonrep"       "2_1-core-1_0/trimesterrep" "2_1-core-1_0/yearlyrep"
+#> Error: Project 'gecko' does not exist.
+```
+
+You can download the data in the R-environment as well.
+
+
+```r
+# download table to local R environment
+armadillo.load_table("gecko", "2_1-core-1_0", "trimesterrep")
+#> Error: Project 'gecko' does not exist.
+
+# check the column names from the local environment
+colnames(trimesterrep)
+#> Error in is.data.frame(x): object 'trimesterrep' not found
 ```
 
 You can look at the files in the userinterface as well. In this case: https://armadillo-minio.dev.molgenis.org
@@ -139,23 +661,23 @@ To delete the data you need to throw away the contents first.
 ```r
 # throw away the core tables
 armadillo.delete_table("gecko", "2_1-core-1_0", "nonrep")
-#> Deleted table '2_1-core-1_0/nonrep'.
+#> Error: Project 'gecko' does not exist.
 armadillo.delete_table("gecko", "2_1-core-1_0", "yearlyrep")
-#> Deleted table '2_1-core-1_0/yearlyrep'.
+#> Error: Project 'gecko' does not exist.
 armadillo.delete_table("gecko", "2_1-core-1_0", "trimesterrep")
-#> Deleted table '2_1-core-1_0/trimesterrep'.
+#> Error: Project 'gecko' does not exist.
 armadillo.delete_table("gecko", "2_1-core-1_0", "monthlyrep")
-#> Deleted table '2_1-core-1_0/monthlyrep'.
+#> Error: Project 'gecko' does not exist.
 
 # throw away the outcome tables
 armadillo.delete_table("gecko", "1_1-outcome-1_0", "nonrep")
-#> Deleted table '1_1-outcome-1_0/nonrep'.
+#> Error: Project 'gecko' does not exist.
 armadillo.delete_table("gecko", "1_1-outcome-1_0", "yearlyrep")
-#> Deleted table '1_1-outcome-1_0/yearlyrep'.
+#> Error: Project 'gecko' does not exist.
 ```
 Now you can delete the project.
 
 ```r
 armadillo.delete_project("gecko")
-#> Deleted project 'gecko'
+#> Error: Project 'gecko' does not exist.
 ```
