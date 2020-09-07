@@ -23,7 +23,7 @@ In order to access the files as a data manager, you need to log in. The login me
 ```r
 armadillo.login("https://armadillo.dev.molgenis.org",
       "https://armadillo-minio.dev.molgenis.org")
-#> [1] "We're opening a browser so you can log in with code WBCNRW"
+#> [1] "We're opening a browser so you can log in with code 26NMZT"
 ```
 
 It will create a session and store the credentials in the environment.
@@ -42,7 +42,7 @@ Projects are a sort of root-folders you can give persons permissions on. you can
 ### Folders
 Folder objects can be used to version the different tables you want to share in Armadillo. This is not mandatory and are free to use the folder level as you see fit. In our examples we will go into the versioning part a bit deeper.
 
-@## Tables 
+### Tables 
 Tables are actual tables in R which contain the data you want to share. This can be all the data on a certain subject, mostly used in consortia or a specific study you want to expose.
 
 ## Sharing data
@@ -53,31 +53,7 @@ First we will create the project. In our case the cohort of GECKO (http://www.ge
 
 ```r
 armadillo.create_project("gecko")
-#> List of 6
-#>  $ Code      : chr "BucketAlreadyOwnedByYou"
-#>  $ Message   : chr "Your previous request to create the named bucket succeeded and you already own it."
-#>  $ BucketName: chr "shared-gecko"
-#>  $ Resource  : chr "/shared-gecko/"
-#>  $ RequestId : chr "1632816FD697F998"
-#>  $ HostId    : chr "bfe18462-b477-40a7-a270-38abdce73125"
-#>  - attr(*, "headers")=List of 10
-#>   ..$ server                 : chr "nginx/1.17.10"
-#>   ..$ date                   : chr "Mon, 07 Sep 2020 12:52:15 GMT"
-#>   ..$ content-type           : chr "application/xml"
-#>   ..$ content-length         : chr "355"
-#>   ..$ connection             : chr "keep-alive"
-#>   ..$ accept-ranges          : chr "bytes"
-#>   ..$ content-security-policy: chr "block-all-mixed-content"
-#>   ..$ vary                   : chr "Origin"
-#>   ..$ x-amz-request-id       : chr "1632816FD697F998"
-#>   ..$ x-xss-protection       : chr "1; mode=block"
-#>   ..- attr(*, "class")= chr [1:2] "insensitive" "list"
-#>  - attr(*, "class")= chr "aws_error"
-#>  - attr(*, "request_canonical")= chr "PUT\n/shared-gecko/\n\nhost:armadillo-minio.dev.molgenis.org\nx-amz-acl:private\nx-amz-date:20200907T125214Z\nx"| __truncated__
-#>  - attr(*, "request_string_to_sign")= chr "AWS4-HMAC-SHA256\n20200907T125214Z\n20200907//s3/aws4_request\n775ba4bcc5b9866b96e1b0cf7f31acb9cbb5b48a6c879dc8"| __truncated__
-#>  - attr(*, "request_signature")= chr "AWS4-HMAC-SHA256 Credential=CZTB7QL3CFKGD2A2UIDV/20200907//s3/aws4_request,SignedHeaders=host;x-amz-acl;x-amz-d"| __truncated__
-#> NULL
-#> Error in parse_aws_s3_response(r, Sig, verbose = verbose): Conflict (HTTP 409).
+#> Created project 'gecko'
 ```
 
 Secondly we will load the table(s) we want to upload to Armadillo in the R-environment. We have test data which is in `arrow` format, the upload will take any object that has a table like structure to upload into the Armadillo. This can be SPSS, STATA, SAS or R-based data as well.

@@ -44,7 +44,7 @@ Projects are a sort of root-folders you can give persons permissions on. you can
 ### Folders
 Folder objects can be used to version the different tables you want to share in Armadillo. This is not mandatory and are free to use the folder level as you see fit. In our examples we will go into the versioning part a bit deeper.
 
-@## Tables 
+### Tables 
 Tables are actual tables in R which contain the data you want to share. This can be all the data on a certain subject, mostly used in consortia or a specific study you want to expose.
 
 ## Sharing data
