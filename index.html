@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">MolgenisArmadillo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -71,10 +71,37 @@
   <div class="contents col-md-9">
 
 
-<div id="molgenis-armadillo-client" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#molgenis-armadillo-client" class="anchor"></a>MOLGENIS Armadillo Client</h1></div>
 <p>Client to use the Armadillo service. You can manage your data in the Armadillo service using this client.</p>
+<div id="purpose" class="section level2">
+<h2 class="hasAnchor">
+<a href="#purpose" class="anchor"></a>Purpose</h2>
+<p>This library can be used by data managers to share datasets on a MOLGENIS Armadillo server. Researchers can then analyse these datasets and datasets shared on other servers using DataSHIELD.</p>
+</div>
+<div id="overview" class="section level2">
+<h2 class="hasAnchor">
+<a href="#overview" class="anchor"></a>Overview</h2>
+<p>The datasets are stored in shared folders on a MinIO file store. The MOLGENIS Armadillo server has access to the file store and can load the data sets into a shielded RServe environment so that researchers can call DataSHIELD analysis methods on the data.</p>
+</div>
+<div id="usage" class="section level2">
+<h2 class="hasAnchor">
+<a href="#usage" class="anchor"></a>Usage</h2>
+<p>Login to the service.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="reference/armadillo.login.html">armadillo.login</a></span>(<span class="st">"https://armadillo.dev.molgenis.org"</span>,</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">      <span class="st">"https://armadillo-minio.dev.molgenis.org"</span>)</a></code></pre></div>
+<p>Now you can create a project and upload datasets to it to share them.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(datasets)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="reference/armadillo.create_project.html">armadillo.create_project</a></span>(<span class="st">"project"</span>)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="kw"><a href="reference/armadillo.upload_table.html">armadillo.upload_table</a></span>(<span class="st">"project"</span>, <span class="st">"folder"</span>, iris)</a></code></pre></div>
+<p>Looking at the data with yb listing the tables.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="reference/armadillo.list_tables.html">armadillo.list_tables</a></span>(<span class="st">"project"</span>)</a></code></pre></div>
+<p>Removing the data from the storage. First you need to remove the content of a project before you can throw away the project.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="reference/armadillo.delete_table.html">armadillo.delete_table</a></span>(<span class="st">"project"</span>, <span class="st">"folder"</span>, <span class="st">"iris"</span>)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw"><a href="reference/armadillo.delete_project.html">armadillo.delete_project</a></span>(<span class="st">"project"</span>)</a></code></pre></div>
+</div>
+<div id="documentation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#documentation" class="anchor"></a>Documentation</h2>
+<p>For more indepth documentation please check the <a href="https://molgenis.github.io/molgenis-r-armadillo/articles/MolgenisArmadillo.html">howto</a>.</p>
 </div>
 
   </div>
@@ -98,9 +125,10 @@
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Sido Haakma <br><small class="roles"> Author, maintainer </small>  </li>
-<li>Tommy de Boer <br><small class="roles"> Author </small>  </li>
-<li>Fleur Kelpin <br><small class="roles"> Author </small>  </li>
+<li>Sido Haakma <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-1278-9144" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
+<li>Tommy de Boer <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-4492-7225" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
+<li>Fleur Kelpin <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-1527-5130" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
+<li>Morris Swertz <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-0979-3401" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
 </ul>
 </div>
 
@@ -116,7 +144,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Sido Haakma, Tommy de Boer, Fleur Kelpin.</p>
+  <p>Developed by Sido Haakma, Tommy de Boer, Fleur Kelpin, Morris Swertz.</p>
 </div>
 
 <div class="pkgdown">
