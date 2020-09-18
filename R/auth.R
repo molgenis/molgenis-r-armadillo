@@ -35,7 +35,6 @@ armadillo.login <- function(armadillo, minio, duration = 900) { # nolint
 #'
 #' @return list of credentials, fit for use with \code{\link{set_credentials}}
 #'
-#' @importFrom aws.iam set_credentials
 #' @importFrom httr POST stop_for_status content
 #' @importFrom xml2 xml_text xml_find_first xml_ns_strip
 #'
@@ -60,13 +59,45 @@ armadillo.assume_role_with_web_identity <- # nolint
     httr::stop_for_status(response, "assume role on S3 server")
     content <- xml2::xml_ns_strip(httr::content(response, encoding = "UTF-8"))
 
+    armadillo.set_credentials(server,
+      xml2::xml_text(xml2::xml_find_first(content, "//AccessKeyId")),
+      xml2::xml_text(xml2::xml_find_first(content, "//SecretAccessKey")),
+      xml2::xml_text(xml2::xml_find_first(content, "//SessionToken")),
+      use = use
+    )
+  }
+
+#' Set credentials
+#'
+#' @param server url of the MinIO server
+#' @param access_key the MinIO access key
+#' @param secret_key the MinIO secret key
+#' @param session_token optional MinIO session token, default NULL
+#' @param use boolean start using the credentials, default TRUE
+#'
+#' @return list of credentials, fit for use with \code{\link{set_credentials}}
+#'
+#' @importFrom aws.iam set_credentials
+#'
+#' @examples
+#'
+#' \dontrun{
+#' MolgenisArmadillo:::armadillo.set_credentials(
+#'   server = "https://armadillo-minio.dev.molgenis.org",
+#'   access_key = "xxxx",
+#'   secret_key = "xxxx"
+#' )
+#' }
+#'
+#' @keywords internal
+#' @export
+armadillo.set_credentials <- # nolint
+  function(server, access_key, secret_key, session_token = NULL, use = TRUE) {
+    stopifnot(!is.na(server), !is.na(access_key), !is.na(secret_key))
     credentials <- list(
-      AccessKeyId =
-        xml2::xml_text(xml2::xml_find_first(content, "//AccessKeyId")),
-      SecretAccessKey =
-        xml2::xml_text(xml2::xml_find_first(content, "//SecretAccessKey")),
-      SessionToken =
-        xml2::xml_text(xml2::xml_find_first(content, "//SessionToken"))
+      AccessKeyId = access_key,
+      SecretAccessKey = secret_key,
+      SessionToken = session_token
     )
 
     if (isTRUE(use)) {
