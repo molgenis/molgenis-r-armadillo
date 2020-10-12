@@ -22,34 +22,12 @@
 #'
 #' @export
 armadillo.upload_table <- function(project, folder, table, name = NULL) { # nolint
-  stopifnot(!is.na(project), !is.na(folder), is.data.frame(table))
-  if (is.null(name)) { # nolint
-    name <- deparse(substitute(table))
+  compress_table <- function(table, file) {
+    arrow::write_parquet(table, file)
+    ".parquet"
   }
-  .check_full_table_name(folder, name)
 
-  bucket_name <- .to_shared_bucket_name(project)
-  .check_if_bucket_exists(bucket_name)
-
-  file <- tempfile()
-  on.exit(unlink(file))
-  message("Compressing table...")
-  arrow::write_parquet(table, file)
-
-  full_name <- paste0(folder, "/", name)
-  result <- aws.s3::put_object(
-    file = file,
-    object = paste0(full_name, ".parquet"),
-    bucket = bucket_name,
-    multipart = TRUE,
-    show_progress = interactive(),
-    use_https = .use_https()
-  )
-
-  if (isTRUE(result)) {
-    message(paste0("Uploaded table ", full_name))
-  }
-  invisible(result)
+   .upload_object(project, folder, table, name, compress_table)
 }
 
 #' List the tables in a project
@@ -69,7 +47,7 @@ armadillo.list_tables <- function(project) { # nolint
   .check_if_bucket_exists(bucket_name)
 
   objects <- aws.s3::get_bucket(bucket_name,
-    use_https = .use_https()
+                                use_https = .use_https()
   )
   object_names <- lapply(objects, function(obj) obj$Key)
   project <- unlist(object_names, use.names = FALSE)
@@ -152,7 +130,7 @@ armadillo.copy_table <- # nolint
     new_bucket_name <- .to_shared_bucket_name(new_project)
     .check_if_table_exists(bucket_name, folder, name)
     .check_if_bucket_exists(new_bucket_name)
-    .check_full_table_name(new_folder, new_name)
+    .check_full_name(new_folder, new_name)
 
     result <- aws.s3::copy_object(
       from_object = .to_table_name(folder, name),

@@ -47,42 +47,42 @@
   }
   if (!grepl("^[a-z0-9-]{0,55}[a-z0-9]$", name, perl = TRUE)) {
     stop("Project name must consist of lowercase letters and numbers.",
-      call. = FALSE
+         call. = FALSE
     )
   }
 }
 
-#' Check a folder or table name
+#' Check a folder, table or resource name
 #'
 #' Name can not be empty and may not contain a slash
 #'
-#' @param name folder or table name
+#' @param name folder, table or resource name
 #'
 #' @noRd
 .check_name <- function(name) {
   stopifnot(is.character(name), length(name) == 1)
   if (nchar(name) == 0) {
-    stop("Folder or table name cannot be empty.", call. = FALSE)
+    stop("Folder, table or resource name cannot be empty.", call. = FALSE)
   }
 
   if (!grepl("^[a-zA-Z0-9_:-]+$", name, perl = TRUE)) {
     stop(paste0(
-      "Valid folder and table name characters are ",
+      "Valid name characters are ",
       "ASCII letters, digits, '_', '-' and ':'"
     ),
-    call. = FALSE
+         call. = FALSE
     )
   }
 }
 
 
-#' Check the object name of a table
+#' Check the object name of a table or resource
 #'
 #' @param folder folder name
-#' @param name table name
+#' @param name table or resource name
 #'
 #' @noRd
-.check_full_table_name <- function(folder, name) {
+.check_full_name <- function(folder, name) {
   stopifnot(
     is.character(name),
     length(name) == 1,
@@ -95,8 +95,8 @@
   full_name <- paste0(folder, "/", name)
 
   if (nchar(full_name) > 1024) {
-    stop("Folder + table name cannot be longer than 1024 characters.",
-      call. = FALSE
+    stop("Folder + table/resource name cannot be longer than 1024 characters.",
+         call. = FALSE
     )
   }
 }
