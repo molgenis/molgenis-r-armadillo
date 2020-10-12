@@ -43,15 +43,7 @@ armadillo.upload_table <- function(project, folder, table, name = NULL) { # noli
 #'
 #' @export
 armadillo.list_tables <- function(project) { # nolint
-  bucket_name <- .to_shared_bucket_name(project)
-  .check_if_bucket_exists(bucket_name)
-
-  objects <- aws.s3::get_bucket(bucket_name,
-                                use_https = .use_https()
-  )
-  object_names <- lapply(objects, function(obj) obj$Key)
-  project <- unlist(object_names, use.names = FALSE)
-  tools::file_path_sans_ext(project)
+  .list_objects_by_extension(project, ".parquet")
 }
 
 #' Delete table

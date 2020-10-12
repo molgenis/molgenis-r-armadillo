@@ -28,3 +28,19 @@ armadillo.upload_resource <- function(project, folder, resource, name = NULL) { 
 
   .upload_object(project, folder, resource, name, compress_resource)
 }
+
+#' List the resources in a project
+#'
+#' @param project the shared project in which the resources are located
+#'
+#' @importFrom aws.s3 get_bucket
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.list_resources("gecko")
+#' }
+#'
+#' @export
+armadillo.list_resources <- function(project) { # nolint
+  .list_objects_by_extension(project, ".rds")
+}
