@@ -1,9 +1,6 @@
-.upload_object <- function(project, folder, object, name = NULL,
+.upload_object <- function(project, folder, object, name,
                            compression_function) { # nolint
   stopifnot(!is.na(project), !is.na(folder))
-  if (is.null(name)) { # nolint
-    name <- deparse(substitute(object))
-  }
   .check_full_name(folder, name)
 
   bucket_name <- .to_shared_bucket_name(project)
@@ -42,4 +39,22 @@
   object_names <- unlist(object_names, use.names = FALSE)
   object_names <- object_names[grepl(extension_regex, object_names)]
   tools::file_path_sans_ext(object_names)
+}
+
+.delete_object <- function(project, folder, name, extension) { # nolint
+  bucket_name <- .to_shared_bucket_name(project)
+  .check_if_object_exists(bucket_name, folder, name, extension)
+
+  full_name <- paste0(folder, "/", name)
+
+  result <- aws.s3::delete_object(
+    object = paste0(full_name, extension),
+    bucket = bucket_name,
+    use_https = .use_https()
+  )
+
+  if (isTRUE(result)) {
+    message(paste0("Deleted '", full_name, "'."))
+  }
+  invisible(result)
 }

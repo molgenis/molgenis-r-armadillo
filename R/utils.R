@@ -46,6 +46,37 @@
   }
 }
 
+#' Check if object exists
+#'
+#' @param bucket_name bucket name
+#' @param folder_name the name of the folder the table is in
+#' @param object_name the name of the table or resource
+#' @param extension the extension of the object
+#'
+#' @noRd
+.check_if_object_exists <- function(bucket_name, folder_name, object_name,
+                                   extension) {
+  .check_if_bucket_exists(bucket_name)
+  full_name <- paste0(folder_name, "/", object_name, extension)
+
+  exists <- suppressMessages(
+    aws.s3::head_object(
+      object = full_name,
+      bucket = bucket_name,
+      use_https = .use_https()
+    )
+  )
+
+  if (!exists) {
+    stop(paste0(
+      tools::file_path_sans_ext(table_name),
+      "' does not exist."
+    ),
+    call. = FALSE
+    )
+  }
+}
+
 #' Check if s3 calls should use HTTPS
 #'
 #' This value is set when the package loads and updated when you log in.

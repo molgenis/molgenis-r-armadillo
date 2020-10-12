@@ -21,6 +21,10 @@
 #'
 #' @export
 armadillo.upload_resource <- function(project, folder, resource, name = NULL) { # nolint
+  if (is.null(name)) { # nolint
+    name <- deparse(substitute(resource))
+  }
+
   compress_resource <- function(table, file) {
     saveRDS(resource, file = file)
     ".rds"
@@ -43,4 +47,28 @@ armadillo.upload_resource <- function(project, folder, resource, name = NULL) { 
 #' @export
 armadillo.list_resources <- function(project) { # nolint
   .list_objects_by_extension(project, ".rds")
+}
+
+#' Delete resource
+#'
+#' @param project project to delete the resource from
+#' @param folder folder to delete the resource from
+#' @param name resource name
+#' @return TRUE if successful, otherwise an object of class aws_error details
+#' if not.
+#'
+#' @importFrom aws.s3 delete_object
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.delete_resource(
+#'   project = "gecko",
+#'   folder = "core_all",
+#'   name = "table1"
+#' )
+#' }
+#'
+#' @export
+armadillo.delete_resource <- function(project, folder, name) { # nolint
+  .delete_object(project, folder, name, ".rds")
 }

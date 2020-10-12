@@ -22,6 +22,10 @@
 #'
 #' @export
 armadillo.upload_table <- function(project, folder, table, name = NULL) { # nolint
+  if (is.null(name)) { # nolint
+    name <- deparse(substitute(table))
+  }
+
   compress_table <- function(table, file) {
     arrow::write_parquet(table, file)
     ".parquet"
@@ -67,21 +71,7 @@ armadillo.list_tables <- function(project) { # nolint
 #'
 #' @export
 armadillo.delete_table <- function(project, folder, name) { # nolint
-  bucket_name <- .to_shared_bucket_name(project)
-  .check_if_table_exists(bucket_name, folder, name)
-
-  full_name <- paste0(folder, "/", name)
-
-  result <- aws.s3::delete_object(
-    object = paste0(full_name, ".parquet"),
-    bucket = bucket_name,
-    use_https = .use_https()
-  )
-
-  if (isTRUE(result)) {
-    message(paste0("Deleted table '", full_name, "'."))
-  }
-  invisible(result)
+  .delete_object(project, folder, name, ".parquet")
 }
 
 #' Copy table
