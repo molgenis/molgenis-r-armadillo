@@ -58,3 +58,36 @@
   }
   invisible(result)
 }
+
+.copy_object <- # nolint
+  function(project, folder, name,
+           new_project = project,
+           new_folder = folder,
+           new_name = name,
+           extension) {
+    if (project == new_project &&
+        folder == new_folder &&
+        name == new_name) {
+      stop("Cannot copy table or resource onto itself.", call. = FALSE)
+    }
+    bucket_name <- .to_shared_bucket_name(project)
+    new_bucket_name <- .to_shared_bucket_name(new_project)
+    .check_if_object_exists(bucket_name, folder, name, extension)
+    .check_if_bucket_exists(new_bucket_name)
+    .check_full_name(new_folder, new_name)
+
+    result <- aws.s3::copy_object(
+      from_object = paste0(folder, "/", name, extension),
+      to_object = paste0(new_folder, "/", new_name, extension),
+      from_bucket = bucket_name,
+      to_bucket = new_bucket_name,
+      use_https = .use_https()
+    )
+
+    message(paste0(
+      "Copied '", project, "/", folder, "/", name, "' to '",
+      new_project, "/", new_folder, "/", new_name, "'."
+    ))
+
+    invisible(result)
+  }

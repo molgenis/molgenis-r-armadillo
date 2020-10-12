@@ -72,3 +72,41 @@ armadillo.list_resources <- function(project) { # nolint
 armadillo.delete_resource <- function(project, folder, name) { # nolint
   .delete_object(project, folder, name, ".rds")
 }
+
+#' Copy resource
+#'
+#' @param project study or other variable collection
+#' @param folder the folder containing the resource
+#' @param name specific resource for copy action
+#' @param new_project new location of study or other variable collection
+#' @param new_folder name of the folder in which to place the copy, defaults to
+#' folder
+#' @param new_name name of the copy, defaults to name
+#'
+#' @importFrom aws.s3 copy_object
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.copy_resource(
+#'   project = "gecko",
+#'   folder = "core_all",
+#'   name = "table1",
+#'   new_project = "gecko",
+#'   new_folder = "core_all_v2",
+#' )
+#' }
+#'
+#' @export
+armadillo.copy_resource <- # nolint
+  function(project, folder, name,
+           new_project = project,
+           new_folder = folder,
+           new_name = name) {
+    .copy_object(project,
+                folder,
+                name,
+                new_project,
+                new_folder,
+                new_name,
+                ".rds")
+  }

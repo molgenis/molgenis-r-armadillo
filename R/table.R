@@ -88,7 +88,7 @@ armadillo.delete_table <- function(project, folder, name) { # nolint
 #'
 #' @examples
 #' \dontrun{
-#' armadillo.copy_worspace(
+#' armadillo.copy_table(
 #'   project = "gecko",
 #'   folder = "core_all",
 #'   name = "table1",
@@ -103,31 +103,13 @@ armadillo.copy_table <- # nolint
            new_project = project,
            new_folder = folder,
            new_name = name) {
-    if (project == new_project &&
-      folder == new_folder &&
-      name == new_name) {
-      stop("Cannot copy table onto itself.", call. = FALSE)
-    }
-    bucket_name <- .to_shared_bucket_name(project)
-    new_bucket_name <- .to_shared_bucket_name(new_project)
-    .check_if_table_exists(bucket_name, folder, name)
-    .check_if_bucket_exists(new_bucket_name)
-    .check_full_name(new_folder, new_name)
-
-    result <- aws.s3::copy_object(
-      from_object = .to_table_name(folder, name),
-      to_object = .to_table_name(new_folder, new_name),
-      from_bucket = bucket_name,
-      to_bucket = new_bucket_name,
-      use_https = .use_https()
-    )
-
-    message(paste0(
-      "Copied table '", project, "/", folder, "/", name, "' to '",
-      new_project, "/", new_folder, "/", new_name, "'."
-    ))
-
-    invisible(result)
+    .copy_object(project,
+                folder,
+                name,
+                new_project,
+                new_folder,
+                new_name,
+                ".parquet")
   }
 
 #' Load a table from a project
