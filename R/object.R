@@ -91,3 +91,18 @@
 
     invisible(result)
   }
+
+.move_object <- # nolint
+  function(project, folder, name, new_project, new_folder, new_name,
+           extension) {
+    suppressMessages(.copy_object(
+      project, folder, name, new_project,
+      new_folder, new_name, extension
+    ))
+    suppressMessages(.delete_object(project, folder, name, extension))
+
+    message(paste0(
+      "Moved '", project, "/", folder, "/", name,
+      "' to '", new_project, "/", new_folder, "/", new_name, "'."
+    ))
+  }

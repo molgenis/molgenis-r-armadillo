@@ -171,7 +171,7 @@ armadillo.load_table <- function(project, folder, name, env = parent.frame()) { 
 #'
 #' @examples
 #' \dontrun{
-#' armadillo.move_folder(
+#' armadillo.move_table(
 #'   project = "gecko",
 #'   folder = "core_all",
 #'   name = "table1",
@@ -183,15 +183,14 @@ armadillo.load_table <- function(project, folder, name, env = parent.frame()) { 
 #' @export
 armadillo.move_table <- # nolint
   function(project, folder, name,
-           new_project = project, new_folder = folder, new_name = name) {
-    suppressMessages(armadillo.copy_table(
-      project, folder, name, new_project,
-      new_folder, new_name
-    ))
-    suppressMessages(armadillo.delete_table(project, folder, name))
-
-    message(paste0(
-      "Moved table '", project, "/", folder, "/", name,
-      "' to '", new_project, "/", new_folder, "/", new_name, "'."
-    ))
+           new_project = project,
+           new_folder = folder,
+           new_name = name) {
+    .move_object(project,
+                 folder,
+                 name,
+                 new_project,
+                 new_folder,
+                 new_name,
+                 ".parquet")
   }

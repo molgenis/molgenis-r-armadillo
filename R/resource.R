@@ -110,3 +110,36 @@ armadillo.copy_resource <- # nolint
                 new_name,
                 ".rds")
   }
+
+#' Move the resource
+#'
+#' @param project a study or collection of variables
+#' @param folder the folder containing the resource to move
+#' @param name a resource to move
+#' @param new_project the project to move the resource to
+#' @param new_folder the folder to move the resource to, defaults to folder
+#' @param new_name use to rename the file, defaults to name
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.move_resource(
+#'   project = "gecko",
+#'   folder = "core_all",
+#'   name = "table1",
+#'   new_project = "gecko",
+#'   new_folder = "core_all_v2",
+#' )
+#' }
+#'
+#' @export
+armadillo.move_resource <- # nolint
+  function(project, folder, name,
+           new_project = project, new_folder = folder, new_name = name) {
+    .move_object(project,
+                 folder,
+                 name,
+                 new_project,
+                 new_folder,
+                 new_name,
+                 ".rds")
+  }
