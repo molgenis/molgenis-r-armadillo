@@ -1,3 +1,15 @@
+#' Uploads an object to a folder in a project
+#'
+#' @param project the project to upload to
+#' @param folder the folder to upload to
+#' @param table the object to upload
+#' @param name name of the object
+#' @param compression_function a function that compresses an object to a file
+#'
+#' @return TRUE if successful, otherwise an object of class aws_error details
+#' if not.
+#'
+#' @importFrom aws.s3 put_object
 .upload_object <- function(project, folder, object, name,
                            compression_function) { # nolint
   stopifnot(!is.na(project), !is.na(folder))
@@ -27,6 +39,13 @@
   invisible(result)
 }
 
+#' List the objects in a project based on the file type
+#'
+#' @param project the shared project in which the objects are located
+#' @param extension the extension of the files to list
+#'
+#' @importFrom aws.s3 get_bucket
+#'
 .list_objects_by_extension <- function(project, extension) { # nolint
   bucket_name <- .to_shared_bucket_name(project)
   .check_if_bucket_exists(bucket_name)
@@ -41,6 +60,18 @@
   tools::file_path_sans_ext(object_names)
 }
 
+
+#' Delete object
+#'
+#' @param project project to delete the object from
+#' @param folder folder to delete the object from
+#' @param name object name
+#' @param extension extension of the object to delete
+#' @return TRUE if successful, otherwise an object of class aws_error details
+#' if not.
+#'
+#' @importFrom aws.s3 delete_object
+#'
 .delete_object <- function(project, folder, name, extension) { # nolint
   bucket_name <- .to_shared_bucket_name(project)
   .check_if_object_exists(bucket_name, folder, name, extension)
@@ -59,6 +90,19 @@
   invisible(result)
 }
 
+#' Copy object
+#'
+#' @param project study or other variable collection
+#' @param folder the folder containing the object
+#' @param name specific object for copy action
+#' @param new_project new location of study or other variable collection
+#' @param new_folder name of the folder in which to place the copy, defaults to
+#' folder
+#' @param new_name name of the copy, defaults to name
+#' @param extension extension of the objects
+#'
+#' @importFrom aws.s3 copy_object
+#' 
 .copy_object <- # nolint
   function(project, folder, name,
            new_project = project,
@@ -92,6 +136,16 @@
     invisible(result)
   }
 
+#' Move the object
+#'
+#' @param project a study or collection of variables
+#' @param folder the folder containing the object to move
+#' @param name name of the object to move
+#' @param new_project the project to move the object to
+#' @param new_folder the folder to move the object to, defaults to folder
+#' @param new_name use to rename the file, defaults to name
+#' @param extension extension of the file
+#'
 .move_object <- # nolint
   function(project, folder, name, new_project, new_folder, new_name,
            extension) {
@@ -107,6 +161,16 @@
     ))
   }
 
+#' Load an object from a project
+#'
+#' @param project study or collection variables
+#' @param folder the folder containing the object
+#' @param name name of the object
+#' @param env The environment in which you want to load the object.
+#' @return NULL, invisibly
+#'
+#' @importFrom aws.s3 get_object
+#' 
 .load_object <- function(project, folder, name, env,
                          load_function, extension) { # nolint
   bucket_name <- .to_shared_bucket_name(project)

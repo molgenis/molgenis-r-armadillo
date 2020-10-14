@@ -8,7 +8,6 @@
 #' @return TRUE if successful, otherwise an object of class aws_error details
 #' if not.
 #'
-#' @importFrom aws.s3 put_object
 #' @importFrom arrow write_parquet
 #'
 #' @examples
@@ -38,8 +37,6 @@ armadillo.upload_table <- function(project, folder, table, name = NULL) { # noli
 #'
 #' @param project the shared project in which the tables are located
 #'
-#' @importFrom aws.s3 get_bucket
-#'
 #' @examples
 #' \dontrun{
 #' armadillo.list_tables("gecko")
@@ -57,8 +54,6 @@ armadillo.list_tables <- function(project) { # nolint
 #' @param name table name
 #' @return TRUE if successful, otherwise an object of class aws_error details
 #' if not.
-#'
-#' @importFrom aws.s3 delete_object
 #'
 #' @examples
 #' \dontrun{
@@ -83,8 +78,6 @@ armadillo.delete_table <- function(project, folder, name) { # nolint
 #' @param new_folder name of the folder in which to place the copy, defaults to
 #' folder
 #' @param new_name name of the copy, defaults to name
-#'
-#' @importFrom aws.s3 copy_object
 #'
 #' @examples
 #' \dontrun{
@@ -121,7 +114,6 @@ armadillo.copy_table <- # nolint
 #' Default is the parent.frame() from which the function is called.
 #' @return NULL, invisibly
 #'
-#' @importFrom aws.s3 get_object
 #' @importFrom arrow read_parquet
 #'
 #' @examples

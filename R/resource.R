@@ -8,8 +8,6 @@
 #' @return TRUE if successful, otherwise an object of class aws_error details
 #' if not.
 #'
-#' @importFrom aws.s3 put_object
-#'
 #' @examples
 #' \dontrun{
 #' armadillo.upload_table(
@@ -37,8 +35,6 @@ armadillo.upload_resource <- function(project, folder, resource, name = NULL) { 
 #'
 #' @param project the shared project in which the resources are located
 #'
-#' @importFrom aws.s3 get_bucket
-#'
 #' @examples
 #' \dontrun{
 #' armadillo.list_resources("gecko")
@@ -56,8 +52,6 @@ armadillo.list_resources <- function(project) { # nolint
 #' @param name resource name
 #' @return TRUE if successful, otherwise an object of class aws_error details
 #' if not.
-#'
-#' @importFrom aws.s3 delete_object
 #'
 #' @examples
 #' \dontrun{
@@ -82,8 +76,6 @@ armadillo.delete_resource <- function(project, folder, name) { # nolint
 #' @param new_folder name of the folder in which to place the copy, defaults to
 #' folder
 #' @param new_name name of the copy, defaults to name
-#'
-#' @importFrom aws.s3 copy_object
 #'
 #' @examples
 #' \dontrun{
@@ -152,9 +144,6 @@ armadillo.move_resource <- # nolint
 #' @param env The environment in which you want to load the resource.
 #' Default is the parent.frame() from which the function is called.
 #' @return NULL, invisibly
-#'
-#' @importFrom aws.s3 get_object
-#' @importFrom arrow read_parquet
 #'
 #' @examples
 #' \dontrun{
