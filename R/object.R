@@ -106,3 +106,25 @@
       "' to '", new_project, "/", new_folder, "/", new_name, "'."
     ))
   }
+
+.load_object <- function(project, folder, name, env,
+                         load_function, extension) { # nolint
+  bucket_name <- .to_shared_bucket_name(project)
+  .check_if_object_exists(bucket_name, folder, name, extension)
+
+  file <- tempfile()
+  on.exit(unlink(file))
+  aws.s3::save_object(
+    object = paste0(folder, "/", name, extension),
+    bucket = bucket_name,
+    file = file,
+    use_https = .use_https()
+  )
+
+  assign(
+    name,
+    load_function(file),
+    envir = env
+  )
+  invisible(NULL)
+}

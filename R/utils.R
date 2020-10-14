@@ -69,7 +69,7 @@
 
   if (!exists) {
     stop(paste0(
-      tools::file_path_sans_ext(table_name),
+      tools::file_path_sans_ext(full_name),
       "' does not exist."
     ),
     call. = FALSE

@@ -143,3 +143,41 @@ armadillo.move_resource <- # nolint
                  new_name,
                  ".rds")
   }
+
+#' Load a resource from a project
+#'
+#' @param project study or collection variables
+#' @param folder the folder containing the resource
+#' @param name name of the resource
+#' @param env The environment in which you want to load the resource.
+#' Default is the parent.frame() from which the function is called.
+#' @return NULL, invisibly
+#'
+#' @importFrom aws.s3 get_object
+#' @importFrom arrow read_parquet
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.load_resource(
+#'   project = "gecko",
+#'   folder = "core_all",
+#'   name = "lc_core_1"
+#' )
+#'
+#' armadillo.load_resource(
+#'   project = "gecko",
+#'   folder = "core_all",
+#'   name = "lc_core_1",
+#'   env = globalenv()
+#' )
+#' }
+#'
+#' @export
+armadillo.load_resource <- function(project, folder, name, # nolint
+                                    env = parent.frame()) {
+  load_resource <- function(file) {
+    readRDS(tools::file_path_as_absolute(file))
+  }
+
+  .load_object(project, folder, name, env, load_resource, ".rds")
+}

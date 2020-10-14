@@ -142,22 +142,11 @@ armadillo.copy_table <- # nolint
 #'
 #' @export
 armadillo.load_table <- function(project, folder, name, env = parent.frame()) { # nolint
-  bucket_name <- .to_shared_bucket_name(project)
-  .check_if_table_exists(bucket_name, folder, name)
+  load_table <- function(file) {
+    arrow::read_parquet(file)
+  }
 
-  file <- aws.s3::get_object(
-    object = .to_table_name(folder, name),
-    bucket = bucket_name,
-    use_https = .use_https()
-  )
-  on.exit(unlink(file))
-
-  assign(
-    name,
-    arrow::read_parquet(file),
-    envir = env
-  )
-  invisible(NULL)
+  .load_object(project, folder, name, env, load_table, ".parquet")
 }
 
 #' Move the table
