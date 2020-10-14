@@ -16,36 +16,6 @@
   }
 }
 
-#' Check if table exists
-#'
-#' @param bucket_name bucket name
-#' @param folder_name the name of the folder the table is in
-#' @param table_name the name of the table
-#'
-#' @noRd
-.check_if_table_exists <- function(bucket_name, folder_name, table_name) {
-  .check_if_bucket_exists(bucket_name)
-  table_name <- .to_table_name(folder_name, table_name)
-
-  exists <- suppressMessages(
-    aws.s3::head_object(
-      object = table_name,
-      bucket = bucket_name,
-      use_https = .use_https()
-    )
-  )
-
-  if (!exists) {
-    stop(paste0(
-      "Table '",
-      tools::file_path_sans_ext(table_name),
-      "' does not exist."
-    ),
-    call. = FALSE
-    )
-  }
-}
-
 #' Check if object exists
 #'
 #' @param bucket_name bucket name

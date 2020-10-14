@@ -1,12 +1,3 @@
-#' To full qualified table name
-#'
-#' @param name filename to add extension to
-#'
-#' @noRd
-.to_table_name <- function(folder, name) {
-  paste0(folder, "/", name, ".parquet")
-}
-
 #' Change bucketname to readable bucket name
 #'
 #' @param bucket_name folder name
