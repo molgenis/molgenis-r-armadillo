@@ -1,6 +1,6 @@
 test_that("armadillo.create_project checks folder name", {
   expect_error(
-    session <- armadillo.create_project("example_folder"),
+    armadillo.create_project("example_folder"),
     "Project name must consist of lowercase letters and numbers\\."
   )
 })
@@ -9,8 +9,8 @@ test_that("armadillo.create_project creates a folder", {
   put_bucket <- mock(TRUE)
   use_https <- mock(FALSE)
 
-  with_mock(
-    result <- armadillo.create_project("project"),
+  result <- with_mock(
+    armadillo.create_project("project"),
     "aws.s3::put_bucket" = put_bucket,
     "MolgenisArmadillo:::.use_https" = use_https
   )
@@ -23,8 +23,8 @@ test_that("armadillo.list_projects lists all shared buckets", {
   bucketlist <- mock(buckets)
   use_https <- mock(FALSE)
 
-  with_mock(
-    folders <- armadillo.list_projects(),
+  folders <- with_mock(
+    armadillo.list_projects(),
     "aws.s3::bucketlist" = bucketlist,
     "MolgenisArmadillo:::.use_https" = use_https
   )

@@ -19,6 +19,8 @@
 #'
 #' @export
 armadillo.upload_resource <- function(project, folder, resource, name = NULL) { # nolint
+  resource # checks for missing argument
+
   if (is.null(name)) { # nolint
     name <- deparse(substitute(resource))
   }

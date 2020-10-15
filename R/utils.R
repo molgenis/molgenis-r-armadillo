@@ -2,6 +2,8 @@
 #' Check if project exists
 #' @param bucket_name name of the folder
 #'
+#' @importFrom aws.s3 bucket_exists
+#'
 #' @noRd
 .check_if_bucket_exists <- function(bucket_name) {
   exists <- suppressMessages(aws.s3::bucket_exists(bucket_name,
@@ -39,6 +41,7 @@
 
   if (!exists) {
     stop(paste0(
+      "'",
       tools::file_path_sans_ext(full_name),
       "' does not exist."
     ),

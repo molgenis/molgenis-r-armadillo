@@ -21,6 +21,8 @@
 #'
 #' @export
 armadillo.upload_table <- function(project, folder, table, name = NULL) { # nolint
+  stopifnot(is.data.frame(table))
+
   if (is.null(name)) { # nolint
     name <- deparse(substitute(table))
   }
@@ -134,11 +136,12 @@ armadillo.copy_table <- # nolint
 #'
 #' @export
 armadillo.load_table <- function(project, folder, name, env = parent.frame()) { # nolint
-  load_table <- function(file) {
-    arrow::read_parquet(file)
-  }
+  .load_object(project, folder, name, env, .load_table, ".parquet")
+}
 
-  .load_object(project, folder, name, env, load_table, ".parquet")
+#' Helper function to extract a parquet file
+.load_table <- function(file) {
+  arrow::read_parquet(file)
 }
 
 #' Move the table

@@ -102,7 +102,7 @@
 #' @param extension extension of the objects
 #'
 #' @importFrom aws.s3 copy_object
-#' 
+#'
 .copy_object <- # nolint
   function(project, folder, name,
            new_project = project,
@@ -170,7 +170,7 @@
 #' @return NULL, invisibly
 #'
 #' @importFrom aws.s3 get_object
-#' 
+#'
 .load_object <- function(project, folder, name, env,
                          load_function, extension) { # nolint
   bucket_name <- .to_shared_bucket_name(project)
