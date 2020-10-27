@@ -27,12 +27,19 @@ armadillo.upload_table <- function(project, folder, table, name = NULL) { # noli
     name <- deparse(substitute(table))
   }
 
-  compress_table <- function(table, file) {
-    arrow::write_parquet(table, file)
-    ".parquet"
-  }
+   .upload_object(project, folder, table, name, .compress_table)
+}
 
-   .upload_object(project, folder, table, name, compress_table)
+#' Helper function for compressing to a parquet file
+#'
+#' @param table the table to write to file
+#' @param file the name of the file (without extension)
+#'
+#' @return the extension of the file
+#'
+.compress_table <- function(table, file) {
+  arrow::write_parquet(table, file)
+  ".parquet"
 }
 
 #' List the tables in a project
@@ -140,6 +147,11 @@ armadillo.load_table <- function(project, folder, name, env = parent.frame()) { 
 }
 
 #' Helper function to extract a parquet file
+#'
+#' @param file file to extract
+#'
+#' @return the contents of the file
+#'
 .load_table <- function(file) {
   arrow::read_parquet(file)
 }

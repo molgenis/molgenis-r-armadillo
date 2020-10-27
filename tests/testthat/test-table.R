@@ -22,11 +22,6 @@ test_that("armadillo.upload_table checks if folder is provided", {
 test_that("armadillo.upload_table calls .upload_object", {
   upload_object <- mock()
 
-  compress_table <- function(table, file) {
-    arrow::write_parquet(table, file)
-    ".parquet"
-  }
-
   with_mock(armadillo.upload_table("project",
                                    "folder",
                                    table = datasets::iris),
@@ -38,7 +33,7 @@ test_that("armadillo.upload_table calls .upload_object", {
               folder = "folder",
               object = datasets::iris,
               name = "datasets::iris",
-              compression_function = compress_table
+              compression_function = .compress_table
   )
 })
 

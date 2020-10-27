@@ -11,11 +11,11 @@
 
 \item{folder}{the folder to upload to}
 
+\item{object}{the object to upload}
+
 \item{name}{name of the object}
 
 \item{compression_function}{a function that compresses an object to a file}
-
-\item{table}{the object to upload}
 }
 \value{
 TRUE if successful, otherwise an object of class aws_error details

@@ -2,7 +2,7 @@
 #'
 #' @param project the project to upload to
 #' @param folder the folder to upload to
-#' @param table the object to upload
+#' @param object the object to upload
 #' @param name name of the object
 #' @param compression_function a function that compresses an object to a file
 #'
@@ -167,6 +167,9 @@
 #' @param folder the folder containing the object
 #' @param name name of the object
 #' @param env The environment in which you want to load the object.
+#' @param load_function a function to extract the object with
+#' @param extension the extension of the file
+#'
 #' @return NULL, invisibly
 #'
 #' @importFrom aws.s3 get_object

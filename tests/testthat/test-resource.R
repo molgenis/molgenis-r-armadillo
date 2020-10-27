@@ -15,11 +15,6 @@ test_that("armadillo.upload_resource checks if folder is provided", {
 test_that("armadillo.upload_resource calls .upload_object", {
   upload_object <- mock()
 
-  compress_resource <- function(table, file) {
-    saveRDS(resource, file = file)
-    ".rds"
-  }
-
   with_mock(armadillo.upload_resource("project",
                                    "folder",
                                    resource = datasets::iris),
@@ -31,7 +26,7 @@ test_that("armadillo.upload_resource calls .upload_object", {
               folder = "folder",
               object = datasets::iris,
               name = "datasets::iris",
-              compression_function = compress_resource
+              compression_function = .compress_resource
   )
 })
 
@@ -103,10 +98,6 @@ test_that("armadillo.load_resource calls .load_object", {
   load_object <- mock()
   environment <- new.env()
 
-  load_resource <- function(file) {
-    readRDS(tools::file_path_as_absolute(file))
-  }
-
   with_mock(armadillo.load_resource("project",
                                  "folder",
                                  "name",
@@ -119,7 +110,7 @@ test_that("armadillo.load_resource calls .load_object", {
               folder = "folder",
               name = "name",
               env = environment,
-              load_function = load_resource,
+              load_function = .load_resource,
               extension = ".rds"
   )
 })

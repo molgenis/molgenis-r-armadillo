@@ -14,6 +14,10 @@
 \item{name}{name of the object}
 
 \item{env}{The environment in which you want to load the object.}
+
+\item{load_function}{a function to extract the object with}
+
+\item{extension}{the extension of the file}
 }
 \value{
 NULL, invisibly

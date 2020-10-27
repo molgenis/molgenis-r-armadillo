@@ -2,7 +2,7 @@
 #'
 #' @param project the project to upload to
 #' @param folder the folder to upload to
-#' @param table the resource to upload
+#' @param resource the resource to upload
 #' @param name name of the resource (optional)
 #'
 #' @return TRUE if successful, otherwise an object of class aws_error details
@@ -25,12 +25,19 @@ armadillo.upload_resource <- function(project, folder, resource, name = NULL) { 
     name <- deparse(substitute(resource))
   }
 
-  compress_resource <- function(table, file) {
-    saveRDS(resource, file = file)
-    ".rds"
-  }
+  .upload_object(project, folder, resource, name, .compress_resource)
+}
 
-  .upload_object(project, folder, resource, name, compress_resource)
+#' Helper function for compressing to an RDS file
+#'
+#' @param resource the resource to write to file
+#' @param file the name of the file (without extension)
+#'
+#' @return the extension of the file
+#'
+.compress_resource <- function(resource, file) {
+  saveRDS(resource, file = file)
+  ".rds"
 }
 
 #' List the resources in a project
@@ -166,9 +173,15 @@ armadillo.move_resource <- # nolint
 #' @export
 armadillo.load_resource <- function(project, folder, name, # nolint
                                     env = parent.frame()) {
-  load_resource <- function(file) {
-    readRDS(tools::file_path_as_absolute(file))
-  }
+  .load_object(project, folder, name, env, .load_resource, ".rds")
+}
 
-  .load_object(project, folder, name, env, load_resource, ".rds")
+#' Helper function to extract an RDS file
+#'
+#' @param file file to extract
+#'
+#' @return the contents of the file
+#'
+.load_resource <- function(file) {
+  readRDS(tools::file_path_as_absolute(file))
 }
