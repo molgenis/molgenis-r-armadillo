@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Move the table — armadillo.move_table • MolgenisArmadillo</title>
+<title>List the resources in a project — armadillo.list_resources • MolgenisArmadillo</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Move the table — armadillo.move_table" />
-<meta property="og:description" content="Move the table" />
+<meta property="og:title" content="List the resources in a project — armadillo.list_resources" />
+<meta property="og:description" content="List the resources in a project" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -108,63 +108,30 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Move the table</h1>
-    <small class="dont-index">Source: <a href='https://github.com/molgenis/molgenis-r-armadillo/blob/master/R/table.R'><code>R/table.R</code></a></small>
-    <div class="hidden name"><code>armadillo.move_table.Rd</code></div>
+    <h1>List the resources in a project</h1>
+    <small class="dont-index">Source: <a href='https://github.com/molgenis/molgenis-r-armadillo/blob/master/R/resource.R'><code>R/resource.R</code></a></small>
+    <div class="hidden name"><code>armadillo.list_resources.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Move the table</p>
+    <p>List the resources in a project</p>
     </div>
 
-    <pre class="usage"><span class='fu'>armadillo.move_table</span>(
-  <span class='no'>project</span>,
-  <span class='no'>folder</span>,
-  <span class='no'>name</span>,
-  <span class='kw'>new_project</span> <span class='kw'>=</span> <span class='no'>project</span>,
-  <span class='kw'>new_folder</span> <span class='kw'>=</span> <span class='no'>folder</span>,
-  <span class='kw'>new_name</span> <span class='kw'>=</span> <span class='no'>name</span>
-)</pre>
+    <pre class="usage"><span class='fu'>armadillo.list_resources</span>(<span class='no'>project</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>project</th>
-      <td><p>a study or collection of variables</p></td>
-    </tr>
-    <tr>
-      <th>folder</th>
-      <td><p>the folder containing the table to move</p></td>
-    </tr>
-    <tr>
-      <th>name</th>
-      <td><p>a table to move</p></td>
-    </tr>
-    <tr>
-      <th>new_project</th>
-      <td><p>the project to move the table to</p></td>
-    </tr>
-    <tr>
-      <th>new_folder</th>
-      <td><p>the folder to move the table to, defaults to folder</p></td>
-    </tr>
-    <tr>
-      <th>new_name</th>
-      <td><p>use to rename the file, defaults to name</p></td>
+      <td><p>the shared project in which the resources are located</p></td>
     </tr>
     </table>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'>armadillo.move_table</span>(
-  <span class='kw'>project</span> <span class='kw'>=</span> <span class='st'>"gecko"</span>,
-  <span class='kw'>folder</span> <span class='kw'>=</span> <span class='st'>"core_all"</span>,
-  <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"table1"</span>,
-  <span class='kw'>new_project</span> <span class='kw'>=</span> <span class='st'>"gecko"</span>,
-  <span class='kw'>new_folder</span> <span class='kw'>=</span> <span class='st'>"core_all_v2"</span>,
-)
+<span class='fu'>armadillo.list_resources</span>(<span class='st'>"gecko"</span>)
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
