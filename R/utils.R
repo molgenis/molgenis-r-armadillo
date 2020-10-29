@@ -2,6 +2,8 @@
 #' Check if project exists
 #' @param bucket_name name of the folder
 #'
+#' @importFrom aws.s3 bucket_exists
+#'
 #' @noRd
 .check_if_bucket_exists <- function(bucket_name) {
   exists <- suppressMessages(aws.s3::bucket_exists(bucket_name,
@@ -16,20 +18,22 @@
   }
 }
 
-#' Check if table exists
+#' Check if object exists
 #'
 #' @param bucket_name bucket name
 #' @param folder_name the name of the folder the table is in
-#' @param table_name the name of the table
+#' @param object_name the name of the table or resource
+#' @param extension the extension of the object
 #'
 #' @noRd
-.check_if_table_exists <- function(bucket_name, folder_name, table_name) {
+.check_if_object_exists <- function(bucket_name, folder_name, object_name,
+                                   extension) {
   .check_if_bucket_exists(bucket_name)
-  table_name <- .to_table_name(folder_name, table_name)
+  full_name <- paste0(folder_name, "/", object_name, extension)
 
   exists <- suppressMessages(
     aws.s3::head_object(
-      object = table_name,
+      object = full_name,
       bucket = bucket_name,
       use_https = .use_https()
     )
@@ -37,8 +41,8 @@
 
   if (!exists) {
     stop(paste0(
-      "Table '",
-      tools::file_path_sans_ext(table_name),
+      "'",
+      tools::file_path_sans_ext(full_name),
       "' does not exist."
     ),
     call. = FALSE

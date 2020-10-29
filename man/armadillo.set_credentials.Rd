@@ -35,7 +35,8 @@ Set credentials
 MolgenisArmadillo:::armadillo.set_credentials(
   server = "https://armadillo-minio.dev.molgenis.org",
   access_key = "xxxx",
-  secret_key = "xxxx")
+  secret_key = "xxxx"
+)
 }
 
 }

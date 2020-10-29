@@ -38,60 +38,60 @@ test_that(".check_project_name allows valid names", {
 
 test_that(".check_full_table_name checks folder for single character arg", {
   expect_error(
-    .check_full_table_name(folder = NA, name = "name"),
+    .check_full_name(folder = NA, name = "name"),
     "is.character\\(folder\\) is not TRUE"
   )
   expect_error(
-    .check_full_table_name(folder = NULL, name = "name"),
+    .check_full_name(folder = NULL, name = "name"),
     "is.character\\(folder\\) is not TRUE"
   )
   expect_error(
-    .check_full_table_name(folder = list("abc", "def"), name = "name"),
+    .check_full_name(folder = list("abc", "def"), name = "name"),
     "is.character\\(folder\\) is not TRUE"
   )
 })
 
 test_that(".check_full_table_name checks name for single character argument", {
   expect_error(
-    .check_full_table_name(folder = "folder", name = NA),
+    .check_full_name(folder = "folder", name = NA),
     "is.character\\(name\\) is not TRUE"
   )
   expect_error(
-    .check_full_table_name(folder = "folder", name = NULL),
+    .check_full_name(folder = "folder", name = NULL),
     "is.character\\(name\\) is not TRUE"
   )
   expect_error(
-    .check_full_table_name(folder = "folder", name = list("abc", "def")),
+    .check_full_name(folder = "folder", name = list("abc", "def")),
     "is.character\\(name\\) is not TRUE"
   )
 })
 
-test_that(".check_full_table_name checks name length", {
+test_that(".check_full_name checks name length", {
   expect_error(
-    .check_full_table_name("", "name"),
-    "Folder or table name cannot be empty"
+    .check_full_name("", "name"),
+    "Folder, table or resource name cannot be empty"
   )
   expect_error(
-    .check_full_table_name("folder", ""),
-    "Folder or table name cannot be empty"
+    .check_full_name("folder", ""),
+    "Folder, table or resource name cannot be empty"
   )
   expect_error(
-    .check_full_table_name(strrep("x", 1000), strrep("y", 24)),
-    "Folder \\+ table name cannot be longer than 1024 characters\\."
+    .check_full_name(strrep("x", 1000), strrep("y", 24)),
+    "Folder \\+ table/resource name cannot be longer than 1024 characters\\."
   )
 })
 
-test_that(".check_full_table_name checks for valid characters", {
+test_that(".check_full_name checks for valid characters", {
   expected <- paste0(
-    "Valid folder and table name characters are ",
+    "Valid name characters are ",
     "ASCII letters, digits, '_', '-' and ':'"
   )
-  expect_error(.check_full_table_name("folder", "\U72B0"), expected)
-  expect_error(.check_full_table_name("folder", "ármadïllø"), expected)
-  expect_error(.check_full_table_name("folder", "A b"), expected)
+  expect_error(.check_full_name("folder", "\U72B0"), expected)
+  expect_error(.check_full_name("folder", "ármadïllø"), expected)
+  expect_error(.check_full_name("folder", "A b"), expected)
 })
 
 test_that(".check_full_table_name allows valid names", {
-  expect_silent(.check_full_table_name("folder", "Example_0-9:__BACKUP__"))
-  expect_silent(.check_full_table_name(strrep("x", 1000), strrep("y", 23)))
+  expect_silent(.check_full_name("folder", "Example_0-9:__BACKUP__"))
+  expect_silent(.check_full_name(strrep("x", 1000), strrep("y", 23)))
 })
