@@ -4,4 +4,6 @@ Jenkinsfile
 ..Rcheck
 adr
 ^doc$
+^docs$
 ^Meta$
+.travis.yml

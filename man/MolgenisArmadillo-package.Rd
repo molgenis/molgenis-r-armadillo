@@ -4,9 +4,9 @@
 \name{MolgenisArmadillo-package}
 \alias{MolgenisArmadillo}
 \alias{MolgenisArmadillo-package}
-\title{MolgenisArmadillo: Armadillo client for the Armadillo service}
+\title{MolgenisArmadillo: Armadillo Client for the Armadillo Service}
 \description{
-An Armadillo client for the Armadillo DataSHIELD service. Part of the MOLGENIS suite.
+A set of functions to be able to manage data in the MOLGENIS Armadillo storage server (Minio).
 }
 \seealso{
 Useful links:
