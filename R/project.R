@@ -17,15 +17,23 @@
 #' }
 #'
 #' @export
-armadillo.create_project <- function(project_name) { # nolint
+armadillo.create_project <- function(project_name,
+                                     notification = FALSE,
+                                     queue = "arn:minio:sqs::_:elasticsearch") {
   .check_project_name(project_name)
 
-  success <- aws.s3::put_bucket(.to_shared_bucket_name(project_name),
+  bucket <- .to_shared_bucket_name(project_name)
+  success <- aws.s3::put_bucket(
+    bucket = bucket,
     use_https = .use_https()
   )
 
   if (success) {
     message(paste0("Created project '", project_name, "'"))
+
+    if (notification) {
+      .enable_notification(bucket = bucket, queue = queue)
+    }
   }
   invisible(success)
 }
@@ -71,6 +79,22 @@ armadillo.list_projects <- function() { # nolint
     use_https = .use_https()
   )
   message(paste0("Deleted project '", .to_readable_name(bucket_name), "'"))
+}
+
+.enable_notification <- function(bucket, queue) {
+  notification_config <- paste0(
+    '<NotificationConfiguration xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><QueueConfiguration><Id></Id><Event>s3:ObjectCreated:*</Event><Event>s3:ObjectRemoved:*</Event><Event>s3:ObjectAccessed:*</Event><Queue>',
+    queue,
+    "</Queue></QueueConfiguration></NotificationConfiguration>"
+  )
+  aws.s3::s3HTTP(
+    verb = "PUT",
+    bucket = bucket,
+    query = alist(notification = ),
+    request_body = notification_config,
+    encode = "raw",
+    use_https = .use_https()
+  )
 }
 
 #' Get buckets
