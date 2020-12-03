@@ -121,7 +121,7 @@ armadillo.load_table("gecko", "2_1-core-1_0", "trimesterrep")
 colnames(trimesterrep)
 ```
 
-You can look at the files in the userinterface as well. In this case: https://armadillo-minio.dev.molgenis.org
+You can look at the files in the userinterface as well. In this case: https://armadillo-minio.test.molgenis.org
 
 ## Deleting the data
 To delete the data you need to throw away the contents first.
