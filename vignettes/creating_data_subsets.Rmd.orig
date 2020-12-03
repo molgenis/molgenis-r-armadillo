@@ -1,0 +1,131 @@
+---
+title: "Creating data subsets"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{creatingDataSubsets}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(MolgenisArmadillo)
+library(dplyr)
+```
+
+When researchers request access to your data they may in many cases not be granted access to the whole dataset, but only to a subset. On the MinIO fileserver access is regulated on the project level, so you will need to create a new project using a subset of the data. Here you can see the different relevant steps you need to take to create these subsets.
+
+## Logging in
+In order to access the files on the MinIO fileserver you need to log in using the URLs of the Armadillo server and the MinIO fileserver. A browser window will be opened where you can identify yourself with the ID provider.
+
+```{r, login to the armadillo storage server}
+armadillo.login("https://armadillo.test.molgenis.org",
+      "https://armadillo-minio.test.molgenis.org")
+```
+
+A session will be created and the credentials are stored in the environment.
+
+## Sharing data
+Let's assume you are in a consortium which has core-variables and outcome-variables. You want to share a subset of the whole dataset with certain researchers that applied for access to your data.
+
+First we will create a project, here called 'subset1'. 
+
+```{r, create the toplevel project}
+armadillo.create_project("subset1")
+```
+
+#list projects on the MinIO file server
+
+Secondly we will explore the data and find the relevant variables to share.
+
+```{r, list projects on server}
+armadillo.list_projects()
+```
+
+#List the tables in a project
+
+You want to share data from 'cohort1'. We will list the available tables within this project. 
+
+```{r, list tables in a project}
+armadillo.list_tables("cohort1")
+```
+
+##Making subsets of the data
+Since the core and outcome data tables have the same names we will first subset the outcome variables and afterwards subset the core variables. 
+
+#Subset the outcome variables
+We will now download the outcome tables to the local environment
+
+```{r, download outcome tables}
+armadillo.load_table("cohort1", "1_1_outcome_1_0", "non_rep")
+armadillo.load_table("cohort1", "1_1_outcome_1_0", "yearly_rep")
+```
+
+, list their variables
+
+```{r, list outcome variables}
+colnames(non_rep)
+colnames(yearly_rep)
+```
+
+, and subset the variables that were requested.
+
+```{r, subset relevant outcome variables}
+subset_outcome_non_rep <- non_rep %>% select(child_id, pets_preg, asthma_ever_CHICOS)
+
+subset_outcome_yearly_rep <- yearly_rep %>% select(child_id, asthma_med_)
+```
+
+#Subset the core variables
+We will now download the relevant core tables to the local environment
+
+```{r, download core tables}
+armadillo.load_table("cohort1", "2_1_core_1_0", "non_rep")
+armadillo.load_table("cohort1", "2_1_core_1_0", "yearly_rep")
+```
+
+, list their variables
+
+```{r, list core variables}
+colnames(non_rep)
+colnames(yearly_rep)
+```
+
+, and subset the variables that were requested.
+
+```{r, subset relevant core variables}
+subset_core_non_rep <- non_rep %>% select(child_id, asthma_m, breastfed_any)
+
+subset_core_yearly_rep <- yearly_rep %>% select(child_id, pets_)
+```
+
+##Uploading the data subset
+
+#Check the data subset before uploading
+
+```{r, check column names}
+colnames(subset_outcome_non_rep)
+colnames(subset_outcome_yearly_rep)
+colnames(subset_core_non_rep)
+colnames(subset_core_yearly_rep)
+```
+
+#Upload the data subset
+
+```{r, upload tables}
+armadillo.upload_table("subset1", "1_1_outcome_1_0", subset_outcome_non_rep, "non_rep")
+
+armadillo.upload_table("subset1", "1_1_outcome_1_0", subset_outcome_yearly_rep, "yearly_rep")
+
+armadillo.upload_table("subset1", "2_1_core_1_0", subset_core_non_rep, "non_rep")
+
+armadillo.upload_table("subset1", "2_1_core_1_0", subset_core_yearly_rep, "yearly_rep")
+```
+
+Now you can also take a look at the files in the user interface of the MinIO fileserver. In this case: https://armadillo-minio.test.molgenis.org
