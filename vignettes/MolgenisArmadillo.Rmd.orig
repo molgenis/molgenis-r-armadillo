@@ -18,14 +18,14 @@ knitr::opts_chunk$set(
 library(MolgenisArmadillo)
 ```
 
-To share your data using Armadillo, you can see the different relevant steps you can take before the shared data can be transfered to the researchers.
+To share your data using Armadillo, you can see the different relevant steps you can take before the shared data can be transferred to the researchers.
 
 ## Login
 In order to access the files as a data manager, you need to log in. The login method needs the URLs of the Armadillo server and the MinIO fileserver. It will open a browser window where you can identify yourself with the ID provider.
 
 ```{r, login to the armadillo storage server}
-armadillo.login("https://armadillo.dev.molgenis.org",
-      "https://armadillo-minio.dev.molgenis.org")
+armadillo.login("https://armadillo.test.molgenis.org",
+      "https://armadillo-minio.test.molgenis.org")
 ```
 
 It will create a session and store the credentials in the environment.
@@ -121,7 +121,7 @@ armadillo.load_table("gecko", "2_1-core-1_0", "trimesterrep")
 colnames(trimesterrep)
 ```
 
-You can look at the files in the userinterface as well. In this case: https://armadillo-minio.dev.molgenis.org
+You can look at the files in the userinterface as well. In this case: https://armadillo-minio.test.molgenis.org
 
 ## Deleting the data
 To delete the data you need to throw away the contents first.
