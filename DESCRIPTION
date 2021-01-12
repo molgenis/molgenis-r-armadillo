@@ -2,7 +2,8 @@ Package: MolgenisArmadillo
 Type: Package
 Version: 0.2.0.9001
 Title: Armadillo Client for the Armadillo Service
-Description: A set of functions to be able to manage data in the MOLGENIS Armadillo storage server (Minio).
+Description: A set of functions to be able to manage data shared on a
+  'MOLGENIS Armadillo' storage server (MinIO).
 Authors@R:
     c(person(given = "Sido",
              family = "Haakma",
@@ -24,6 +25,7 @@ Authors@R:
              role = c("aut"),
              email = "m.a.swertz@rug.nl",
              comment = c(ORCID = "0000-0002-0979-3401")))
+Maintainer: Fleur Kelpin <f.kelpin@umcg.nl>
 Depends:
     R (>= 3.6)
 Imports:
@@ -40,7 +42,8 @@ Suggests:
     testthat,
     mockery,
     datasets,
-    tibble
+    tibble,
+    DSMolgenisArmadillo
 License: LGPL (>= 2.1)
 URL: https://github.com/molgenis/molgenis-r-armadillo,
   https://molgenis.github.io/molgenis-r-armadillo
