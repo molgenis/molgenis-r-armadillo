@@ -7,3 +7,4 @@ adr
 ^docs$
 ^Meta$
 .travis.yml
+^README.Rmd$
