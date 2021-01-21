@@ -1,45 +1,74 @@
-[![Build Status](https://jenkins.dev.molgenis.org/buildStatus/icon?job=molgenis%2Fmolgenis-r-armadillo%2Fmaster)](https://jenkins.dev.molgenis.org/job/molgenis/job/molgenis-r-armadillo/job/master/)
+MolgenisArmadillo
+================
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- badges: start -->
+
+[![Build
+Status](https://travis-ci.org/molgenis/molgenis-r-armadillo.svg?branch=master)](https://travis-ci.org/molgenis/molgenis-r-armadillo)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/MolgenisArmadillo)](https://CRAN.R-project.org/package=MolgenisArmadillo)
 [![codecov](https://codecov.io/gh/molgenis/molgenis-r-armadillo/branch/master/graph/badge.svg)](https://codecov.io/gh/molgenis/molgenis-r-armadillo)
+<!-- badges: end -->
 
-
-Client to use the Armadillo service. You can manage your data in the Armadillo service using this client.
+Client to share data in a [MOLGENIS Armadillo DataSHIELD
+Service](https://github.com/molgenis/molgenis-service-armadillo/).
 
 ## Purpose
+
 This library can be used by data managers to share datasets on a
-MOLGENIS Armadillo server.
-Researchers can then analyse these datasets and datasets shared on other servers
-using DataSHIELD.
+MOLGENIS Armadillo server. Researchers can then analyse these datasets
+and datasets shared on other servers using DataSHIELD. Researchers will
+only be able to access aggregate information and cannot see individual
+rows.
 
 ## Overview
-The datasets are stored in shared folders on a MinIO file store. The MOLGENIS
-Armadillo server has access to the file store and can load the data sets into
-a shielded RServe environment so that researchers can call DataSHIELD analysis
-methods on the data.
+
+The datasets are stored in shared folders on a MinIO file store. The
+MOLGENIS Armadillo server has access to the file store and can load the
+data sets into a shielded RServe environment so that researchers can
+call DataSHIELD analysis methods on the data.
 
 ## Usage
+
 Login to the service.
-```R
+
+``` r
+library('MolgenisArmadillo')
 armadillo.login("https://armadillo.dev.molgenis.org",
       "https://armadillo-minio.dev.molgenis.org")
 ```
 
-Now you can create a project and upload datasets to it to share them.
-```R
+Now you can create a project and upload tables to the project to share
+them for analysis.
+
+``` r
 library(datasets)
 armadillo.create_project("project")
+#> Created project 'project'
 armadillo.upload_table("project", "folder", iris)
+#> Compressing table...
+#> Uploaded table folder/iris
 ```
 
-Looking at the data with yb listing the tables.
-```R
+Listing the tables.
+
+``` r
 armadillo.list_tables("project")
+#> [1] "folder/iris"
 ```
 
-Removing the data from the storage. First you need to remove the content of a project before you can throw away the project.
-```R
+Removing the data from the storage. First you need to remove the content
+of a project before you can throw away the project.
+
+``` r
 armadillo.delete_table("project", "folder", "iris")
+#> Deleted table 'folder/iris'.
 armadillo.delete_project("project")
+#> Deleted project 'project'
 ```
 
 ## Documentation
-For more indepth documentation please check the [howto](https://molgenis.github.io/molgenis-r-armadillo/articles/MolgenisArmadillo.html).
+
+For more in depth documentation please check the
+[howto](https://molgenis.github.io/molgenis-r-armadillo/articles/MolgenisArmadillo.html).

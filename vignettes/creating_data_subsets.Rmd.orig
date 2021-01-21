@@ -128,4 +128,5 @@ armadillo.upload_table("subset1", "2_1_core_1_0", subset_core_non_rep, "non_rep"
 armadillo.upload_table("subset1", "2_1_core_1_0", subset_core_yearly_rep, "yearly_rep")
 ```
 
-Now you can also take a look at the files in the user interface of the MinIO fileserver. In this case: https://armadillo-minio.test.molgenis.org
+Now you can also take a look at the files in the user interface of the MinIO
+fileserver if you open the MinIO server URL in a browser window.
