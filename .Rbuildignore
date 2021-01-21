@@ -9,4 +9,4 @@ adr
 .travis.yml
 ^README.Rmd$
 ^cran-comments\.md$
-^DSMolgenisArmadillo_.*\.tar\.gz$
+^MolgenisArmadillo_.*\.tar\.gz$
