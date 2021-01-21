@@ -43,6 +43,7 @@ Suggests:
     mockery,
     datasets,
     tibble,
+    rmarkdown,
     DSMolgenisArmadillo
 License: LGPL (>= 2.1)
 URL: https://github.com/molgenis/molgenis-r-armadillo,
