@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Login — armadillo.login • MolgenisArmadillo</title>
+<title>Changelog • MolgenisArmadillo</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,7 @@
 
 
 
-<meta property="og:title" content="Login — armadillo.login" />
-<meta property="og:description" content="Interactively obtains an id token and uses it to create a session token on
-the minio server." />
+<meta property="og:title" content="Changelog" />
 
 
 
@@ -60,7 +58,7 @@ the minio server." />
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-topic">
+    <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -127,55 +125,29 @@ the minio server." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Login</h1>
-    <small class="dont-index">Source: <a href='https://github.com/molgenis/molgenis-r-armadillo/blob/master/R/auth.R'><code>R/auth.R</code></a></small>
-    <div class="hidden name"><code>armadillo.login.Rd</code></div>
+      <h1 data-toc-skip>Changelog <small></small></h1>
+      <small>Source: <a href='https://github.com/molgenis/molgenis-r-armadillo/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div class="ref-description">
-    <p>Interactively obtains an id token and uses it to create a session token on
-the minio server.</p>
-    </div>
-
-    <pre class="usage"><span class='fu'>armadillo.login</span><span class='op'>(</span><span class='va'>armadillo</span>, <span class='va'>minio</span>, duration <span class='op'>=</span> <span class='fl'>900</span><span class='op'>)</span></pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>armadillo</th>
-      <td><p>URL of the Armadillo server,</p></td>
-    </tr>
-    <tr>
-      <th>minio</th>
-      <td><p>URL of the Armadillo MinIO server</p></td>
-    </tr>
-    <tr>
-      <th>duration</th>
-      <td><p>MinIO session duration in seconds</p></td>
-    </tr>
-    </table>
-
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>the id token</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>armadillo.login</span><span class='op'>(</span>
-  <span class='st'>"https://armadillo.dev.molgenis.org"</span>,
-  <span class='st'>"https://armadillo-minio.dev.molgenis.org"</span>
-<span class='op'>)</span>
-<span class='fu'>armadillo.login</span><span class='op'>(</span><span class='st'>"http://localhost:8080"</span>, <span class='st'>"http://localhost:9000"</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-</div></pre>
+    <div id="molgenisarmadillo-021" class="section level1">
+<h1 class="page-header" data-toc-text="0.2.1">
+<a href="#molgenisarmadillo-021" class="anchor"></a>MolgenisArmadillo 0.2.1</h1>
+</div>
+    <div id="molgenisarmadillo-0209001" class="section level1">
+<h1 class="page-header" data-toc-text="0.2.0.9001">
+<a href="#molgenisarmadillo-0209001" class="anchor"></a>MolgenisArmadillo 0.2.0.9001</h1>
+<ul>
+<li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
+</ul>
+</div>
   </div>
+
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
+
 </div>
 
 
