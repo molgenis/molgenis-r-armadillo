@@ -7,14 +7,14 @@
 \title{MolgenisArmadillo: Armadillo Client for the Armadillo Service}
 \description{
 A set of functions to be able to manage data shared on a
-  'MOLGENIS Armadillo' storage server (MinIO).
+  'MOLGENIS Armadillo' storage server ('MinIO').
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/molgenis/molgenis-r-armadillo}
-  \item \url{https://molgenis.github.io/molgenis-r-armadillo}
-  \item Report bugs at \url{https://github.com/molgenis/molgenis-r-armadillo/issues}
+  \item \url{https://github.com/molgenis/molgenis-r-armadillo/}
+  \item \url{https://molgenis.github.io/molgenis-r-armadillo/}
+  \item Report bugs at \url{https://github.com/molgenis/molgenis-r-armadillo/issues/}
 }
 
 }
