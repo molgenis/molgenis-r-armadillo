@@ -121,7 +121,8 @@ armadillo.load_table("gecko", "2_1-core-1_0", "trimesterrep")
 colnames(trimesterrep)
 ```
 
-You can look at the files in the userinterface as well. In this case: https://armadillo-minio.test.molgenis.org
+Now you can also take a look at the files in the user interface of the MinIO
+fileserver if you open the MinIO server URL in a browser window.
 
 ## Deleting the data
 To delete the data you need to throw away the contents first.
