@@ -9,6 +9,9 @@ armadillo.list_resources(project)
 \arguments{
 \item{project}{the shared project in which the resources are located}
 }
+\value{
+the resources in the project
+}
 \description{
 List the resources in a project
 }

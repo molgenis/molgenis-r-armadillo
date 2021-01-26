@@ -7,7 +7,7 @@
 armadillo.list_projects()
 }
 \value{
-list of projects
+the projects
 }
 \description{
 List the projects

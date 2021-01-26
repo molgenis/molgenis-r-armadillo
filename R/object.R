@@ -7,9 +7,9 @@
 #' @param compression_function a function that compresses an object to a file
 #'
 #' @return TRUE if successful, otherwise an object of class aws_error details
-#' if not.
 #'
 #' @importFrom aws.s3 put_object
+#' @noRd
 .upload_object <- function(project, folder, object, name,
                            compression_function) { # nolint
   stopifnot(!is.na(project), !is.na(folder))
@@ -44,15 +44,17 @@
 #' @param project the shared project in which the objects are located
 #' @param extension the extension of the files to list
 #'
-#' @importFrom aws.s3 get_bucket
+#' @return the object names, without the extension
 #'
+#' @importFrom aws.s3 get_bucket
+#' @noRd
 .list_objects_by_extension <- function(project, extension) { # nolint
   bucket_name <- .to_shared_bucket_name(project)
   .check_if_bucket_exists(bucket_name)
   extension_regex <- paste0(extension, "$")
 
   objects <- aws.s3::get_bucket(bucket_name,
-                                use_https = .use_https()
+    use_https = .use_https()
   )
   object_names <- lapply(objects, function(obj) obj$Key)
   object_names <- unlist(object_names, use.names = FALSE)
@@ -67,11 +69,11 @@
 #' @param folder folder to delete the object from
 #' @param name object name
 #' @param extension extension of the object to delete
+#'
 #' @return TRUE if successful, otherwise an object of class aws_error details
-#' if not.
 #'
 #' @importFrom aws.s3 delete_object
-#'
+#' @noRd
 .delete_object <- function(project, folder, name, extension) { # nolint
   bucket_name <- .to_shared_bucket_name(project)
   .check_if_object_exists(bucket_name, folder, name, extension)
@@ -101,8 +103,10 @@
 #' @param new_name name of the copy, defaults to name
 #' @param extension extension of the objects
 #'
-#' @importFrom aws.s3 copy_object
+#' @return the response from the server
 #'
+#' @importFrom aws.s3 copy_object
+#' @noRd
 .copy_object <- # nolint
   function(project, folder, name,
            new_project = project,
@@ -110,8 +114,8 @@
            new_name = name,
            extension) {
     if (project == new_project &&
-        folder == new_folder &&
-        name == new_name) {
+      folder == new_folder &&
+      name == new_name) {
       stop("Cannot copy table or resource onto itself.", call. = FALSE)
     }
     bucket_name <- .to_shared_bucket_name(project)
@@ -146,6 +150,8 @@
 #' @param new_name use to rename the file, defaults to name
 #' @param extension extension of the file
 #'
+#' @return NULL, invisibly
+#' @noRd
 .move_object <- # nolint
   function(project, folder, name, new_project, new_folder, new_name,
            extension) {
@@ -173,7 +179,7 @@
 #' @return NULL, invisibly
 #'
 #' @importFrom aws.s3 get_object
-#'
+#' @noRd
 .load_object <- function(project, folder, name, env,
                          load_function, extension) { # nolint
   bucket_name <- .to_shared_bucket_name(project)

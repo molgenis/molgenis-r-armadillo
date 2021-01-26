@@ -6,7 +6,6 @@
 #' @param name name of the resource (optional)
 #'
 #' @return TRUE if successful, otherwise an object of class aws_error details
-#' if not.
 #'
 #' @examples
 #' \dontrun{
@@ -44,6 +43,8 @@ armadillo.upload_resource <- function(project, folder, resource, name = NULL) { 
 #'
 #' @param project the shared project in which the resources are located
 #'
+#' @return the resources in the project
+#'
 #' @examples
 #' \dontrun{
 #' armadillo.list_resources("gecko")
@@ -59,8 +60,8 @@ armadillo.list_resources <- function(project) { # nolint
 #' @param project project to delete the resource from
 #' @param folder folder to delete the resource from
 #' @param name resource name
+#'
 #' @return TRUE if successful, otherwise an object of class aws_error details
-#' if not.
 #'
 #' @examples
 #' \dontrun{
@@ -86,6 +87,8 @@ armadillo.delete_resource <- function(project, folder, name) { # nolint
 #' folder
 #' @param new_name name of the copy, defaults to name
 #'
+#' @return the response from the server
+#'
 #' @examples
 #' \dontrun{
 #' armadillo.copy_resource(
@@ -103,13 +106,15 @@ armadillo.copy_resource <- # nolint
            new_project = project,
            new_folder = folder,
            new_name = name) {
-    .copy_object(project,
-                folder,
-                name,
-                new_project,
-                new_folder,
-                new_name,
-                ".rds")
+    .copy_object(
+      project,
+      folder,
+      name,
+      new_project,
+      new_folder,
+      new_name,
+      ".rds"
+    )
   }
 
 #' Move the resource
@@ -120,6 +125,8 @@ armadillo.copy_resource <- # nolint
 #' @param new_project the project to move the resource to
 #' @param new_folder the folder to move the resource to, defaults to folder
 #' @param new_name use to rename the file, defaults to name
+#'
+#' @return NULL, invisibly
 #'
 #' @examples
 #' \dontrun{
@@ -136,13 +143,15 @@ armadillo.copy_resource <- # nolint
 armadillo.move_resource <- # nolint
   function(project, folder, name,
            new_project = project, new_folder = folder, new_name = name) {
-    .move_object(project,
-                 folder,
-                 name,
-                 new_project,
-                 new_folder,
-                 new_name,
-                 ".rds")
+    .move_object(
+      project,
+      folder,
+      name,
+      new_project,
+      new_folder,
+      new_name,
+      ".rds"
+    )
   }
 
 #' Load a resource from a project
@@ -152,6 +161,7 @@ armadillo.move_resource <- # nolint
 #' @param name name of the resource
 #' @param env The environment in which you want to load the resource.
 #' Default is the parent.frame() from which the function is called.
+#'
 #' @return NULL, invisibly
 #'
 #' @examples

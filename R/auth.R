@@ -79,16 +79,6 @@ armadillo.assume_role_with_web_identity <- # nolint
 #'
 #' @importFrom aws.iam set_credentials
 #'
-#' @examples
-#'
-#' \dontrun{
-#' MolgenisArmadillo:::armadillo.set_credentials(
-#'   server = "https://armadillo-minio.dev.molgenis.org",
-#'   access_key = "xxxx",
-#'   secret_key = "xxxx"
-#' )
-#' }
-#'
 #' @keywords internal
 #' @export
 armadillo.set_credentials <- # nolint

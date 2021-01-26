@@ -27,6 +27,9 @@ folder}
 
 \item{new_name}{name of the copy, defaults to name}
 }
+\value{
+the response from the server
+}
 \description{
 Copy table
 }
