@@ -4,7 +4,7 @@
 \alias{armadillo.load_table}
 \title{Load a table from a project}
 \usage{
-armadillo.load_table(project, folder, name, env = parent.frame())
+armadillo.load_table(project, folder, name)
 }
 \arguments{
 \item{project}{study or collection variables}
@@ -12,12 +12,9 @@ armadillo.load_table(project, folder, name, env = parent.frame())
 \item{folder}{the folder containing the table}
 
 \item{name}{name of the table}
-
-\item{env}{The environment in which you want to load the table.
-Default is the parent.frame() from which the function is called.}
 }
 \value{
-NULL, invisibly
+the contents of the table file, as data frame
 }
 \description{
 Load a table from a project
@@ -28,13 +25,6 @@ armadillo.load_table(
   project = "gecko",
   folder = "core_all",
   name = "lc_core_1"
-)
-
-armadillo.load_table(
-  project = "gecko",
-  folder = "core_all",
-  name = "lc_core_1",
-  env = globalenv()
 )
 }
 

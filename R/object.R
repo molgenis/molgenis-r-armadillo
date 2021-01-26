@@ -172,16 +172,14 @@
 #' @param project study or collection variables
 #' @param folder the folder containing the object
 #' @param name name of the object
-#' @param env The environment in which you want to load the object.
 #' @param load_function a function to extract the object with
 #' @param extension the extension of the file
 #'
-#' @return NULL, invisibly
+#' @return the result of load_function
 #'
 #' @importFrom aws.s3 get_object
 #' @noRd
-.load_object <- function(project, folder, name, env,
-                         load_function, extension) { # nolint
+.load_object <- function(project, folder, name, load_function, extension) {
   bucket_name <- .to_shared_bucket_name(project)
   .check_if_object_exists(bucket_name, folder, name, extension)
 
@@ -194,10 +192,5 @@
     use_https = .use_https()
   )
 
-  assign(
-    name,
-    load_function(file),
-    envir = env
-  )
-  invisible(NULL)
+  load_function(file)
 }

@@ -159,10 +159,8 @@ armadillo.move_resource <- # nolint
 #' @param project study or collection variables
 #' @param folder the folder containing the resource
 #' @param name name of the resource
-#' @param env The environment in which you want to load the resource.
-#' Default is the parent.frame() from which the function is called.
 #'
-#' @return NULL, invisibly
+#' @return the loaded resource
 #'
 #' @examples
 #' \dontrun{
@@ -171,19 +169,11 @@ armadillo.move_resource <- # nolint
 #'   folder = "core_all",
 #'   name = "lc_core_1"
 #' )
-#'
-#' armadillo.load_resource(
-#'   project = "gecko",
-#'   folder = "core_all",
-#'   name = "lc_core_1",
-#'   env = globalenv()
-#' )
 #' }
 #'
 #' @export
-armadillo.load_resource <- function(project, folder, name, # nolint
-                                    env = parent.frame()) {
-  .load_object(project, folder, name, env, .load_resource, ".rds")
+armadillo.load_resource <- function(project, folder, name) { # nolint
+  .load_object(project, folder, name, .load_resource, ".rds")
 }
 
 #' Helper function to extract an RDS file

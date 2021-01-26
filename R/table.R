@@ -124,10 +124,8 @@ armadillo.copy_table <- # nolint
 #' @param project study or collection variables
 #' @param folder the folder containing the table
 #' @param name name of the table
-#' @param env The environment in which you want to load the table.
-#' Default is the parent.frame() from which the function is called.
 #'
-#' @return NULL, invisibly
+#' @return the contents of the table file, as data frame
 #'
 #' @importFrom arrow read_parquet
 #'
@@ -138,18 +136,11 @@ armadillo.copy_table <- # nolint
 #'   folder = "core_all",
 #'   name = "lc_core_1"
 #' )
-#'
-#' armadillo.load_table(
-#'   project = "gecko",
-#'   folder = "core_all",
-#'   name = "lc_core_1",
-#'   env = globalenv()
-#' )
 #' }
 #'
 #' @export
-armadillo.load_table <- function(project, folder, name, env = parent.frame()) { # nolint
-  .load_object(project, folder, name, env, .load_table, ".parquet")
+armadillo.load_table <- function(project, folder, name) { # nolint
+  .load_object(project, folder, name, .load_table, ".parquet")
 }
 
 #' Helper function to extract a parquet file

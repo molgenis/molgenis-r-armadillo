@@ -104,13 +104,11 @@ test_that("armadillo.move_table calls .move_object", {
 
 test_that("armadillo.load_table calls .load_object", {
   load_object <- mock()
-  environment <- new.env()
 
   with_mock(armadillo.load_table(
     "project",
     "folder",
-    "name",
-    environment
+    "name"
   ),
   "MolgenisArmadillo:::.load_object" = load_object
   )
@@ -119,7 +117,6 @@ test_that("armadillo.load_table calls .load_object", {
     project = "project",
     folder = "folder",
     name = "name",
-    env = environment,
     load_function = .load_table,
     extension = ".parquet"
   )

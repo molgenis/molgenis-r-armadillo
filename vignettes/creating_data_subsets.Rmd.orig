@@ -63,8 +63,8 @@ Since the core and outcome data tables have the same names we will first subset 
 We will now download the outcome tables to the local environment
 
 ```{r, download outcome tables}
-armadillo.load_table("cohort1", "1_1_outcome_1_0", "non_rep")
-armadillo.load_table("cohort1", "1_1_outcome_1_0", "yearly_rep")
+non_rep <- armadillo.load_table("cohort1", "1_1-outcome-1_0", "nonrep")
+yearly_rep <- armadillo.load_table("cohort1", "1_1-outcome-1_0", "yearlyrep")
 ```
 
 , list their variables
@@ -86,8 +86,8 @@ subset_outcome_yearly_rep <- yearly_rep %>% select(child_id, asthma_med_)
 We will now download the relevant core tables to the local environment
 
 ```{r, download core tables}
-armadillo.load_table("cohort1", "2_1_core_1_0", "non_rep")
-armadillo.load_table("cohort1", "2_1_core_1_0", "yearly_rep")
+non_rep <- armadillo.load_table("cohort1", "2_1-core-1_0", "nonrep")
+yearly_rep <- armadillo.load_table("cohort1", "2_1-core-1_0", "yearlyrep")
 ```
 
 , list their variables

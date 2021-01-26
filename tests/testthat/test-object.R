@@ -316,7 +316,6 @@ test_that(".load_object loads the object from file", {
   on.exit(unlink(file))
 
   save_object <- mock(invisible(file))
-  environment <- new.env()
 
   load_table <- function(infile) {
     arrow::read_parquet(infile)
@@ -328,7 +327,6 @@ test_that(".load_object loads the object from file", {
           project = "project",
           folder = "folder",
           name = "test",
-          env = environment,
           load_function = load_table,
           extension = ".parquet"
         )},
@@ -342,14 +340,13 @@ test_that(".load_object loads the object from file", {
     )
   )
 
-  expect_equal(result, invisible(NULL))
   expect_args(save_object, 1,
     object = "folder/test.parquet",
     bucket = "shared-project",
     file = file,
     use_https = TRUE
   )
-  expect_equal(data, environment$test)
+  expect_equal(data, result)
 })
 
 test_that(".move_object calls copy and delete", {

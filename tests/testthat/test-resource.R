@@ -102,8 +102,7 @@ test_that("armadillo.load_resource calls .load_object", {
   with_mock(armadillo.load_resource(
     "project",
     "folder",
-    "name",
-    environment
+    "name"
   ),
   "MolgenisArmadillo:::.load_object" = load_object
   )
@@ -112,7 +111,6 @@ test_that("armadillo.load_resource calls .load_object", {
     project = "project",
     folder = "folder",
     name = "name",
-    env = environment,
     load_function = .load_resource,
     extension = ".rds"
   )
