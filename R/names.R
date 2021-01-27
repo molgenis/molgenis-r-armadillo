@@ -1,6 +1,7 @@
 #' Change bucketname to readable bucket name
 #'
 #' @param bucket_name folder name
+#' @return readable name for the folder
 #'
 #' @noRd
 .to_readable_name <- function(bucket_name) {
@@ -11,6 +12,7 @@
 #' Add 'shared-' prefix
 #'
 #' @param folder_name shared foldername
+#' @return shared bucket name for the folder
 #'
 #' @noRd
 .to_shared_bucket_name <- function(folder_name) {
@@ -23,6 +25,7 @@
 #' But we give human readable messages
 #'
 #' @param name project name
+#' @return No return value, throws if name is invalid
 #'
 #' @noRd
 .check_project_name <- function(name) {
@@ -38,7 +41,7 @@
   }
   if (!grepl("^[a-z0-9-]{0,55}[a-z0-9]$", name, perl = TRUE)) {
     stop("Project name must consist of lowercase letters and numbers.",
-         call. = FALSE
+      call. = FALSE
     )
   }
 }
@@ -48,6 +51,7 @@
 #' Name can not be empty and may not contain a slash
 #'
 #' @param name folder, table or resource name
+#' @return No return value, throws if name is invalid
 #'
 #' @noRd
 .check_name <- function(name) {
@@ -61,7 +65,7 @@
       "Valid name characters are ",
       "ASCII letters, digits, '_', '-' and ':'"
     ),
-         call. = FALSE
+    call. = FALSE
     )
   }
 }
@@ -71,6 +75,7 @@
 #'
 #' @param folder folder name
 #' @param name table or resource name
+#' @return No return value, throws if name is invalid
 #'
 #' @noRd
 .check_full_name <- function(folder, name) {
@@ -87,7 +92,7 @@
 
   if (nchar(full_name) > 1024) {
     stop("Folder + table/resource name cannot be longer than 1024 characters.",
-         call. = FALSE
+      call. = FALSE
     )
   }
 }

@@ -1,7 +1,3 @@
-# MolgenisArmadillo 0.2.4
-
-# MolgenisArmadillo 0.2.3
-
-# MolgenisArmadillo 0.2.2
-
 * Release to CRAN
+* Loaded objects no longer are put into the parent environment but
+returned from their function instead.

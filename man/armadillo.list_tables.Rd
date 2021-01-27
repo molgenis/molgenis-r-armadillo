@@ -9,6 +9,9 @@ armadillo.list_tables(project)
 \arguments{
 \item{project}{the shared project in which the tables are located}
 }
+\value{
+the table names, without the extension
+}
 \description{
 List the tables in a project
 }

@@ -15,7 +15,6 @@ armadillo.delete_table(project, folder, name)
 }
 \value{
 TRUE if successful, otherwise an object of class aws_error details
-if not.
 }
 \description{
 Delete table

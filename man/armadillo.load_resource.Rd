@@ -4,7 +4,7 @@
 \alias{armadillo.load_resource}
 \title{Load a resource from a project}
 \usage{
-armadillo.load_resource(project, folder, name, env = parent.frame())
+armadillo.load_resource(project, folder, name)
 }
 \arguments{
 \item{project}{study or collection variables}
@@ -12,12 +12,9 @@ armadillo.load_resource(project, folder, name, env = parent.frame())
 \item{folder}{the folder containing the resource}
 
 \item{name}{name of the resource}
-
-\item{env}{The environment in which you want to load the resource.
-Default is the parent.frame() from which the function is called.}
 }
 \value{
-NULL, invisibly
+the loaded resource
 }
 \description{
 Load a resource from a project
@@ -28,13 +25,6 @@ armadillo.load_resource(
   project = "gecko",
   folder = "core_all",
   name = "lc_core_1"
-)
-
-armadillo.load_resource(
-  project = "gecko",
-  folder = "core_all",
-  name = "lc_core_1",
-  env = globalenv()
 )
 }
 

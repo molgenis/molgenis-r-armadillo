@@ -29,15 +29,4 @@ list of credentials, fit for use with \code{\link{set_credentials}}
 \description{
 Set credentials
 }
-\examples{
-
-\dontrun{
-MolgenisArmadillo:::armadillo.set_credentials(
-  server = "https://armadillo-minio.dev.molgenis.org",
-  access_key = "xxxx",
-  secret_key = "xxxx"
-)
-}
-
-}
 \keyword{internal}

@@ -26,6 +26,9 @@ armadillo.move_table(
 
 \item{new_name}{use to rename the file, defaults to name}
 }
+\value{
+NULL, invisibly
+}
 \description{
 Move the table
 }

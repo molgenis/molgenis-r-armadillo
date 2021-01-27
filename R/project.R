@@ -35,6 +35,7 @@ armadillo.create_project <- function(project_name) { # nolint
 #' A project represents usually a study or collection of variables
 #'
 #' @param project_name the name of the study or collection of variables name
+#' @return NULL
 #'
 #' @examples
 #' \dontrun{
@@ -48,7 +49,7 @@ armadillo.delete_project <- function(project_name) { # nolint
 
 #' List the projects
 #'
-#' @return list of projects
+#' @return the projects
 #'
 #' @examples
 #' \dontrun{
@@ -64,6 +65,8 @@ armadillo.list_projects <- function() { # nolint
 #'
 #' @param bucket_name name of the bucket, usually a collection of variables
 #'
+#' @return NULL
+#'
 #' @noRd
 .delete_bucket <- function(bucket_name) {
   .check_if_bucket_exists(bucket_name)
@@ -76,6 +79,8 @@ armadillo.list_projects <- function() { # nolint
 #' Get buckets
 #'
 #' @param prefix can be 'shared-' or 'user-'
+#'
+#' @return bucket names, prefix deleted
 #'
 #' @noRd
 .get_buckets <- function(prefix) {

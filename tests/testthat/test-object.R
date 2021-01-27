@@ -232,12 +232,12 @@ test_that(".copy_object copies object", {
   expect_message(
     with_mock({
         result <- .copy_object(
-        project = "project",
-        folder = "folder",
-        name = "test",
-        new_folder = "target",
-        extension = ".rds"
-      )},
+          project = "project",
+          folder = "folder",
+          name = "test",
+          new_folder = "target",
+          extension = ".rds"
+        )},
       "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE),
       "aws.s3::bucket_exists" = mock(TRUE, cycle = TRUE),
       "aws.s3::head_object" = mock(TRUE),
@@ -316,7 +316,6 @@ test_that(".load_object loads the object from file", {
   on.exit(unlink(file))
 
   save_object <- mock(invisible(file))
-  environment <- new.env()
 
   load_table <- function(infile) {
     arrow::read_parquet(infile)
@@ -325,16 +324,15 @@ test_that(".load_object loads the object from file", {
   expect_silent(
     with_mock({
         result <- .load_object(
-        project = "project",
-        folder = "folder",
-        name = "test",
-        env = environment,
-        load_function = load_table,
-        extension = ".parquet"
-      )},
+          project = "project",
+          folder = "folder",
+          name = "test",
+          load_function = load_table,
+          extension = ".parquet"
+        )},
       "tempfile" = function() {
         file
-        },
+      },
       "aws.s3::bucket_exists" = mock(TRUE),
       "aws.s3::head_object" = mock(TRUE),
       "aws.s3::save_object" = save_object,
@@ -342,14 +340,13 @@ test_that(".load_object loads the object from file", {
     )
   )
 
-  expect_equal(result, invisible(NULL))
   expect_args(save_object, 1,
     object = "folder/test.parquet",
     bucket = "shared-project",
     file = file,
     use_https = TRUE
   )
-  expect_equal(data, environment$test)
+  expect_equal(data, result)
 })
 
 test_that(".move_object calls copy and delete", {

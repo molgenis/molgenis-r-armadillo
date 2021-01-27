@@ -6,7 +6,6 @@
 #' @param name name of the table (optional)
 #'
 #' @return TRUE if successful, otherwise an object of class aws_error details
-#' if not.
 #'
 #' @importFrom arrow write_parquet
 #'
@@ -27,7 +26,7 @@ armadillo.upload_table <- function(project, folder, table, name = NULL) { # noli
     name <- deparse(substitute(table))
   }
 
-   .upload_object(project, folder, table, name, .compress_table)
+  .upload_object(project, folder, table, name, .compress_table)
 }
 
 #' Helper function for compressing to a parquet file
@@ -46,6 +45,8 @@ armadillo.upload_table <- function(project, folder, table, name = NULL) { # noli
 #'
 #' @param project the shared project in which the tables are located
 #'
+#' @return the table names, without the extension
+#'
 #' @examples
 #' \dontrun{
 #' armadillo.list_tables("gecko")
@@ -61,8 +62,8 @@ armadillo.list_tables <- function(project) { # nolint
 #' @param project project to delete the table from
 #' @param folder folder to delete the table from
 #' @param name table name
+#'
 #' @return TRUE if successful, otherwise an object of class aws_error details
-#' if not.
 #'
 #' @examples
 #' \dontrun{
@@ -88,6 +89,8 @@ armadillo.delete_table <- function(project, folder, name) { # nolint
 #' folder
 #' @param new_name name of the copy, defaults to name
 #'
+#' @return the response from the server
+#'
 #' @examples
 #' \dontrun{
 #' armadillo.copy_table(
@@ -105,13 +108,15 @@ armadillo.copy_table <- # nolint
            new_project = project,
            new_folder = folder,
            new_name = name) {
-    .copy_object(project,
-                folder,
-                name,
-                new_project,
-                new_folder,
-                new_name,
-                ".parquet")
+    .copy_object(
+      project,
+      folder,
+      name,
+      new_project,
+      new_folder,
+      new_name,
+      ".parquet"
+    )
   }
 
 #' Load a table from a project
@@ -119,9 +124,8 @@ armadillo.copy_table <- # nolint
 #' @param project study or collection variables
 #' @param folder the folder containing the table
 #' @param name name of the table
-#' @param env The environment in which you want to load the table.
-#' Default is the parent.frame() from which the function is called.
-#' @return NULL, invisibly
+#'
+#' @return the contents of the table file, as data frame
 #'
 #' @importFrom arrow read_parquet
 #'
@@ -132,25 +136,18 @@ armadillo.copy_table <- # nolint
 #'   folder = "core_all",
 #'   name = "lc_core_1"
 #' )
-#'
-#' armadillo.load_table(
-#'   project = "gecko",
-#'   folder = "core_all",
-#'   name = "lc_core_1",
-#'   env = globalenv()
-#' )
 #' }
 #'
 #' @export
-armadillo.load_table <- function(project, folder, name, env = parent.frame()) { # nolint
-  .load_object(project, folder, name, env, .load_table, ".parquet")
+armadillo.load_table <- function(project, folder, name) { # nolint
+  .load_object(project, folder, name, .load_table, ".parquet")
 }
 
 #' Helper function to extract a parquet file
 #'
 #' @param file file to extract
 #'
-#' @return the contents of the file
+#' @return the contents of the file, as data frame
 #'
 .load_table <- function(file) {
   arrow::read_parquet(file)
@@ -164,6 +161,8 @@ armadillo.load_table <- function(project, folder, name, env = parent.frame()) { 
 #' @param new_project the project to move the table to
 #' @param new_folder the folder to move the table to, defaults to folder
 #' @param new_name use to rename the file, defaults to name
+#'
+#' @return NULL, invisibly
 #'
 #' @examples
 #' \dontrun{
@@ -182,11 +181,13 @@ armadillo.move_table <- # nolint
            new_project = project,
            new_folder = folder,
            new_name = name) {
-    .move_object(project,
-                 folder,
-                 name,
-                 new_project,
-                 new_folder,
-                 new_name,
-                 ".parquet")
+    .move_object(
+      project,
+      folder,
+      name,
+      new_project,
+      new_folder,
+      new_name,
+      ".parquet"
+    )
   }

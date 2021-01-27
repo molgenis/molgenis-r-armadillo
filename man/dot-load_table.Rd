@@ -10,7 +10,7 @@
 \item{file}{file to extract}
 }
 \value{
-the contents of the file
+the contents of the file, as data frame
 }
 \description{
 Helper function to extract a parquet file

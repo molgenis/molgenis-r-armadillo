@@ -2,6 +2,8 @@
 #' Check if project exists
 #' @param bucket_name name of the folder
 #'
+#' @return No return value, throws if the bucket does not exist
+#'
 #' @importFrom aws.s3 bucket_exists
 #'
 #' @noRd
@@ -25,9 +27,11 @@
 #' @param object_name the name of the table or resource
 #' @param extension the extension of the object
 #'
+#' @return No return value, throws if the object does not exist
+#'
 #' @noRd
 .check_if_object_exists <- function(bucket_name, folder_name, object_name,
-                                   extension) {
+                                    extension) {
   .check_if_bucket_exists(bucket_name)
   full_name <- paste0(folder_name, "/", object_name, extension)
 
@@ -52,7 +56,8 @@
 
 #' Check if s3 calls should use HTTPS
 #'
-#' This value is set when the package loads and updated when you log in.
+#' @return the value of the "MolgenisArmadillo.s3.use_https" option, default
+#' TRUE
 #'
 #' @noRd
 .use_https <- function() {
