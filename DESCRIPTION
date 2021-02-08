@@ -29,7 +29,6 @@ Maintainer: Fleur Kelpin <f.kelpin@umcg.nl>
 Depends:
     R (>= 3.6)
 Imports:
-    rlang,
     httr,
     urltools,
     xml2,
