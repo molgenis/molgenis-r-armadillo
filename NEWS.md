@@ -1,4 +1,4 @@
-# MolgenisArmadillo (development version)
+# MolgenisArmadillo 1.0.1
 
 * Do not use arrow in unit tests
 
