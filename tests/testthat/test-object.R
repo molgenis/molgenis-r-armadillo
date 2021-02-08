@@ -29,8 +29,8 @@ test_that(".upload_object uploads object", {
   stub(.upload_object, "tempfile", file)
 
   compress_table <- function(table, file) {
-    arrow::write_parquet(table, file)
-    ".parquet"
+    saveRDS(table, file)
+    ".rds"
   }
 
   expect_message(
@@ -54,7 +54,7 @@ test_that(".upload_object uploads object", {
 
   expect_args(put_object, 1,
     file = file,
-    object = "folder/datasets::iris.parquet",
+    object = "folder/datasets::iris.rds",
     bucket = "shared-project",
     multipart = TRUE,
     show_progress = interactive(),
@@ -312,13 +312,13 @@ test_that(".load_object loads the object from file", {
     "b", 2,
     "c", 3
   )
-  arrow::write_parquet(data, file)
+  saveRDS(data, file)
   on.exit(unlink(file))
 
   save_object <- mock(invisible(file))
 
   load_table <- function(infile) {
-    arrow::read_parquet(infile)
+    readRDS(infile)
   }
 
   expect_silent(
