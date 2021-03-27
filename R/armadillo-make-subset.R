@@ -121,8 +121,6 @@ armadillo.makeSubset <- function(
 
   names(cohort_sub) <- required
 
-  length(cohort_sub)
-
   ################################################################################
   # 6. See what data we have available
   ################################################################################
@@ -188,11 +186,11 @@ armadillo.makeSubset <- function(
 
     ## ---- Core -------------------------------------------------------------------
     sub_core %>%
-      imap(~ armadillo.upload_table(subset_name, "2_1_core_1_0", .x, .y))
+      imap(~ armadillo.upload_table(subset_name, core_folder, .x, .y))
 
     ## ---- Outcome ----------------------------------------------------------------
     sub_outcome %>%
-      imap(~ armadillo.upload_table(subset_name, "1_1_outcome_1_0", .x, .y))
+      imap(~ armadillo.upload_table(subset_name, outcome_folder, .x, .y))
   }
 
   if (type %in% c("describe", "both")) {
