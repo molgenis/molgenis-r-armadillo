@@ -34,7 +34,8 @@ armadillo.makeSubset <- function(
                                  outcome_folder = "1_1_outcome_1_0",
                                  ref_csv,
                                  type = c("describe", "subset", "both"),
-                                 subset_name = NULL) {
+                                 subset_name = NULL, 
+                                 include_meta = TRUE) {
   if (type %in% c("subset", "both") & is.null(subset_name)) {
     stop("You must provide a name of the new bucket")
   }
@@ -133,6 +134,53 @@ armadillo.makeSubset <- function(
     map(~ select(., variable))
 
   names(required_vars) <- required
+
+if(include_meta == TRUE){
+  ################################################################################
+  # 7. Automatically include key variables from different tables  
+  ################################################################################
+  
+  ## There are some variable we always want to give access to, even if researchers
+  ## forget to ask for them. 
+
+  ## ---- Define variables that are always required ------------------------------
+  always_include <- list(
+    core_monthly_rep = tibble(
+      variable = c("row_id", "child_id", "age_years", "age_months", "child_id", 
+        "age_years", "age_months", "height_age", "weight_age")), 
+    core_non_rep = tibble(
+      variable = c("row_id", "child_id", "mother_id", "preg_no", "child_no", 
+        "cohort_id", "coh_country", "age_years", "age_months")), 
+    core_trimester = tibble(
+      variable = c("row_id", "child_id", "age_trimester")), 
+    core_yearly_rep = tibble(
+      variable = c("row_id", "child_id", "age_years")), 
+    outcome_monthly_rep = tibble(
+      variable = c("row_id", "child_id", "age_years", "age_months")),
+    outcome_non_rep = tibble(
+      variable = c("row_id", "child_id")), 
+    outcome_weekly_rep = tibble(
+      variable = c("row_id", "child_id", "age_years", "age_weeks", 
+                   "child_id", "age_years", "age_weeks")),
+    outcome_yearly_rep = tibble(
+      variable = c("row_id", "child_id", "age_years")))
+    
+  ## ---- Subset this list to be same length and items of list "required_vars" ----  
+  always_include_sub <- always_include[required]
+
+required_vars <- list(required_vars, always_include_sub) %>%
+pmap(function(.x, .y){
+
+bind_rows(.x, .y) %>% distinct
+
+}) 
+
+} else if(include_meta == FALSE){
+
+required_vars <- required_vars
+
+}
+
 
   ## Now we check which of the required variables don't exist in the data we
   ##  just downloaded
