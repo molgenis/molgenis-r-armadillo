@@ -5,7 +5,7 @@ MolgenisArmadillo
 <!-- badges: start -->
 
 [![Build
-Status](https://travis-ci.org/molgenis/molgenis-r-armadillo.svg?branch=master)](https://travis-ci.org/molgenis/molgenis-r-armadillo)
+Status](https://travis-ci.com/molgenis/molgenis-r-armadillo.svg?branch=master)](https://travis-ci.com/molgenis/molgenis-r-armadillo)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/MolgenisArmadillo)](https://CRAN.R-project.org/package=MolgenisArmadillo)
 [![codecov](https://codecov.io/gh/molgenis/molgenis-r-armadillo/branch/master/graph/badge.svg)](https://codecov.io/gh/molgenis/molgenis-r-armadillo)
