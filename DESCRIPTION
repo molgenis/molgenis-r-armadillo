@@ -35,13 +35,18 @@ Imports:
     aws.iam,
     aws.s3,
     MolgenisAuth,
-    arrow
+    arrow,
+    dplyr,
+    purrr,
+    readr,
+    stringr,
+    tidyr,
+    tibble
 Suggests:
     knitr,
     testthat,
     mockery,
     datasets,
-    tibble,
     rmarkdown,
     DSMolgenisArmadillo
 License: LGPL (>= 2.1)

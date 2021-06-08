@@ -230,14 +230,16 @@ test_that(".copy_object copies object", {
   copy_object <- mock(TRUE)
 
   expect_message(
-    with_mock({
+    with_mock(
+      {
         result <- .copy_object(
           project = "project",
           folder = "folder",
           name = "test",
           new_folder = "target",
           extension = ".rds"
-        )},
+        )
+      },
       "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE),
       "aws.s3::bucket_exists" = mock(TRUE, cycle = TRUE),
       "aws.s3::head_object" = mock(TRUE),
@@ -322,14 +324,16 @@ test_that(".load_object loads the object from file", {
   }
 
   expect_silent(
-    with_mock({
+    with_mock(
+      {
         result <- .load_object(
           project = "project",
           folder = "folder",
           name = "test",
           load_function = load_table,
           extension = ".parquet"
-        )},
+        )
+      },
       "tempfile" = function() {
         file
       },
