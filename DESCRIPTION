@@ -7,7 +7,7 @@ Description: A set of functions to be able to manage data shared on a
 Authors@R:
     c(person(given = "Sido",
              family = "Haakma",
-             role = c("aut"),
+             role = c("aut", "cre"),
              email = "s.haakma@rug.nl",
              comment = c(ORCID = "0000-0003-1278-9144")),
       person(given = "Tommy",
@@ -17,15 +17,15 @@ Authors@R:
              comment = c(ORCID = "0000-0002-4492-7225")),
       person(given = "Fleur",
              family = "Kelpin",
-             role = c("aut", "cre"),
-             email = "f.kelpin@umcg.nl",
+             role = c("aut"),
+             email = "fleur@kelpin.nl",
              comment = c(ORCID = "0000-0003-1527-5130")),
       person(given = "Morris",
              family = "Swertz",
              role = c("aut"),
              email = "m.a.swertz@rug.nl",
              comment = c(ORCID = "0000-0002-0979-3401")))
-Maintainer: Fleur Kelpin <f.kelpin@umcg.nl>
+Maintainer: Sido Haakma <s.haakma@rug.nl>
 Depends:
     R (>= 3.6)
 Imports:
