@@ -150,7 +150,7 @@ if(include_meta == TRUE){
         "age_years", "age_months", "height_age", "weight_age")), 
     core_non_rep = tibble(
       variable = c("row_id", "child_id", "mother_id", "preg_no", "child_no", 
-        "cohort_id", "coh_country", "age_years", "age_months")), 
+        "cohort_id", "coh_country")), 
     core_trimester = tibble(
       variable = c("row_id", "child_id", "age_trimester")), 
     core_yearly_rep = tibble(
