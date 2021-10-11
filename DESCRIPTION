@@ -1,6 +1,6 @@
 Package: MolgenisArmadillo
 Type: Package
-Version: 1.0.2.9001
+Version: 1.0.3
 Title: Armadillo Client for the Armadillo Service
 Description: A set of functions to be able to manage data shared on a
   'MOLGENIS Armadillo' storage server ('MinIO').
