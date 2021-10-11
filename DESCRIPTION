@@ -48,6 +48,6 @@ License: LGPL (>= 2.1)
 URL: https://github.com/molgenis/molgenis-r-armadillo/,
   https://molgenis.github.io/molgenis-r-armadillo/
 BugReports: https://github.com/molgenis/molgenis-r-armadillo/issues/
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 VignetteBuilder: knitr
 Encoding: UTF-8

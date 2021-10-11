@@ -5,10 +5,10 @@ MolgenisArmadillo
 <!-- badges: start -->
 
 [![Build
-Status](https://travis-ci.com/molgenis/molgenis-r-armadillo.svg?branch=master)](https://travis-ci.com/molgenis/molgenis-r-armadillo)
+Status](https://api.travis-ci.com/molgenis/molgenis-r-armadillo.svg?branch=master)](https://api.travis-ci.com/molgenis/molgenis-r-armadillo.svg?branch=master)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/MolgenisArmadillo)](https://CRAN.R-project.org/package=MolgenisArmadillo)
-[![codecov](https://codecov.io/gh/molgenis/molgenis-r-armadillo/branch/master/graph/badge.svg)](https://codecov.io/gh/molgenis/molgenis-r-armadillo)
+[![codecov](https://codecov.io/gh/molgenis/molgenis-r-armadillo/branch/master/graph/badge.svg?token=ITPMERAWYI)](https://app.codecov.io/gh/molgenis/molgenis-r-armadillo)
 <!-- badges: end -->
 
 Client to share data in a [MOLGENIS Armadillo DataSHIELD

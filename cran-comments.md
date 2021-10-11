@@ -1,3 +1,9 @@
+## 1.0.4 Fix codecov badge links
+* Fix codecov badge links 
+
+## 1.0.3 Fix travis badge links
+* Fix travis badge links 
+
 ## 1.0.2 Change maintainer
 * Make Sido maintainer
 
