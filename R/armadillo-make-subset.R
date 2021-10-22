@@ -202,7 +202,10 @@ required_vars <- required_vars
     ################################################################################
     # 7. Create subsets
     ################################################################################
-    armadillo.create_project(subset_name)
+    if(subset_name %in% armadillo.list_projects() == FALSE){
+
+  armadillo.create_project(subset_name)
+}
 
     sub_list <- list(required_vars, cohort_sub) %>%
       pmap(function(x, y) {
