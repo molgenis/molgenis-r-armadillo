@@ -3,29 +3,22 @@
 #' This automates the process of (i) checking what data is available to create
 #' subsets, and (ii) makes the subsets.
 #'
-#' @param project directory from which to subset data
-#' @param core_folder path of folder containing core data
-#' @param outcome_folder path of folder containing outcome data
-#' @param ref_csv csv file detailing the variables required
-#' in the subset. It must contain three columns:
-#'
-#' 1. type (either "core" or "outcome")
-#' 2. table (if type == "core", either "non_rep", "monthly_rep", "yearly_rep"
-#'           of "trimester". if type == outcome, either "non_rep", "weekly_rep",
-#'           "monthly_rep" or "yearly_rep"))
-#' 3. variable (corresponding to LifeCycle variable name)
+#' @param source_project project from which to subset data
+#' @param new_project project to upload subset to. Will be created if it doesn't exist.
+#' @param subset_def R object containing subset definition created by newSubsetDefinition()
 #' @param type Either 'describe' to describe data not available, 'subset' to subset
 #' the data, (iii) 'both' to describe and subset the data
-#' @param subset_name name of the subset to create
+#' @param include_meta wheter or not to automatically include key variables (defined in subset_def)
 #' @return if type == 'describe' or 'both' returns a tibble detailing variables not
 #' available for subsetting
 #'
-#' @importFrom dplyr %>% mutate filter arrange distinct pull bind_rows select any_of group_by group_split
-#' @importFrom tidyr extract
-#' @importFrom readr read_csv
-#' @importFrom tibble tibble as_tibble
-#' @importFrom purrr pmap map imap
-#' @importFrom stringr str_detect str_remove
+#' @importFrom rlang arg_match
+#' @importFrom MolgenisArmadillo armadillo.list_tables armadillo.load_table armadillo.create_project armadillo.upload_table
+#' @importFrom dplyr %>% mutate filter select bind_rows distinct any_of
+#' @importFrom nest unnest
+#' @importFrom stringr str_split
+#' @importFrom tibble as_tibble
+#' @importFrom purrr set_names map_lgl pmap pwalk
 #'
 #' @export
 armadillo.makeSubset <- function(
@@ -35,7 +28,7 @@ armadillo.makeSubset <- function(
                                  type = NULL,
                                  include_meta = NULL) {
 
-## HERE WE NEED A CHECK TO SEE IF THE PERSON HAS LOGGED IN CORRECTLY 
+## SIDO: HERE WE NEED A CHECK TO SEE IF THE PERSON HAS LOGGED IN CORRECTLY 
 
 if(is.null(source_project)){
 
@@ -77,7 +70,7 @@ stop("The source project specified does not exist")
 
 }
 
-## DO WE WANT TO INCLUDE CHECKS TO MAKE SURE THE REFERENCE OBJECT IS CORRECT?
+## SIDO: DO WE WANT TO INCLUDE CHECKS TO MAKE SURE THE REFERENCE OBJECT IS CORRECT?
 
 source_tables <- armadillo.list_tables("alspac") %>%
 str_split("/", simplify = TRUE) %>%
@@ -85,7 +78,7 @@ as_tibble %>%
 set_names("folder", "table") %>%
 mutate(type = "source")
 
-missing_tables <- left_join(input, source_tables, by = c("folder", "table")) %>%
+missing_tables <- left_join(subset_def, source_tables, by = c("folder", "table")) %>%
 dplyr::filter(is.na(type)) %>%
 dplyr::select(folder, table)
 
@@ -94,11 +87,11 @@ if(nrow(missing_tables) > 0){
 stop("The following folders & tables are included in your reference object, but don't exist
   within the specified project")
 
-## HERE WE NEED TO RETURN THE TABLE, BUT I'VE NEVER WORKED OUT HOW TO DO THIS.
+## HERE WE NEED TO RETURN THE TABLE IN THE ERROR MESSAGE, BUT I'VE NEVER WORKED OUT HOW TO DO THIS.
 
 }
 
-subset_obj <- ref_object %>% 
+subset_obj <- subset_def %>% 
 dplyr::filter(!map_lgl(subset_vars, is.null))
 
 if(include_meta == TRUE){
@@ -120,7 +113,7 @@ mutate(vars_to_subset = subset_vars)
 
 subset_obj <- subset_obj %>%
 mutate(data = pmap(., function(folder, table, ...) {
-      armadillo.load_table(project, folder, table)
+      armadillo.load_table(source_project, folder, table)
     })
 )
 

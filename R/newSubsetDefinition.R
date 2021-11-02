@@ -21,11 +21,11 @@ if(is.null(vars)){
 subset_vars <- read.csv(file = vars) 
 
   if (any(colnames(subset_vars) %in% c("folder", "table", "variable") == FALSE)) {
-    stop(".csv file must contain three columns titled 'folder', 'table' and 'variable'")
+    stop(".csv file must contain exactly three columns entitled 'folder', 'table' and 'variable'")
   }
 
   if (length(colnames(subset_vars)) != 3) {
-    stop(".csv file must contain exactly three columns titled 'folder', 'table' and 'variable'")
+    stop(".csv file must contain exactly three columns entitled 'folder', 'table' and 'variable'")
   }
 
 subset_vars <- subset_vars %>% 
@@ -81,5 +81,7 @@ mutate(meta_vars = NA) %>%
 dplyr::select(folder, table, meta_vars, subset_vars)
 
 }
+
+return(out)
 
 }
