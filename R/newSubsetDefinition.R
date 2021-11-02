@@ -9,6 +9,7 @@
 #'
 #' @importFrom dplyr %>% filter left_join
 #' @importFrom tidyr nest
+#' @importFrom utils read.csv
 #'
 #' @export
 armadillo.newSubsetDefinition <- function(vars = NULL, metadata = NULL) {

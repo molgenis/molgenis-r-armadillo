@@ -18,6 +18,7 @@
 #' @importFrom stringr str_split
 #' @importFrom tibble as_tibble
 #' @importFrom purrr set_names map_lgl pmap pwalk
+#' @importFrom utils read.csv
 #'
 #' @export
 armadillo.subset <- function(source_project = NULL,
