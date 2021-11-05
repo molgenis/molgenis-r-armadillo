@@ -16,12 +16,29 @@ armadillo.subset(
 
 \item{new_project}{project to upload subset to. Will be created if it doesn't exist.}
 
-\item{subset_def}{R object containing subset definition created by newSubsetDefinition()}
+\item{subset_def}{R object containing subset definition created by \code{armadillo.subset_definition()}}
 
-\item{type}{Either 'describe' to describe data not available, 'subset' to subset
-the data, (iii) 'both' to describe and subset the data}
+\item{type}{Either \code{describe} to describe data not available, \code{subset} to subset
+the data, \code{both} to describe and subset the data}
+}
+\value{
+missing variables provided in the subset definition
 }
 \description{
-This automates the process of (i) checking what data is available to create
-subsets, and (ii) makes the subsets.
+This automates the process of 
+\enumerate{
+  \item{1}{checking what data is available to create subsets}
+  \item{2}{make the subset}
+}
+}
+\examples{
+\dontrun{
+armadillo.subset(
+  source_project = "gecko",
+  new_project = "study1",
+  subset_def = local_subset,
+  type = "both"
+)
+}
+
 }

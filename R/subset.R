@@ -1,13 +1,16 @@
 #' Describes data available to subset and makes subset
 #'
-#' This automates the process of (i) checking what data is available to create
-#' subsets, and (ii) makes the subsets.
+#' This automates the process of 
+#' \enumerate{
+#'   \item{1}{checking what data is available to create subsets}
+#'   \item{2}{make the subset}
+#' }
 #'
 #' @param source_project project from which to subset data
 #' @param new_project project to upload subset to. Will be created if it doesn't exist.
-#' @param subset_def R object containing subset definition created by newSubsetDefinition()
-#' @param type Either 'describe' to describe data not available, 'subset' to subset
-#' the data, (iii) 'both' to describe and subset the data
+#' @param subset_def R object containing subset definition created by \code{armadillo.subset_definition()}
+#' @param type Either \code{describe} to describe data not available, \code{subset} to subset
+#' the data, \code{both} to describe and subset the data
 #'
 #' @importFrom rlang arg_match
 #' @importFrom dplyr %>% mutate filter select bind_rows distinct any_of
@@ -17,6 +20,18 @@
 #' @importFrom purrr set_names map_lgl pmap pwalk
 #' @importFrom utils read.csv
 #'
+#' @return missing variables provided in the subset definition 
+#' 
+#' @examples 
+#' \dontrun{
+#' armadillo.subset(
+#'   source_project = "gecko",
+#'   new_project = "study1",
+#'   subset_def = local_subset,
+#'   type = "both"
+#' )
+#' }
+#' 
 #' @export
 armadillo.subset <- function(source_project = NULL,
                              new_project = NULL,
@@ -35,7 +50,7 @@ armadillo.subset <- function(source_project = NULL,
   }
 
   if (is.null(subset_def)) {
-    stop("You must provide an object created by newSubsetDefinition containing details
+    stop("You must provide an object created by armadillo.subset_definition containing details
   of the variables and tables to include in the subset")
   }
 
@@ -50,17 +65,17 @@ armadillo.subset <- function(source_project = NULL,
   }
 
   ## SIDO: DO WE WANT TO INCLUDE CHECKS TO MAKE SURE THE REFERENCE OBJECT IS CORRECT?
-  tables_local <- .getTables(source_project, subset_def)
+  tables_local <- .get_tables(source_project, subset_def)
 
   if (type == "subset") {
-    .makeSubset(new_project, tables_local)
+    .make_subset(new_project, tables_local)
   } else if (type == "describe") {
-    missing <- .checkAvailableVars(tables_local)
+    missing <- .check_available_vars(tables_local)
     return(missing)
   } else if (type == "both") {
-    .makeSubset(new_project, tables_local)
+    .make_subset(new_project, tables_local)
 
-    missing <- .checkAvailableVars(tables_local)
+    missing <- .check_available_vars(tables_local)
 
     return(missing)
   }
@@ -69,15 +84,17 @@ armadillo.subset <- function(source_project = NULL,
 #' Performs checks and downloads armadillo tables based on reference object
 #'
 #' @param source_project project from which to subset data
-#' @param subset_def R object containing subset definition created by newSubsetDefinition()
+#' @param subset_def R object containing subset definition created by \code{armadillo.subset_definition()}
 #'
 #' @importFrom stringr str_split
 #' @importFrom tibble as_tibble
 #' @importFrom purrr set_names pmap
 #' @importFrom dplyr %>% mutate left_join filter select
+#' 
+#' @return tables that exists on the server and match with the provided subset definition
 #'
 #' @noRd
-.getTables <- function(source_project, subset_def) {
+.get_tables <- function(source_project, subset_def) {
   type <- folder <- . <- NULL
 
   source_tables <- armadillo.list_tables(source_project) %>%
@@ -109,13 +126,13 @@ armadillo.subset <- function(source_project = NULL,
 #' Creates a local subset of data based on reference object, and uploads this to server
 #'
 #' @param source_project project from which to subset data
-#' @param tables R object containing armadillo tables created by .getTables()
+#' @param tables R object containing armadillo tables created by \code{.get_tables()}
 #'
 #' @importFrom dplyr %>% select any_of
 #' @importFrom purrr pmap pwalk
 #'
 #' @noRd
-.makeSubset <- function(new_project, tables) {
+.make_subset <- function(new_project, tables) {
   . <- NULL
 
   if (new_project %in% armadillo.list_projects() == FALSE) {
@@ -145,14 +162,16 @@ armadillo.subset <- function(source_project = NULL,
 
 #' Checks which of the variables specified in the reference object are missing in the source data
 #'
-#' @param tables R object containing armadillo tables created by .getTables()
+#' @param tables R object containing armadillo tables created by \code{.get_tables()}
 #'
 #' @importFrom dplyr %>% select
 #' @importFrom purrr pmap
 #' @importFrom tidyr unnest
+#' 
+#' @return missing variables
 #'
 #' @noRd
-.checkAvailableVars <- function(tables) {
+.check_available_vars <- function(tables) {
   . <- folder <- NULL
   tables_with_missing <- tables %>%
     mutate(missing = pmap(
@@ -171,17 +190,28 @@ armadillo.subset <- function(source_project = NULL,
 }
 
 #' Builds an R object containing info required to make subsets
+#' 
+#' This file must contain three columns with the headers 'folder', 'table' and 
+#' 'variables'. 'Folder' must refer to a folder in the armadillo project to be 
+#' subsetted. 'Table' must refer to a table within that folder. 'variables' must 
+#' refer to variables within that table.
 #'
-#' @param vars .csv file containing vars to subset. This file must contain
-#' three columns with the headers 'folder', 'table' & 'variables'. 'Folder' must
-#' refer to a folder in the armadillo project to be subsetted. 'Table' must refer
-#' to a table within that folder. 'variables' must refer to variables within that
-#' that table.
-#' @param metadata .csv file containing meta variables to subset (optional)
+#' @param vars \code{.csv} file containing vars to subset. 
+#' @param metadata \code{.csv} file containing meta variables to subset (optional)
 #'
 #' @importFrom dplyr %>% filter left_join
 #' @importFrom tidyr nest
 #' @importFrom utils read.csv
+#'
+#' @return a dataframe containing metadata and variables that is used for input in the \code{armadillo.subset()} method
+#'
+#' @examples 
+#' \dontrun{
+#' armadillo.subset_definition(
+#'   vars = "C:/tmp/vars.csv",
+#'   metadata = "C:/tmp/metadata.csv"
+#' )
+#' }
 #'
 #' @export
 armadillo.subset_definition <- function(vars = NULL, metadata = NULL) {
@@ -191,10 +221,10 @@ armadillo.subset_definition <- function(vars = NULL, metadata = NULL) {
     stop("You must provide a .csv file with variables and tables to subset")
   }
 
-  sub_clean <- .readSubset(vars)
+  sub_clean <- .read_subset(vars)
 
   if (!is.null(metadata)) {
-    meta_clean <- .readMeta(vars, sub_clean)
+    meta_clean <- .read_meta(vars, sub_clean)
 
     both_clean <- left_join(meta_clean, sub_clean, by = c("folder", "table"))
 
@@ -221,12 +251,14 @@ armadillo.subset_definition <- function(vars = NULL, metadata = NULL) {
 }
 
 #' Reads in .csv file containing variables to subset and performs checks
-#'
-#' @param vars .csv file containing vars to subset. This file must contain
+#' 
+#' This file must contain
 #' three columns with the headers 'folder', 'table' & 'variables'. 'Folder' must
 #' refer to a folder in the armadillo project to be subsetted. 'Table' must refer
 #' to a table within that folder. 'variables' must refer to variables within that
 #' that table.
+#'
+#' @param vars .csv file containing vars to subset. 
 #'
 #' @importFrom dplyr %>% filter
 #' @importFrom tidyr nest
@@ -234,7 +266,7 @@ armadillo.subset_definition <- function(vars = NULL, metadata = NULL) {
 #' @importFrom utils read.csv
 #'
 #' @noRd
-.readSubset <- function(vars) {
+.read_subset <- function(vars) {
   variable <- subset_vars <- NULL
 
   subset_in <- read.csv(file = vars)
@@ -258,14 +290,16 @@ armadillo.subset_definition <- function(vars = NULL, metadata = NULL) {
 #' Reads in .csv file containing meta data to include in subset, and performs checks
 #'
 #' @param meta .csv file containing meta variables to subset (optional)
-#' @param sub_out R object which is output from .readSubset
+#' @param sub_out R object which is output from \code{.read_subset}
 #'
 #' @importFrom dplyr %>% filter
 #' @importFrom tidyr nest
 #' @importFrom utils read.csv
+#' 
+#' @return meta variables that are part of project specific tables
 #'
 #' @noRd
-.readMeta <- function(meta, sub_out) {
+.read_meta <- function(meta, sub_out) {
   variable <- NULL
 
   meta_vars <- read.csv(file = meta)
