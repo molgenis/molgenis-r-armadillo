@@ -8,8 +8,7 @@ armadillo.subset(
   source_project = NULL,
   new_project = NULL,
   subset_def = NULL,
-  type = NULL,
-  include_meta = NULL
+  type = NULL
 )
 }
 \arguments{
@@ -21,12 +20,6 @@ armadillo.subset(
 
 \item{type}{Either 'describe' to describe data not available, 'subset' to subset
 the data, (iii) 'both' to describe and subset the data}
-
-\item{include_meta}{wheter or not to automatically include key variables (defined in subset_def)}
-}
-\value{
-if type == 'describe' or 'both' returns a tibble detailing variables not
-available for subsetting
 }
 \description{
 This automates the process of (i) checking what data is available to create
