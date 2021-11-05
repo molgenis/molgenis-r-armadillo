@@ -10,7 +10,7 @@
 #' the data, (iii) 'both' to describe and subset the data
 #'
 #' @importFrom rlang arg_match
-#' @importFrom dplyr %>% mutate filter select bind_rows distinct any_of 
+#' @importFrom dplyr %>% mutate filter select bind_rows distinct any_of
 #' @importFrom tidyr nest unnest
 #' @importFrom stringr str_split
 #' @importFrom tibble as_tibble
@@ -19,24 +19,19 @@
 #'
 #' @export
 armadillo.subset <- function(source_project = NULL,
-                                 new_project = NULL,
-                                 subset_def = NULL,
-                                 type = NULL) {
-
-folder <- subset_vars <- . <- NULL
+                             new_project = NULL,
+                             subset_def = NULL,
+                             type = NULL) {
+  folder <- subset_vars <- . <- NULL
 
   ## SIDO: HERE WE NEED A CHECK TO SEE IF THE PERSON HAS LOGGED IN CORRECTLY
 
   if (is.null(source_project)) {
-    stop("You must specify the name of your source project from which you will subset")
+    stop("You must provide the name of the source project from which you will subset")
   }
 
   if (type %in% c("subset", "both") & is.null(new_project)) {
-    stop("You must provide a name of the new project bucket")
-  }
-
-  if (is.null(new_project)) {
-    stop("You must specify the name of the new project to contain the subset")
+    stop("You must provide a name for the new project")
   }
 
   if (is.null(subset_def)) {
@@ -55,32 +50,23 @@ folder <- subset_vars <- . <- NULL
   }
 
   ## SIDO: DO WE WANT TO INCLUDE CHECKS TO MAKE SURE THE REFERENCE OBJECT IS CORRECT?
+  tables_local <- .getTables(source_project, subset_def)
 
+  if (type == "subset") {
+    .makeSubset(new_project, tables_local)
+  } else if (type == "describe") {
+    missing <- .checkAvailableVars(tables_local)
+    return(missing)
+  } else if (type == "both") {
+    .makeSubset(new_project, tables_local)
 
-tables_local <- .getTables(source_project, subset_def)
+    missing <- .checkAvailableVars(tables_local)
 
-if(type == "subset"){
-
-.makeSubset(project, tables_local)
-
-} else if(type == "describe"){
-
-missing <- .checkAvailableVars(tables_local)
-return(missing)
-
-} else if(type == "both"){
-
-.makeSubset(project, tables_local)
-
-missing <- .checkAvailableVars(tables_local)
-
-return(missing)
-
+    return(missing)
+  }
 }
 
-}
-
-#' Performs checks and downloads armadillo tables based on reference oject
+#' Performs checks and downloads armadillo tables based on reference object
 #'
 #' @param source_project project from which to subset data
 #' @param subset_def R object containing subset definition created by newSubsetDefinition()
@@ -91,7 +77,8 @@ return(missing)
 #' @importFrom dplyr %>% mutate left_join filter select
 #'
 #' @noRd
-.getTables <- function(source_project, subset_def){
+.getTables <- function(source_project, subset_def) {
+  type <- folder <- . <- NULL
 
   source_tables <- armadillo.list_tables(source_project) %>%
     str_split("/", simplify = TRUE) %>%
@@ -106,22 +93,20 @@ return(missing)
   if (nrow(missing_tables) > 0) {
     stop("The following folders & tables are included in your reference object, but don't exist
   within the specified project")
-  
-## HERE WE NEED TO RETURN THE TABLE IN THE ERROR MESSAGE, BUT I'VE NEVER WORKED OUT HOW TO DO THIS.
 
+    ## HERE WE NEED TO RETURN THE TABLE IN THE ERROR MESSAGE, BUT I'VE NEVER WORKED OUT HOW TO DO THIS.
   }
-  
-  tables_out <- subset_def %>% 
-  mutate(
-    data = pmap(., function(folder, table, ...) {
-      armadillo.load_table(source_project, folder, table)
-    })
-  )
+
+  tables_out <- subset_def %>%
+    mutate(
+      data = pmap(., function(folder, table, ...) {
+        armadillo.load_table(source_project, folder, table)
+      })
+    )
   return(tables_out)
-    
-  }
+}
 
-#' Creates a local subset of data based on reference object and uploads
+#' Creates a local subset of data based on reference object, and uploads this to server
 #'
 #' @param source_project project from which to subset data
 #' @param tables R object containing armadillo tables created by .getTables()
@@ -130,33 +115,35 @@ return(missing)
 #' @importFrom purrr pmap pwalk
 #'
 #' @noRd
-.makeSubset <- function(source_project, tables){
+.makeSubset <- function(new_project, tables) {
+  . <- NULL
 
-   if (source_project %in% armadillo.list_projects() == FALSE) {
-      armadillo.create_project(source_project)
-    }
+  if (new_project %in% armadillo.list_projects() == FALSE) {
+    armadillo.create_project(new_project)
+  }
 
-    local_subset <- tables %>%
-      mutate(data_to_upload = pmap(.,
-        function(data, vars_to_subset, ...) {
-          data %>% 
+  local_subset <- tables %>%
+    mutate(data_to_upload = pmap(
+      .,
+      function(data, vars_to_subset, ...) {
+        data %>%
           dplyr::select(any_of(vars_to_subset$variable))
-        }
-      ))
+      }
+    ))
 
-local_subset %>% pwalk(
-  function(folder, table, data_to_upload, ...) {
+  local_subset %>% pwalk(
+    function(folder, table, data_to_upload, ...) {
       armadillo.upload_table(
-        project = source_project,
+        project = new_project,
         folder = folder,
         table = data_to_upload,
         name = table
       )
-    })
-
+    }
+  )
 }
 
-#' Check which of the variables specified in the reference object are missing in the source data
+#' Checks which of the variables specified in the reference object are missing in the source data
 #'
 #' @param tables R object containing armadillo tables created by .getTables()
 #'
@@ -165,11 +152,11 @@ local_subset %>% pwalk(
 #' @importFrom tidyr unnest
 #'
 #' @noRd
-.checkAvailableVars <- function(tables){
-
-. <- 
-subset_obj <- tables %>%
-    mutate(missing = pmap(.,
+.checkAvailableVars <- function(tables) {
+  . <- folder <- NULL
+  tables_with_missing <- tables %>%
+    mutate(missing = pmap(
+      .,
       function(vars_to_subset, data, ...) {
         setdiff(
           x = vars_to_subset$variable,
@@ -178,11 +165,10 @@ subset_obj <- tables %>%
       }
     ))
 
-  missing_out <- getTables_out %>%
+  missing_out <- tables_with_missing %>%
     dplyr::select(folder, table, missing) %>%
     unnest(cols = missing)
-
-  }
+}
 
 #' Builds an R object containing info required to make subsets
 #'
@@ -199,45 +185,39 @@ subset_obj <- tables %>%
 #'
 #' @export
 armadillo.subset_definition <- function(vars = NULL, metadata = NULL) {
-  
-  variable <- folder <- NULL
-  
+  variable <- folder <- . <- subset_vars <- vars_to_subset <- NULL
+
   if (is.null(vars)) {
     stop("You must provide a .csv file with variables and tables to subset")
   }
 
-sub_clean <- .readSubset(vars)
+  sub_clean <- .readSubset(vars)
 
+  if (!is.null(metadata)) {
+    meta_clean <- .readMeta(vars, sub_clean)
 
-if(!is.null(metadata)){
+    both_clean <- left_join(meta_clean, sub_clean, by = c("folder", "table"))
 
-meta_clean <- .readMeta(vars, subby)
-
-both_clean <- left_join(meta_clean, sub_clean, by = c("folder", "table"))
-
-sub_out <- both_clean %>%
+    sub_out <- both_clean %>%
       mutate(
-        vars_to_subset = pmap(., 
+        vars_to_subset = pmap(
+          .,
           function(
-            meta_vars, subset_vars, ...) {
-            bind_rows(meta_vars, subset_vars) %>% 
-            distinct()
-        }
+                   meta_vars, subset_vars, ...) {
+            bind_rows(meta_vars, subset_vars) %>%
+              distinct()
+          }
+        )
       )
-    )
+  } else if (is.null(metadata)) {
+    sub_out <- sub_clean %>%
+      mutate(vars_to_subset = subset_vars)
+  }
 
-} else if(is.null(metadata)){
+  out <- sub_out %>%
+    dplyr::select(folder, table, vars_to_subset)
 
-sub_out <- sub_clean %>%
-mutate(vars_to_subset = subset_vars)
-
-}
-
-out <- sub_out %>%
-dplyr::select(folder, table, vars_to_subset)
-
-return(out)
-   
+  return(out)
 }
 
 #' Reads in .csv file containing variables to subset and performs checks
@@ -248,79 +228,79 @@ return(out)
 #' to a table within that folder. 'variables' must refer to variables within that
 #' that table.
 #'
-#' @importFrom dplyr %>% filter 
+#' @importFrom dplyr %>% filter
 #' @importFrom tidyr nest
 #' @importFrom purrr map_lgl
 #' @importFrom utils read.csv
 #'
 #' @noRd
-  .readSubset <- function(vars){
+.readSubset <- function(vars) {
+  variable <- subset_vars <- NULL
 
   subset_in <- read.csv(file = vars)
-  
+
   if (any(colnames(subset_in) %in% c("folder", "table", "variable") == FALSE)) {
     stop(".csv file must contain exactly three columns entitled 'folder', 'table' and 'variable'")
   }
-  
+
   if (length(colnames(subset_in)) != 3) {
     stop(".csv file must contain exactly three columns entitled 'folder', 'table' and 'variable'")
   }
-  
+
   subset_out <- subset_in %>%
     dplyr::filter(!is.na(variable)) %>%
     nest(subset_vars = c(variable)) %>%
     dplyr::filter(!map_lgl(subset_vars, is.null))
 
-    return(subset_out)
+  return(subset_out)
+}
 
-  }
-
-#' Reads in .csv file containing metavariables to include in subset and performs checks
+#' Reads in .csv file containing meta data to include in subset, and performs checks
 #'
 #' @param meta .csv file containing meta variables to subset (optional)
 #' @param sub_out R object which is output from .readSubset
 #'
-#' @importFrom dplyr %>% filter 
+#' @importFrom dplyr %>% filter
 #' @importFrom tidyr nest
 #' @importFrom utils read.csv
 #'
 #' @noRd
-.readMeta <- function(meta, sub_out){
+.readMeta <- function(meta, sub_out) {
+  variable <- NULL
 
-    meta_vars <- read.csv(file = metadata)
-    
-    if (any(colnames(meta_vars) %in% c("folder", "table", "variable") == FALSE)) {
-      stop(".csv file must contain three columns titled 'folder', 'table' and 'variable'")
-    }
-    
-    if (length(colnames(meta_vars)) != 3) {
-      stop(".csv file must contain exactly three columns titled 'folder', 'table' and 'variable'")
-    }
-    
-    folders_dont_exist <- sub_out$folder[sub_out$folder %in% meta_vars$folder == FALSE]
-    
-    if (length(folders_dont_exist) > 0) {
-      stop(paste0(
-        "The following folders are specified in your variables to subset, but don't exist in your
+  meta_vars <- read.csv(file = meta)
+
+  if (any(colnames(meta_vars) %in% c("folder", "table", "variable") == FALSE)) {
+    stop(".csv file must contain three columns titled 'folder', 'table' and 'variable'")
+  }
+
+  if (length(colnames(meta_vars)) != 3) {
+    stop(".csv file must contain exactly three columns titled 'folder', 'table' and 'variable'")
+  }
+
+  folders_dont_exist <- sub_out$folder[sub_out$folder %in% meta_vars$folder == FALSE]
+
+  if (length(folders_dont_exist) > 0) {
+    stop(paste0(
+      "The following folders are specified in your variables to subset, but don't exist in your
   metadata:  ",
-        paste0(folders_dont_exist, collapse = ", ")
-      ))
-    }
-    
-    tabs_dont_exist <- sub_out$table[sub_out$table %in% meta_vars$table == FALSE]
-    
-    if (length(tabs_dont_exist) > 0) {
-      stop(paste0(
-        "The following tables are specified in your variables to subset, but don't exist in your
+      paste0(folders_dont_exist, collapse = ", ")
+    ))
+  }
+
+  tabs_dont_exist <- sub_out$table[sub_out$table %in% meta_vars$table == FALSE]
+
+  if (length(tabs_dont_exist) > 0) {
+    stop(paste0(
+      "The following tables are specified in your variables to subset, but don't exist in your
   metadata:  ",
-        paste0(tabs_dont_exist, collapse = ", ")
-      ))
-    }
-    
-    meta_vars <- meta_vars %>%
-      dplyr::filter(!is.na(variable)) %>%
-      nest(meta_vars = c(variable))
+      paste0(tabs_dont_exist, collapse = ", ")
+    ))
+  }
 
-return(meta_vars)
+  meta_vars <- meta_vars %>%
+    dplyr::filter(!is.na(variable)) %>%
+    nest(meta_vars = c(variable))
 
+  return(meta_vars)
 }
