@@ -14,11 +14,18 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r, setup}
-library(MolgenisArmadillo)
+When researchers request access to your data they may in many cases not be granted access to the whole dataset, but only to a subset. On the MinIO fileserver access is regulated on the project level, so you will need to create a new project using a subset of the data. Here you can see the different relevant steps you need to take to create these subsets.
+
+## Install and load the package
+You need to install and load the package first to be able to create the subsets.
+
+```{r, install the package, eval = FALSE}
+install.packages("MolgenisArmadillo")
 ```
 
-When researchers request access to your data they may in many cases not be granted access to the whole dataset, but only to a subset. On the MinIO fileserver access is regulated on the project level, so you will need to create a new project using a subset of the data. Here you can see the different relevant steps you need to take to create these subsets.
+```{r, load the package}
+library(MolgenisArmadillo)
+```
 
 ## Logging in
 In order to access the files on the MinIO fileserver you need to log in using the URLs of the Armadillo server and the MinIO fileserver. A browser window will be opened where you can identify yourself with the ID provider.
@@ -84,4 +91,4 @@ not_available
 ```
 
 Now you can also take a look at the files in the user interface of the MinIO
-fileserver if you open the MinIO server URL in a browser window.
+fileserver if you open the MinIO server URL in a browser window. The test server you can find here: https://armadillo-minio.test.molgenis.org/.

@@ -9,12 +9,20 @@ vignette: >
 
 
 
+When researchers request access to your data they may in many cases not be granted access to the whole dataset, but only to a subset. On the MinIO fileserver access is regulated on the project level, so you will need to create a new project using a subset of the data. Here you can see the different relevant steps you need to take to create these subsets.
+
+## Install and load the package
+You need to install and load the package first to be able to create the subsets.
+
+
+```r
+install.packages("MolgenisArmadillo")
+```
+
 
 ```r
 library(MolgenisArmadillo)
 ```
-
-When researchers request access to your data they may in many cases not be granted access to the whole dataset, but only to a subset. On the MinIO fileserver access is regulated on the project level, so you will need to create a new project using a subset of the data. Here you can see the different relevant steps you need to take to create these subsets.
 
 ## Logging in
 In order to access the files on the MinIO fileserver you need to log in using the URLs of the Armadillo server and the MinIO fileserver. A browser window will be opened where you can identify yourself with the ID provider.
@@ -23,7 +31,7 @@ In order to access the files on the MinIO fileserver you need to log in using th
 ```r
 armadillo.login("https://armadillo.test.molgenis.org",
       "https://armadillo-minio.test.molgenis.org")
-#> [1] "We're opening a browser so you can log in with code 4R749W"
+#> [1] "We're opening a browser so you can log in with code WRHTDH"
 ```
 
 A session will be created and the credentials are stored in the environment.
@@ -73,6 +81,9 @@ not_available <- armadillo.subset(
 	subset_def = subset_definition,
 	dry_run = TRUE
 )
+#> New names:
+#> * `` -> ...1
+#> * `` -> ...2
 not_available
 #> # A tibble: 23 × 3
 #>    folder       table      missing      
@@ -101,7 +112,9 @@ not_available <- armadillo.subset(
 	new_project = "study1",
 	subset_def = subset_definition
 )
-#> Created project 'study1'
+#> New names:
+#> * `` -> ...1
+#> * `` -> ...2
 #> Compressing...
 #>   |                                                                                      |                                                                              |   0%  |                                                                                      |==============================================================================| 100%
 #> Uploaded 2_1_core_1_0/yearly_rep
@@ -129,4 +142,4 @@ not_available
 ```
 
 Now you can also take a look at the files in the user interface of the MinIO
-fileserver if you open the MinIO server URL in a browser window.
+fileserver if you open the MinIO server URL in a browser window. The test server you can find here: https://armadillo-minio.test.molgenis.org/.
