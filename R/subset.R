@@ -29,7 +29,7 @@ armadillo.subset <- function(source_project = NULL,
                              dry_run = FALSE) {
   folder <- subset_vars <- . <- NULL
 
-  ## SIDO: HERE WE NEED A CHECK TO SEE IF THE PERSON HAS LOGGED IN CORRECTLY
+  # TODO: make sure you will get error messages regarding login issues
 
   if (is.null(source_project)) {
     stop("You must provide the name of the source project from which you will subset")
@@ -48,7 +48,6 @@ armadillo.subset <- function(source_project = NULL,
     stop("The source project specified does not exist")
   }
 
-  ## SIDO: DO WE WANT TO INCLUDE CHECKS TO MAKE SURE THE REFERENCE OBJECT IS CORRECT?
   tables_local <- .get_tables(source_project, subset_def)
 
   missing <- .check_available_vars(tables_local)
@@ -86,10 +85,8 @@ armadillo.subset <- function(source_project = NULL,
     dplyr::select(folder, table)
 
   if (nrow(missing_tables) > 0) {
-    stop("The following folders & tables are included in your reference object, but don't exist
-  within the specified project")
-
-    ## HERE WE NEED TO RETURN THE TABLE IN THE ERROR MESSAGE, BUT I'VE NEVER WORKED OUT HOW TO DO THIS.
+    stop(paste0("The following folders & tables: [ ", missing_tables ," ] are included in your reference object, but don't exist
+  within the specified project"))
   }
 
   tables_out <- subset_def %>%
@@ -151,6 +148,7 @@ armadillo.subset <- function(source_project = NULL,
 #' @noRd
 .check_available_vars <- function(tables) {
   . <- folder <- NULL
+  
   tables_with_missing <- tables %>%
     mutate(missing = pmap(
       .,
@@ -199,6 +197,8 @@ armadillo.subset_definition <- function(vars = NULL, metadata = NULL) {
     stop("You must provide a .csv file with variables and tables to subset")
   }
 
+  # TODO: more checks to make sure the subset_definition is correct
+  
   sub_clean <- .read_subset(vars)
 
   if (!is.null(metadata)) {
