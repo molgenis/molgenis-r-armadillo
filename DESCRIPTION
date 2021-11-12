@@ -38,7 +38,6 @@ Imports:
     arrow,
     dplyr,
     purrr,
-    rlang,
     stringr,
     tidyr,
     tibble
