@@ -177,7 +177,7 @@ armadillo.subset <- function(source_project = NULL,
 #' @param vars \code{.csv} file containing vars to subset.
 #' @param metadata \code{.csv} file containing meta variables to subset (optional)
 #'
-#' @importFrom dplyr %>% filter left_join bind_rows
+#' @importFrom dplyr %>% filter left_join bind_rows distinct
 #' @importFrom tidyr nest
 #' @importFrom utils read.csv
 #'
