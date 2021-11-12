@@ -8,7 +8,7 @@ armadillo.subset(
   source_project = NULL,
   new_project = NULL,
   subset_def = NULL,
-  type = NULL
+  dry_run = FALSE
 )
 }
 \arguments{
@@ -18,14 +18,13 @@ armadillo.subset(
 
 \item{subset_def}{R object containing subset definition created by \code{armadillo.subset_definition()}}
 
-\item{type}{Either \code{describe} to describe data not available, \code{subset} to subset
-the data, \code{both} to describe and subset the data}
+\item{dry_run}{you can dry-run the function to which variables are missing}
 }
 \value{
 missing variables provided in the subset definition
 }
 \description{
-This automates the process of 
+This automates the process of:
 \enumerate{
   \item{1}{checking what data is available to create subsets}
   \item{2}{make the subset}
@@ -36,8 +35,7 @@ This automates the process of
 armadillo.subset(
   source_project = "gecko",
   new_project = "study1",
-  subset_def = local_subset,
-  type = "both"
+  subset_def = local_subset
 )
 }
 

@@ -15,9 +15,9 @@ armadillo.subset_definition(vars = NULL, metadata = NULL)
 a dataframe containing metadata and variables that is used for input in the \code{armadillo.subset()} method
 }
 \description{
-This file must contain three columns with the headers 'folder', 'table' and 
-'variables'. 'Folder' must refer to a folder in the armadillo project to be 
-subsetted. 'Table' must refer to a table within that folder. 'variables' must 
+This file must contain three columns with the headers 'folder', 'table' and
+'variables'. 'Folder' must refer to a folder in the armadillo project to be
+subsetted. 'Table' must refer to a table within that folder. 'variables' must
 refer to variables within that table.
 }
 \examples{
