@@ -246,7 +246,7 @@ armadillo.subset_definition <- function(vars = NULL, metadata = NULL) {
 .read_subset <- function(vars) {
   variable <- subset_vars <- NULL
 
-  subset_in <- read.csv(file = vars)
+  subset_in <- read.csv(file = vars, fileEncoding = 'UTF-8-BOM')
 
   if (any(colnames(subset_in) %in% c("folder", "table", "variable") == FALSE)) {
     stop(".csv file must contain exactly three columns entitled 'folder', 'table' and 'variable'")
@@ -279,7 +279,7 @@ armadillo.subset_definition <- function(vars = NULL, metadata = NULL) {
 .read_meta <- function(meta, sub_out) {
   variable <- NULL
 
-  meta_vars <- read.csv(file = meta)
+  meta_vars <- read.csv(file = meta, fileEncoding = 'UTF-8-BOM')
 
   if (any(colnames(meta_vars) %in% c("folder", "table", "variable") == FALSE)) {
     stop(".csv file must contain three columns titled 'folder', 'table' and 'variable'")
