@@ -24,7 +24,12 @@ Authors@R:
              family = "Swertz",
              role = c("aut"),
              email = "m.a.swertz@rug.nl",
-             comment = c(ORCID = "0000-0002-0979-3401")))
+             comment = c(ORCID = "0000-0002-0979-3401")),
+       person(given = "Mariska",
+             family = "Slofstra",
+             role = c("aut"),
+             email = "m.k.slofstra@umcg.nl")      
+      )
 Maintainer: Sido Haakma <s.haakma@rug.nl>
 Depends:
     R (>= 3.6)
@@ -35,7 +40,8 @@ Imports:
     aws.iam,
     aws.s3,
     MolgenisAuth,
-    arrow
+    arrow,
+    jsonlite
 Suggests:
     knitr,
     testthat,

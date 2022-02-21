@@ -6,8 +6,7 @@
 \alias{MolgenisArmadillo-package}
 \title{MolgenisArmadillo: Armadillo Client for the Armadillo Service}
 \description{
-A set of functions to be able to manage data shared on a
-  'MOLGENIS Armadillo' storage server ('MinIO').
+A set of functions to be able to manage data shared on a 'MOLGENIS Armadillo' storage server ('MinIO').
 }
 \seealso{
 Useful links:
@@ -26,6 +25,7 @@ Authors:
   \item Tommy de Boer \email{t.de.boer01@umcg.nl} (\href{https://orcid.org/0000-0002-4492-7225}{ORCID})
   \item Fleur Kelpin \email{fleur@kelpin.nl} (\href{https://orcid.org/0000-0003-1527-5130}{ORCID})
   \item Morris Swertz \email{m.a.swertz@rug.nl} (\href{https://orcid.org/0000-0002-0979-3401}{ORCID})
+  \item Mariska Slofstra \email{m.k.slofstra@umcg.nl}
 }
 
 }
