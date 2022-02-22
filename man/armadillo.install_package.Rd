@@ -4,7 +4,7 @@
 \alias{armadillo.install_package}
 \title{Install package}
 \usage{
-armadillo.install_package(path, profile, url)
+armadillo.install_package(path, profile = "default", url)
 }
 \arguments{
 \item{path}{the path to the package}

@@ -40,8 +40,7 @@ Imports:
     aws.iam,
     aws.s3,
     MolgenisAuth,
-    arrow,
-    jsonlite
+    arrow
 Suggests:
     knitr,
     testthat,

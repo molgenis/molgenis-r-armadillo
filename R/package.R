@@ -6,28 +6,29 @@
 #' @param profile the selected profile
 #' @param url the url of the armadillo service
 #'
-#' @importFrom jsonlite toJSON
 #' @export
-armadillo.install_package <- function(path, profile, url) {
+armadillo.install_package <- function(path, profile="default", url) {
   token <- armadillo.get_token(url)
-  auth_header <- httr::add_headers("Authorization" = paste0("Bearer ", token))
-  auth_header.content_type_json()
-  profile_to_select <- if (profile == "") "default" else profile
-  
+  headers <- httr::add_headers("Authorization" = paste0("Bearer ", token))
+
   handle <- httr::handle(url)
   
-  body <- toJSON(
-    data.frame(path=c(path), profile=c(profile_to_select))
+  file <- httr::upload_file(path)
+  
+  query <- list(
+    profile = profile
   )
   
   response <- httr::POST(
     handle = handle,
+    query = query,
     path = "/install-package",
-    body = profile_to_select,
-    config = auth_header
+    body = file,
+    config = c(headers, httr::content_type("multipart"))
   )
   .handle_request_error(response)
-  if (response$status == 404 && profile_to_select != "default") {
+  if (response$status == 404) {
     stop(paste0("Profile not found: '", profile, "'"))
   }
+  
 }
