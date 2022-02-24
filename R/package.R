@@ -23,20 +23,30 @@ armadillo.install_packages <- function(path, profile="default") {
   
   handle <- httr::handle(auth_endpoint)
   
-  file <- httr::upload_file(path)
-  if(!file.exists()) {
-    stop("Please specificy a valid path for your package.")
+  response <- httr::POST(
+    handle = handle,
+    path = "/select-profile",
+    body = profile,
+    config = headers
+  )
+  
+  .handle_request_error(response)
+  
+  if (response$status == 404 && profile != "default") {
+    stop(paste0("Profile not found: '", profile, "'"))
   }
+  
+  file <- httr::upload_file(path)
   
   response <- httr::POST(
     handle = handle,
-    query = list(profile = profile),
     path = "/install-package",
     body = file,
-    config = c(headers, httr::content_type("multipart"))
+    config = c(headers, httr::content_type("multipart/form-data"))
   )
   .handle_request_error(response)
-  if (response$status == 404) {
+  
+  if (response$status != 200) {
     stop("Something went wrong")
   }
   
