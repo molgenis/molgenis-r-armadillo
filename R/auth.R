@@ -24,7 +24,7 @@ armadillo.login <- function(armadillo, minio, duration = 900) { # nolint
   token <- armadillo.get_token(armadillo)
   options(
     MolgenisArmadillo.auth.token = token,
-    MolgenisArmadillo.auth.endpoint = armadillo
+    MolgenisArmadillo.armadillo.endpoint = armadillo
   )
   armadillo.assume_role_with_web_identity(token, minio, duration)
   invisible(token)

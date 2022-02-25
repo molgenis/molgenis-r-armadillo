@@ -4,10 +4,10 @@
 \alias{armadillo.install_packages}
 \title{Install package}
 \usage{
-armadillo.install_packages(path, profile = "default")
+armadillo.install_packages(paths, profile = "default")
 }
 \arguments{
-\item{path}{the path to the package}
+\item{paths}{the path to the package, can be a vector of string}
 
 \item{profile}{the selected profile}
 }
