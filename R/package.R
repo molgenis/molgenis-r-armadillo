@@ -7,7 +7,7 @@
 #'
 #' @export
 armadillo.install_packages <- function(paths, profile="default") {
-  if(missing(path) || path == "") {
+  if(missing(paths) || paths == "") {
     stop("You need to specify the full path of the package; e.g. 'C:/User/test.tar.gz'")
   }
   
@@ -31,16 +31,20 @@ armadillo.install_packages <- function(paths, profile="default") {
   
   .handle_request_error(response)
   
+  if (response$status == 404 && profile != "default") {
+    stop(paste0("Profile not found: '", profile, "'"))
+  }
+  
   if(length(paths) > 1) {
     for(path in paths) {
-      message(paste0("Installing package [ ' ", path, ' ]'))
-      .install_package(handle, path, profile) 
-      message(paset0("Package [ ' ", path, ' ] installed'))
+      message(paste0("Installing package [ ' ", path, " ' ]'"))
+      .install_package(handle, headers, path, profile) 
+      message(paste0("Package [ ' ", path, " ' ] installed'"))
     }
   } else {
-    message(paste0("Installing package [ ' ", paths, ' ]'))
-    .install_package(handle, paths, profile) 
-    message(paste0("Package [ ' ", path, ' ] installed'))
+    message(paste0("Installing package [ ' ", paths, "' ]'"))
+    .install_package(handle, headers, paths, profile) 
+    message(paste0("Package [ ' ", paths, " ' ] installed'"))
   }
   
 }
@@ -52,12 +56,8 @@ armadillo.install_packages <- function(paths, profile="default") {
 #' @param profile the profile where it needs to be installed on
 #'
 #' @noRd
-.install_package <- function(handle, path, profile) {
+.install_package <- function(handle, headers, path, profile) {
   
-  
-  if (response$status == 404 && profile != "default") {
-    stop(paste0("Profile not found: '", profile, "'"))
-  }
   
   file <- httr::upload_file(path)
   

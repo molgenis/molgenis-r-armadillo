@@ -1,0 +1,34 @@
+---
+title: "Installing R-packages realtime"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Installing R-packages realtime}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+
+```r
+library(MolgenisArmadillo)
+```
+
+To share your data using Armadillo, you can see the different relevant steps you can take before the shared data can be transferred to the researchers.
+
+## Login
+In order to access the files as a data manager, you need to log in. The login method needs the URLs of the Armadillo server and the MinIO fileserver. It will open a browser window where you can identify yourself with the ID provider.
+
+
+```r
+armadillo.login("https://armadillo.test.molgenis.org",
+      "https://armadillo-minio.test.molgenis.org")
+#> [1] "We're opening a browser so you can log in with code 5HBGK8"
+```
+
+Installing an R-package can be done the following way:
+
+```r
+armadillo.install_packages("DSI_1.4.0.tar.gz")
+```
+
