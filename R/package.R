@@ -37,14 +37,14 @@ armadillo.install_packages <- function(paths, profile="default") {
   
   if(length(paths) > 1) {
     for(path in paths) {
-      message(paste0("Installing package [ ' ", path, " ' ]'"))
+      message(paste0("Installing package [ ' ", path, " ' ]"))
       .install_package(handle, headers, path, profile) 
-      message(paste0("Package [ ' ", path, " ' ] installed'"))
+      message(paste0("Package [ ' ", path, " ' ] installed"))
     }
   } else {
     message(paste0("Installing package [ ' ", paths, "' ]'"))
     .install_package(handle, headers, paths, profile) 
-    message(paste0("Package [ ' ", paths, " ' ] installed'"))
+    message(paste0("Package [ ' ", paths, " ' ] installed"))
   }
   
 }
