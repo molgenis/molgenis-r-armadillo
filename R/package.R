@@ -11,22 +11,13 @@ armadillo.install_packages <- function(paths, profile="default") {
     stop("You need to specify the full path of the package; e.g. 'C:/User/test.tar.gz'")
   }
   
-  auth_token <- getOption("MolgenisArmadillo.auth.token", NULL)
-  armadillo_endpoint <- getOption("MolgenisArmadillo.armadillo.endpoint", NULL)
-  
-  if(is.null(armadillo_endpoint) || is.null(auth_token)) {
-    stop("Please login using; 'armadillo.login('http://armadillo', 'http://minio')'")
-  }
-  
-  headers <- httr::add_headers("Authorization" = paste0("Bearer ", auth_token))
-  
-  handle <- httr::handle(armadillo_endpoint)
+  connection <- .get_armadillo_connection()
   
   response <- httr::POST(
-    handle = handle,
+    handle = connection$handle,
     path = "/select-profile",
     body = profile,
-    config = headers
+    config = connection$headers
   )
   
   .handle_request_error(response)
@@ -36,36 +27,42 @@ armadillo.install_packages <- function(paths, profile="default") {
   }
   
   if(length(paths) > 1) {
-    for(path in paths) {
-      message(paste0("Installing package [ ' ", path, " ' ]"))
-      .install_package(handle, headers, path, profile) 
-      message(paste0("Package [ ' ", path, " ' ] installed"))
-    }
+    lapply(paths, .install_package, path)
   } else {
-    message(paste0("Installing package [ ' ", paths, "' ]'"))
-    .install_package(handle, headers, paths, profile) 
-    message(paste0("Package [ ' ", paths, " ' ] installed"))
+    .install_package(paths)
   }
-  
+}
+
+.get_armadillo_connection <- function() {
+  auth_token <- getOption("MolgenisArmadillo.auth.token", NULL)
+  armadillo_endpoint <- getOption("MolgenisArmadillo.armadillo.endpoint", NULL)
+
+  headers <- httr::add_headers("Authorization" = paste0("Bearer ", auth_token))
+  if(is.null(armadillo_endpoint) || is.null(auth_token)) {
+    stop("Please login using; 'armadillo.login('http://armadillo', 'http://minio')'")
+  }
+
+  list(handle = httr::handle(armadillo_endpoint), headers = headers)
 }
 
 #' Install a R-package
 #'
 #' @param handle the connection with the server
 #' @param path a path to one R-package
-#' @param profile the profile where it needs to be installed on
 #'
 #' @noRd
-.install_package <- function(handle, headers, path, profile) {
-  
-  
+.install_package <- function(path) {
+  message(paste0("Installing package [ ' ", path, " ' ]"))
+
+  connection <- .get_armadillo_connection()
   file <- httr::upload_file(path)
-  
+
   response <- httr::POST(
-    handle = handle,
+    handle = connection$handle,
     path = "/install-package",
     body = list(file = file),
-    config = c(headers, httr::content_type("multipart/form-data"))
+    config = c(connection$headers, httr::content_type("multipart/form-data"))
   )
   .handle_request_error(response)
+  message(paste0("Package [ ' ", path, " ' ] installed"))
 }
