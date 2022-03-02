@@ -9,7 +9,7 @@
 #' @noRd
 .check_if_bucket_exists <- function(bucket_name) {
   exists <- suppressMessages(aws.s3::bucket_exists(bucket_name,
-    use_https = .use_https()
+                                                   use_https = .use_https()
   ))
 
   if (!exists) {
@@ -49,7 +49,7 @@
       tools::file_path_sans_ext(full_name),
       "' does not exist."
     ),
-    call. = FALSE
+         call. = FALSE
     )
   }
 }
@@ -72,13 +72,9 @@
 #'
 #' @noRd
 .handle_request_error <- function(response) {
-  if (response$status_code == 400) {
-    json_content <- httr::content(response)
-    stop(paste0("Bad request: ", json_content$message), call. = FALSE)
-  } else if (response$status_code == 401) {
+  if (response$status_code == 401) {
     stop("Unauthorized", call. = FALSE)
   } else if (response$status_code == 500) {
-    json_content <- httr::content(response)
-    stop(paste0("Internal server error: ", json_content$message), call. = FALSE)
+    stop(paste0("Internal server error: ", content(response, as = "text", encoding = "UTF-8")), call. = FALSE)
   }
 }

@@ -2,13 +2,13 @@
 #'
 #' Installs a user defined package.
 #'
-#' @param paths the path to the package, can be a vector of string
+#' @param paths the path(s) to the package(s), can be a vector or a string
 #' @param profile the selected profile
 #'
 #' @export
 armadillo.install_packages <- function(paths, profile="default") {
   if(missing(paths) || paths == "") {
-    stop("You need to specify the full path of the package; e.g. 'C:/User/test.tar.gz'")
+    stop("You need to specify the full path(s) of the package(s); e.g. 'C:/User/test.tar.gz'")
   }
   
   connection <- .get_armadillo_connection()
@@ -33,36 +33,43 @@ armadillo.install_packages <- function(paths, profile="default") {
   }
 }
 
+#' Get Armadillo connection details
+#'
+#' @noRd
 .get_armadillo_connection <- function() {
   auth_token <- getOption("MolgenisArmadillo.auth.token", NULL)
   armadillo_endpoint <- getOption("MolgenisArmadillo.armadillo.endpoint", NULL)
 
   headers <- httr::add_headers("Authorization" = paste0("Bearer ", auth_token))
   if(is.null(armadillo_endpoint) || is.null(auth_token)) {
-    stop("Please login using; 'armadillo.login('http://armadillo', 'http://minio')'")
+    stop("Please login using: 'armadillo.login('http://armadillo', 'http://minio')'")
   }
 
   list(handle = httr::handle(armadillo_endpoint), headers = headers)
 }
 
-#' Install a R-package
+#' Install an R-package
 #'
-#' @param handle the connection with the server
 #' @param path a path to one R-package
 #'
 #' @noRd
 .install_package <- function(path) {
-  message(paste0("Installing package [ ' ", path, " ' ]"))
-
   connection <- .get_armadillo_connection()
+
   file <- httr::upload_file(path)
 
+  message(paste0("Attempting to install package [ ' ", path, " ' ]"))
   response <- httr::POST(
     handle = connection$handle,
     path = "/install-package",
     body = list(file = file),
     config = c(connection$headers, httr::content_type("multipart/form-data"))
   )
+
   .handle_request_error(response)
+  if (response$status == 404) {
+    stop(paste0("Endpoint doesn't exist. Make sure you're running Armadillo in development mode."))
+  }
+
   message(paste0("Package [ ' ", path, " ' ] installed"))
 }
