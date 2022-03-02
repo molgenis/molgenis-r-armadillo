@@ -22,7 +22,7 @@ armadillo.install_packages <- function(paths, profile="default") {
   
   .handle_request_error(response)
   
-  if (response$status == 404 && profile != "default") {
+  if (response$status_code == 404 && profile != "default") {
     stop(paste0("Profile not found: '", profile, "'"))
   }
   
@@ -65,9 +65,9 @@ armadillo.install_packages <- function(paths, profile="default") {
     body = list(file = file),
     config = c(connection$headers, httr::content_type("multipart/form-data"))
   )
-
+  
   .handle_request_error(response)
-  if (response$status == 404) {
+  if (response$status_code == 404) {
     stop(paste0("Endpoint doesn't exist. Make sure you're running Armadillo in development mode."))
   }
 

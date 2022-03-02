@@ -64,7 +64,7 @@
   getOption("MolgenisArmadillo.s3.use_https", TRUE)
 }
 
-#' Handle generic request errrors
+#' Handle generic request errors
 #'
 #' @param response HTTR response
 #'
