@@ -1,0 +1,64 @@
+---
+title: "MolgenisArmadillo"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{MolgenisArmadillo}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(MolgenisArmadillo)
+```
+
+To be able to test your package as a developer you can install your package using the MolgenisArmadillo. There are a few preconditions in other to use the install_packages function.
+
+- Make sure you have the `superuser` role.
+- The Armadillo needs to run in `development` mode
+
+## Login
+You first need to login to the Armadillo (as `superuser`)
+
+
+```{r, login to the armadillo storage server}
+armadillo.login("https://armadillo.test.molgenis.org",
+      "https://armadillo-minio.test.molgenis.org")
+```
+
+## Installing packages
+If you want to install a package on the Armadillo Rserver you can execute the following endpoint. The selected profile is always `default` if none is specified.
+
+```{r, install your package}
+armadillo.install_packages("DSI_1.4.0.tar.gz")
+```
+
+In order to install the packages on a specific profile you can specify the profile.
+
+```{r, install your package on a specific profile}
+armadillo.install_packages("DSI_1.4.0.tar.gz", profile = "mediation")
+```
+
+You can install multiple packages as well by specifying a vector
+
+```{r, install multiple packages}
+armadillo.install_packages(c("DSI_1.4.0.tar.gz", "MolgenisArmadillo_1.1.0.tar.gz"))
+```
+
+## Whitelisting packages
+To be able to use new packages in the Armadillo you need to add them to the whitelist. You can do this by executing the following method.
+
+```{r, add package to whitelist}
+armadillo.whitelist_packages("DSI")
+```
+
+
+
+
+
