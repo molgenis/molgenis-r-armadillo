@@ -75,6 +75,6 @@
   if (response$status_code == 401) {
     stop("Unauthorized", call. = FALSE)
   } else if (response$status_code == 500) {
-    stop(paste0("Internal server error: ", content(response, as = "text", encoding = "UTF-8")), call. = FALSE)
+    stop(paste0("Internal server error: ", httr::content(response, as = "text", encoding = "UTF-8")), call. = FALSE)
   }
 }

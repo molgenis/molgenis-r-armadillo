@@ -1,3 +1,23 @@
+test_that("failed to install a package", {
+  response <- list(status_code = 500)
+  httr_post <- mock(response, cycle = TRUE)
+  httr_handle <- mock(handle)
+  httr_content <- mock("Could not install package")
+  connection <- mock(list(handle = httr_handle, headers = mock()))
+  expected_path <- "C:/test/test.tar.gz"
+  
+  expect_error(
+    with_mock(
+      .install_package(path = expected_path),
+      "MolgenisArmadillo:::.get_armadillo_connection" = connection,
+      "httr:::upload_file" = mock(),
+      "httr:::POST" = httr_post,
+      "httr:::content" = httr_content
+    ),
+    paste0("Internal server error: ")
+  )
+})
+
 test_that("install a package", {
   response <- list(status_code = 200)
   httr_post <- mock(response, cycle = TRUE)
@@ -14,6 +34,23 @@ test_that("install a package", {
     ),
     cat(paste0("Attempting to install package [ ' ", expected_path, " ' ]", "\n","\n", "Package [ ", expected_path," ] installed"))
   )
-  
 })
 
+test_that("install packages", {
+  response <- list(status_code = 404)
+  httr_post <- mock(response, cycle = TRUE)
+  httr_handle <- mock(handle)
+  connection = mock(list(handle = httr_handle, headers = mock()))
+  expected_path = "C:/test/test.tar.gz"
+  
+  expect_error(
+    with_mock(
+      armadillo.install_packages(path = expected_path, profile = "exposome"),
+      "MolgenisArmadillo:::.get_armadillo_connection" = connection,
+      "MolgenisArmadillo:::.install_package" = mock(),
+      "httr:::upload_file" = mock(),
+      "httr:::POST" = httr_post
+    ),
+    cat(paste0("Profile not found: 'exposome'"))
+  )
+})
