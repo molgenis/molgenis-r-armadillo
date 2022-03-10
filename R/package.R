@@ -33,19 +33,63 @@ armadillo.install_packages <- function(paths, profile="default") {
   }
 }
 
-#' Get Armadillo connection details
+#' Whitelisting packages
+#' 
+#' When you installed developer packages you need to whitelist 
+#' them in other to be able to test them in the Armadillo platform.
+#'
+#' @param pkgs packages that need to be added to the whitelist
+#' @param profile the profile you want to whitelist the packages on
+#'
+#' @export
+armadillo.whitelist_packages <- function(pkgs, profile = "default") {
+  
+  if(missing(pkgs) || pkgs == "") {
+    stop("You need to specify the the package(s) you want to whitelist; e.g. 'DSI'")
+  }
+  
+  connection <- .get_armadillo_connection()
+  
+  response <- httr::POST(
+    handle = connection$handle,
+    path = "/select-profile",
+    body = profile,
+    config = connection$headers
+  )
+  
+  .handle_request_error(response)
+  
+  if (response$status_code == 404 && profile != "default") {
+    stop(paste0("Profile not found: '", profile, "'"))
+  }
+  
+  if(length(paths) > 1) {
+    lapply(paths, .whitelist_package, path)
+  } else {
+    .whitelist_package(paths)
+  }
+}
+
+#' Add package to whitelist
+#'
+#' @param pkg package to whitelist
 #'
 #' @noRd
-.get_armadillo_connection <- function() {
-  auth_token <- getOption("MolgenisArmadillo.auth.token", NULL)
-  armadillo_endpoint <- getOption("MolgenisArmadillo.armadillo.endpoint", NULL)
-
-  headers <- httr::add_headers("Authorization" = paste0("Bearer ", auth_token))
-  if(is.null(armadillo_endpoint) || is.null(auth_token)) {
-    stop("Please login using: 'armadillo.login('http://armadillo', 'http://minio')'")
+.whitelist_package <- function(pkg) {
+  connection <- .get_armadillo_connection()
+  
+  message(paste0("Attempting to add package [ ' ", pkg, " ' ] to whitelist"))
+  response <- httr::POST(
+    handle = connection$handle,
+    path = paste0("/whitelist/", pkg),
+    config = c(connection$headers)
+  )
+  
+  .handle_request_error(response)
+  if (response$status_code == 404) {
+    stop(paste0("Endpoint doesn't exist. Make sure you're running Armadillo in development mode."))
   }
-
-  list(handle = httr::handle(armadillo_endpoint), headers = headers)
+  message(paste0("Package [ ' ", pkg, " ' ] whitelisted"))
 }
 
 #' Install an R-package
@@ -72,4 +116,19 @@ armadillo.install_packages <- function(paths, profile="default") {
   }
 
   message(paste0("Package [ ' ", path, " ' ] installed"))
+}
+
+#' Get Armadillo connection details
+#'
+#' @noRd
+.get_armadillo_connection <- function() {
+  auth_token <- getOption("MolgenisArmadillo.auth.token", NULL)
+  armadillo_endpoint <- getOption("MolgenisArmadillo.armadillo.endpoint", NULL)
+  
+  headers <- httr::add_headers("Authorization" = paste0("Bearer ", auth_token))
+  if(is.null(armadillo_endpoint) || is.null(auth_token)) {
+    stop("Please login using: 'armadillo.login('http://armadillo', 'http://minio')'")
+  }
+  
+  list(handle = httr::handle(armadillo_endpoint), headers = headers)
 }

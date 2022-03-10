@@ -7,7 +7,7 @@
 armadillo.install_packages(paths, profile = "default")
 }
 \arguments{
-\item{paths}{the path to the package, can be a vector of string}
+\item{paths}{the path(s) to the package(s), can be a vector or a string}
 
 \item{profile}{the selected profile}
 }
