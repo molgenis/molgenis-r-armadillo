@@ -2,7 +2,7 @@
 % Please edit documentation in R/package.R
 \name{armadillo.whitelist_packages}
 \alias{armadillo.whitelist_packages}
-\title{Whitelisting packages}
+\title{Whitelist packages}
 \usage{
 armadillo.whitelist_packages(pkgs, profile = "default")
 }

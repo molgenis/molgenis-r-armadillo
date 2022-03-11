@@ -28,40 +28,40 @@ You first need to login to the Armadillo (as `superuser`)
 
 
 ```{r, login to the armadillo storage server}
-armadillo.login("https://armadillo.test.molgenis.org",
-      "https://armadillo-minio.test.molgenis.org")
+armadillo.login("https://armadillo.dev.molgenis.org",
+      "https://armadillo-minio.dev.molgenis.org")
 ```
 
 ## Install packages
 If you want to install a package on the Armadillo Rserver you can execute the following endpoint. The selected profile is always `default` if none is specified.
 
 ```{r, install your package}
-armadillo.install_packages("DSI_1.4.0.tar.gz")
+armadillo.install_packages("~/data/packages/MolgenisArmadillo_1.1.0.tar.gz")
 ```
 
 In order to install the packages on a specific profile you can specify the profile.
 
-```{r, install your package on a specific profile}
-armadillo.install_packages("DSI_1.4.0.tar.gz", profile = "mediation")
+```{r, install your package on a specific profile, eval=FALSE}
+armadillo.install_packages("~/data/packages/MolgenisArmadillo_1.1.0.tar.gz", profile = "mediation")
 ```
 
 You can install multiple packages as well by specifying a vector
 
 ```{r, install multiple packages}
-armadillo.install_packages(c("DSI_1.4.0.tar.gz", "dsHelper_0.4.8.tar.gz"))
+armadillo.install_packages(c("~/data/packages/MolgenisArmadillo_1.1.0.tar.gz", "~/data/packages/dsHelper_0.4.8.tar.gz"))
 ```
 
 ## Whitelist packages
 To be able to use new packages in the Armadillo you need to add them to the whitelist. You can do this by executing the following method.
 
 ```{r, add package to whitelist}
-armadillo.whitelist_packages("DSI")
+armadillo.whitelist_packages("MolgenisArmadillo")
 ```
 
 You are able to whilist mulitple packages as well using the following line:
 
 ```{r, add packages to whitelist}
-armadillo.whitelist_packages(c("DSI", "MolgenisArmadillo"))
+armadillo.whitelist_packages(c("MolgenisArmadillo", "dsHelper"))
 ```
 
 
