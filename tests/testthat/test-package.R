@@ -93,7 +93,8 @@ test_that("install packages", {
       "httr:::upload_file" = mock(),
       "httr:::POST" = httr_post
     ),
-    "Profile not found: 'exposome'"
+    "Profile not found: [ 'exposome' ]",
+    fixed = TRUE
   )
 })
 
@@ -115,10 +116,8 @@ test_that("whitelist a package", {
 })
 
 test_that("whitelist packages", {
-  response_post <- list(status_code = 200)
-  response_get <- list(status_code = 200, content = "DSI")
-  httr_post <- mock(response_post, cycle = TRUE)
-  httr_get <- mock(response_get, cycle = TRUE)
+  response <- list(status_code = 200)
+  httr_request <- mock(response, cycle = TRUE)
   httr_handle <- mock(handle)
   connection = mock(list(handle = httr_handle, headers = mock()))
   expected_pkg <- "DSI"
@@ -128,12 +127,10 @@ test_that("whitelist packages", {
       armadillo.whitelist_packages(pkg = expected_pkg),
       "MolgenisArmadillo:::.get_armadillo_connection" = connection,
       "MolgenisArmadillo:::.whitelist_package" = mock(),
-      "httr:::POST" = httr_post,
-      "httr:::GET" = httr_get
+      "httr:::POST" = httr_request,
+      "httr:::content" = mock(c("DSI")),
+      "httr:::GET" = httr_request
     ),
-    regexp = "^Attempting to whitelist package"
+    regexp = "^Packages whitelisted:"
   )
 })
-
-
-

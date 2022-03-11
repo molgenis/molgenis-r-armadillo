@@ -25,7 +25,7 @@ armadillo.install_packages <- function(paths, profile="default") {
   .handle_request_error(response)
   
   if (response$status_code == 404 && profile != "default") {
-    stop(paste0("Profile not found: '", profile, "'"))
+    stop(paste0("Profile not found: [ '", profile, "' ]"))
   }
   
   if(length(paths) > 1) {
@@ -35,7 +35,33 @@ armadillo.install_packages <- function(paths, profile="default") {
   }
 }
 
-#' Whitelisting packages
+#' Install an R-package
+#'
+#' @param path a path to one R-package
+#'
+#' @noRd
+.install_package <- function(path) {
+  connection <- .get_armadillo_connection()
+  
+  file <- httr::upload_file(path)
+  
+  message(paste0("Attempting to install package [ '", path, "' ]"))
+  response <- httr::POST(
+    handle = connection$handle,
+    path = "/install-package",
+    body = list(file = file),
+    config = c(connection$headers, httr::content_type("multipart/form-data"))
+  )
+  
+  .handle_request_error(response)
+  if (response$status_code == 404) {
+    stop(paste0("Endpoint doesn't exist. Make sure you're running Armadillo in development mode."))
+  }
+  
+  message(paste0("Package [ '", path, "' ] installed"))
+}
+
+#' Whitelist packages
 #' 
 #' When you installed developer packages you need to whitelist 
 #' them in other to be able to test them in the Armadillo platform.
@@ -63,7 +89,7 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
   .handle_request_error(response)
   
   if (response$status_code == 404 && profile != "default") {
-    stop(paste0("Profile not found: '", profile, "'"))
+    stop(paste0("Profile not found: [ '", profile, "' ]"))
   }
   
   if(length(pkgs) > 1) {
@@ -80,8 +106,8 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
   
   .handle_request_error(response)
   
-  response$content
-  
+  message(paste0("Packages whitelisted: "))
+  message(paste(paste0(" * [ '", httr::content(response), "' ]", collapse="\n")))
 }
 
 #' Add package to whitelist
@@ -92,7 +118,7 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
 .whitelist_package <- function(pkg) {
   connection <- .get_armadillo_connection()
   
-  message(paste0("Attempting to whitelist package [ ' ", pkg, " ' ]"))
+  message(paste0("Attempting to whitelist package [ '", pkg, "' ]"))
   response <- httr::POST(
     handle = connection$handle,
     path = paste0("/whitelist/", pkg),
@@ -103,34 +129,10 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
   if (response$status_code == 404) {
     stop(paste0("Endpoint doesn't exist. Make sure you're running Armadillo in development mode."))
   }
-  message(paste0("Package [ ' ", pkg, " ' ] whitelisted"))
+  message(paste0("Package [ '", pkg, "' ] added to the whitelist"))
 }
 
-#' Install an R-package
-#'
-#' @param path a path to one R-package
-#'
-#' @noRd
-.install_package <- function(path) {
-  connection <- .get_armadillo_connection()
 
-  file <- httr::upload_file(path)
-
-  message(paste0("Attempting to install package [ ' ", path, " ' ]"))
-  response <- httr::POST(
-    handle = connection$handle,
-    path = "/install-package",
-    body = list(file = file),
-    config = c(connection$headers, httr::content_type("multipart/form-data"))
-  )
-  
-  .handle_request_error(response)
-  if (response$status_code == 404) {
-    stop(paste0("Endpoint doesn't exist. Make sure you're running Armadillo in development mode."))
-  }
-
-  message(paste0("Package [ ' ", path, " ' ] installed"))
-}
 
 #' Get Armadillo connection details
 #'
