@@ -36,7 +36,7 @@ test_that("failed to install a package", {
       "httr:::POST" = httr_post,
       "httr:::content" = httr_content
     ),
-    paste0("Internal server error: ")
+    "Internal server error: "
   )
 })
 
@@ -56,7 +56,7 @@ test_that("failed to install a package", {
       "httr:::POST" = httr_post,
       "httr:::content" = httr_content
     ),
-    paste0("")
+    ""
   )
 })
 
@@ -64,8 +64,8 @@ test_that("install a package", {
   response <- list(status_code = 200)
   httr_post <- mock(response, cycle = TRUE)
   httr_handle <- mock(handle)
-  connection = mock(list(handle = httr_handle, headers = mock()))
-  expected_path = "C:/test/test.tar.gz"
+  connection <- mock(list(handle = httr_handle, headers = mock()))
+  expected_path <- "C:/test/test.tar.gz"
   
   expect_message(
     with_mock(
@@ -74,7 +74,7 @@ test_that("install a package", {
       "httr:::upload_file" = mock(),
       "httr:::POST" = httr_post
     ),
-    cat(paste0("Attempting to install package [ ' ", expected_path, " ' ]", "\n","\n", "Package [ ", expected_path," ] installed"))
+    regexp = "^Attempting to install package",
   )
 })
 
@@ -93,6 +93,47 @@ test_that("install packages", {
       "httr:::upload_file" = mock(),
       "httr:::POST" = httr_post
     ),
-    cat(paste0("Profile not found: 'exposome'"))
+    "Profile not found: 'exposome'"
   )
 })
+
+test_that("whitelist a package", {
+  response <- list(status_code = 200)
+  httr_post <- mock(response, cycle = TRUE)
+  httr_handle <- mock(handle)
+  connection = mock(list(handle = httr_handle, headers = mock()))
+  expected_pkg <- "DSI"
+  
+  expect_message(
+    with_mock(
+      .whitelist_package(pkg = expected_pkg),
+      "MolgenisArmadillo:::.get_armadillo_connection" = connection,
+      "httr:::POST" = httr_post
+    ),
+    regexp = "^Attempting to whitelist package",
+  )
+})
+
+test_that("whitelist packages", {
+  response_post <- list(status_code = 200)
+  response_get <- list(status_code = 200, content = "DSI")
+  httr_post <- mock(response_post, cycle = TRUE)
+  httr_get <- mock(response_get, cycle = TRUE)
+  httr_handle <- mock(handle)
+  connection = mock(list(handle = httr_handle, headers = mock()))
+  expected_pkg <- "DSI"
+  
+  expect_message(
+    with_mock(
+      armadillo.whitelist_packages(pkg = expected_pkg),
+      "MolgenisArmadillo:::.get_armadillo_connection" = connection,
+      "MolgenisArmadillo:::.whitelist_package" = mock(),
+      "httr:::POST" = httr_post,
+      "httr:::GET" = httr_get
+    ),
+    regexp = "^Attempting to whitelist package"
+  )
+})
+
+
+

@@ -4,9 +4,11 @@
 #'
 #' @param paths the path(s) to the package(s), can be a vector or a string
 #' @param profile the selected profile
-#'
+#' 
 #' @export
 armadillo.install_packages <- function(paths, profile="default") {
+  path <- NULL
+  
   if(missing(paths) || paths == "") {
     stop("You need to specify the full path(s) of the package(s); e.g. 'C:/User/test.tar.gz'")
   }
@@ -43,6 +45,7 @@ armadillo.install_packages <- function(paths, profile="default") {
 #'
 #' @export
 armadillo.whitelist_packages <- function(pkgs, profile = "default") {
+  pkg <- NULL
   
   if(missing(pkgs) || pkgs == "") {
     stop("You need to specify the the package(s) you want to whitelist; e.g. 'DSI'")
@@ -63,11 +66,22 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
     stop(paste0("Profile not found: '", profile, "'"))
   }
   
-  if(length(paths) > 1) {
-    lapply(paths, .whitelist_package, path)
+  if(length(pkgs) > 1) {
+    lapply(pkgs, .whitelist_package, pkg)
   } else {
-    .whitelist_package(paths)
+    .whitelist_package(pkgs)
   }
+  
+  response <- httr::GET(
+    handle = connection$handle,
+    path = "/whitelist",
+    config = c(connection$headers)
+  )
+  
+  .handle_request_error(response)
+  
+  response$content
+  
 }
 
 #' Add package to whitelist
@@ -78,7 +92,7 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
 .whitelist_package <- function(pkg) {
   connection <- .get_armadillo_connection()
   
-  message(paste0("Attempting to add package [ ' ", pkg, " ' ] to whitelist"))
+  message(paste0("Attempting to whitelist package [ ' ", pkg, " ' ]"))
   response <- httr::POST(
     handle = connection$handle,
     path = paste0("/whitelist/", pkg),
