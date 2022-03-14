@@ -28,7 +28,8 @@ Authors@R:
        person(given = "Mariska",
              family = "Slofstra",
              role = c("aut"),
-             email = "m.k.slofstra@umcg.nl")      
+             email = "m.k.slofstra@umcg.nl")
+             comment = c(ORCID = "0000-0002-0400-0468"))      
       )
 Maintainer: Sido Haakma <s.haakma@rug.nl>
 Depends:
