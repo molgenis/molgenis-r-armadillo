@@ -127,7 +127,7 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
   
   .handle_request_error(response)
   if (response$status_code == 404) {
-    stop(paste0("Endpoint doesn't exist. Make sure you're running Armadillo in development mode."))
+    stop("Endpoint doesn't exist. Make sure you're running Armadillo in development mode.")
   }
   message(paste0("Package [ '", pkg, "' ] added to the whitelist"))
 }
