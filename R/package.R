@@ -151,5 +151,7 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
     if (nchar(value) == 0) {
       stop(msg) 
     }
-  } 
+  } else {
+    stop(paste0("Datatype of package should be character: [", value, "] is type of [", typeof(value), "]"))
+  }
 }
