@@ -7,14 +7,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
 
-```{r setup}
+
+
+```r
 library(MolgenisArmadillo)
 ```
 
@@ -27,41 +23,64 @@ To be able to test your package as a developer you can install your package usin
 You first need to login to the Armadillo (as `superuser`)
 
 
-```{r, login to the armadillo server}
+
+```r
 armadillo.login("https://armadillo.dev.molgenis.org",
       "https://armadillo-minio.dev.molgenis.org")
+#> [1] "We're opening a browser so you can log in with code B56HHX"
 ```
 
 ## Install packages
 If you want to install a package on the Armadillo Rserver you can execute the following endpoint. The selected profile is always `default` if none is specified.
 
-```{r, install your package}
+
+```r
 armadillo.install_packages("data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz")
+#> Attempting to install package [ 'data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz' ]
+#> Package [ 'data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz' ] installed
 ```
 
 In order to install the packages on a specific profile you can specify the profile.
 
-```{r, install your package on a specific profile, eval = FALSE}
+
+```r
 armadillo.install_packages("data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz", profile = "exposome")
 ```
 
 You can install multiple packages as well by specifying a vector
 
-```{r, install multiple packages, eval = FALSE}
+
+```r
 armadillo.install_packages(c("data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz", "data/packages/dsBase_6.1.0.9000.tar.gz"))
 ```
 
 ## Whitelist packages
 To be able to use new packages in the Armadillo you need to add them to the whitelist. You can do this by executing the following method.
 
-```{r, add package to whitelist}
+
+```r
 armadillo.whitelist_packages("MolgenisArmadillo")
+#> Attempting to whitelist package [ 'MolgenisArmadillo' ]
+#> Package [ 'MolgenisArmadillo' ] added to the whitelist
+#> Packages whitelisted:
+#>  * [ 'dsBase' ]
+#>  * [ 'MolgenisArmadillo' ]
 ```
 
 You are able to whilist mulitple packages as well using the following line:
 
-```{r, add packages to whitelist}
+
+```r
 armadillo.whitelist_packages(c("MolgenisArmadillo", "dsBase"))
+#> Warning in if (nchar(value) == 0) {: the condition has length > 1 and only the first element will be used
+#> Warning in if (value == "") {: the condition has length > 1 and only the first element will be used
+#> Attempting to whitelist package [ 'MolgenisArmadillo' ]
+#> Package [ 'MolgenisArmadillo' ] added to the whitelist
+#> Attempting to whitelist package [ 'dsBase' ]
+#> Package [ 'dsBase' ] added to the whitelist
+#> Packages whitelisted:
+#>  * [ 'dsBase' ]
+#>  * [ 'MolgenisArmadillo' ]
 ```
 
 
