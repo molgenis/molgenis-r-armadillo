@@ -7,11 +7,8 @@
 #' 
 #' @export
 armadillo.install_packages <- function(paths, profile="default") {
-  path <- NULL
-  
-  if(missing(paths) || paths == "") {
-    stop("You need to specify the full path(s) of the package(s); e.g. 'C:/User/test.tar.gz'")
-  }
+  msg <- "You need to specify the full path(s) of the package(s); e.g. 'C:/User/test.tar.gz'"
+  .is_empty(msg, paths)
   
   connection <- .get_armadillo_connection()
   
@@ -28,11 +25,8 @@ armadillo.install_packages <- function(paths, profile="default") {
     stop(paste0("Profile not found: [ '", profile, "' ]"))
   }
   
-  if(length(paths) > 1) {
-    lapply(paths, .install_package, path)
-  } else {
-    .install_package(paths)
-  }
+  lapply(paths, .install_package)
+
 }
 
 #' Install an R-package
@@ -71,11 +65,12 @@ armadillo.install_packages <- function(paths, profile="default") {
 #'
 #' @export
 armadillo.whitelist_packages <- function(pkgs, profile = "default") {
-  pkg <- NULL
+  #if((is.vector(pkgs) && length(pkgs) == 0) || pkgs == "") {
+  # stop("You need to specify the the package(s) you want to whitelist; e.g. 'DSI'")
+  #}
+  msg <- "You need to specify the the package(s) you want to whitelist; e.g. 'DSI'"
+  .is_empty(msg, pkgs)
   
-  if(missing(pkgs) || pkgs == "") {
-    stop("You need to specify the the package(s) you want to whitelist; e.g. 'DSI'")
-  }
   
   connection <- .get_armadillo_connection()
   
@@ -92,11 +87,7 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
     stop(paste0("Profile not found: [ '", profile, "' ]"))
   }
   
-  if(length(pkgs) > 1) {
-    lapply(pkgs, .whitelist_package, pkg)
-  } else {
-    .whitelist_package(pkgs)
-  }
+  lapply(pkgs, .whitelist_package)
   
   response <- httr::GET(
     handle = connection$handle,
@@ -147,4 +138,14 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
   }
   
   list(handle = httr::handle(armadillo_endpoint), headers = headers)
+}
+
+.is_empty <- function(msg, value) {
+  if (is.character(value)) {
+    if (nchar(value) == 0) {
+      stop(msg) 
+    } else if(value == "") {
+      stop(msg)
+    }
+  } 
 }
