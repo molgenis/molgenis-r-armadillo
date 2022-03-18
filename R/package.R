@@ -25,7 +25,7 @@ armadillo.install_packages <- function(paths, profile="default") {
     stop(paste0("Profile not found: [ '", profile, "' ]"))
   }
   
-  lapply(paths, .install_package)
+  invisible(lapply(paths, .install_package))
 
 }
 
@@ -65,12 +65,9 @@ armadillo.install_packages <- function(paths, profile="default") {
 #'
 #' @export
 armadillo.whitelist_packages <- function(pkgs, profile = "default") {
-  #if((is.vector(pkgs) && length(pkgs) == 0) || pkgs == "") {
-  # stop("You need to specify the the package(s) you want to whitelist; e.g. 'DSI'")
-  #}
+  
   msg <- "You need to specify the the package(s) you want to whitelist; e.g. 'DSI'"
   .is_empty(msg, pkgs)
-  
   
   connection <- .get_armadillo_connection()
   
@@ -87,7 +84,7 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
     stop(paste0("Profile not found: [ '", profile, "' ]"))
   }
   
-  lapply(pkgs, .whitelist_package)
+  invisible(lapply(pkgs, .whitelist_package))
   
   response <- httr::GET(
     handle = connection$handle,
@@ -140,9 +137,16 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
   list(handle = httr::handle(armadillo_endpoint), headers = headers)
 }
 
+
+#' Checks for empty list or character
+#' 
+#' Stops with the supplied error message 
+#' when the check fails
+#' 
+#' @noRd
 .is_empty <- function(msg, value) {
   if (length(nchar(value)) > 1) {
-    lapply(value, .is_empty, msg=msg)
+    invisible(lapply(value, .is_empty, msg=msg))
   } else if (is.character(value)) {
     if (nchar(value) == 0) {
       stop(msg) 

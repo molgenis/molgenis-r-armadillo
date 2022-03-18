@@ -72,8 +72,6 @@ You are able to whilist mulitple packages as well using the following line:
 
 ```r
 armadillo.whitelist_packages(c("MolgenisArmadillo", "dsBase"))
-#> Warning in if (nchar(value) == 0) {: the condition has length > 1 and only the first element will be used
-#> Warning in if (value == "") {: the condition has length > 1 and only the first element will be used
 #> Attempting to whitelist package [ 'MolgenisArmadillo' ]
 #> Package [ 'MolgenisArmadillo' ] added to the whitelist
 #> Attempting to whitelist package [ 'dsBase' ]
