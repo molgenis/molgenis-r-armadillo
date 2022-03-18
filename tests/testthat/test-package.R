@@ -232,3 +232,7 @@ test_that("is_empty: vector > 1 with empty value", {
 test_that("is_empty: empty string", {
   expect_error(.is_empty("message", ""), "message")
 })
+
+test_that("is_empty: non character type", {
+  expect_error(.is_empty("message", NULL), "Datatype of package should be character: [] is type of [NULL]")
+})
