@@ -36,19 +36,19 @@ armadillo.login("https://armadillo.dev.molgenis.org",
 If you want to install a package on the Armadillo Rserver you can execute the following endpoint. The selected profile is always `default` if none is specified.
 
 ```{r, install your package}
-armadillo.install_packages("~/data/packages/MolgenisArmadillo_1.1.0.tar.gz")
+armadillo.install_packages("data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz")
 ```
 
 In order to install the packages on a specific profile you can specify the profile.
 
 ```{r, install your package on a specific profile, eval=FALSE}
-armadillo.install_packages("~/data/packages/MolgenisArmadillo_1.1.0.tar.gz", profile = "mediation")
+armadillo.install_packages("data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz", profile = "mediation")
 ```
 
 You can install multiple packages as well by specifying a vector
 
 ```{r, install multiple packages}
-armadillo.install_packages(c("~/data/packages/MolgenisArmadillo_1.1.0.tar.gz", "~/data/packages/dsHelper_0.4.8.tar.gz"))
+armadillo.install_packages(c("data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz", "data/packages/dsHelper_0.4.9.9000.tar.gz"))
 ```
 
 ## Whitelist packages
