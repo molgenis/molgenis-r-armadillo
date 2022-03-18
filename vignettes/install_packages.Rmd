@@ -1,8 +1,8 @@
 ---
-title: "MolgenisArmadillo"
+title: "Install packages"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{MolgenisArmadillo}
+  %\VignetteIndexEntry{installPackages}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
