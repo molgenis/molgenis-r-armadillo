@@ -141,7 +141,9 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
 }
 
 .is_empty <- function(msg, value) {
-  if (is.character(value)) {
+  if (length(nchar(value)) > 1) {
+    lapply(value, .is_empty, msg=msg)
+  } else if (is.character(value)) {
     if (nchar(value) == 0) {
       stop(msg) 
     } else if(value == "") {

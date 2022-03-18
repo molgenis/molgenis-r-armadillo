@@ -88,7 +88,7 @@ test_that("install packages fails due to missing profile", {
   
   expect_error(
     with_mock(
-      armadillo.install_packages(path = expected_path, profile = "exposome"),
+      armadillo.install_packages(paths = expected_path, profile = "exposome"),
       "MolgenisArmadillo:::.get_armadillo_connection" = connection,
       "MolgenisArmadillo:::.install_package" = mock(),
       "httr:::upload_file" = mock(),
@@ -106,10 +106,10 @@ test_that("install packages", {
   connection = mock(list(handle = httr_handle, headers = mock()))
   expected_path1 = "C:/test/test1.tar.gz"
   expected_path2 = "C:/test/test2.tar.gz"
-  
+
   expect_silent(
     with_mock(
-      armadillo.install_packages(path = c(expected_path1, expected_path2)),
+      armadillo.install_packages(paths = c(expected_path1, expected_path2)),
       "MolgenisArmadillo:::.get_armadillo_connection" = connection,
       "MolgenisArmadillo:::.install_package" = mock(),
       "httr:::upload_file" = mock(),
@@ -120,7 +120,7 @@ test_that("install packages", {
 test_that("install packages fails because of empty path", {
   expect_error(
     with_mock(
-      armadillo.install_packages(path = ""),
+      armadillo.install_packages(paths = ""),
       "MolgenisArmadillo:::.install_package" = mock(),
       "httr:::upload_file" = mock()
     ),
@@ -173,7 +173,7 @@ test_that("whitelist packages", {
   
   expect_message(
     with_mock(
-      armadillo.whitelist_packages(pkg = c(expected_pkg1, expected_pkg2)),
+      armadillo.whitelist_packages(pkgs = c(expected_pkg1, expected_pkg2)),
       "MolgenisArmadillo:::.get_armadillo_connection" = connection,
       "MolgenisArmadillo:::.whitelist_package" = mock(),
       "httr:::POST" = httr_request,
@@ -187,7 +187,7 @@ test_that("whitelist packages", {
 test_that("whitelist packages fails on empty package", {
   expect_error(
     with_mock(
-      armadillo.whitelist_packages(pkg = ""),
+      armadillo.whitelist_packages(pkgs = ""),
       "MolgenisArmadillo:::.whitelist_package" = mock()
     ),
     regexp = "You need to specify the the package(s) you want to whitelist; e.g. 'DSI'",
@@ -205,7 +205,7 @@ test_that("whitelist packages fails because profile not set", {
   
   expect_error(
     with_mock(
-      armadillo.whitelist_packages(pkg = expected_pkg, profile = profile),
+      armadillo.whitelist_packages(pkgs = expected_pkg, profile = profile),
       "MolgenisArmadillo:::.get_armadillo_connection" = connection,
       "MolgenisArmadillo:::.whitelist_package" = mock(),
       "httr:::POST" = httr_request,
@@ -215,4 +215,20 @@ test_that("whitelist packages fails because profile not set", {
     paste0("Profile not found: [ '", profile, "' ]"),
     fixed = TRUE
   )
+})
+
+test_that("is_empty: not empty string", {
+  expect_silent(.is_empty("message", "blaat"))
+})
+
+test_that("is_empty: not empty vector > 1", {
+  expect_silent(.is_empty("message", c("blaat", "blaat2")))
+})
+
+test_that("is_empty: vector > 1 with empty value", {
+  expect_error(.is_empty("message", c("blaat", "")), "message")
+})
+
+test_that("is_empty: empty string", {
+  expect_error(.is_empty("message", ""), "message")
 })
