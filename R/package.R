@@ -150,8 +150,6 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
   } else if (is.character(value)) {
     if (nchar(value) == 0) {
       stop(msg) 
-    } else if(value == "") {
-      stop(msg)
     }
   } 
 }
