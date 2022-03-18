@@ -6,8 +6,10 @@
 #' @param profile the selected profile
 #'
 #' @export
-armadillo.install_packages <- function(paths, profile = "default") {
-  msg <- "You need to specify the full path(s) of the package(s); e.g. 'C:/User/test.tar.gz'"
+armadillo.install_packages <- function(paths, profile = "default") { # nolint
+  msg <- paste0(
+    "You need to specify the full path(s) of the package(s);",
+    "e.g. 'C:/User/test.tar.gz'")
   .is_empty(msg, paths)
 
   connection <- .get_armadillo_connection()
@@ -48,7 +50,9 @@ armadillo.install_packages <- function(paths, profile = "default") {
 
   .handle_request_error(response)
   if (response$status_code == 404) {
-    stop(paste0("Endpoint doesn't exist. Make sure you're running Armadillo in development mode."))
+    stop(paste0(
+      "Endpoint doesn't exist. Make sure you're running",
+      "Armadillo in development mode."))
   }
 
   message(paste0("Package [ '", path, "' ] installed"))
@@ -63,8 +67,10 @@ armadillo.install_packages <- function(paths, profile = "default") {
 #' @param profile the profile you want to whitelist the packages on
 #'
 #' @export
-armadillo.whitelist_packages <- function(pkgs, profile = "default") {
-  msg <- "You need to specify the the package(s) you want to whitelist; e.g. 'DSI'"
+armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
+  msg <- paste0(
+    "You need to specify the the package(s) you want to whitelist;",
+    "e.g. 'DSI'")
   .is_empty(msg, pkgs)
 
   connection <- .get_armadillo_connection()
@@ -93,7 +99,10 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
   .handle_request_error(response)
 
   message(paste0("Packages whitelisted: "))
-  message(paste(paste0(" * [ '", httr::content(response), "' ]", collapse = "\n")))
+  message(paste(
+    paste0(
+      " * [ '", httr::content(response), "' ]",
+      collapse = "\n")))
 }
 
 #' Add package to whitelist
@@ -113,7 +122,9 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
 
   .handle_request_error(response)
   if (response$status_code == 404) {
-    stop("Endpoint doesn't exist. Make sure you're running Armadillo in development mode.")
+    stop(paste0(
+      "Endpoint doesn't exist.",
+      "Make sure you're running Armadillo in development mode."))
   }
   message(paste0("Package [ '", pkg, "' ] added to the whitelist"))
 }
@@ -129,7 +140,9 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
 
   headers <- httr::add_headers("Authorization" = paste0("Bearer ", auth_token))
   if (is.null(armadillo_endpoint) || is.null(auth_token)) {
-    stop("Please login using: 'armadillo.login('http://armadillo', 'http://minio')'")
+    stop(
+      "Please login using:",
+      "'armadillo.login('http://armadillo', 'http://minio')'")
   }
 
   list(handle = httr::handle(armadillo_endpoint), headers = headers)
@@ -150,6 +163,11 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") {
       stop(msg)
     }
   } else {
-    stop(paste0("Datatype of package should be character: [", value, "] is type of [", typeof(value), "]"))
+    stop(paste0(
+      "Datatype of package should be character: [",
+      value,
+      "] is type of [",
+      typeof(value),
+      "]"))
   }
 }

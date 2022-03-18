@@ -13,7 +13,9 @@ test_that("get armadillo connection", {
   local_reproducible_output()
   expect_equal(
     .get_armadillo_connection(),
-    list(handle = httr::handle("http://armadillo"), headers = httr::add_headers("Authorization" = "Bearer abcde"))
+    list(handle = httr::handle(
+      "http://armadillo"),
+      headers = httr::add_headers("Authorization" = "Bearer abcde"))
   )
 
   options(MolgenisArmadillo.auth.token = NULL)
@@ -57,7 +59,9 @@ test_that("profile not found when installing packages", {
       "httr:::POST" = httr_post,
       "httr:::content" = httr_content
     ),
-    "Endpoint doesn't exist. Make sure you're running Armadillo in development mode."
+    paste0(
+      "Endpoint doesn't exist.",
+      "Make sure you're running Armadillo in development mode.")
   )
 })
 
@@ -125,7 +129,9 @@ test_that("install packages fails because of empty path", {
       "MolgenisArmadillo:::.install_package" = mock(),
       "httr:::upload_file" = mock()
     ),
-    "You need to specify the full path(s) of the package(s); e.g. 'C:/User/test.tar.gz'",
+    paste0(
+      "You need to specify the full path(s) of the package(s);",
+      "e.g. 'C:/User/test.tar.gz'"),
     fixed = TRUE
   )
 })
@@ -160,7 +166,9 @@ test_that("whitelist a package", {
       "MolgenisArmadillo:::.get_armadillo_connection" = connection,
       "httr:::POST" = httr_post
     ),
-    regexp = "Endpoint doesn't exist. Make sure you're running Armadillo in development mode.",
+    regexp = paste0(
+      "Endpoint doesn't exist.",
+      "Make sure you're running Armadillo in development mode.")
   )
 })
 
@@ -191,7 +199,9 @@ test_that("whitelist packages fails on empty package", {
       armadillo.whitelist_packages(pkgs = ""),
       "MolgenisArmadillo:::.whitelist_package" = mock()
     ),
-    regexp = "You need to specify the the package(s) you want to whitelist; e.g. 'DSI'",
+    regexp = paste0(
+      "You need to specify the the package(s) ",
+      "you want to whitelist; e.g. 'DSI'"),
     fixed = TRUE
   )
 })
@@ -235,5 +245,7 @@ test_that("is_empty: empty string", {
 })
 
 test_that("is_empty: non character type", {
-  expect_error(.is_empty("message", NULL), "Datatype of package should be character: [] is type of [NULL]")
+  expect_error(
+    .is_empty("message", NULL),
+    "Datatype of package should be character: [] is type of [NULL]")
 })
