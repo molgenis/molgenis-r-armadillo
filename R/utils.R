@@ -9,7 +9,7 @@
 #' @noRd
 .check_if_bucket_exists <- function(bucket_name) {
   exists <- suppressMessages(aws.s3::bucket_exists(bucket_name,
-                                                   use_https = .use_https()
+    use_https = .use_https()
   ))
 
   if (!exists) {
@@ -49,7 +49,7 @@
       tools::file_path_sans_ext(full_name),
       "' does not exist."
     ),
-         call. = FALSE
+    call. = FALSE
     )
   }
 }

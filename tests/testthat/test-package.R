@@ -2,20 +2,20 @@ test_that("failed to get armadillo connection", {
   expect_error(
     .get_armadillo_connection(),
     "Please login using: 'armadillo.login('http://armadillo', 'http://minio')'",
-    fixed=TRUE
+    fixed = TRUE
   )
 })
 
 test_that("get armadillo connection", {
   options(MolgenisArmadillo.auth.token = "abcde")
   options(MolgenisArmadillo.armadillo.endpoint = "http://armadillo")
-  
+
   local_reproducible_output()
   expect_equal(
     .get_armadillo_connection(),
     list(handle = httr::handle("http://armadillo"), headers = httr::add_headers("Authorization" = "Bearer abcde"))
   )
-  
+
   options(MolgenisArmadillo.auth.token = NULL)
   options(MolgenisArmadillo.armadillo.endpoint = NULL)
 })
@@ -27,7 +27,7 @@ test_that("failed to install a package", {
   httr_content <- mock("Could not install package")
   connection <- mock(list(handle = httr_handle, headers = mock()))
   expected_path <- "C:/test/test.tar.gz"
-  
+
   expect_error(
     with_mock(
       .install_package(path = expected_path),
@@ -48,7 +48,7 @@ test_that("profile not found when installing packages", {
   broken_profile <- "broken"
   connection <- mock(list(handle = httr_handle, headers = mock()))
   expected_path <- "C:/test/test.tar.gz"
-  
+
   expect_error(
     with_mock(
       .install_package(path = expected_path),
@@ -67,7 +67,7 @@ test_that("install a package", {
   httr_handle <- mock(handle)
   connection <- mock(list(handle = httr_handle, headers = mock()))
   expected_path <- "C:/test/test.tar.gz"
-  
+
   expect_message(
     with_mock(
       .install_package(path = expected_path),
@@ -83,9 +83,9 @@ test_that("install packages fails due to missing profile", {
   response <- list(status_code = 404)
   httr_post <- mock(response, cycle = TRUE)
   httr_handle <- mock(handle)
-  connection = mock(list(handle = httr_handle, headers = mock()))
-  expected_path = "C:/test/test.tar.gz"
-  
+  connection <- mock(list(handle = httr_handle, headers = mock()))
+  expected_path <- "C:/test/test.tar.gz"
+
   expect_error(
     with_mock(
       armadillo.install_packages(paths = expected_path, profile = "exposome"),
@@ -103,9 +103,9 @@ test_that("install packages", {
   response <- list(status_code = 200)
   httr_post <- mock(response, cycle = TRUE)
   httr_handle <- mock(handle)
-  connection = mock(list(handle = httr_handle, headers = mock()))
-  expected_path1 = "C:/test/test1.tar.gz"
-  expected_path2 = "C:/test/test2.tar.gz"
+  connection <- mock(list(handle = httr_handle, headers = mock()))
+  expected_path1 <- "C:/test/test1.tar.gz"
+  expected_path2 <- "C:/test/test2.tar.gz"
 
   expect_silent(
     with_mock(
@@ -114,7 +114,8 @@ test_that("install packages", {
       "MolgenisArmadillo:::.install_package" = mock(),
       "httr:::upload_file" = mock(),
       "httr:::POST" = httr_post
-  ))
+    )
+  )
 })
 
 test_that("install packages fails because of empty path", {
@@ -133,9 +134,9 @@ test_that("whitelist a package", {
   response <- list(status_code = 200)
   httr_post <- mock(response, cycle = TRUE)
   httr_handle <- mock(handle)
-  connection = mock(list(handle = httr_handle, headers = mock()))
+  connection <- mock(list(handle = httr_handle, headers = mock()))
   expected_pkg <- "DSI"
-  
+
   expect_message(
     with_mock(
       .whitelist_package(pkg = expected_pkg),
@@ -150,9 +151,9 @@ test_that("whitelist a package", {
   response <- list(status_code = 404)
   httr_post <- mock(response, cycle = TRUE)
   httr_handle <- mock(handle)
-  connection = mock(list(handle = httr_handle, headers = mock()))
+  connection <- mock(list(handle = httr_handle, headers = mock()))
   expected_pkg <- "DSI"
-  
+
   expect_error(
     with_mock(
       .whitelist_package(pkg = expected_pkg),
@@ -167,10 +168,10 @@ test_that("whitelist packages", {
   response <- list(status_code = 200)
   httr_request <- mock(response, cycle = TRUE)
   httr_handle <- mock(handle)
-  connection = mock(list(handle = httr_handle, headers = mock()))
+  connection <- mock(list(handle = httr_handle, headers = mock()))
   expected_pkg1 <- "DSI"
   expected_pkg2 <- "unicorns"
-  
+
   expect_message(
     with_mock(
       armadillo.whitelist_packages(pkgs = c(expected_pkg1, expected_pkg2)),
@@ -199,10 +200,10 @@ test_that("whitelist packages fails because profile not set", {
   response <- list(status_code = 404)
   httr_request <- mock(response, cycle = TRUE)
   httr_handle <- mock(handle)
-  connection = mock(list(handle = httr_handle, headers = mock()))
+  connection <- mock(list(handle = httr_handle, headers = mock()))
   expected_pkg <- "DSI"
   profile <- "unavailable"
-  
+
   expect_error(
     with_mock(
       armadillo.whitelist_packages(pkgs = expected_pkg, profile = profile),

@@ -12,6 +12,6 @@ armadillo.whitelist_packages(pkgs, profile = "default")
 \item{profile}{the profile you want to whitelist the packages on}
 }
 \description{
-When you installed developer packages you need to whitelist 
+When you installed developer packages you need to whitelist
 them in other to be able to test them in the Armadillo platform.
 }
