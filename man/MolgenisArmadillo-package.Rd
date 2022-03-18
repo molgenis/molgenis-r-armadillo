@@ -19,10 +19,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Sido Haakma \email{s.haakma@rug.nl} (\href{https://orcid.org/0000-0003-1278-9144}{ORCID})
+\strong{Maintainer}: Mariska Slofstra \email{m.k.slofstra@umcg.nl} (\href{https://orcid.org/0000-0002-0400-0468}{ORCID})
 
 Authors:
 \itemize{
+  \item Sido Haakma \email{s.haakma@rug.nl} (\href{https://orcid.org/0000-0003-1278-9144}{ORCID})
   \item Tommy de Boer \email{t.de.boer01@umcg.nl} (\href{https://orcid.org/0000-0002-4492-7225}{ORCID})
   \item Fleur Kelpin \email{fleur@kelpin.nl} (\href{https://orcid.org/0000-0003-1527-5130}{ORCID})
   \item Morris Swertz \email{m.a.swertz@rug.nl} (\href{https://orcid.org/0000-0002-0979-3401}{ORCID})

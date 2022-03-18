@@ -1,3 +1,12 @@
+# MolgenisArmadillo 1.1.0
+## Features
+### Developer tools
+- Install packages
+- Whitelist packages
+## Chores
+- Make Mariska Slofstra maintainer
+
+
 # MolgenisArmadillo 1.0.3
 
 # MolgenisArmadillo 1.0.2

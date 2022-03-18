@@ -9,6 +9,7 @@
 #' @return TRUE if successful, otherwise an object of class aws_error details
 #'
 #' @importFrom aws.s3 put_object
+#'
 #' @noRd
 .upload_object <- function(project, folder, object, name,
                            compression_function) { # nolint

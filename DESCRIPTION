@@ -1,13 +1,19 @@
 Package: MolgenisArmadillo
 Type: Package
-Version: 1.0.3
+Version: 1.1.0
 Title: Armadillo Client for the Armadillo Service
 Description: A set of functions to be able to manage data shared on a
   'MOLGENIS Armadillo' storage server ('MinIO').
 Authors@R:
-    c(person(given = "Sido",
-             family = "Haakma",
+    c(
+      person(given = "Mariska",
+             family = "Slofstra",
              role = c("aut", "cre"),
+             email = "m.k.slofstra@umcg.nl",
+             comment = c(ORCID = "0000-0002-0400-0468")),
+      person(given = "Sido",
+             family = "Haakma",
+             role = c("aut"),
              email = "s.haakma@rug.nl",
              comment = c(ORCID = "0000-0003-1278-9144")),
       person(given = "Tommy",
@@ -24,8 +30,9 @@ Authors@R:
              family = "Swertz",
              role = c("aut"),
              email = "m.a.swertz@rug.nl",
-             comment = c(ORCID = "0000-0002-0979-3401")))
-Maintainer: Sido Haakma <s.haakma@rug.nl>
+             comment = c(ORCID = "0000-0002-0979-3401"))
+      )
+Maintainer: Mariska Slofstra <m.k.slofstra@umcg.nl>
 Depends:
     R (>= 3.6)
 Imports:
