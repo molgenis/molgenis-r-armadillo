@@ -60,7 +60,7 @@ test_that("profile not found when installing packages", {
       "httr:::content" = httr_content
     ),
     paste0(
-      "Endpoint doesn't exist.",
+      "Endpoint doesn't exist. ",
       "Make sure you're running Armadillo in development mode.")
   )
 })
@@ -167,7 +167,7 @@ test_that("whitelist a package", {
       "httr:::POST" = httr_post
     ),
     regexp = paste0(
-      "Endpoint doesn't exist.",
+      "Endpoint doesn't exist. ",
       "Make sure you're running Armadillo in development mode.")
   )
 })
