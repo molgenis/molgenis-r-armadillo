@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MolgenisArmadillo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/MolgenisArmadillo.html">Get started</a>
 </li>
@@ -50,7 +46,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -58,6 +54,9 @@
   <ul class="dropdown-menu" role="menu">
 <li>
       <a href="../articles/creating_data_subsets.html">Creating data subsets</a>
+    </li>
+    <li>
+      <a href="../articles/install_packages.html">Install packages</a>
     </li>
   </ul>
 </li>
@@ -67,7 +66,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/molgenis/molgenis-r-armadillo/">
+  <a href="https://github.com/molgenis/molgenis-r-armadillo/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -82,13 +81,13 @@
 
       
 
-      </header><script src="creating_data_subsets_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Creating data subsets</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/molgenis/molgenis-r-armadillo/blob/master/vignettes/creating_data_subsets.Rmd"><code>vignettes/creating_data_subsets.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/molgenis/molgenis-r-armadillo/blob/HEAD/vignettes/creating_data_subsets.Rmd" class="external-link"><code>vignettes/creating_data_subsets.Rmd</code></a></small>
       <div class="hidden name"><code>creating_data_subsets.Rmd</code></div>
 
     </div>
@@ -96,12 +95,12 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/molgenis/molgenis-r-armadillo/">MolgenisArmadillo</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/molgenis/molgenis-r-armadillo/" class="external-link">MolgenisArmadillo</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></code></pre></div>
 <p>When researchers request access to your data they may in many cases not be granted access to the whole dataset, but only to a subset. On the MinIO fileserver access is regulated on the project level, so you will need to create a new project using a subset of the data. Here you can see the different relevant steps you need to take to create these subsets.</p>
-<div id="logging-in" class="section level2">
-<h2 class="hasAnchor">
-<a href="#logging-in" class="anchor"></a>Logging in</h2>
+<div class="section level2">
+<h2 id="logging-in">Logging in<a class="anchor" aria-label="anchor" href="#logging-in"></a>
+</h2>
 <p>In order to access the files on the MinIO fileserver you need to log in using the URLs of the Armadillo server and the MinIO fileserver. A browser window will be opened where you can identify yourself with the ID provider.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/armadillo.login.html">armadillo.login</a></span><span class="op">(</span><span class="st">"https://armadillo.test.molgenis.org"</span>,
@@ -109,9 +108,9 @@
 <span class="co">#&gt; [1] "We're opening a browser so you can log in with code 5K2S2N"</span></code></pre></div>
 <p>A session will be created and the credentials are stored in the environment.</p>
 </div>
-<div id="sharing-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#sharing-data" class="anchor"></a>Sharing data</h2>
+<div class="section level2">
+<h2 id="sharing-data">Sharing data<a class="anchor" aria-label="anchor" href="#sharing-data"></a>
+</h2>
 <p>Let’s assume you are in a consortium which has core-variables and outcome-variables. You want to share a subset of the whole dataset with certain researchers that applied for access to your data.</p>
 <p>First we will create a project, here called ‘subset1’.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -136,12 +135,12 @@
 <span class="va">yearly_rep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/armadillo.load_table.html">armadillo.load_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"1_1-outcome-1_0"</span>, <span class="st">"yearlyrep"</span><span class="op">)</span></code></pre></div>
 <p>, list their variables</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">non_rep</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">non_rep</span><span class="op">)</span>
 <span class="co">#&gt;  [1] "row_id"                "child_id"              "pets_preg"            </span>
 <span class="co">#&gt;  [4] "asthma_ever_CHICOS"    "asthma_ever_MeDALL"    "asthma_current_MeDALL"</span>
 <span class="co">#&gt;  [7] "asthma_current_ISAAC"  "allergy_any_m"         "allergy_inh_m"        </span>
 <span class="co">#&gt; [10] "anaphylaxis"</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">yearly_rep</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">yearly_rep</span><span class="op">)</span>
 <span class="co">#&gt;  [1] "row_id"                  "child_id"                "age_years"              </span>
 <span class="co">#&gt;  [4] "whe_"                    "asthma_"                 "asthma_med_"            </span>
 <span class="co">#&gt;  [7] "asthma_med_spec_"        "FEV1_z_"                 "FVC_z_"                 </span>
@@ -150,16 +149,16 @@
 <span class="co">#&gt; [16] "inh_all_sens_IgE_RYE_"   "inh_all_sens_IgE_MOULD_"</span></code></pre></div>
 <p>, and subset the variables that were requested.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">subset_outcome_non_rep</span> <span class="op">&lt;-</span> <span class="va">non_rep</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">child_id</span>, <span class="va">pets_preg</span>, <span class="va">asthma_ever_CHICOS</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">subset_outcome_non_rep</span> <span class="op">&lt;-</span> <span class="va">non_rep</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">child_id</span>, <span class="va">pets_preg</span>, <span class="va">asthma_ever_CHICOS</span><span class="op">)</span>
 
-<span class="va">subset_outcome_yearly_rep</span> <span class="op">&lt;-</span> <span class="va">yearly_rep</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">child_id</span>, <span class="va">asthma_med_</span><span class="op">)</span></code></pre></div>
+<span class="va">subset_outcome_yearly_rep</span> <span class="op">&lt;-</span> <span class="va">yearly_rep</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">child_id</span>, <span class="va">asthma_med_</span><span class="op">)</span></code></pre></div>
 <p>#Subset the core variables We will now download the relevant core tables to the local environment</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">non_rep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/armadillo.load_table.html">armadillo.load_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"nonrep"</span><span class="op">)</span>
 <span class="va">yearly_rep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/armadillo.load_table.html">armadillo.load_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"yearlyrep"</span><span class="op">)</span></code></pre></div>
 <p>, list their variables</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">non_rep</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">non_rep</span><span class="op">)</span>
 <span class="co">#&gt;   [1] "row_id"              "child_id"            "mother_id"           "cohort_id"          </span>
 <span class="co">#&gt;   [5] "preg_no"             "child_no"            "coh_country"         "recruit_age"        </span>
 <span class="co">#&gt;   [9] "cob_m"               "ethn1_m"             "ethn2_m"             "ethn3_m"            </span>
@@ -187,7 +186,7 @@
 <span class="co">#&gt;  [97] "sibling_pos"         "death_child"         "death_child_age"     "breastfed_excl"     </span>
 <span class="co">#&gt; [101] "breastfed_any"       "breastfed_ever"      "solid_food"          "childcare_intro"    </span>
 <span class="co">#&gt; [105] "cats_preg"           "dogs_preg"           "cats_quant_preg"     "dogs_quant_preg"</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">yearly_rep</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">yearly_rep</span><span class="op">)</span>
 <span class="co">#&gt;  [1] "row_id"            "child_id"          "age_years"         "cohab_"           </span>
 <span class="co">#&gt;  [5] "occup_m_"          "occupcode_m_"      "edu_m_"            "occup_f1_"        </span>
 <span class="co">#&gt;  [9] "occup_f1_fath"     "occup_f2_"         "occup_f2_fath"     "occupcode_f1_"    </span>
@@ -199,19 +198,19 @@
 <span class="co">#&gt; [33] "famsize_child"     "famsize_adult"</span></code></pre></div>
 <p>, and subset the variables that were requested.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">subset_core_non_rep</span> <span class="op">&lt;-</span> <span class="va">non_rep</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">child_id</span>, <span class="va">asthma_m</span>, <span class="va">breastfed_any</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">subset_core_non_rep</span> <span class="op">&lt;-</span> <span class="va">non_rep</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">child_id</span>, <span class="va">asthma_m</span>, <span class="va">breastfed_any</span><span class="op">)</span>
 
-<span class="va">subset_core_yearly_rep</span> <span class="op">&lt;-</span> <span class="va">yearly_rep</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">child_id</span>, <span class="va">pets_</span><span class="op">)</span></code></pre></div>
+<span class="va">subset_core_yearly_rep</span> <span class="op">&lt;-</span> <span class="va">yearly_rep</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">child_id</span>, <span class="va">pets_</span><span class="op">)</span></code></pre></div>
 <p>##Uploading the data subset</p>
 <p>#Check the data subset before uploading</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">subset_outcome_non_rep</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">subset_outcome_non_rep</span><span class="op">)</span>
 <span class="co">#&gt; [1] "child_id"           "pets_preg"          "asthma_ever_CHICOS"</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">subset_outcome_yearly_rep</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">subset_outcome_yearly_rep</span><span class="op">)</span>
 <span class="co">#&gt; [1] "child_id"    "asthma_med_"</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">subset_core_non_rep</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">subset_core_non_rep</span><span class="op">)</span>
 <span class="co">#&gt; [1] "child_id"      "asthma_m"      "breastfed_any"</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">subset_core_yearly_rep</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">subset_core_yearly_rep</span><span class="op">)</span>
 <span class="co">#&gt; [1] "child_id" "pets_"</span></code></pre></div>
 <p>#Upload the data subset</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_table</span>(<span class="st">"subset1"</span>, <span class="st">"1_1_outcome_1_0"</span>, subset_outcome_non_rep, <span class="st">"non_rep"</span>)</span>
@@ -264,11 +263,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Sido Haakma, Tommy de Boer, Fleur Kelpin, Morris Swertz.</p>
+  <p></p>
+<p>Developed by Mariska Slofstra, Sido Haakma, Tommy de Boer, Fleur Kelpin, Morris Swertz.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -276,6 +277,8 @@
 
   
 
+
+  
 
   </body>
 </html>
