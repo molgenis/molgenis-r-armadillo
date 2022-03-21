@@ -51,7 +51,7 @@ armadillo.install_packages <- function(paths, profile = "default") { # nolint
   .handle_request_error(response)
   if (response$status_code == 404) {
     stop(paste0(
-      "Endpoint doesn't exist. Make sure you're running",
+      "Endpoint doesn't exist. Make sure you're running ",
       "Armadillo in development mode."))
   }
 
@@ -69,7 +69,7 @@ armadillo.install_packages <- function(paths, profile = "default") { # nolint
 #' @export
 armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
   msg <- paste0(
-    "You need to specify the the package(s) you want to whitelist;",
+    "You need to specify the the package(s) you want to whitelist; ",
     "e.g. 'DSI'")
   .is_empty(msg, pkgs)
 
@@ -123,7 +123,7 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
   .handle_request_error(response)
   if (response$status_code == 404) {
     stop(paste0(
-      "Endpoint doesn't exist.",
+      "Endpoint doesn't exist. ",
       "Make sure you're running Armadillo in development mode."))
   }
   message(paste0("Package [ '", pkg, "' ] added to the whitelist"))
@@ -141,7 +141,7 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
   headers <- httr::add_headers("Authorization" = paste0("Bearer ", auth_token))
   if (is.null(armadillo_endpoint) || is.null(auth_token)) {
     stop(
-      "Please login using:",
+      "Please login using: ",
       "'armadillo.login('http://armadillo', 'http://minio')'")
   }
 
