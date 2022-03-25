@@ -6,7 +6,8 @@
 \alias{MolgenisArmadillo-package}
 \title{MolgenisArmadillo: Armadillo Client for the Armadillo Service}
 \description{
-A set of functions to be able to manage data shared on a 'MOLGENIS Armadillo' storage server ('MinIO').
+A set of functions to be able to manage data shared on a
+  'MOLGENIS Armadillo' storage server ('MinIO').
 }
 \seealso{
 Useful links:
