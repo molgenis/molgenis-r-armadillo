@@ -1,3 +1,6 @@
+## 1.1.2 Add documentation
+* Added resourcer documentation
+
 ## 1.1.1 Add install package and change maintainer
 * Add install package
 * Add whitelist package
