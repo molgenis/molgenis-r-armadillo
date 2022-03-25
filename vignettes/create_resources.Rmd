@@ -1,0 +1,96 @@
+---
+title: "Create resources"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Create resources}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+
+```r
+library(MolgenisArmadillo)
+```
+
+If you want to perform "omics"-like you need to upload the data to perform the resources. Within the Armadillo you can upload files up to 5TB. If you upload the data you can assign the data with the `s3.file.resourcer` package.
+
+There are 2 roles you can assume using the package. The datamanager role and the researcher role.
+
+## Datamanager
+The datamanager needs to make the data available to the researchers. Besides this you need to create the resources to access the data.
+
+### Upload the data
+You need to access the Minio webinterface to be able to access the resource. 
+
+1. We are using data from the following sources:
+  - https://github.com/isglobal-brge/brge_data_large/blob/master/data/gse66351_1.rda
+  - https://github.com/isglobal-brge/brge_data_large/blob/master/data/gse66351_2.rda
+2. Login via ELIXIR
+3. Create a bucket with the prefix `shared-`. For example `shared-omics`
+4. Upload the omics data to a folder. For example `ewas`. You will get something like this `shared-omics/ewas/gse66351_1.rda`
+
+Done!
+
+### Upload the resources
+You first need to login to the Armadillo (as `superuser`)
+
+
+
+```r
+armadillo.login("https://armadillo.dev.molgenis.org",
+      "https://armadillo-minio.dev.molgenis.org")
+#> [1] "We're opening a browser so you can log in with code NCN8FY"
+```
+
+#### Install prerequisites
+If you want to install a package on the Armadillo Rserver you can execute the following endpoint. The selected profile is always `default` if none is specified.
+
+
+```r
+install.packages("resourcer")
+library(resourcer)
+```
+
+#### Create resources
+In order to be able to asign the data uploaded in the Minio you need to create the resources as well. 
+
+
+```r
+resGSE1 <- resourcer::newResource(
+  name = "GSE66351_1",
+  url = "s3+http://armadillo-minio:9000/shared-omics/ewas/gse66351_1.rda",
+  identity = "molgenis",
+  secret = "molgenis",
+  format = "ExpressionSet"
+)
+resGSE2 <- resourcer::newResource(
+  name = "GSE66351_1",
+  url = "s3+http://armadillo-minio:9000/shared-omics/ewas/gse66351_1.rda",
+  identity = "molgenis",
+  secret = "molgenis",
+  format = "ExpressionSet"
+)
+
+armadillo.create_project("omics")
+#> Created project 'omics'
+armadillo.upload_resource(project="omics", folder="ewas", resource = resGSE1, name = "GSE66351_1")
+#> Compressing...
+#> 
+  |                                                                                                 
+  |                                                                                           |   0%
+  |                                                                                                 
+  |===========================================================================================| 100%
+#> Uploaded ewas/GSE66351_1
+armadillo.upload_resource(project="omics", folder="ewas", resource = resGSE2, name = "GSE66351_2")
+#> Compressing...
+#> 
+  |                                                                                                 
+  |                                                                                           |   0%
+  |                                                                                                 
+  |===========================================================================================| 100%
+#> Uploaded ewas/GSE66351_2
+```
+
+The data is now available for researcher to assign.

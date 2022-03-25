@@ -2,7 +2,7 @@
 title: "Creating data subsets"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{creatingDataSubsets}
+  %\VignetteIndexEntry{Creating data subsets}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -185,22 +185,38 @@ colnames(subset_core_yearly_rep)
 ```r
 armadillo.upload_table("subset1", "1_1_outcome_1_0", subset_outcome_non_rep, "non_rep")
 #> Compressing...
-#>   |                                                                                                |                                                                                        |   0%  |                                                                                                |========================================================================================| 100%
+#> 
+  |                                                                                              
+  |                                                                                        |   0%
+  |                                                                                              
+  |========================================================================================| 100%
 #> Uploaded 1_1_outcome_1_0/non_rep
 
 armadillo.upload_table("subset1", "1_1_outcome_1_0", subset_outcome_yearly_rep, "yearly_rep")
 #> Compressing...
-#>   |                                                                                                |                                                                                        |   0%  |                                                                                                |========================================================================================| 100%
+#> 
+  |                                                                                              
+  |                                                                                        |   0%
+  |                                                                                              
+  |========================================================================================| 100%
 #> Uploaded 1_1_outcome_1_0/yearly_rep
 
 armadillo.upload_table("subset1", "2_1_core_1_0", subset_core_non_rep, "non_rep")
 #> Compressing...
-#>   |                                                                                                |                                                                                        |   0%  |                                                                                                |========================================================================================| 100%
+#> 
+  |                                                                                              
+  |                                                                                        |   0%
+  |                                                                                              
+  |========================================================================================| 100%
 #> Uploaded 2_1_core_1_0/non_rep
 
 armadillo.upload_table("subset1", "2_1_core_1_0", subset_core_yearly_rep, "yearly_rep")
 #> Compressing...
-#>   |                                                                                                |                                                                                        |   0%  |                                                                                                |========================================================================================| 100%
+#> 
+  |                                                                                              
+  |                                                                                        |   0%
+  |                                                                                              
+  |========================================================================================| 100%
 #> Uploaded 2_1_core_1_0/yearly_rep
 ```
 

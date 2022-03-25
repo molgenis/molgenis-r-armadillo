@@ -2,7 +2,7 @@
 title: "Install packages"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{installPackages}
+  %\VignetteIndexEntry{Install packages}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

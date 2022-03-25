@@ -2,7 +2,7 @@
 title: "Creating data subsets"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{creatingDataSubsets}
+  %\VignetteIndexEntry{Creating data subsets}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
