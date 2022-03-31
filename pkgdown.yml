@@ -1,4 +1,4 @@
-pandoc: 2.11.4
+pandoc: 2.14.0.3
 pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
@@ -6,5 +6,5 @@ articles:
   create_resources: create_resources.html
   creating_data_subsets: creating_data_subsets.html
   install_packages: install_packages.html
-last_built: 2022-03-25T14:19Z
+last_built: 2022-03-31T12:48Z
 
