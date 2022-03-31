@@ -1,3 +1,6 @@
+## 1.1.3 Edit vignets
+* Remove packages from vignettes
+
 ## 1.1.2 Add documentation
 * Added resourcer documentation
 
