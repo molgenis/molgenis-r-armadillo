@@ -9,4 +9,4 @@ adr
 .travis.yml
 ^README.Rmd$
 ^cran-comments\.md$
-^MolgenisArmadillo_.*\.tar\.gz$
+^vignettes/data/packages/.*

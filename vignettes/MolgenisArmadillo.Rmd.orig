@@ -34,6 +34,7 @@ It will create a session and store the credentials in the environment.
 If you need to share data via Armadillo you can have a nested structure to save you data.
 
 We distinguish:
+
 - projects
 - folders
 - tables

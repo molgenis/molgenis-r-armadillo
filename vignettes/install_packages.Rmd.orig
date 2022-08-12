@@ -1,0 +1,73 @@
+---
+title: "Install packages"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Install packages}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(MolgenisArmadillo)
+```
+
+To be able to test your package as a developer you can install your package using the MolgenisArmadillo. There are a few preconditions in other to use the install_packages function.
+
+- Make sure you have the `superuser` role.
+- The Armadillo needs to run in `development` mode
+
+## Login
+You first need to login to the Armadillo (as `superuser`)
+
+
+```{r, login to the armadillo server}
+armadillo.login("https://armadillo.dev.molgenis.org",
+      "https://armadillo-minio.dev.molgenis.org")
+```
+
+## Install packages
+If you want to install a package on the Armadillo Rserver you can execute the following endpoint. The selected profile is always `default` if none is specified.
+
+```{r, install your package}
+armadillo.install_packages("data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz")
+```
+
+In order to install the packages on a specific profile you can specify the profile.
+
+```{r, install your package on a specific profile, eval = FALSE}
+armadillo.install_packages("data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz", profile = "exposome")
+```
+
+You can install multiple packages as well by specifying a vector
+
+```{r, install multiple packages, eval = FALSE}
+armadillo.install_packages(c("data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz", "data/packages/dsBase_6.1.0.9000.tar.gz"))
+```
+
+## Whitelist packages
+To be able to use new packages in the Armadillo you need to add them to the whitelist. You can do this by executing the following method.
+
+```{r, add package to whitelist}
+armadillo.whitelist_packages("MolgenisArmadillo")
+```
+
+You are able to whilist mulitple packages as well using the following line:
+
+```{r, add packages to whitelist}
+armadillo.whitelist_packages(c("MolgenisArmadillo", "dsBase"))
+```
+
+
+
+
+
+
+
+

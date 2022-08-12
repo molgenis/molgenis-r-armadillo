@@ -1,7 +1,10 @@
 pipeline {
     agent {
         kubernetes {
-            inheritFrom 'r-4.0.3'
+            // the shared pod template defined on the Jenkins server config
+            inheritFrom 'shared'
+            // r pod template defined in molgenis/molgenis-jenkins-pipeline repository
+            yaml libraryResource("pod-templates/r-4_1_1.yaml")
         }
     }
     environment {
@@ -28,7 +31,7 @@ pipeline {
                 sh "git remote set-url origin https://${GITHUB_TOKEN}@github.com/${REPOSITORY}.git"
                 sh "git fetch --tags"
                 container('r') {
-                    sh "install2.r --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery httr urltools xml2 aws.iam aws.s3 arrow MolgenisAuth DSMolgenisArmadillo git2r"
+                    sh "install2.r --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery httr urltools xml2 aws.iam aws.s3 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr"
                     sh "installGithub.r fdlk/lintr"
                     sh "Rscript -e \"git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')\""
                     sh "mkdir -m 700 -p /root/.ssh"

@@ -1,3 +1,14 @@
+## 1.1.3 Edit vignets
+* Remove packages from vignettes
+
+## 1.1.2 Add documentation
+* Added resourcer documentation
+
+## 1.1.1 Add install package and change maintainer
+* Add install package
+* Add whitelist package
+* Make Mariska maintainer
+
 ## 1.0.4 Fix codecov badge links
 * Fix codecov badge links 
 
