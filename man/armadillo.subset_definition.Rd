@@ -4,15 +4,13 @@
 \alias{armadillo.subset_definition}
 \title{Builds an R object containing info required to make subsets}
 \usage{
-armadillo.subset_definition(vars = NULL, metadata = NULL)
+armadillo.subset_definition(vars = NULL)
 }
 \arguments{
 \item{vars}{\code{.csv} file containing vars to subset.}
-
-\item{metadata}{\code{.csv} file containing meta variables to subset (optional)}
 }
 \value{
-a dataframe containing metadata and variables that is used for input in the \code{armadillo.subset()} method
+a dataframe containing variables that is used for input in the \code{armadillo.subset()} method
 }
 \description{
 This file must contain three columns with the headers 'folder', 'table' and
@@ -23,8 +21,7 @@ refer to variables within that table.
 \examples{
 \dontrun{
 armadillo.subset_definition(
-  vars = "C:/tmp/vars.csv",
-  metadata = "C:/tmp/metadata.csv"
+  vars = "C:/tmp/vars.csv"
 )
 }
 
