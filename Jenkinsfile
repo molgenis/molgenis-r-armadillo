@@ -132,6 +132,7 @@ pipeline {
                 sh "git diff"
                 container('r') {
                     sh "Rscript -e \"usethis::use_version('${RELEASE_SCOPE}')\""
+                    // build the vignettes with pkgdown
                     sh "Rscript -e \"pkgdown::build_site()\""
                     script {
                         env.TAG = sh(script: "grep Version DESCRIPTION | head -n1 | cut -d':' -f2", returnStdout: true).trim()
@@ -145,6 +146,7 @@ pipeline {
                     }
                     sh "git tag v${TAG}"
                     sh "git push --tags origin master"
+                    // deploy the vignettes to molgenis.github.io
                     sh "set +x; Rscript -e \"pkgdown::deploy_site_github(ssh_id = '${GITHUB_DEPLOY_PRIVATE_KEY_BASE64}', tarball = '${PACKAGE}_${TAG}.tar.gz', repo_slug='${REPOSITORY}')\""
                 }
             }
