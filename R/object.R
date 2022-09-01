@@ -16,7 +16,7 @@
   stopifnot(!is.na(project), !is.na(folder))
   .check_full_name(folder, name)
   
-  handle = getOption("MolgenisArmadillo.armadillo.handle")
+  handle <- getOption("MolgenisArmadillo.armadillo.handle")
   full_name <- paste0(folder, "/", name)
 
   file <- tempfile()
@@ -33,7 +33,6 @@
     ),
     headers = httr::add_headers("Content-Type" = "multipart/form-data")
   )
-  
   .handle_request_error(response)
   
   message(paste0("Uploaded ", full_name))
@@ -46,20 +45,22 @@
 #'
 #' @return the object names, without the extension
 #'
-#' @importFrom aws.s3 get_bucket
+#' @importFrom httr GET
 #' @noRd
 .list_objects_by_extension <- function(project, extension) { # nolint
-  bucket_name <- .to_shared_bucket_name(project)
-  .check_if_bucket_exists(bucket_name)
   extension_regex <- paste0(extension, "$")
-
-  objects <- aws.s3::get_bucket(bucket_name,
-    use_https = .use_https()
+  handle <- getOption("MolgenisArmadillo.armadillo.handle")
+  
+  response <- httr::GET(
+    handle = handle,
+    path = paste0("/storage/projects/", project, "/objects")
   )
-  object_names <- lapply(objects, function(obj) obj$Key)
-  object_names <- unlist(object_names, use.names = FALSE)
-  object_names <- object_names[grepl(extension_regex, object_names)]
-  tools::file_path_sans_ext(object_names)
+  .handle_request_error(response)
+  content <- httr::content(response, as = "parsed")
+
+  objects <- sapply(content, function(object) object[1])
+  objects_filtered <- objects[grepl(extension_regex, objects)]
+  tools::file_path_sans_ext(objects_filtered)
 }
 
 
