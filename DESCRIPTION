@@ -37,7 +37,6 @@ Depends:
     R (>= 3.6)
 Imports:
     httr,
-    urltools,
     xml2,
     aws.iam,
     aws.s3,

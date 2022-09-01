@@ -15,7 +15,7 @@
 #' armadillo.login("http://localhost:8080")
 #' }
 #'
-#' @importFrom urltools scheme domain httr
+#' @importFrom urltools scheme domain
 #' @export
 armadillo.login <- function(armadillo) { # nolint
   # Open browser and authenticate with device code

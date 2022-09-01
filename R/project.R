@@ -20,14 +20,17 @@
 armadillo.create_project <- function(project_name) { # nolint
   .check_project_name(project_name)
 
-  success <- aws.s3::put_bucket(.to_shared_bucket_name(project_name),
-    use_https = .use_https()
+  handle = getOption("MolgenisArmadillo.armadillo.handle")
+  
+  response <- httr::PUT(
+    handle = handle,
+    path = "/admin/projects",
+    body = list(name = project_name),
+    encode = "json"
   )
-
-  if (success) {
-    message(paste0("Created project '", project_name, "'"))
-  }
-  invisible(success)
+  .handle_request_error(response)
+  
+  message(paste0("Created project '", project_name, "'"))
 }
 
 #' Delete project
@@ -44,7 +47,15 @@ armadillo.create_project <- function(project_name) { # nolint
 #'
 #' @export
 armadillo.delete_project <- function(project_name) { # nolint
-  .delete_bucket(.to_shared_bucket_name(project_name))
+  handle = getOption("MolgenisArmadillo.armadillo.handle")
+  
+  response <- httr::DELETE(
+    handle = handle,
+    path = paste0("/admin/projects/", project_name)
+  )
+  .handle_request_error(response)
+  
+  message(paste0("Deleted project '", project_name, "'"))
 }
 
 #' List the projects
@@ -61,20 +72,6 @@ armadillo.list_projects <- function() { # nolint
   .get_buckets("shared-")
 }
 
-#' Delete bucket
-#'
-#' @param bucket_name name of the bucket, usually a collection of variables
-#'
-#' @return NULL
-#'
-#' @noRd
-.delete_bucket <- function(bucket_name) {
-  .check_if_bucket_exists(bucket_name)
-  aws.s3::delete_bucket(bucket_name,
-    use_https = .use_https()
-  )
-  message(paste0("Deleted project '", .to_readable_name(bucket_name), "'"))
-}
 
 #' Get buckets
 #'

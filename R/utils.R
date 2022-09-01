@@ -74,6 +74,12 @@
 .handle_request_error <- function(response) {
   if (response$status_code == 401) {
     stop("Unauthorized", call. = FALSE)
+  } else if (response$status_code == 404) {
+    stop(
+      paste0(
+        "Not found: ",
+        httr::content(response, as = "parsed", encoding = "UTF-8")$message),
+      call. = FALSE)
   } else if (response$status_code == 500) {
     stop(
       paste0(
