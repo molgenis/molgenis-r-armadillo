@@ -8,36 +8,35 @@
 #'
 #' @return TRUE if successful, otherwise an object of class aws_error details
 #'
-#' @importFrom aws.s3 put_object
+#' @importFrom httr POST
 #'
 #' @noRd
 .upload_object <- function(project, folder, object, name,
                            compression_function) { # nolint
   stopifnot(!is.na(project), !is.na(folder))
   .check_full_name(folder, name)
-
-  bucket_name <- .to_shared_bucket_name(project)
-  .check_if_bucket_exists(bucket_name)
+  
+  handle = getOption("MolgenisArmadillo.armadillo.handle")
+  full_name <- paste0(folder, "/", name)
 
   file <- tempfile()
   on.exit(unlink(file))
   message("Compressing...")
   extension <- compression_function(object, file = file)
 
-  full_name <- paste0(folder, "/", name)
-  result <- aws.s3::put_object(
-    file = file,
-    object = paste0(full_name, extension),
-    bucket = bucket_name,
-    multipart = TRUE,
-    show_progress = interactive(),
-    use_https = .use_https()
+  response <- httr::POST(
+    handle = handle,
+    path = paste0("/storage/projects/", project, "/objects"),
+    body = list(
+      file = httr::upload_file(file, type = "application/json; charset=UTF-8"),
+      object = paste0(full_name, extension)
+    ),
+    headers = httr::add_headers("Content-Type" = "multipart/form-data")
   )
-
-  if (isTRUE(result)) {
-    message(paste0("Uploaded ", full_name))
-  }
-  invisible(result)
+  
+  .handle_request_error(response)
+  
+  message(paste0("Uploaded ", full_name))
 }
 
 #' List the objects in a project based on the file type
