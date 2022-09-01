@@ -69,27 +69,14 @@ armadillo.delete_project <- function(project_name) { # nolint
 #'
 #' @export
 armadillo.list_projects <- function() { # nolint
-  .get_buckets("shared-")
-}
-
-
-#' Get buckets
-#'
-#' @param prefix can be 'shared-' or 'user-'
-#'
-#' @return bucket names, prefix deleted
-#'
-#' @noRd
-.get_buckets <- function(prefix) {
-  buckets <- aws.s3::bucketlist(use_https = .use_https())
-  bucket_names <- buckets[["Bucket"]]
-  if (length(bucket_names) == 0) {
-    NULL
-  } else {
-    filtered_buckets <- bucket_names[startsWith(bucket_names, prefix)]
-    sapply(filtered_buckets,
-      function(name) gsub(prefix, "", name),
-      USE.NAMES = FALSE
-    )
-  }
+  handle = getOption("MolgenisArmadillo.armadillo.handle")
+  
+  response <- httr::GET(
+    handle = handle,
+    path = "/admin/projects"
+  )
+  .handle_request_error(response)
+  
+  content <- httr::content(response, as = "parsed")
+  sapply(content, function(project) project$name)
 }
