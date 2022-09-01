@@ -73,24 +73,20 @@
 #'
 #' @return TRUE if successful, otherwise an object of class aws_error details
 #'
-#' @importFrom aws.s3 delete_object
+#' @importFrom httr DELETE
 #' @noRd
 .delete_object <- function(project, folder, name, extension) { # nolint
-  bucket_name <- .to_shared_bucket_name(project)
-  .check_if_object_exists(bucket_name, folder, name, extension)
+  handle <- getOption("MolgenisArmadillo.armadillo.handle")
 
   full_name <- paste0(folder, "/", name)
 
-  result <- aws.s3::delete_object(
-    object = paste0(full_name, extension),
-    bucket = bucket_name,
-    use_https = .use_https()
+  response <- httr::DELETE(
+    handle = handle,
+    path = paste0("/storage/projects/", project, "/objects/", URLencode(full_name)),
   )
+  .handle_request_error(response)
 
-  if (isTRUE(result)) {
-    message(paste0("Deleted '", full_name, "'."))
-  }
-  invisible(result)
+  message(paste0("Deleted '", full_name, "'"))
 }
 
 #' Copy object
