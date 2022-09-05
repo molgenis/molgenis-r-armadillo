@@ -38,8 +38,6 @@ Depends:
 Imports:
     httr,
     xml2,
-    aws.iam,
-    aws.s3,
     MolgenisAuth,
     arrow
 Suggests:

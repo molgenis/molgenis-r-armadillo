@@ -9,7 +9,7 @@
 #'   }
 #' @return TRUE if successful
 #'
-#' @importFrom aws.s3 put_bucket
+#' @importFrom httr PUT
 #'
 #' @examples
 #' \dontrun{

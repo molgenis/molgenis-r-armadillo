@@ -6,8 +6,6 @@
 #' @param name name of the object
 #' @param compression_function a function that compresses an object to a file
 #'
-#' @return TRUE if successful, otherwise an object of class aws_error details
-#'
 #' @importFrom httr POST
 #'
 #' @noRd
@@ -71,8 +69,6 @@
 #' @param name object name
 #' @param extension extension of the object to delete
 #'
-#' @return TRUE if successful, otherwise an object of class aws_error details
-#'
 #' @importFrom httr DELETE
 #' @noRd
 .delete_object <- function(project, folder, name, extension) { # nolint
@@ -102,7 +98,7 @@
 #'
 #' @return the response from the server
 #'
-#' @importFrom aws.s3 copy_object
+#' @importFrom httr POST
 #' @noRd
 .copy_object <- # nolint
   function(project, folder, name,
@@ -195,7 +191,7 @@
 #'
 #' @return the result of load_function
 #'
-#' @importFrom aws.s3 get_object
+#' @importFrom httr GET
 #' @noRd
 .load_object <- function(project, folder, name, load_function, extension) {
   handle <- getOption("MolgenisArmadillo.armadillo.handle")

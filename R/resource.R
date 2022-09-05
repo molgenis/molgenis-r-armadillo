@@ -5,8 +5,6 @@
 #' @param resource the resource to upload
 #' @param name name of the resource (optional)
 #'
-#' @return TRUE if successful, otherwise an object of class aws_error details
-#'
 #' @examples
 #' \dontrun{
 #' armadillo.upload_table(
@@ -60,8 +58,6 @@ armadillo.list_resources <- function(project) { # nolint
 #' @param project project to delete the resource from
 #' @param folder folder to delete the resource from
 #' @param name resource name
-#'
-#' @return TRUE if successful, otherwise an object of class aws_error details
 #'
 #' @examples
 #' \dontrun{

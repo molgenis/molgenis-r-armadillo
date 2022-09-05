@@ -5,8 +5,6 @@
 #' @param table the table to upload
 #' @param name name of the table (optional)
 #'
-#' @return TRUE if successful, otherwise an object of class aws_error details
-#'
 #' @importFrom arrow write_parquet
 #'
 #' @examples
@@ -62,8 +60,6 @@ armadillo.list_tables <- function(project) { # nolint
 #' @param project project to delete the table from
 #' @param folder folder to delete the table from
 #' @param name table name
-#'
-#' @return TRUE if successful, otherwise an object of class aws_error details
 #'
 #' @examples
 #' \dontrun{

@@ -15,9 +15,6 @@ armadillo.upload_resource(project, folder, resource, name = NULL)
 
 \item{name}{name of the resource (optional)}
 }
-\value{
-TRUE if successful, otherwise an object of class aws_error details
-}
 \description{
 Uploads a resource to a folder in a project
 }
