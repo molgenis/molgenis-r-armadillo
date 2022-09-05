@@ -116,21 +116,28 @@
       stop("Cannot copy table or resource onto itself.", call. = FALSE)
     }
     .check_full_name(new_folder, new_name)
-
-    result <- aws.s3::copy_object(
-      from_object = paste0(folder, "/", name, extension),
-      to_object = paste0(new_folder, "/", new_name, extension),
-      from_bucket = bucket_name,
-      to_bucket = new_bucket_name,
-      use_https = .use_https()
+    
+    handle <- getOption("MolgenisArmadillo.armadillo.handle")
+    object_name <- paste0(folder, "/", name)
+    new_object_name <- paste0(new_folder, "/", new_name)
+    
+    response <- httr::POST(
+      handle = handle,
+      path = paste0(.to_object_URI(project, object_name, extension), "/copy"),
+      body = list(
+        name = paste0(new_object_name, extension)
+      ),
+      encode = "json"
     )
 
+    .handle_request_error(response)
+
     message(paste0(
-      "Copied '", project, "/", folder, "/", name, "' to '",
-      new_project, "/", new_folder, "/", new_name, "'."
+      "Copied '", project, "/", object_name, "' to '",
+      new_project, "/", new_object_name, "'."
     ))
 
-    invisible(result)
+    invisible(response)
   }
 
 #' Move the object
