@@ -155,16 +155,34 @@
 .move_object <- # nolint
   function(project, folder, name, new_project, new_folder, new_name,
            extension) {
-    suppressMessages(.copy_object(
-      project, folder, name, new_project,
-      new_folder, new_name, extension
-    ))
-    suppressMessages(.delete_object(project, folder, name, extension))
+    if (project == new_project &&
+        folder == new_folder &&
+        name == new_name) {
+      stop("Cannot move table or resource onto itself.", call. = FALSE)
+    }
+    .check_full_name(new_folder, new_name)
+    
+    handle <- getOption("MolgenisArmadillo.armadillo.handle")
+    object_name <- paste0(folder, "/", name)
+    new_object_name <- paste0(new_folder, "/", new_name)
+    
+    response <- httr::POST(
+      handle = handle,
+      path = paste0(.to_object_URI(project, object_name, extension), "/move"),
+      body = list(
+        name = paste0(new_object_name, extension)
+      ),
+      encode = "json"
+    )
+    
+    .handle_request_error(response)
 
     message(paste0(
-      "Moved '", project, "/", folder, "/", name,
-      "' to '", new_project, "/", new_folder, "/", new_name, "'."
+      "Moved '", project, "/", object_name,
+      "' to '", new_project, "/", new_object_name, "'."
     ))
+    
+    invisible(response)
   }
 
 #' Load an object from a project
