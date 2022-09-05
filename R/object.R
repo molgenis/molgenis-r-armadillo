@@ -78,15 +78,15 @@
 .delete_object <- function(project, folder, name, extension) { # nolint
   handle <- getOption("MolgenisArmadillo.armadillo.handle")
 
-  full_name <- paste0(folder, "/", name)
+  object_name <- paste0(folder, "/", name)
 
   response <- httr::DELETE(
     handle = handle,
-    path = paste0("/storage/projects/", project, "/objects/", URLencode(full_name)),
+    path = .to_object_URI(project, object_name, extension),
   )
   .handle_request_error(response)
 
-  message(paste0("Deleted '", full_name, "'"))
+  message(paste0("Deleted '", object_name, "'"))
 }
 
 #' Copy object
@@ -115,10 +115,6 @@
       name == new_name) {
       stop("Cannot copy table or resource onto itself.", call. = FALSE)
     }
-    bucket_name <- .to_shared_bucket_name(project)
-    new_bucket_name <- .to_shared_bucket_name(new_project)
-    .check_if_object_exists(bucket_name, folder, name, extension)
-    .check_if_bucket_exists(new_bucket_name)
     .check_full_name(new_folder, new_name)
 
     result <- aws.s3::copy_object(
@@ -177,17 +173,34 @@
 #' @importFrom aws.s3 get_object
 #' @noRd
 .load_object <- function(project, folder, name, load_function, extension) {
-  bucket_name <- .to_shared_bucket_name(project)
-  .check_if_object_exists(bucket_name, folder, name, extension)
+  handle <- getOption("MolgenisArmadillo.armadillo.handle")
 
   file <- tempfile()
   on.exit(unlink(file))
-  aws.s3::save_object(
-    object = paste0(folder, "/", name, extension),
-    bucket = bucket_name,
-    file = file,
-    use_https = .use_https()
+  
+  response <- httr::GET(
+    handle = handle,
+    path = .to_object_URI(project, paste0(folder, "/", name), extension)
   )
+  
+  .handle_request_error(response)
+  
+  writeBin(content(response, "raw"), file)
 
   load_function(file)
+}
+
+#' Get storage API object URI.
+#'
+#' @param project project name
+#' @param folder the folder containing the object
+#' @param name name of the object
+#' @param extension the extension of the file
+#' 
+#' @return a storage API object URI
+#'
+#' @noRd
+.to_object_URI <- function(project, object_name, extension) {
+  full_name <- paste0(object_name, extension)
+  paste0("/storage/projects/", project, "/objects/", URLencode(full_name, reserved = TRUE))
 }
