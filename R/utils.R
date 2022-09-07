@@ -16,8 +16,10 @@
 #'
 #' @noRd
 .handle_request_error <- function(response) {
-  if (response$status_code == 401 || response$status_code == 403) {
+  if (response$status_code == 401) {
     stop("Unauthorized", call. = FALSE)
+  } else if (response$status_code == 403) {
+    stop("Forbidden", call. = FALSE)
   } else if (response$status_code == 404) {
     stop(
       paste0(
@@ -34,7 +36,7 @@
     stop(
       paste0(
         "Internal server error: ",
-        httr::content(response, as = "text", encoding = "UTF-8")),
+        httr::content(response, as = "parsed", encoding = "UTF-8")$message),
         call. = FALSE)
   }
 }

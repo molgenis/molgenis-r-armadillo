@@ -72,3 +72,10 @@ armadillo.delete_project("project")
 
 For more in depth documentation please check the
 [howto](https://molgenis.github.io/molgenis-r-armadillo/articles/MolgenisArmadillo.html).
+
+## For developers
+
+- To build documentation, do `roxygen2::roxygenise()`
+- To run all unit tests, do `devtools::test()`
+- While writing code (or tests), you can use `devtools::load_all()` to quickly "install" the package.
+
