@@ -48,7 +48,7 @@
 .list_objects_by_extension <- function(project, extension) { # nolint
   extension_regex <- paste0(extension, "$")
   handle <- getOption("MolgenisArmadillo.armadillo.handle")
-  
+
   response <- httr::GET(
     handle = handle,
     path = paste0("/storage/projects/", project, "/objects")
@@ -90,7 +90,6 @@
 #' @param project study or other variable collection
 #' @param folder the folder containing the object
 #' @param name specific object for copy action
-#' @param new_project new location of study or other variable collection
 #' @param new_folder name of the folder in which to place the copy, defaults to
 #' folder
 #' @param new_name name of the copy, defaults to name
@@ -102,13 +101,10 @@
 #' @noRd
 .copy_object <- # nolint
   function(project, folder, name,
-           new_project = project,
            new_folder = folder,
            new_name = name,
            extension) {
-    if (project == new_project &&
-      folder == new_folder &&
-      name == new_name) {
+    if (folder == new_folder && name == new_name) {
       stop("Cannot copy table or resource onto itself.", call. = FALSE)
     }
     .check_full_name(new_folder, new_name)
@@ -123,14 +119,15 @@
       body = list(
         name = paste0(new_object_name, extension)
       ),
-      encode = "json"
+      encode = "json",
+      config = httr::accept_json()
     )
 
     .handle_request_error(response)
 
     message(paste0(
       "Copied '", project, "/", object_name, "' to '",
-      new_project, "/", new_object_name, "'."
+      project, "/", new_object_name, "'."
     ))
 
     invisible(response)
@@ -141,7 +138,6 @@
 #' @param project a study or collection of variables
 #' @param folder the folder containing the object to move
 #' @param name name of the object to move
-#' @param new_project the project to move the object to
 #' @param new_folder the folder to move the object to, defaults to folder
 #' @param new_name use to rename the file, defaults to name
 #' @param extension extension of the file
@@ -149,10 +145,9 @@
 #' @return NULL, invisibly
 #' @noRd
 .move_object <- # nolint
-  function(project, folder, name, new_project, new_folder, new_name,
+  function(project, folder, name, new_folder = folder, new_name = name, 
            extension) {
-    if (project == new_project &&
-        folder == new_folder &&
+    if (folder == new_folder &&
         name == new_name) {
       stop("Cannot move table or resource onto itself.", call. = FALSE)
     }
@@ -168,6 +163,7 @@
       body = list(
         name = paste0(new_object_name, extension)
       ),
+      config = httr::accept_json(),
       encode = "json"
     )
     
@@ -175,7 +171,7 @@
 
     message(paste0(
       "Moved '", project, "/", object_name,
-      "' to '", new_project, "/", new_object_name, "'."
+      "' to '", project, "/", new_object_name, "'."
     ))
     
     invisible(response)
@@ -201,7 +197,8 @@
   
   response <- httr::GET(
     handle = handle,
-    path = .to_object_URI(project, paste0(folder, "/", name), extension)
+    path = .to_object_URI(project, paste0(folder, "/", name), extension),
+    config = httr::accept("application/octet-stream")
   )
   
   .handle_request_error(response)

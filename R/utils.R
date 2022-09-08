@@ -22,16 +22,14 @@
     stop("Forbidden", call. = FALSE)
   } else if (response$status_code == 404) {
     stop(
-      paste0(
-        "Not found: ",
-        httr::content(response, as = "parsed", encoding = "UTF-8")$message),
-        call. = FALSE)
+        httr::content(response, as = "parsed", encoding = "UTF-8")$message,
+        call. = FALSE
+    )
   } else if (response$status_code == 409) {
     stop(
-      paste0(
-        "Conflict: ",
-        httr::content(response, as = "parsed", encoding = "UTF-8")$message),
-        call. = FALSE)
+        httr::content(response, as = "parsed", encoding = "UTF-8")$message,
+        call. = FALSE
+    )
   } else if (response$status_code == 500) {
     stop(
       paste0(

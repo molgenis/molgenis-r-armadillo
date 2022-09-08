@@ -75,7 +75,8 @@ For more in depth documentation please check the
 
 ## For developers
 
-- To build documentation, do `roxygen2::roxygenise()`
+- To build documentation, do `devtools::document()`
 - To run all unit tests, do `devtools::test()`
 - While writing code (or tests), you can use `devtools::load_all()` to quickly "install" the package.
+- To run a single test file, open it in Rstudio and do `devtools::test_active_file()`
 
