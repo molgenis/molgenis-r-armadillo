@@ -18,11 +18,11 @@ armadillo.install_packages <- function(paths, profile = "default") { # nolint
     body = profile
   )
 
-  .handle_request_error(response)
-
   if (response$status_code == 404 && profile != "default") {
     stop(paste0("Profile not found: [ '", profile, "' ]"))
   }
+  
+  .handle_request_error(response)
 
   invisible(lapply(paths, .install_package))
 }
@@ -43,12 +43,12 @@ armadillo.install_packages <- function(paths, profile = "default") { # nolint
     config = httr::content_type("multipart/form-data")
   )
 
-  .handle_request_error(response)
   if (response$status_code == 404) {
     stop(paste0(
       "Endpoint doesn't exist. Make sure you're running ",
       "Armadillo in development mode."))
   }
+  .handle_request_error(response)
 
   message(paste0("Package [ '", path, "' ] installed"))
 }
@@ -74,11 +74,11 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
     body = profile
   )
 
-  .handle_request_error(response)
-
   if (response$status_code == 404 && profile != "default") {
     stop(paste0("Profile not found: [ '", profile, "' ]"))
   }
+  
+  .handle_request_error(response)
 
   invisible(lapply(pkgs, .whitelist_package))
 
@@ -108,12 +108,13 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
     path = paste0("/whitelist/", pkg)
   )
 
-  .handle_request_error(response)
   if (response$status_code == 404) {
     stop(paste0(
       "Endpoint doesn't exist. ",
       "Make sure you're running Armadillo in development mode."))
   }
+  
+  .handle_request_error(response)
   message(paste0("Package [ '", pkg, "' ] added to the whitelist"))
 }
 

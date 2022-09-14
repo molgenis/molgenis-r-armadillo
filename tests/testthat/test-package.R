@@ -5,8 +5,7 @@ test_that("failed to install a package", {
   response <- list(status_code = 500)
   httr_post <- mock(response, cycle = TRUE)
   httr_handle <- mock(handle)
-  httr_content <- mock("Could not install package")
-  connection <- mock(list(handle = httr_handle, headers = mock()))
+  httr_content <- mock(list(message = "Could not install package"))
   expected_path <- "C:/test/test.tar.gz"
 
   expect_error(
