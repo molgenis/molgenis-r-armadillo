@@ -1,69 +1,83 @@
 handle <- httr::handle("https://test.nl")
 withr::local_options("MolgenisArmadillo.armadillo.handle" = handle)
 
-# test_that(".upload_object checks if the project exists", {
-#   bucket_exists <- mock(FALSE)
-#   compress <- mock(".rds")
-# 
-#   expect_error(
-#     with_mock(
-#       .upload_object(
-#         project = "project",
-#         folder = "example",
-#         object = datasets::iris,
-#         name = "test",
-#         compression_function = compress
-#       ),
-#       "aws.s3::bucket_exists" = bucket_exists,
-#       "MolgenisArmadillo:::.use_https" = mock(TRUE)
-#     ),
-#     "Project 'project' does not exist\\."
-#   )
-# 
-#   expect_args(bucket_exists, 1, "shared-project", use_https = TRUE)
-# })
-# 
-# test_that(".upload_object uploads object", {
-#   put_object <- mock(TRUE)
-#   bucket_exists <- mock(TRUE)
-#   file <- tempfile()
-#   on.exit(unlink(file))
-#   # Cannot mock base functions, so stub it instead
-#   stub(.upload_object, "tempfile", file)
-# 
-#   compress_table <- function(table, file) {
-#     saveRDS(table, file)
-#     ".rds"
-#   }
-# 
-#   expect_message(
-#     with_mock(
-#       result <- .upload_object(
-#         project = "project",
-#         folder = "folder",
-#         object = datasets::iris,
-#         name = "datasets::iris",
-#         compression_function = compress_table
-#       ),
-#       "aws.s3::put_object" = put_object,
-#       "aws.s3::bucket_exists" = bucket_exists,
-#       "MolgenisArmadillo:::.use_https" = mock(FALSE, cycle = TRUE)
-#     ),
-#     "Compressing...|Uploaded folder/datasets::iris",
-#     all = TRUE
-#   )
-# 
-#   expect_true(result)
-# 
-#   expect_args(put_object, 1,
-#     file = file,
-#     object = "folder/datasets::iris.rds",
-#     bucket = "shared-project",
-#     multipart = TRUE,
-#     show_progress = interactive(),
-#     use_https = FALSE
-#   )
-# })
+test_that(".upload_object handles errors", {
+  file <- tempfile()
+  saveRDS(tibble::tribble(), file)
+  on.exit(unlink(file))
+  
+  upload_file <- httr::upload_file(file)
+  compress = mock(".rds")
+  
+  stub_request('post', uri = 'https://test.nl/storage/projects/project/objects') %>%
+    wi_th(
+      header = list('Content-Type' = 'multipart/form-data'),
+      body = list(
+        file = upload_file,
+        object = "example/test.rds"
+      )
+    ) %>%
+    to_return(
+      status = 404,
+      body = '{
+        "message": "project not found"
+      }',
+      headers = list('Content-Type' = 'application/json')
+    )
+  
+  expect_error(
+    with_mock({
+      .upload_object(
+        project = "project",
+        folder = "example",
+        object = datasets::iris,
+        name = "test",
+        compression_function = compress
+      )},
+      "tempfile" = function() {
+        file
+      }),
+    "project not found"
+  )
+  
+  stub_registry_clear()
+})
+
+test_that(".upload_object uploads object", {
+  file <- tempfile()
+  saveRDS(tibble::tribble(), file)
+  on.exit(unlink(file))
+  
+  upload_file <- httr::upload_file(file)
+  compress = mock(".rds")
+  
+  stub_request('post', uri = 'https://test.nl/storage/projects/project/objects') %>%
+    wi_th(
+      header = list('Content-Type' = 'multipart/form-data'),
+      body = list(
+        file = upload_file,
+        object = "example/test.rds"
+      )
+    ) %>%
+    to_return(status = 204)
+  
+  expect_message(
+    with_mock({
+      .upload_object(
+        project = "project",
+        folder = "example",
+        object = datasets::iris,
+        name = "test",
+        compression_function = compress
+      )},
+      "tempfile" = function() {
+        file
+      }),
+    "Uploaded example/test"
+  )
+  
+  stub_registry_clear()
+})
  
 test_that(".list_objects_by_extension handles errors", {
   stub_request('get', uri = 'https://test.nl/storage/projects/project/objects') %>%

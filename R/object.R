@@ -24,7 +24,7 @@
     handle = .get_handle(),
     path = paste0("/storage/projects/", project, "/objects"),
     body = list(
-      file = httr::upload_file(file, type = "application/json; charset=UTF-8"),
+      file = httr::upload_file(file),
       object = paste0(full_name, extension)
     ),
     headers = httr::add_headers("Content-Type" = "multipart/form-data")
