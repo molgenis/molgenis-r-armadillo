@@ -8,7 +8,6 @@ armadillo.move_table(
   project,
   folder,
   name,
-  new_project = project,
   new_folder = folder,
   new_name = name
 )
@@ -19,8 +18,6 @@ armadillo.move_table(
 \item{folder}{the folder containing the table to move}
 
 \item{name}{a table to move}
-
-\item{new_project}{the project to move the table to}
 
 \item{new_folder}{the folder to move the table to, defaults to folder}
 
@@ -38,7 +35,6 @@ armadillo.move_table(
   project = "gecko",
   folder = "core_all",
   name = "table1",
-  new_project = "gecko",
   new_folder = "core_all_v2",
 )
 }

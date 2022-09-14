@@ -8,7 +8,6 @@ armadillo.move_resource(
   project,
   folder,
   name,
-  new_project = project,
   new_folder = folder,
   new_name = name
 )
@@ -19,8 +18,6 @@ armadillo.move_resource(
 \item{folder}{the folder containing the resource to move}
 
 \item{name}{a resource to move}
-
-\item{new_project}{the project to move the resource to}
 
 \item{new_folder}{the folder to move the resource to, defaults to folder}
 
@@ -38,7 +35,6 @@ armadillo.move_resource(
   project = "gecko",
   folder = "core_all",
   name = "table1",
-  new_project = "gecko",
   new_folder = "core_all_v2",
 )
 }

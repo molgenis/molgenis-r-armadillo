@@ -19,7 +19,7 @@
 #' @export
 armadillo.create_project <- function(project_name) { # nolint
   .check_project_name(project_name)
-  
+
   response <- httr::PUT(
     handle = .get_handle(),
     path = "/admin/projects",
@@ -27,7 +27,7 @@ armadillo.create_project <- function(project_name) { # nolint
     config = httr::accept_json()
   )
   .handle_request_error(response)
-  
+
   message(paste0("Created project '", project_name, "'"))
 }
 
@@ -50,7 +50,7 @@ armadillo.delete_project <- function(project_name) { # nolint
     path = paste0("/admin/projects/", project_name)
   )
   .handle_request_error(response)
-  
+
   message(paste0("Deleted project '", project_name, "'"))
 }
 
@@ -70,7 +70,7 @@ armadillo.list_projects <- function() { # nolint
     path = "/admin/projects"
   )
   .handle_request_error(response)
-  
+
   content <- httr::content(response, as = "parsed")
   sapply(content, function(project) project$name)
 }

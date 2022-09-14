@@ -80,7 +80,6 @@ armadillo.delete_table <- function(project, folder, name) { # nolint
 #' @param project study or other variable collection
 #' @param folder the folder containing the table
 #' @param name specific table for copy action
-#' @param new_project new location of study or other variable collection
 #' @param new_folder name of the folder in which to place the copy, defaults to
 #' folder
 #' @param new_name name of the copy, defaults to name
@@ -93,7 +92,6 @@ armadillo.delete_table <- function(project, folder, name) { # nolint
 #'   project = "gecko",
 #'   folder = "core_all",
 #'   name = "table1",
-#'   new_project = "gecko",
 #'   new_folder = "core_all_v2",
 #' )
 #' }
@@ -101,14 +99,12 @@ armadillo.delete_table <- function(project, folder, name) { # nolint
 #' @export
 armadillo.copy_table <- # nolint
   function(project, folder, name,
-           new_project = project,
            new_folder = folder,
            new_name = name) {
     .copy_object(
       project,
       folder,
       name,
-      new_project,
       new_folder,
       new_name,
       ".parquet"
@@ -154,7 +150,6 @@ armadillo.load_table <- function(project, folder, name) { # nolint
 #' @param project a study or collection of variables
 #' @param folder the folder containing the table to move
 #' @param name a table to move
-#' @param new_project the project to move the table to
 #' @param new_folder the folder to move the table to, defaults to folder
 #' @param new_name use to rename the file, defaults to name
 #'
@@ -166,7 +161,6 @@ armadillo.load_table <- function(project, folder, name) { # nolint
 #'   project = "gecko",
 #'   folder = "core_all",
 #'   name = "table1",
-#'   new_project = "gecko",
 #'   new_folder = "core_all_v2",
 #' )
 #' }
@@ -174,14 +168,12 @@ armadillo.load_table <- function(project, folder, name) { # nolint
 #' @export
 armadillo.move_table <- # nolint
   function(project, folder, name,
-           new_project = project,
            new_folder = folder,
            new_name = name) {
     .move_object(
       project,
       folder,
       name,
-      new_project,
       new_folder,
       new_name,
       ".parquet"

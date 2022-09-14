@@ -30,7 +30,7 @@
     headers = httr::add_headers("Content-Type" = "multipart/form-data")
   )
   .handle_request_error(response)
-  
+
   message(paste0("Uploaded ", full_name))
 }
 
@@ -45,7 +45,7 @@
 #' @noRd
 .list_objects_by_extension <- function(project, extension) { # nolint
   extension_regex <- paste0(extension, "$")
-  
+
   response <- httr::GET(
     handle = .get_handle(),
     path = paste0("/storage/projects/", project, "/objects")
@@ -73,7 +73,7 @@
 
   response <- httr::DELETE(
     handle = .get_handle(),
-    path = .to_object_URI(project, object_name, extension),
+    path = .to_object_uri(project, object_name, extension),
   )
   .handle_request_error(response)
 
@@ -103,13 +103,13 @@
       stop("Cannot copy table or resource onto itself.", call. = FALSE)
     }
     .check_full_name(new_folder, new_name)
-    
+
     object_name <- paste0(folder, "/", name)
     new_object_name <- paste0(new_folder, "/", new_name)
-    
+
     response <- httr::POST(
       handle = .get_handle(),
-      path = paste0(.to_object_URI(project, object_name, extension), "/copy"),
+      path = paste0(.to_object_uri(project, object_name, extension), "/copy"),
       body = list(
         name = paste0(new_object_name, extension)
       ),
@@ -139,34 +139,34 @@
 #' @return NULL, invisibly
 #' @noRd
 .move_object <- # nolint
-  function(project, folder, name, new_folder = folder, new_name = name, 
+  function(project, folder, name, new_folder = folder, new_name = name,
            extension) {
     if (folder == new_folder &&
         name == new_name) {
       stop("Cannot move table or resource onto itself.", call. = FALSE)
     }
     .check_full_name(new_folder, new_name)
-    
+
     object_name <- paste0(folder, "/", name)
     new_object_name <- paste0(new_folder, "/", new_name)
-    
+
     response <- httr::POST(
       handle = .get_handle(),
-      path = paste0(.to_object_URI(project, object_name, extension), "/move"),
+      path = paste0(.to_object_uri(project, object_name, extension), "/move"),
       body = list(
         name = paste0(new_object_name, extension)
       ),
       config = httr::accept_json(),
       encode = "json"
     )
-    
+
     .handle_request_error(response)
 
     message(paste0(
       "Moved '", project, "/", object_name,
       "' to '", project, "/", new_object_name, "'."
     ))
-    
+
     invisible(response)
   }
 
@@ -185,15 +185,15 @@
 .load_object <- function(project, folder, name, load_function, extension) {
   file <- tempfile()
   on.exit(unlink(file))
-  
+
   response <- httr::GET(
     handle = .get_handle(),
-    path = .to_object_URI(project, paste0(folder, "/", name), extension),
+    path = .to_object_uri(project, paste0(folder, "/", name), extension),
     config = httr::accept("application/octet-stream")
   )
-  
+
   .handle_request_error(response)
-  
+
   writeBin(content(response, "raw"), file)
 
   load_function(file)
@@ -205,11 +205,14 @@
 #' @param folder the folder containing the object
 #' @param name name of the object
 #' @param extension the extension of the file
-#' 
+#'
 #' @return a storage API object URI
 #'
 #' @noRd
-.to_object_URI <- function(project, object_name, extension) {
+.to_object_uri <- function(project, object_name, extension) {
   full_name <- paste0(object_name, extension)
-  paste0("/storage/projects/", project, "/objects/", URLencode(full_name, reserved = TRUE))
+  paste0("/storage/projects/",
+         project,
+         "/objects/",
+         URLencode(full_name, reserved = TRUE))
 }

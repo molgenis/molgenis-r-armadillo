@@ -8,7 +8,6 @@ armadillo.copy_table(
   project,
   folder,
   name,
-  new_project = project,
   new_folder = folder,
   new_name = name
 )
@@ -19,8 +18,6 @@ armadillo.copy_table(
 \item{folder}{the folder containing the table}
 
 \item{name}{specific table for copy action}
-
-\item{new_project}{new location of study or other variable collection}
 
 \item{new_folder}{name of the folder in which to place the copy, defaults to
 folder}
@@ -39,7 +36,6 @@ armadillo.copy_table(
   project = "gecko",
   folder = "core_all",
   name = "table1",
-  new_project = "gecko",
   new_folder = "core_all_v2",
 )
 }

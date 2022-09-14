@@ -20,14 +20,14 @@
 armadillo.login <- function(armadillo) { # nolint
   # Open browser and authenticate with device code
   token <- armadillo.get_token(armadillo)
-  
+
   # Configure session
-  handle = httr::handle(armadillo)
+  handle <- httr::handle(armadillo)
   auth_header <-
     httr::add_headers("Authorization" = paste0("Bearer ", token))
 
-  # Do a request to authenticate with token  
-  response <- httr::GET(
+  # Do a request to authenticate with token
+  httr::GET(
     handle = handle,
     path = "/my/principal",
     config = auth_header

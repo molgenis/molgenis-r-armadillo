@@ -36,9 +36,10 @@
 #'
 #' @noRd
 .get_handle <- function() {
-  handle = getOption("MolgenisArmadillo.armadillo.handle")
-  if (is.null(handle)){
-    stop("You are not logged in. Please log in with armadillo.login('<YOUR_SERVER>')", 
+  handle <- getOption("MolgenisArmadillo.armadillo.handle")
+  if (is.null(handle)) {
+    stop("You are not logged in.
+         Please log in with armadillo.login('<YOUR_SERVER>')",
          call. = FALSE)
   }
   handle

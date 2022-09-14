@@ -21,7 +21,7 @@ armadillo.install_packages <- function(paths, profile = "default") { # nolint
   if (response$status_code == 404 && profile != "default") {
     stop(paste0("Profile not found: [ '", profile, "' ]"))
   }
-  
+
   .handle_request_error(response)
 
   invisible(lapply(paths, .install_package))
@@ -67,7 +67,7 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
     "You need to specify the the package(s) you want to whitelist; ",
     "e.g. 'DSI'")
   .is_empty(msg, pkgs)
-  
+
   response <- httr::POST(
     handle = .get_handle(),
     path = "/select-profile",
@@ -77,7 +77,7 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
   if (response$status_code == 404 && profile != "default") {
     stop(paste0("Profile not found: [ '", profile, "' ]"))
   }
-  
+
   .handle_request_error(response)
 
   invisible(lapply(pkgs, .whitelist_package))
@@ -113,7 +113,7 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
       "Endpoint doesn't exist. ",
       "Make sure you're running Armadillo in development mode."))
   }
-  
+
   .handle_request_error(response)
   message(paste0("Package [ '", pkg, "' ] added to the whitelist"))
 }
