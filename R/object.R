@@ -13,8 +13,6 @@
                            compression_function) { # nolint
   stopifnot(!is.na(project), !is.na(folder))
   .check_full_name(folder, name)
-  
-  handle <- getOption("MolgenisArmadillo.armadillo.handle")
   full_name <- paste0(folder, "/", name)
 
   file <- tempfile()
@@ -23,7 +21,7 @@
   extension <- compression_function(object, file = file)
 
   response <- httr::POST(
-    handle = handle,
+    handle = .get_handle(),
     path = paste0("/storage/projects/", project, "/objects"),
     body = list(
       file = httr::upload_file(file, type = "application/json; charset=UTF-8"),
@@ -47,10 +45,9 @@
 #' @noRd
 .list_objects_by_extension <- function(project, extension) { # nolint
   extension_regex <- paste0(extension, "$")
-  handle <- getOption("MolgenisArmadillo.armadillo.handle")
-
+  
   response <- httr::GET(
-    handle = handle,
+    handle = .get_handle(),
     path = paste0("/storage/projects/", project, "/objects")
   )
   .handle_request_error(response)
@@ -72,12 +69,10 @@
 #' @importFrom httr DELETE
 #' @noRd
 .delete_object <- function(project, folder, name, extension) { # nolint
-  handle <- getOption("MolgenisArmadillo.armadillo.handle")
-
   object_name <- paste0(folder, "/", name)
 
   response <- httr::DELETE(
-    handle = handle,
+    handle = .get_handle(),
     path = .to_object_URI(project, object_name, extension),
   )
   .handle_request_error(response)
@@ -109,12 +104,11 @@
     }
     .check_full_name(new_folder, new_name)
     
-    handle <- getOption("MolgenisArmadillo.armadillo.handle")
     object_name <- paste0(folder, "/", name)
     new_object_name <- paste0(new_folder, "/", new_name)
     
     response <- httr::POST(
-      handle = handle,
+      handle = .get_handle(),
       path = paste0(.to_object_URI(project, object_name, extension), "/copy"),
       body = list(
         name = paste0(new_object_name, extension)
@@ -153,12 +147,11 @@
     }
     .check_full_name(new_folder, new_name)
     
-    handle <- getOption("MolgenisArmadillo.armadillo.handle")
     object_name <- paste0(folder, "/", name)
     new_object_name <- paste0(new_folder, "/", new_name)
     
     response <- httr::POST(
-      handle = handle,
+      handle = .get_handle(),
       path = paste0(.to_object_URI(project, object_name, extension), "/move"),
       body = list(
         name = paste0(new_object_name, extension)
@@ -190,13 +183,11 @@
 #' @importFrom httr GET
 #' @noRd
 .load_object <- function(project, folder, name, load_function, extension) {
-  handle <- getOption("MolgenisArmadillo.armadillo.handle")
-
   file <- tempfile()
   on.exit(unlink(file))
   
   response <- httr::GET(
-    handle = handle,
+    handle = .get_handle(),
     path = .to_object_URI(project, paste0(folder, "/", name), extension),
     config = httr::accept("application/octet-stream")
   )

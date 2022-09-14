@@ -1,13 +1,3 @@
-#' Check if s3 calls should use HTTPS
-#'
-#' @return the value of the "MolgenisArmadillo.s3.use_https" option, default
-#' TRUE
-#'
-#' @noRd
-.use_https <- function() {
-  getOption("MolgenisArmadillo.s3.use_https", TRUE)
-}
-
 #' Handle generic request errors
 #'
 #' @param response HTTR response
@@ -37,4 +27,19 @@
         httr::content(response, as = "parsed", encoding = "UTF-8")$message),
         call. = FALSE)
   }
+}
+
+#' Gets the handle from the options. If there is no handle, the user is not
+#' logged in and an error is shown.
+#'
+#' @param handle the authenticated httr handle
+#'
+#' @noRd
+.get_handle <- function() {
+  handle = getOption("MolgenisArmadillo.armadillo.handle")
+  if (is.null(handle)){
+    stop("You are not logged in. Please log in with armadillo.login('<YOUR_SERVER>')", 
+         call. = FALSE)
+  }
+  handle
 }

@@ -12,10 +12,8 @@ armadillo.install_packages <- function(paths, profile = "default") { # nolint
     "e.g. 'C:/User/test.tar.gz'")
   .is_empty(msg, paths)
 
-  handle = getOption("MolgenisArmadillo.armadillo.handle")
-
   response <- httr::POST(
-    handle = handle,
+    handle = .get_handle(),
     path = "/select-profile",
     body = profile
   )
@@ -35,13 +33,11 @@ armadillo.install_packages <- function(paths, profile = "default") { # nolint
 #'
 #' @noRd
 .install_package <- function(path) {
-  handle = getOption("MolgenisArmadillo.armadillo.handle")
-
   file <- httr::upload_file(path)
 
   message(paste0("Attempting to install package [ '", path, "' ]"))
   response <- httr::POST(
-    handle = handle,
+    handle = .get_handle(),
     path = "/install-package",
     body = list(file = file),
     config = httr::content_type("multipart/form-data")
@@ -71,11 +67,9 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
     "You need to specify the the package(s) you want to whitelist; ",
     "e.g. 'DSI'")
   .is_empty(msg, pkgs)
-
-  handle = getOption("MolgenisArmadillo.armadillo.handle")
-
+  
   response <- httr::POST(
-    handle = handle,
+    handle = .get_handle(),
     path = "/select-profile",
     body = profile
   )
@@ -108,11 +102,9 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
 #'
 #' @noRd
 .whitelist_package <- function(pkg) {
-  handle = getOption("MolgenisArmadillo.armadillo.handle")
-
   message(paste0("Attempting to whitelist package [ '", pkg, "' ]"))
   response <- httr::POST(
-    handle = handle,
+    handle = .get_handle(),
     path = paste0("/whitelist/", pkg)
   )
 

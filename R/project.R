@@ -19,11 +19,9 @@
 #' @export
 armadillo.create_project <- function(project_name) { # nolint
   .check_project_name(project_name)
-
-  handle = getOption("MolgenisArmadillo.armadillo.handle")
   
   response <- httr::PUT(
-    handle = handle,
+    handle = .get_handle(),
     path = "/admin/projects",
     body = list(name = project_name),
     config = httr::accept_json()
@@ -47,10 +45,8 @@ armadillo.create_project <- function(project_name) { # nolint
 #'
 #' @export
 armadillo.delete_project <- function(project_name) { # nolint
-  handle = getOption("MolgenisArmadillo.armadillo.handle")
-  
   response <- httr::DELETE(
-    handle = handle,
+    handle = .get_handle(),
     path = paste0("/admin/projects/", project_name)
   )
   .handle_request_error(response)
@@ -69,10 +65,8 @@ armadillo.delete_project <- function(project_name) { # nolint
 #'
 #' @export
 armadillo.list_projects <- function() { # nolint
-  handle = getOption("MolgenisArmadillo.armadillo.handle")
-  
   response <- httr::GET(
-    handle = handle,
+    handle = .get_handle(),
     path = "/admin/projects"
   )
   .handle_request_error(response)
