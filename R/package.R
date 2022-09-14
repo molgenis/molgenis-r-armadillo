@@ -12,13 +12,12 @@ armadillo.install_packages <- function(paths, profile = "default") { # nolint
     "e.g. 'C:/User/test.tar.gz'")
   .is_empty(msg, paths)
 
-  connection <- .get_armadillo_connection()
+  handle = getOption("MolgenisArmadillo.armadillo.handle")
 
   response <- httr::POST(
-    handle = connection$handle,
+    handle = handle,
     path = "/select-profile",
-    body = profile,
-    config = connection$headers
+    body = profile
   )
 
   .handle_request_error(response)
@@ -36,16 +35,16 @@ armadillo.install_packages <- function(paths, profile = "default") { # nolint
 #'
 #' @noRd
 .install_package <- function(path) {
-  connection <- .get_armadillo_connection()
+  handle = getOption("MolgenisArmadillo.armadillo.handle")
 
   file <- httr::upload_file(path)
 
   message(paste0("Attempting to install package [ '", path, "' ]"))
   response <- httr::POST(
-    handle = connection$handle,
+    handle = handle,
     path = "/install-package",
     body = list(file = file),
-    config = c(connection$headers, httr::content_type("multipart/form-data"))
+    config = httr::content_type("multipart/form-data")
   )
 
   .handle_request_error(response)
@@ -73,13 +72,12 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
     "e.g. 'DSI'")
   .is_empty(msg, pkgs)
 
-  connection <- .get_armadillo_connection()
+  handle = getOption("MolgenisArmadillo.armadillo.handle")
 
   response <- httr::POST(
-    handle = connection$handle,
+    handle = handle,
     path = "/select-profile",
-    body = profile,
-    config = connection$headers
+    body = profile
   )
 
   .handle_request_error(response)
@@ -91,9 +89,8 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
   invisible(lapply(pkgs, .whitelist_package))
 
   response <- httr::GET(
-    handle = connection$handle,
-    path = "/whitelist",
-    config = c(connection$headers)
+    handle = handle,
+    path = "/whitelist"
   )
 
   .handle_request_error(response)
@@ -111,13 +108,12 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
 #'
 #' @noRd
 .whitelist_package <- function(pkg) {
-  connection <- .get_armadillo_connection()
+  handle = getOption("MolgenisArmadillo.armadillo.handle")
 
   message(paste0("Attempting to whitelist package [ '", pkg, "' ]"))
   response <- httr::POST(
-    handle = connection$handle,
-    path = paste0("/whitelist/", pkg),
-    config = c(connection$headers)
+    handle = handle,
+    path = paste0("/whitelist/", pkg)
   )
 
   .handle_request_error(response)
@@ -128,26 +124,6 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
   }
   message(paste0("Package [ '", pkg, "' ] added to the whitelist"))
 }
-
-
-
-#' Get Armadillo connection details
-#'
-#' @noRd
-.get_armadillo_connection <- function() {
-  auth_token <- getOption("MolgenisArmadillo.auth.token", NULL)
-  armadillo_endpoint <- getOption("MolgenisArmadillo.armadillo.endpoint", NULL)
-
-  headers <- httr::add_headers("Authorization" = paste0("Bearer ", auth_token))
-  if (is.null(armadillo_endpoint) || is.null(auth_token)) {
-    stop(
-      "Please login using: ",
-      "'armadillo.login('http://armadillo', 'http://minio')'")
-  }
-
-  list(handle = httr::handle(armadillo_endpoint), headers = headers)
-}
-
 
 #' Checks for empty list or character
 #'
