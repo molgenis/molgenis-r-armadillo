@@ -41,8 +41,11 @@ Imports:
     MolgenisAuth,
     arrow
 Suggests:
+    stringi,
+    withr,
     knitr,
     testthat,
+    webmockr,
     mockery,
     datasets,
     tibble,
