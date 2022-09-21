@@ -214,5 +214,5 @@
   paste0("/storage/projects/",
          project,
          "/objects/",
-         URLencode(full_name, reserved = TRUE))
+         utils::URLencode(full_name, reserved = TRUE))
 }

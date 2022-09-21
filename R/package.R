@@ -83,7 +83,7 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
   invisible(lapply(pkgs, .whitelist_package))
 
   response <- httr::GET(
-    handle = handle,
+    handle = .get_handle(),
     path = "/whitelist"
   )
 

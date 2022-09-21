@@ -70,7 +70,6 @@ test_that("armadillo.copy_resource calls .copy_object", {
     project = "project",
     folder = "folder",
     name = "name",
-    new_project = "project",
     new_folder = "folder",
     new_name = "name",
     extension = ".rds"
@@ -88,7 +87,6 @@ test_that("armadillo.move_resource calls .move_object", {
     project = "project",
     folder = "folder",
     name = "name",
-    new_project = "project",
     new_folder = "folder",
     new_name = "name",
     extension = ".rds"
