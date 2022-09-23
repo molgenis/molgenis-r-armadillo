@@ -24,7 +24,8 @@ armadillo.create_project <- function(project_name) { # nolint
     handle = .get_handle(),
     path = "/admin/projects",
     body = list(name = project_name),
-    config = httr::accept_json()
+    config = httr::content_type_json(),
+    encode = "json"
   )
   .handle_request_error(response)
 

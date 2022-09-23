@@ -1,4 +1,5 @@
 # Setup HTTP stubbing
+library(webmockr)
 webmockr::enable()
 webmockr::httr_mock()
 

@@ -24,8 +24,20 @@
     stop(
       paste0(
         "Internal server error: ",
-        httr::content(response, as = "parsed", encoding = "UTF-8")$message),
-        call. = FALSE)
+        httr::content(response, as = "parsed", encoding = "UTF-8")$message
+      ),
+      call. = FALSE
+    )
+  } else if (response$status_code >= 300) {
+    stop(
+      paste0(
+        "Something went wrong (",
+        response$status_code,
+        "): ",
+        httr::content(response, as = "parsed", encoding = "UTF-8")$message
+      ),
+      call. = FALSE
+    )
   }
 }
 
