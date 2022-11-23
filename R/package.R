@@ -13,9 +13,10 @@ armadillo.install_packages <- function(paths, profile = "default") { # nolint
   .is_empty(msg, paths)
 
   response <- httr::POST(
-    handle = .get_handle(),
+    url = .get_url(),
     path = "/select-profile",
-    body = profile
+    body = profile,
+    config = httr::add_headers(.get_auth_header())
   )
 
   if (response$status_code == 404 && profile != "default") {
@@ -37,10 +38,13 @@ armadillo.install_packages <- function(paths, profile = "default") { # nolint
 
   message(paste0("Attempting to install package [ '", path, "' ]"))
   response <- httr::POST(
-    handle = .get_handle(),
+    url = .get_url(),
     path = "/install-package",
     body = list(file = file),
-    config = httr::content_type("multipart/form-data")
+    config = c(
+      httr::content_type("multipart/form-data"),
+      httr::add_headers(.get_auth_header())
+      )
   )
 
   if (response$status_code == 404) {
@@ -69,9 +73,10 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
   .is_empty(msg, pkgs)
 
   response <- httr::POST(
-    handle = .get_handle(),
+    url = .get_url(),
     path = "/select-profile",
-    body = profile
+    body = profile,
+    config = httr::add_headers(.get_auth_header())
   )
 
   if (response$status_code == 404 && profile != "default") {
@@ -83,8 +88,9 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
   invisible(lapply(pkgs, .whitelist_package))
 
   response <- httr::GET(
-    handle = .get_handle(),
-    path = "/whitelist"
+    handle = .get_url(),
+    path = "/whitelist",
+    config = httr::add_headers(.get_auth_header())
   )
 
   .handle_request_error(response)
@@ -104,8 +110,9 @@ armadillo.whitelist_packages <- function(pkgs, profile = "default") { # nolint
 .whitelist_package <- function(pkg) {
   message(paste0("Attempting to whitelist package [ '", pkg, "' ]"))
   response <- httr::POST(
-    handle = .get_handle(),
-    path = paste0("/whitelist/", pkg)
+    handle = .get_url(),
+    path = paste0("/whitelist/", pkg),
+    config = httr::add_headers(.get_auth_header())
   )
 
   if (response$status_code == 404) {

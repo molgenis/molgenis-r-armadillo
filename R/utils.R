@@ -41,18 +41,32 @@
   }
 }
 
-#' Gets the handle from the options. If there is no handle, the user is not
-#' logged in and an error is shown.
+#' Gets the Armadillo URL from the package's environment. If there is no URL,
+#' the user is not logged in and an error is shown.
 #'
-#' @param handle the authenticated httr handle
+#' @return the URL
 #'
 #' @noRd
-.get_handle <- function() {
-  handle <- getOption("MolgenisArmadillo.armadillo.handle")
-  if (is.null(handle)) {
+.get_url <- function() {
+  if (!exists('armadillo_url',envir=.pkgglobalenv)){
     stop("You are not logged in.
          Please log in with armadillo.login('<YOUR_SERVER>')",
          call. = FALSE)
   }
-  handle
+  .pkgglobalenv$armadillo_url
+}
+
+#' Gets the httr authentication header from the package's environment. If there
+#' is no auth header, the user is not logged in and an error is shown.
+#'
+#' @return the httr authentication header
+#'
+#' @noRd
+.get_auth_header <- function() {
+  if (!exists('auth_token',envir=.pkgglobalenv)){
+    stop("You are not logged in.
+         Please log in with armadillo.login('<YOUR_SERVER>')",
+         call. = FALSE)
+  }
+  c("Authorization" = paste0("Bearer ", .pkgglobalenv$auth_token))
 }

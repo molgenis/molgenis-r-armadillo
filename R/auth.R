@@ -21,23 +21,8 @@ armadillo.login <- function(armadillo) { # nolint
   # Open browser and authenticate with device code
   token <- armadillo.get_token(armadillo)
 
-  # Configure session
-  handle <- httr::handle(armadillo)
-  auth_header <-
-    httr::add_headers("Authorization" = paste0("Bearer ", token))
-
-  # Do a request to authenticate with token
-  httr::GET(
-    handle = handle,
-    path = "/my/principal",
-    config = auth_header
-  )
-
-  options(
-    MolgenisArmadillo.auth.token = token,
-    MolgenisArmadillo.armadillo.endpoint = armadillo,
-    MolgenisArmadillo.armadillo.handle = handle
-  )
+  assign("armadillo_url", armadillo, envir=.pkgglobalenv)
+  assign("auth_token", token, envir=.pkgglobalenv)
 
   invisible(token)
 }

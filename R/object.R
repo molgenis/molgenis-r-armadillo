@@ -21,13 +21,17 @@
   extension <- compression_function(object, file = file)
 
   response <- httr::POST(
-    handle = .get_handle(),
+    url = .get_url(),
     path = paste0("/storage/projects/", project, "/objects"),
     body = list(
       file = httr::upload_file(file),
       object = paste0(full_name, extension)
     ),
-    headers = httr::add_headers("Content-Type" = "multipart/form-data")
+    config =
+      httr::add_headers(.headers = c(
+        "Content-Type" = "multipart/form-data",
+        .get_auth_header()
+        ))
   )
   .handle_request_error(response)
 
@@ -47,8 +51,9 @@
   extension_regex <- paste0(extension, "$")
 
   response <- httr::GET(
-    handle = .get_handle(),
-    path = paste0("/storage/projects/", project, "/objects")
+    url = .get_url(),
+    path = paste0("/storage/projects/", project, "/objects"),
+    config = httr::add_headers(.get_auth_header())
   )
   .handle_request_error(response)
   content <- httr::content(response, as = "parsed")
@@ -72,8 +77,9 @@
   object_name <- paste0(folder, "/", name)
 
   response <- httr::DELETE(
-    handle = .get_handle(),
+    url = .get_url(),
     path = .to_object_uri(project, object_name, extension),
+    config = httr::add_headers(.get_auth_header())
   )
   .handle_request_error(response)
 
@@ -108,13 +114,16 @@
     new_object_name <- paste0(new_folder, "/", new_name)
 
     response <- httr::POST(
-      handle = .get_handle(),
+      url = .get_url(),
       path = paste0(.to_object_uri(project, object_name, extension), "/copy"),
       body = list(
         name = paste0(new_object_name, extension)
       ),
       encode = "json",
-      config = httr::accept_json()
+      config = c(
+        httr::accept_json(),
+        httr::add_headers(.get_auth_header())
+      )
     )
 
     .handle_request_error(response)
@@ -151,13 +160,16 @@
     new_object_name <- paste0(new_folder, "/", new_name)
 
     response <- httr::POST(
-      handle = .get_handle(),
+      url = .get_url(),
       path = paste0(.to_object_uri(project, object_name, extension), "/move"),
       body = list(
         name = paste0(new_object_name, extension)
       ),
-      config = httr::accept_json(),
-      encode = "json"
+      encode = "json",
+      config = c(
+        httr::accept_json(),
+        httr::add_headers(.get_auth_header())
+      )
     )
 
     .handle_request_error(response)
@@ -187,9 +199,12 @@
   on.exit(unlink(file))
 
   response <- httr::GET(
-    handle = .get_handle(),
+    url = .get_url(),
     path = .to_object_uri(project, paste0(folder, "/", name), extension),
-    config = httr::accept("application/octet-stream")
+    config = c(
+      httr::accept("application/octet-stream"),
+      httr::add_headers(.get_auth_header())
+    )
   )
 
   .handle_request_error(response)
