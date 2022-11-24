@@ -24,7 +24,8 @@ armadillo.create_project <- function(project_name) { # nolint
     url = .get_url(),
     path = "/access/projects",
     body = list(name = project_name),
-    config = c(httr::content_type_json(), httr::add_headers(.get_auth_header())),
+    config = c(httr::content_type_json(),
+               httr::add_headers(.get_auth_header())),
     encode = "json"
   )
   .handle_request_error(response)

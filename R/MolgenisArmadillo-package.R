@@ -8,4 +8,4 @@
 NULL
 
 # Package private environment to store current session info in
-.pkgglobalenv <- new.env(parent=emptyenv())
+.pkgglobalenv <- new.env(parent = emptyenv())

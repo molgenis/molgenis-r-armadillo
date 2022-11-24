@@ -21,8 +21,8 @@ armadillo.login <- function(armadillo) { # nolint
   # Open browser and authenticate with device code
   token <- armadillo.get_token(armadillo)
 
-  assign("armadillo_url", armadillo, envir=.pkgglobalenv)
-  assign("auth_token", token, envir=.pkgglobalenv)
+  assign("armadillo_url", armadillo, envir = .pkgglobalenv)
+  assign("auth_token", token, envir = .pkgglobalenv)
 
   invisible(token)
 }

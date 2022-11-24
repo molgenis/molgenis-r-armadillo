@@ -48,7 +48,7 @@
 #'
 #' @noRd
 .get_url <- function() {
-  if (!exists('armadillo_url',envir=.pkgglobalenv)){
+  if (!exists("armadillo_url", envir = .pkgglobalenv)) {
     stop("You are not logged in.
          Please log in with armadillo.login('<YOUR_SERVER>')",
          call. = FALSE)
@@ -63,7 +63,7 @@
 #'
 #' @noRd
 .get_auth_header <- function() {
-  if (!exists('auth_token',envir=.pkgglobalenv)){
+  if (!exists("auth_token", envir = .pkgglobalenv)) {
     stop("You are not logged in.
          Please log in with armadillo.login('<YOUR_SERVER>')",
          call. = FALSE)
