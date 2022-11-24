@@ -72,3 +72,12 @@ armadillo.delete_project("project")
 
 For more in depth documentation please check the
 [howto](https://molgenis.github.io/molgenis-r-armadillo/articles/MolgenisArmadillo.html).
+
+## For developers
+
+- To build documentation, do `devtools::document()`
+- To run all unit tests, do `devtools::test()`
+- While writing code (or tests), you can use `devtools::load_all()` to quickly "install" the package.
+- To run a single test file, open it in Rstudio and do `devtools::test_active_file()`
+- To run the linter, do `devtools::lint()`. Tip: run it often :)
+

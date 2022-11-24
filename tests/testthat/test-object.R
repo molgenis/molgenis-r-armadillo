@@ -1,217 +1,189 @@
-test_that(".upload_object checks if the project exists", {
-  bucket_exists <- mock(FALSE)
+handle <- httr::handle("https://test.nl")
+withr::local_options("MolgenisArmadillo.armadillo.handle" = handle)
+
+test_that(".upload_object handles errors", {
+  file <- tempfile()
+  saveRDS(tibble::tribble(), file)
+  on.exit(unlink(file))
+
+  upload_file <- httr::upload_file(file)
   compress <- mock(".rds")
 
+  stub_request("post",
+               uri = "https://test.nl/storage/projects/project/objects") %>%
+    wi_th(
+      header = list("Content-Type" = "multipart/form-data"),
+      body = list(
+        file = upload_file,
+        object = "example/test.rds"
+      )
+    ) %>%
+    to_return(
+      status = 404,
+      body = "{
+        \"message\": \"project not found\"
+      }",
+      headers = list("Content-Type" = "application/json")
+    )
+
   expect_error(
-    with_mock(
+    with_mock({
       .upload_object(
         project = "project",
         folder = "example",
         object = datasets::iris,
         name = "test",
         compression_function = compress
-      ),
-      "aws.s3::bucket_exists" = bucket_exists,
-      "MolgenisArmadillo:::.use_https" = mock(TRUE)
-    ),
-    "Project 'project' does not exist\\."
+      )},
+      "tempfile" = function() {
+        file
+      }),
+    "project not found"
   )
 
-  expect_args(bucket_exists, 1, "shared-project", use_https = TRUE)
+  stub_registry_clear()
 })
 
 test_that(".upload_object uploads object", {
-  put_object <- mock(TRUE)
-  bucket_exists <- mock(TRUE)
   file <- tempfile()
+  saveRDS(tibble::tribble(), file)
   on.exit(unlink(file))
-  # Cannot mock base functions, so stub it instead
-  stub(.upload_object, "tempfile", file)
 
-  compress_table <- function(table, file) {
-    saveRDS(table, file)
-    ".rds"
-  }
+  upload_file <- httr::upload_file(file)
+  compress <- mock(".rds")
+
+  stub_request("post",
+               uri = "https://test.nl/storage/projects/project/objects") %>%
+    wi_th(
+      header = list("Content-Type" = "multipart/form-data"),
+      body = list(
+        file = upload_file,
+        object = "example/test.rds"
+      )
+    ) %>%
+    to_return(status = 204)
 
   expect_message(
-    with_mock(
-      result <- .upload_object(
+    with_mock({
+      .upload_object(
         project = "project",
-        folder = "folder",
+        folder = "example",
         object = datasets::iris,
-        name = "datasets::iris",
-        compression_function = compress_table
-      ),
-      "aws.s3::put_object" = put_object,
-      "aws.s3::bucket_exists" = bucket_exists,
-      "MolgenisArmadillo:::.use_https" = mock(FALSE, cycle = TRUE)
-    ),
-    "Compressing...|Uploaded folder/datasets::iris",
-    all = TRUE
+        name = "test",
+        compression_function = compress
+      )},
+      "tempfile" = function() {
+        file
+      }),
+    "Uploaded example/test"
   )
 
-  expect_true(result)
-
-  expect_args(put_object, 1,
-    file = file,
-    object = "folder/datasets::iris.rds",
-    bucket = "shared-project",
-    multipart = TRUE,
-    show_progress = interactive(),
-    use_https = FALSE
-  )
+  stub_registry_clear()
 })
 
-test_that(".list_objects_by_extension checks if the project exists", {
-  bucket_exists <- mock(FALSE)
+test_that(".list_objects_by_extension handles errors", {
+  stub_request("get",
+               uri = "https://test.nl/storage/projects/project/objects") %>%
+    to_return(
+      status = 404,
+      body = "{
+        \"message\": \"project not found\"
+      }",
+      headers = list("Content-Type" = "application/json")
+    )
 
   expect_error(
-    with_mock(
-      .list_objects_by_extension("project", ".rds"),
-      "aws.s3::bucket_exists" = bucket_exists,
-      "MolgenisArmadillo:::.use_https" = mock(TRUE)
-    ),
-    "Project 'project' does not exist\\."
+    .list_objects_by_extension("project", ".rds"),
+    "project not found"
   )
 
-  expect_args(bucket_exists, 1, "shared-project", use_https = TRUE)
+  stub_registry_clear()
 })
 
 test_that(".list_objects_by_extension lists the objects in a project", {
-  bucket_exists <- mock(TRUE)
-  get_bucket <- mock(tables)
+  stub_request("get",
+               uri = "https://test.nl/storage/projects/project/objects") %>%
+    to_return(
+      status = 200,
+      body = "[
+        \"core/nonrep.parquet\",
+        \"core/yearlyrep.parquet\",
+        \"core/resource.rds\"
+      ]",
+      headers = list("Content-Type" = "application/json")
+      )
 
-  with_mock(
-    result <- .list_objects_by_extension("project", ".parquet"),
-    "aws.s3::get_bucket" = get_bucket,
-    "aws.s3::bucket_exists" = bucket_exists,
-    "MolgenisArmadillo:::.use_https" = mock(FALSE, cycle = TRUE)
-  )
+  res <- .list_objects_by_extension("project", ".parquet")
+  expect_equal(res, c("core/nonrep", "core/yearlyrep"))
 
-  expect_equal(result, c("folder/patient", "folder/test"))
-  expect_args(get_bucket, 1,
-    bucket = "shared-project",
-    use_https = FALSE
-  )
+  stub_registry_clear()
 })
 
-test_that(".delete_object checks if the project exists", {
-  bucket_exists <- mock(FALSE)
+test_that(".delete_object handles errors", {
+  stub_request("delete",
+               uri = paste0("https://test.nl/storage/projects/project/",
+               "objects/core%2Fnonrep.parquet")) %>%
+    to_return(
+      status = 404,
+      body = "{
+        \"message\": \"object not found\"
+      }",
+      headers = list("Content-Type" = "application/json")
+    )
 
   expect_error(
-    with_mock(
-      .delete_object("project", "test"),
-      "aws.s3::bucket_exists" = bucket_exists,
-      "MolgenisArmadillo:::.use_https" = mock(TRUE)
-    ),
-    "Project 'project' does not exist\\."
+    .delete_object("project", "core", "nonrep", ".parquet"),
+    "object not found"
   )
 
-  expect_args(bucket_exists, 1, "shared-project", use_https = TRUE)
-})
-
-test_that(".delete_object checks if the object exists", {
-  head_object <- mock(FALSE)
-
-  expect_error(
-    with_mock(
-      .delete_object("project", "folder", "test", ".parquet"),
-      "aws.s3::bucket_exists" = mock(TRUE),
-      "aws.s3::head_object" = head_object,
-      "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
-    ),
-    "'folder/test' does not exist\\."
-  )
-
-  expect_args(head_object, 1,
-    "folder/test.parquet", "shared-project",
-    use_https = TRUE
-  )
+  stub_registry_clear()
 })
 
 test_that(".delete_object deletes an object", {
-  delete_object <- mock(TRUE)
+  stub_request("delete",
+               uri = paste0("https://test.nl/storage/projects/project/objects/",
+               "core%2Fnonrep.parquet")) %>%
+    to_return(
+      status = 204
+    )
 
-  result <- expect_message(
-    with_mock(
-      .delete_object("project", "folder", "test", ".parquet"),
-      "aws.s3::bucket_exists" = mock(TRUE),
-      "aws.s3::head_object" = mock(TRUE),
-      "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE),
-      "aws.s3::delete_object" = delete_object
-    ),
-    "Deleted 'folder/test'\\."
+  expect_message(
+    .delete_object("project", "core", "nonrep", ".parquet"),
+    "Deleted 'core/nonrep'"
   )
 
-  expect_true(result)
+  stub_registry_clear()
 })
 
-test_that(".copy_object checks if the source project exists", {
-  bucket_exists <- mock(FALSE)
+test_that(".copy_object handles errors", {
+  stub_request("post",
+               uri = paste0("https://test.nl/storage/projects/project/objects/",
+               "core%2Fnonrep.parquet/copy")) %>%
+    wi_th(
+      headers = list("Accept" = "application/json"),
+      body = list(name = "core/copy.parquet")
+    ) %>%
+    to_return(
+      status = 409,
+      body = "{
+        \"message\": \"duplicate object\"
+      }",
+      headers = list("Content-Type" = "application/json")
+    )
 
   expect_error(
-    with_mock(
-      .copy_object(
-        project = "project",
-        folder = "folder",
-        name = "tim_subset_1",
-        new_folder = "gecko_subset_1",
-        extension = ".parquet"
-      ),
-      "aws.s3::bucket_exists" = bucket_exists,
-      "MolgenisArmadillo:::.use_https" = mock(TRUE)
+    .copy_object(
+      project = "project",
+      folder = "core",
+      name = "nonrep",
+      new_folder = "core",
+      new_name = "copy",
+      extension = ".parquet"
     ),
-    "Project 'project' does not exist\\."
+    "duplicate object"
   )
 
-  expect_args(bucket_exists, 1, "shared-project", use_https = TRUE)
-})
-
-test_that(".copy_object checks if the source object exists", {
-  head_object <- mock(FALSE)
-
-  expect_error(
-    with_mock(
-      .copy_object(
-        project = "project",
-        folder = "folder",
-        name = "test",
-        new_folder = "gecko_subset_1",
-        extension = ".parquet"
-      ),
-      "aws.s3::bucket_exists" = mock(TRUE),
-      "aws.s3::head_object" = head_object,
-      "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
-    ),
-    "'folder/test' does not exist\\."
-  )
-
-  expect_args(head_object, 1,
-    "folder/test.parquet", "shared-project",
-    use_https = TRUE
-  )
-})
-
-test_that(".copy_object checks if the target project exists", {
-  bucket_exists <- mock(TRUE, FALSE)
-
-  expect_error(
-    with_mock(
-      .copy_object(
-        project = "project",
-        folder = "folder",
-        name = "test",
-        new_project = "target",
-        extension = ".parquet"
-      ),
-      "aws.s3::bucket_exists" = bucket_exists,
-      "aws.s3::head_object" = mock(TRUE),
-      "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
-    ),
-    "Project 'target' does not exist\\."
-  )
-
-  expect_args(bucket_exists, 2, "shared-target", use_https = TRUE)
+  stub_registry_clear()
 })
 
 test_that(".copy_object warns if you copy an object onto itself", {
@@ -227,81 +199,49 @@ test_that(".copy_object warns if you copy an object onto itself", {
 })
 
 test_that(".copy_object copies object", {
-  copy_object <- mock(TRUE)
+  stub_request("post",
+               uri = paste0("https://test.nl/storage/projects/project/objects/",
+               "core%2Fnonrep.parquet/copy")) %>%
+    wi_th(
+      headers = list("Accept" = "application/json"),
+      body = list(name = "core/copy.parquet")
+    ) %>%
+    to_return(status = 204)
 
   expect_message(
-    with_mock({
-        result <- .copy_object(
-          project = "project",
-          folder = "folder",
-          name = "test",
-          new_folder = "target",
-          extension = ".rds"
-        )},
-      "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE),
-      "aws.s3::bucket_exists" = mock(TRUE, cycle = TRUE),
-      "aws.s3::head_object" = mock(TRUE),
-      "aws.s3::copy_object" = copy_object
+    .copy_object(
+      project = "project",
+      folder = "core",
+      name = "nonrep",
+      new_folder = "core",
+      new_name = "copy",
+      extension = ".parquet"
     ),
-    "Copied 'project/folder/test' to 'project/target/test'\\."
+    "Copied 'project/core/nonrep' to 'project/core/copy'"
   )
 
-  expect_true(result)
-  expect_args(copy_object, 1,
-    from_object = "folder/test.rds",
-    to_object = "target/test.rds",
-    from_bucket = "shared-project",
-    to_bucket = "shared-project",
-    use_https = TRUE
-  )
+  stub_registry_clear()
 })
 
-test_that(".load_object checks if the project exists", {
-  bucket_exists <- mock(FALSE)
-  load <- mock()
+test_that(".load_object handles errors", {
+  stub_request("get",
+               uri = paste0("https://test.nl/storage/projects/project/objects/",
+               "core%2Fnonrep.rds")) %>%
+    wi_th(headers = list("Accept" = "application/octet-stream")) %>%
+    to_return(status = 401)
 
   expect_error(
-    with_mock(
-      .load_object(
-        project = "project",
-        folder = "example",
-        name = "tim_subset_1",
-        load_function = load,
-        extension = ".rds"
-      ),
-      "aws.s3::bucket_exists" = bucket_exists,
-      "MolgenisArmadillo:::.use_https" = mock(TRUE)
+    .load_object(
+      project = "project",
+      folder = "core",
+      name = "nonrep",
+      load_function = load,
+      extension = ".rds"
     ),
-    "Project 'project' does not exist\\."
+    "Unauthorized"
   )
 
-  expect_args(bucket_exists, 1, "shared-project", use_https = TRUE)
-})
-
-test_that(".load_object checks if the object exists", {
-  head_object <- mock(FALSE)
-  load <- mock()
-
-  expect_error(
-    with_mock(
-      .load_object(
-        project = "project",
-        folder = "folder",
-        name = "test",
-        load_function = load,
-        extension = ".parquet"
-      ),
-      "aws.s3::bucket_exists" = mock(TRUE),
-      "aws.s3::head_object" = head_object,
-      "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
-    ),
-    "'folder/test' does not exist\\."
-  )
-
-  expect_args(head_object, 1,
-    "folder/test.parquet", "shared-project",
-    use_https = TRUE
-  )
+  stub_registry_clear()
 })
 
 test_that(".load_object loads the object from file", {
@@ -321,67 +261,97 @@ test_that(".load_object loads the object from file", {
     readRDS(infile)
   }
 
+  stub_request("get",
+               uri = paste0("https://test.nl/storage/projects/project/objects/",
+               "core%2Fnonrep.parquet")) %>%
+    wi_th(headers = list("Accept" = "application/octet-stream")) %>%
+    to_return(status = 200, body = stringi::stri_read_raw(file))
+
   expect_silent(
     with_mock({
         result <- .load_object(
           project = "project",
-          folder = "folder",
-          name = "test",
+          folder = "core",
+          name = "nonrep",
           load_function = load_table,
           extension = ".parquet"
         )
       },
       "tempfile" = function() {
         file
-      },
-      "aws.s3::bucket_exists" = mock(TRUE),
-      "aws.s3::head_object" = mock(TRUE),
-      "aws.s3::save_object" = save_object,
-      "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
+      }
     )
   )
 
-  expect_args(save_object, 1,
-    object = "folder/test.parquet",
-    bucket = "shared-project",
-    file = file,
-    use_https = TRUE
-  )
   expect_equal(data, result)
+
+  stub_registry_clear()
 })
 
-test_that(".move_object calls copy and delete", {
-  copy_object <- mock(TRUE)
-  delete_object <- mock(TRUE)
-  expect_message(
-    with_mock(
-      .move_object(
-        project = "project",
-        folder = "folder",
-        name = "test",
-        new_project = "target",
-        new_folder = "folder2",
-        new_name = "test",
-        extension = ".parquet"
-      ),
-      "MolgenisArmadillo::.copy_object" = copy_object,
-      "MolgenisArmadillo::.delete_object" = delete_object
-    ), "Moved 'project/folder/test' to 'target/folder2/test'\\."
+test_that(".move_object handles errors", {
+  stub_request("post",
+               uri = paste0("https://test.nl/storage/projects/project/objects/",
+               "core%2Fnonrep.parquet/move")) %>%
+    wi_th(
+      headers = list("Accept" = "application/json"),
+      body = list(name = "other/renamed.parquet")
+    ) %>%
+    to_return(
+      status = 409,
+      body = "{
+        \"message\": \"duplicate object\"
+      }",
+      headers = list("Content-Type" = "application/json")
+    )
+
+  expect_error(
+    .move_object(
+      project = "project",
+      folder = "core",
+      name = "nonrep",
+      new_folder = "other",
+      new_name = "renamed",
+      extension = ".parquet"
+    ),
+    "duplicate object"
   )
 
-  expect_args(copy_object, 1,
-    project = "project",
-    folder = "folder",
-    name = "test",
-    new_project = "target",
-    new_folder = "folder2",
-    new_name = "test",
-    extension = ".parquet"
+  stub_registry_clear()
+})
+
+test_that(".move_object warns if you move an object onto itself", {
+  expect_error(
+    .move_object(
+      project = "project",
+      folder = "folder",
+      name = "test",
+      extension = ".parquet"
+    ),
+    "Cannot move table or resource onto itself\\."
   )
-  expect_args(delete_object, 1,
-    project = "project",
-    folder = "folder",
-    name = "test",
-    extension = ".parquet"
+})
+
+test_that(".move_object moves object", {
+  stub_request("post",
+               uri = paste0("https://test.nl/storage/projects/project/objects/",
+               "core%2Fnonrep.parquet/move")) %>%
+    wi_th(
+      headers = list("Accept" = "application/json"),
+      body = list(name = "other/renamed.parquet")
+    ) %>%
+    to_return(status = 204)
+
+  expect_message(
+    .move_object(
+      project = "project",
+      folder = "core",
+      name = "nonrep",
+      new_folder = "other",
+      new_name = "renamed",
+      extension = ".parquet"
+    ),
+    "Moved 'project/core/nonrep' to 'project/other/renamed'"
   )
+
+  stub_registry_clear()
 })

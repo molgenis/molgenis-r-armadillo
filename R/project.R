@@ -9,7 +9,7 @@
 #'   }
 #' @return TRUE if successful
 #'
-#' @importFrom aws.s3 put_bucket
+#' @importFrom httr PUT
 #'
 #' @examples
 #' \dontrun{
@@ -20,14 +20,16 @@
 armadillo.create_project <- function(project_name) { # nolint
   .check_project_name(project_name)
 
-  success <- aws.s3::put_bucket(.to_shared_bucket_name(project_name),
-    use_https = .use_https()
+  response <- httr::PUT(
+    handle = .get_handle(),
+    path = "/access/projects",
+    body = list(name = project_name),
+    config = httr::content_type_json(),
+    encode = "json"
   )
+  .handle_request_error(response)
 
-  if (success) {
-    message(paste0("Created project '", project_name, "'"))
-  }
-  invisible(success)
+  message(paste0("Created project '", project_name, "'"))
 }
 
 #' Delete project
@@ -44,7 +46,13 @@ armadillo.create_project <- function(project_name) { # nolint
 #'
 #' @export
 armadillo.delete_project <- function(project_name) { # nolint
-  .delete_bucket(.to_shared_bucket_name(project_name))
+  response <- httr::DELETE(
+    handle = .get_handle(),
+    path = paste0("/access/projects/", project_name)
+  )
+  .handle_request_error(response)
+
+  message(paste0("Deleted project '", project_name, "'"))
 }
 
 #' List the projects
@@ -58,41 +66,12 @@ armadillo.delete_project <- function(project_name) { # nolint
 #'
 #' @export
 armadillo.list_projects <- function() { # nolint
-  .get_buckets("shared-")
-}
-
-#' Delete bucket
-#'
-#' @param bucket_name name of the bucket, usually a collection of variables
-#'
-#' @return NULL
-#'
-#' @noRd
-.delete_bucket <- function(bucket_name) {
-  .check_if_bucket_exists(bucket_name)
-  aws.s3::delete_bucket(bucket_name,
-    use_https = .use_https()
+  response <- httr::GET(
+    handle = .get_handle(),
+    path = "/access/projects"
   )
-  message(paste0("Deleted project '", .to_readable_name(bucket_name), "'"))
-}
+  .handle_request_error(response)
 
-#' Get buckets
-#'
-#' @param prefix can be 'shared-' or 'user-'
-#'
-#' @return bucket names, prefix deleted
-#'
-#' @noRd
-.get_buckets <- function(prefix) {
-  buckets <- aws.s3::bucketlist(use_https = .use_https())
-  bucket_names <- buckets[["Bucket"]]
-  if (length(bucket_names) == 0) {
-    NULL
-  } else {
-    filtered_buckets <- bucket_names[startsWith(bucket_names, prefix)]
-    sapply(filtered_buckets,
-      function(name) gsub(prefix, "", name),
-      USE.NAMES = FALSE
-    )
-  }
+  content <- httr::content(response, as = "parsed")
+  sapply(content, function(project) project$name)
 }

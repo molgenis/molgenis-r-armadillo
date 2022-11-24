@@ -5,8 +5,6 @@
 #' @param resource the resource to upload
 #' @param name name of the resource (optional)
 #'
-#' @return TRUE if successful, otherwise an object of class aws_error details
-#'
 #' @examples
 #' \dontrun{
 #' armadillo.upload_table(
@@ -61,8 +59,6 @@ armadillo.list_resources <- function(project) { # nolint
 #' @param folder folder to delete the resource from
 #' @param name resource name
 #'
-#' @return TRUE if successful, otherwise an object of class aws_error details
-#'
 #' @examples
 #' \dontrun{
 #' armadillo.delete_resource(
@@ -82,7 +78,6 @@ armadillo.delete_resource <- function(project, folder, name) { # nolint
 #' @param project study or other variable collection
 #' @param folder the folder containing the resource
 #' @param name specific resource for copy action
-#' @param new_project new location of study or other variable collection
 #' @param new_folder name of the folder in which to place the copy, defaults to
 #' folder
 #' @param new_name name of the copy, defaults to name
@@ -95,7 +90,6 @@ armadillo.delete_resource <- function(project, folder, name) { # nolint
 #'   project = "gecko",
 #'   folder = "core_all",
 #'   name = "table1",
-#'   new_project = "gecko",
 #'   new_folder = "core_all_v2",
 #' )
 #' }
@@ -103,14 +97,12 @@ armadillo.delete_resource <- function(project, folder, name) { # nolint
 #' @export
 armadillo.copy_resource <- # nolint
   function(project, folder, name,
-           new_project = project,
            new_folder = folder,
            new_name = name) {
     .copy_object(
       project,
       folder,
       name,
-      new_project,
       new_folder,
       new_name,
       ".rds"
@@ -122,7 +114,6 @@ armadillo.copy_resource <- # nolint
 #' @param project a study or collection of variables
 #' @param folder the folder containing the resource to move
 #' @param name a resource to move
-#' @param new_project the project to move the resource to
 #' @param new_folder the folder to move the resource to, defaults to folder
 #' @param new_name use to rename the file, defaults to name
 #'
@@ -134,7 +125,6 @@ armadillo.copy_resource <- # nolint
 #'   project = "gecko",
 #'   folder = "core_all",
 #'   name = "table1",
-#'   new_project = "gecko",
 #'   new_folder = "core_all_v2",
 #' )
 #' }
@@ -142,12 +132,11 @@ armadillo.copy_resource <- # nolint
 #' @export
 armadillo.move_resource <- # nolint
   function(project, folder, name,
-           new_project = project, new_folder = folder, new_name = name) {
+           new_folder = folder, new_name = name) {
     .move_object(
       project,
       folder,
       name,
-      new_project,
       new_folder,
       new_name,
       ".rds"

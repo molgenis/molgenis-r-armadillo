@@ -1,39 +1,16 @@
-test_that("failed to get armadillo connection", {
-  expect_error(
-    .get_armadillo_connection(),
-    "Please login using: 'armadillo.login('http://armadillo', 'http://minio')'",
-    fixed = TRUE
-  )
-})
-
-test_that("get armadillo connection", {
-  options(MolgenisArmadillo.auth.token = "abcde")
-  options(MolgenisArmadillo.armadillo.endpoint = "http://armadillo")
-
-  local_reproducible_output()
-  expect_equal(
-    .get_armadillo_connection(),
-    list(handle = httr::handle(
-      "http://armadillo"),
-      headers = httr::add_headers("Authorization" = "Bearer abcde"))
-  )
-
-  options(MolgenisArmadillo.auth.token = NULL)
-  options(MolgenisArmadillo.armadillo.endpoint = NULL)
-})
+handle <- httr::handle("https://test.nl")
+withr::local_options("MolgenisArmadillo.armadillo.handle" = handle)
 
 test_that("failed to install a package", {
   response <- list(status_code = 500)
   httr_post <- mock(response, cycle = TRUE)
   httr_handle <- mock(handle)
-  httr_content <- mock("Could not install package")
-  connection <- mock(list(handle = httr_handle, headers = mock()))
+  httr_content <- mock(list(message = "Could not install package"))
   expected_path <- "C:/test/test.tar.gz"
 
   expect_error(
     with_mock(
       .install_package(path = expected_path),
-      "MolgenisArmadillo:::.get_armadillo_connection" = connection,
       "httr:::upload_file" = mock(),
       "httr:::POST" = httr_post,
       "httr:::content" = httr_content
@@ -54,7 +31,6 @@ test_that("profile not found when installing packages", {
   expect_error(
     with_mock(
       .install_package(path = expected_path),
-      "MolgenisArmadillo:::.get_armadillo_connection" = connection,
       "httr:::upload_file" = mock(),
       "httr:::POST" = httr_post,
       "httr:::content" = httr_content
@@ -75,7 +51,6 @@ test_that("install a package", {
   expect_message(
     with_mock(
       .install_package(path = expected_path),
-      "MolgenisArmadillo:::.get_armadillo_connection" = connection,
       "httr:::upload_file" = mock(),
       "httr:::POST" = httr_post
     ),
@@ -93,7 +68,6 @@ test_that("install packages fails due to missing profile", {
   expect_error(
     with_mock(
       armadillo.install_packages(paths = expected_path, profile = "exposome"),
-      "MolgenisArmadillo:::.get_armadillo_connection" = connection,
       "MolgenisArmadillo:::.install_package" = mock(),
       "httr:::upload_file" = mock(),
       "httr:::POST" = httr_post
@@ -114,7 +88,6 @@ test_that("install packages", {
   expect_silent(
     with_mock(
       armadillo.install_packages(paths = c(expected_path1, expected_path2)),
-      "MolgenisArmadillo:::.get_armadillo_connection" = connection,
       "MolgenisArmadillo:::.install_package" = mock(),
       "httr:::upload_file" = mock(),
       "httr:::POST" = httr_post
@@ -146,7 +119,6 @@ test_that("whitelist a package", {
   expect_message(
     with_mock(
       .whitelist_package(pkg = expected_pkg),
-      "MolgenisArmadillo:::.get_armadillo_connection" = connection,
       "httr:::POST" = httr_post
     ),
     regexp = "^Attempting to whitelist package",
@@ -163,7 +135,6 @@ test_that("whitelist a package", {
   expect_error(
     with_mock(
       .whitelist_package(pkg = expected_pkg),
-      "MolgenisArmadillo:::.get_armadillo_connection" = connection,
       "httr:::POST" = httr_post
     ),
     regexp = paste0(
@@ -183,7 +154,6 @@ test_that("whitelist packages", {
   expect_message(
     with_mock(
       armadillo.whitelist_packages(pkgs = c(expected_pkg1, expected_pkg2)),
-      "MolgenisArmadillo:::.get_armadillo_connection" = connection,
       "MolgenisArmadillo:::.whitelist_package" = mock(),
       "httr:::POST" = httr_request,
       "httr:::content" = mock(c("DSI", "unicorns")),
@@ -217,7 +187,6 @@ test_that("whitelist packages fails because profile not set", {
   expect_error(
     with_mock(
       armadillo.whitelist_packages(pkgs = expected_pkg, profile = profile),
-      "MolgenisArmadillo:::.get_armadillo_connection" = connection,
       "MolgenisArmadillo:::.whitelist_package" = mock(),
       "httr:::POST" = httr_request,
       "httr:::content" = mock(c("DSI")),

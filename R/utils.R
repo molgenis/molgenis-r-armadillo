@@ -1,69 +1,3 @@
-#'
-#' Check if project exists
-#' @param bucket_name name of the folder
-#'
-#' @return No return value, throws if the bucket does not exist
-#'
-#' @importFrom aws.s3 bucket_exists
-#'
-#' @noRd
-.check_if_bucket_exists <- function(bucket_name) {
-  exists <- suppressMessages(aws.s3::bucket_exists(bucket_name,
-    use_https = .use_https()
-  ))
-
-  if (!exists) {
-    stop(paste0(
-      "Project '", .to_readable_name(bucket_name),
-      "' does not exist."
-    ), call. = FALSE)
-  }
-}
-
-#' Check if object exists
-#'
-#' @param bucket_name bucket name
-#' @param folder_name the name of the folder the table is in
-#' @param object_name the name of the table or resource
-#' @param extension the extension of the object
-#'
-#' @return No return value, throws if the object does not exist
-#'
-#' @noRd
-.check_if_object_exists <- function(bucket_name, folder_name, object_name,
-                                    extension) {
-  .check_if_bucket_exists(bucket_name)
-  full_name <- paste0(folder_name, "/", object_name, extension)
-
-  exists <- suppressMessages(
-    aws.s3::head_object(
-      object = full_name,
-      bucket = bucket_name,
-      use_https = .use_https()
-    )
-  )
-
-  if (!exists) {
-    stop(paste0(
-      "'",
-      tools::file_path_sans_ext(full_name),
-      "' does not exist."
-    ),
-    call. = FALSE
-    )
-  }
-}
-
-#' Check if s3 calls should use HTTPS
-#'
-#' @return the value of the "MolgenisArmadillo.s3.use_https" option, default
-#' TRUE
-#'
-#' @noRd
-.use_https <- function() {
-  getOption("MolgenisArmadillo.s3.use_https", TRUE)
-}
-
 #' Handle generic request errors
 #'
 #' @param response HTTR response
@@ -74,11 +8,51 @@
 .handle_request_error <- function(response) {
   if (response$status_code == 401) {
     stop("Unauthorized", call. = FALSE)
+  } else if (response$status_code == 403) {
+    stop("Forbidden", call. = FALSE)
+  } else if (response$status_code == 404) {
+    stop(
+        httr::content(response, as = "parsed", encoding = "UTF-8")$message,
+        call. = FALSE
+    )
+  } else if (response$status_code == 409) {
+    stop(
+        httr::content(response, as = "parsed", encoding = "UTF-8")$message,
+        call. = FALSE
+    )
   } else if (response$status_code == 500) {
     stop(
       paste0(
         "Internal server error: ",
-        httr::content(response, as = "text", encoding = "UTF-8")),
-        call. = FALSE)
+        httr::content(response, as = "parsed", encoding = "UTF-8")$message
+      ),
+      call. = FALSE
+    )
+  } else if (response$status_code >= 300) {
+    stop(
+      paste0(
+        "Something went wrong (",
+        response$status_code,
+        "): ",
+        httr::content(response, as = "parsed", encoding = "UTF-8")$message
+      ),
+      call. = FALSE
+    )
   }
+}
+
+#' Gets the handle from the options. If there is no handle, the user is not
+#' logged in and an error is shown.
+#'
+#' @param handle the authenticated httr handle
+#'
+#' @noRd
+.get_handle <- function() {
+  handle <- getOption("MolgenisArmadillo.armadillo.handle")
+  if (is.null(handle)) {
+    stop("You are not logged in.
+         Please log in with armadillo.login('<YOUR_SERVER>')",
+         call. = FALSE)
+  }
+  handle
 }

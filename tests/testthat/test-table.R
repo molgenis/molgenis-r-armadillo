@@ -77,7 +77,6 @@ test_that("armadillo.copy_table calls .copy_object", {
     project = "project",
     folder = "folder",
     name = "name",
-    new_project = "project",
     new_folder = "folder",
     new_name = "name",
     extension = ".parquet"
@@ -95,7 +94,6 @@ test_that("armadillo.move_table calls .move_object", {
     project = "project",
     folder = "folder",
     name = "name",
-    new_project = "project",
     new_folder = "folder",
     new_name = "name",
     extension = ".parquet"
