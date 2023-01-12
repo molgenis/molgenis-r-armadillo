@@ -63,10 +63,17 @@
 #'
 #' @noRd
 .get_auth_header <- function() {
-  if (!exists("auth_token", envir = .pkgglobalenv)) {
+  if (exists("auth_token", envir = .pkgglobalenv)) {
+    c("Authorization" = paste0("Bearer ", .pkgglobalenv$auth_token))
+  } else if (exists("auth_username", envir = .pkgglobalenv)) {
+    encoded <- base64enc::base64encode(
+      charToRaw(
+        paste0(.pkgglobalenv$auth_username, ":", .pkgglobalenv$auth_password))
+    )
+    c("Authorization" = paste0("Basic ", encoded))
+  } else {
     stop("You are not logged in.
          Please log in with armadillo.login('<YOUR_SERVER>')",
          call. = FALSE)
   }
-  c("Authorization" = paste0("Bearer ", .pkgglobalenv$auth_token))
 }

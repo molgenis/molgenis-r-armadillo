@@ -15,7 +15,6 @@
 #' armadillo.login("http://localhost:8080")
 #' }
 #'
-#' @importFrom urltools scheme domain
 #' @export
 armadillo.login <- function(armadillo) { # nolint
   # Open browser and authenticate with device code
@@ -25,6 +24,27 @@ armadillo.login <- function(armadillo) { # nolint
   assign("auth_token", token, envir = .pkgglobalenv)
 
   invisible(token)
+}
+
+#' Login with username / password (meant for dev and test environments)
+#'
+#' @param armadillo URL of the Armadillo server
+#' @param username the username
+#' @param password the password
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.login(
+#'   "https://armadillo.dev.molgenis.org", "admin", "admin"
+#' )
+#' armadillo.login("http://localhost:8080", "admin", "admin")
+#' }
+#'
+#' @export
+armadillo.login_basic <- function(armadillo, username, password) { # nolint
+  assign("armadillo_url", armadillo, envir = .pkgglobalenv)
+  assign("auth_username", username, envir = .pkgglobalenv)
+  assign("auth_password", password, envir = .pkgglobalenv)
 }
 
 #' Get ID Token
