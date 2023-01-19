@@ -12,5 +12,7 @@ armadillo.install_packages(paths, profile = "default")
 \item{profile}{the selected profile}
 }
 \description{
-Installs a user defined package.
+Installs a user defined package into the provided profile. The package
+is automatically whitelisted after installation. Only available during
+development.
 }

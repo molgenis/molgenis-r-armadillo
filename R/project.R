@@ -21,10 +21,11 @@ armadillo.create_project <- function(project_name) { # nolint
   .check_project_name(project_name)
 
   response <- httr::PUT(
-    handle = .get_handle(),
+    url = .get_url(),
     path = "/access/projects",
     body = list(name = project_name),
-    config = httr::content_type_json(),
+    config = c(httr::content_type_json(),
+               httr::add_headers(.get_auth_header())),
     encode = "json"
   )
   .handle_request_error(response)
@@ -47,8 +48,9 @@ armadillo.create_project <- function(project_name) { # nolint
 #' @export
 armadillo.delete_project <- function(project_name) { # nolint
   response <- httr::DELETE(
-    handle = .get_handle(),
-    path = paste0("/access/projects/", project_name)
+    url = .get_url(),
+    path = paste0("/access/projects/", project_name),
+    config = httr::add_headers(.get_auth_header())
   )
   .handle_request_error(response)
 
@@ -67,8 +69,9 @@ armadillo.delete_project <- function(project_name) { # nolint
 #' @export
 armadillo.list_projects <- function() { # nolint
   response <- httr::GET(
-    handle = .get_handle(),
-    path = "/access/projects"
+    url = .get_url(),
+    path = "/access/projects",
+    config = httr::add_headers(.get_auth_header())
   )
   .handle_request_error(response)
 

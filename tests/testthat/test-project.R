@@ -11,7 +11,9 @@ test_that("armadillo.create_project checks folder name", {
 test_that("armadillo.create_project creates a folder", {
   stub_request("put", uri = "https://test.nl/access/projects") %>%
     wi_th(
-      headers = list("Accept" = "application/json, text/xml, application/xml, */*", "Content-Type" = "application/json"),
+      headers = list(
+      "Accept" = "application/json, text/xml, application/xml, */*",
+      "Content-Type" = "application/json"),
       body = "{\"name\":\"project\"}"
     ) %>%
     to_return(

@@ -15,31 +15,36 @@
 #' armadillo.login("http://localhost:8080")
 #' }
 #'
-#' @importFrom urltools scheme domain
 #' @export
 armadillo.login <- function(armadillo) { # nolint
   # Open browser and authenticate with device code
   token <- armadillo.get_token(armadillo)
 
-  # Configure session
-  handle <- httr::handle(armadillo)
-  auth_header <-
-    httr::add_headers("Authorization" = paste0("Bearer ", token))
-
-  # Do a request to authenticate with token
-  httr::GET(
-    handle = handle,
-    path = "/my/principal",
-    config = auth_header
-  )
-
-  options(
-    MolgenisArmadillo.auth.token = token,
-    MolgenisArmadillo.armadillo.endpoint = armadillo,
-    MolgenisArmadillo.armadillo.handle = handle
-  )
+  assign("armadillo_url", armadillo, envir = .pkgglobalenv)
+  assign("auth_token", token, envir = .pkgglobalenv)
 
   invisible(token)
+}
+
+#' Login with username / password (meant for dev and test environments)
+#'
+#' @param armadillo URL of the Armadillo server
+#' @param username the username
+#' @param password the password
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.login(
+#'   "https://armadillo.dev.molgenis.org", "admin", "admin"
+#' )
+#' armadillo.login("http://localhost:8080", "admin", "admin")
+#' }
+#'
+#' @export
+armadillo.login_basic <- function(armadillo, username, password) { # nolint
+  assign("armadillo_url", armadillo, envir = .pkgglobalenv)
+  assign("auth_username", username, envir = .pkgglobalenv)
+  assign("auth_password", password, envir = .pkgglobalenv)
 }
 
 #' Get ID Token
