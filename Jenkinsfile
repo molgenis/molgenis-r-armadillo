@@ -76,7 +76,7 @@ pipeline {
                         env.TAG = sh(script: "grep Version DESCRIPTION | head -n1 | cut -d':' -f2", returnStdout: true).trim()
                     }
 
-                    // this solves git's "dubious ownership" complaint, but we have no idea why especially this repo is suddenly affected
+                    // this solves git's "dubious ownership" complaint, but we have no idea why and how only this repo is suddenly affected
                     sh "git config --global --add safe.directory /home/jenkins/agent/workspace/enis_molgenis-r-armadillo_master"
 
                     sh "git commit -a -m 'Increment version number'"
