@@ -61,6 +61,7 @@
 #'
 #' @return the httr authentication header
 #'
+#' @importFrom base64enc base64encode
 #' @noRd
 .get_auth_header <- function() {
   if (exists("auth_token", envir = .pkgglobalenv)) {

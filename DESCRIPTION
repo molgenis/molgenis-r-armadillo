@@ -36,6 +36,7 @@ Maintainer: Mariska Slofstra <m.k.slofstra@umcg.nl>
 Depends:
     R (>= 3.6)
 Imports:
+    base64enc,
     httr,
     urltools,
     MolgenisAuth,
