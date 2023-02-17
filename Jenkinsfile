@@ -75,6 +75,8 @@ pipeline {
                     script {
                         env.TAG = sh(script: "grep Version DESCRIPTION | head -n1 | cut -d':' -f2", returnStdout: true).trim()
                     }
+                    // this solves git's "dubious ownership" complaint, but we have no idea why and how only this repo is suddenly affected
+                    sh "git config --global --add safe.directory /home/jenkins/agent/workspace/enis_molgenis-r-armadillo_master"
                     sh "git commit -a -m 'Increment version number'"
                     sh "echo 'Building ${PACKAGE} v${TAG}'"
                     sh "R CMD build ."
@@ -136,6 +138,8 @@ pipeline {
                     script {
                         env.TAG = sh(script: "grep Version DESCRIPTION | head -n1 | cut -d':' -f2", returnStdout: true).trim()
                     }
+                    // this solves git's "dubious ownership" complaint, but we have no idea why and how only this repo is suddenly affected
+                    sh "git config --global --add safe.directory /home/jenkins/agent/workspace/enis_molgenis-r-armadillo_master"
                     sh "git commit -a -m 'Increment version number'"
                     sh "echo \"Releasing ${PACKAGE} v${TAG}\""
                     sh "R CMD build ."
