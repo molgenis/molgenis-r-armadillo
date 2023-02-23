@@ -35,8 +35,7 @@ Login to the service.
 
 ``` r
 library('MolgenisArmadillo')
-armadillo.login("https://armadillo.dev.molgenis.org",
-      "https://armadillo-minio.dev.molgenis.org")
+armadillo.login("https://armadillo-url-example.org")
 ```
 
 Now you can create a project and upload tables to the project to share
@@ -45,17 +44,13 @@ them for analysis.
 ``` r
 library(datasets)
 armadillo.create_project("project")
-#> Created project 'project'
 armadillo.upload_table("project", "folder", iris)
-#> Compressing table...
-#> Uploaded table folder/iris
 ```
 
 Listing the tables.
 
 ``` r
 armadillo.list_tables("project")
-#> [1] "folder/iris"
 ```
 
 Removing the data from the storage. First you need to remove the content
@@ -63,9 +58,7 @@ of a project before you can throw away the project.
 
 ``` r
 armadillo.delete_table("project", "folder", "iris")
-#> Deleted table 'folder/iris'.
 armadillo.delete_project("project")
-#> Deleted project 'project'
 ```
 
 ## Documentation
@@ -73,11 +66,41 @@ armadillo.delete_project("project")
 For more in depth documentation please check the
 [howto](https://molgenis.github.io/molgenis-r-armadillo/articles/MolgenisArmadillo.html).
 
+## Armadillo 2
+
+The newest version (2.x) of MolgenisArmadillo will be only compatible
+with Armadillo version 3. If you still use Armadillo 2, you should use
+the 1.1.13 version of MolgenisArmadillo. You can install this specific
+version using the following commands:
+
+For windows:
+
+``` r
+packageurl <- "https://cran.rstudio.com/bin/windows/contrib/4.2/MolgenisArmadillo_1.1.3.zip"
+install.packages(packageurl, repos=NULL, type="source")
+```
+
+For Mac:
+
+``` r
+packageurl <- "https://cran.rstudio.com/bin/macosx/contrib/4.2/MolgenisArmadillo_1.1.3.tgz"
+install.packages(packageurl, repos=NULL, type="source")
+```
+
+For Linux:
+
+``` r
+packageurl <- "https://cran.rstudio.com/src/contrib/MolgenisArmadillo_1.1.3.tar.gz"
+install.packages(packageurl, repos=NULL, type="source")
+```
+
 ## For developers
 
 - To build documentation, do `devtools::document()`
 - To run all unit tests, do `devtools::test()`
-- While writing code (or tests), you can use `devtools::load_all()` to quickly "install" the package.
-- To run a single test file, open it in Rstudio and do `devtools::test_active_file()`
+- While writing code (or tests), you can use `devtools::load_all()` to
+  quickly “install” the package.
+- To run a single test file, open it in Rstudio and do
+  `devtools::test_active_file()`
 - To run the linter, do `devtools::lint()`. Tip: run it often :)
-
+- To create new README from Rmd: run `devtools::build_readme()`

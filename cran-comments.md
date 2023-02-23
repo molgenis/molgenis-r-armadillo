@@ -1,3 +1,9 @@
+## 2.0.0 Make compatible with armadillo 3
+* Armadillo 3 compatibility
+* Discontinue Armadillo 2 compatibility (breaking)
+* Use new Armadillo APIs instead of MinIO
+* Add documentation for using older versions of armadillo to README
+
 ## 1.1.3 Edit vignets
 * Remove packages from vignettes
 
