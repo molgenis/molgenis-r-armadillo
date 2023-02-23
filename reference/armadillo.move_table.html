@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MolgenisArmadillo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -72,48 +72,55 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">armadillo.move_table</span><span class="op">(</span>
-  <span class="va">project</span>,
-  <span class="va">folder</span>,
-  <span class="va">name</span>,
-  new_project <span class="op">=</span> <span class="va">project</span>,
-  new_folder <span class="op">=</span> <span class="va">folder</span>,
-  new_name <span class="op">=</span> <span class="va">name</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">armadillo.move_table</span><span class="op">(</span></span>
+<span>  <span class="va">project</span>,</span>
+<span>  <span class="va">folder</span>,</span>
+<span>  <span class="va">name</span>,</span>
+<span>  new_folder <span class="op">=</span> <span class="va">folder</span>,</span>
+<span>  new_name <span class="op">=</span> <span class="va">name</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>project</dt>
 <dd><p>a study or collection of variables</p></dd>
+
+
 <dt>folder</dt>
 <dd><p>the folder containing the table to move</p></dd>
+
+
 <dt>name</dt>
 <dd><p>a table to move</p></dd>
-<dt>new_project</dt>
-<dd><p>the project to move the table to</p></dd>
+
+
 <dt>new_folder</dt>
 <dd><p>the folder to move the table to, defaults to folder</p></dd>
+
+
 <dt>new_name</dt>
 <dd><p>use to rename the file, defaults to name</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>NULL, invisibly</p>
+    
+
+<p>NULL, invisibly</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu">armadillo.move_table</span><span class="op">(</span></span>
-<span class="r-in">  project <span class="op">=</span> <span class="st">"gecko"</span>,</span>
-<span class="r-in">  folder <span class="op">=</span> <span class="st">"core_all"</span>,</span>
-<span class="r-in">  name <span class="op">=</span> <span class="st">"table1"</span>,</span>
-<span class="r-in">  new_project <span class="op">=</span> <span class="st">"gecko"</span>,</span>
-<span class="r-in">  new_folder <span class="op">=</span> <span class="st">"core_all_v2"</span>,</span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu">armadillo.move_table</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  project <span class="op">=</span> <span class="st">"gecko"</span>,</span></span>
+<span class="r-in"><span>  folder <span class="op">=</span> <span class="st">"core_all"</span>,</span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"table1"</span>,</span></span>
+<span class="r-in"><span>  new_folder <span class="op">=</span> <span class="st">"core_all_v2"</span>,</span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -128,7 +135,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

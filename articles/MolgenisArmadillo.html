@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MolgenisArmadillo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -98,16 +98,16 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/molgenis/molgenis-r-armadillo/" class="external-link">MolgenisArmadillo</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/molgenis/molgenis-r-armadillo/" class="external-link">MolgenisArmadillo</a></span><span class="op">)</span></span></code></pre></div>
 <p>To share your data using Armadillo, you can see the different relevant steps you can take before the shared data can be transferred to the researchers.</p>
 <div class="section level2">
 <h2 id="login">Login<a class="anchor" aria-label="anchor" href="#login"></a>
 </h2>
 <p>In order to access the files as a data manager, you need to log in. The login method needs the URLs of the Armadillo server and the MinIO fileserver. It will open a browser window where you can identify yourself with the ID provider.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/armadillo.login.html">armadillo.login</a></span><span class="op">(</span><span class="st">"https://armadillo.test.molgenis.org"</span>,
-      <span class="st">"https://armadillo-minio.test.molgenis.org"</span><span class="op">)</span>
-<span class="co">#&gt; [1] "We're opening a browser so you can log in with code 5HBGK8"</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.login.html">armadillo.login</a></span><span class="op">(</span><span class="st">"https://armadillo.test.molgenis.org"</span>,</span>
+<span>      <span class="st">"https://armadillo-minio.test.molgenis.org"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "We're opening a browser so you can log in with code 5HBGK8"</span></span></code></pre></div>
 <p>It will create a session and store the credentials in the environment.</p>
 </div>
 <div class="section level2">
@@ -137,17 +137,17 @@
 <p>Let’s asume you are in a consortia which has core-variables and outcome-variables. You want to share and version the whole dataset to all researchers which applied to access your data.</p>
 <p>First we will create the project. In our case “cohort1”.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/armadillo.create_project.html">armadillo.create_project</a></span><span class="op">(</span><span class="st">"cohort1"</span><span class="op">)</span>
-<span class="co">#&gt; Created project 'cohort1'</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.create_project.html">armadillo.create_project</a></span><span class="op">(</span><span class="st">"cohort1"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Created project 'cohort1'</span></span></code></pre></div>
 <p>Secondly we will load the table(s) we want to upload to Armadillo in the R-environment. We have test data which is in <code>arrow</code> format, the upload will take any object that has a table like structure to upload into the Armadillo. This can be SPSS, STATA, SAS or R-based data as well.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/apache/arrow/" class="external-link">arrow</a></span><span class="op">)</span>
-
-<span class="co"># load the core data</span>
-<span class="va">nonrep</span> <span class="op">&lt;-</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html" class="external-link">read_parquet</a></span><span class="op">(</span><span class="st">"data/core/nonrep.parquet"</span><span class="op">)</span>
-<span class="va">yearlyrep</span> <span class="op">&lt;-</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html" class="external-link">read_parquet</a></span><span class="op">(</span><span class="st">"data/core/yearlyrep.parquet"</span><span class="op">)</span>
-<span class="va">monthlyrep</span> <span class="op">&lt;-</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html" class="external-link">read_parquet</a></span><span class="op">(</span><span class="st">"data/core/monthlyrep.parquet"</span><span class="op">)</span>
-<span class="va">trimesterrep</span> <span class="op">&lt;-</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html" class="external-link">read_parquet</a></span><span class="op">(</span><span class="st">"data/core/trimesterrep.parquet"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/apache/arrow/" class="external-link">arrow</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># load the core data</span></span>
+<span><span class="va">nonrep</span> <span class="op">&lt;-</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html" class="external-link">read_parquet</a></span><span class="op">(</span><span class="st">"data/core/nonrep.parquet"</span><span class="op">)</span></span>
+<span><span class="va">yearlyrep</span> <span class="op">&lt;-</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html" class="external-link">read_parquet</a></span><span class="op">(</span><span class="st">"data/core/yearlyrep.parquet"</span><span class="op">)</span></span>
+<span><span class="va">monthlyrep</span> <span class="op">&lt;-</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html" class="external-link">read_parquet</a></span><span class="op">(</span><span class="st">"data/core/monthlyrep.parquet"</span><span class="op">)</span></span>
+<span><span class="va">trimesterrep</span> <span class="op">&lt;-</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html" class="external-link">read_parquet</a></span><span class="op">(</span><span class="st">"data/core/trimesterrep.parquet"</span><span class="op">)</span></span></code></pre></div>
 <p>The third step is determining the second level, which contains in this case the datamodel-version the type of variables and the data-version.</p>
 <p>y_y-#variable-type#-x_x</p>
 <p>y_y = datamodel version x_x = data version</p>
@@ -305,23 +305,23 @@
 </h2>
 <p>There are helper functions to help you determine what is in the storage server. You can list projects and tables to what’s in the storage.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># listing tables per project</span>
-<span class="fu"><a href="../reference/armadillo.list_projects.html">armadillo.list_projects</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; [1] "cohort1"            "cohort2"            "cohort3"            "dnbc"              </span>
-<span class="co">#&gt; [5] "example-dictionary" "exampledictionary"  "methylationclocks"  "subset1"</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># listing tables per project</span></span>
+<span><span class="fu"><a href="../reference/armadillo.list_projects.html">armadillo.list_projects</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "cohort1"            "cohort2"            "cohort3"            "dnbc"              </span></span>
+<span><span class="co">#&gt; [5] "example-dictionary" "exampledictionary"  "methylationclocks"  "subset1"</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># listing tables per project</span>
-<span class="fu"><a href="../reference/armadillo.list_tables.html">armadillo.list_tables</a></span><span class="op">(</span><span class="st">"cohort1"</span><span class="op">)</span>
-<span class="co">#&gt; [1] "1_1-outcome-1_0/nonrep"    "1_1-outcome-1_0/yearlyrep" "2_1-core-1_0/monthlyrep"  </span>
-<span class="co">#&gt; [4] "2_1-core-1_0/nonrep"       "2_1-core-1_0/trimesterrep" "2_1-core-1_0/yearlyrep"</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># listing tables per project</span></span>
+<span><span class="fu"><a href="../reference/armadillo.list_tables.html">armadillo.list_tables</a></span><span class="op">(</span><span class="st">"cohort1"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "1_1-outcome-1_0/nonrep"    "1_1-outcome-1_0/yearlyrep" "2_1-core-1_0/monthlyrep"  </span></span>
+<span><span class="co">#&gt; [4] "2_1-core-1_0/nonrep"       "2_1-core-1_0/trimesterrep" "2_1-core-1_0/yearlyrep"</span></span></code></pre></div>
 <p>You can download the data in the R-environment as well.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># download table to local R environment</span>
-<span class="va">trimesterrep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/armadillo.load_table.html">armadillo.load_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"trimesterrep"</span><span class="op">)</span>
-
-<span class="co"># check the column names from the local environment</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">trimesterrep</span><span class="op">)</span>
-<span class="co">#&gt; [1] "row_id"        "child_id"      "age_trimester" "smk_t"         "alc_t"</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># download table to local R environment</span></span>
+<span><span class="va">trimesterrep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/armadillo.load_table.html">armadillo.load_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"trimesterrep"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># check the column names from the local environment</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">trimesterrep</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "row_id"        "child_id"      "age_trimester" "smk_t"         "alc_t"</span></span></code></pre></div>
 <p>Now you can also take a look at the files in the user interface of the MinIO fileserver if you open the MinIO server URL in a browser window.</p>
 </div>
 <div class="section level2">
@@ -329,25 +329,25 @@
 </h2>
 <p>To delete the data you need to throw away the contents first.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># throw away the core tables</span>
-<span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"nonrep"</span><span class="op">)</span>
-<span class="co">#&gt; Deleted '2_1-core-1_0/nonrep'.</span>
-<span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"yearlyrep"</span><span class="op">)</span>
-<span class="co">#&gt; Deleted '2_1-core-1_0/yearlyrep'.</span>
-<span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"trimesterrep"</span><span class="op">)</span>
-<span class="co">#&gt; Deleted '2_1-core-1_0/trimesterrep'.</span>
-<span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"monthlyrep"</span><span class="op">)</span>
-<span class="co">#&gt; Deleted '2_1-core-1_0/monthlyrep'.</span>
-
-<span class="co"># throw away the outcome tables</span>
-<span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"1_1-outcome-1_0"</span>, <span class="st">"nonrep"</span><span class="op">)</span>
-<span class="co">#&gt; Deleted '1_1-outcome-1_0/nonrep'.</span>
-<span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"1_1-outcome-1_0"</span>, <span class="st">"yearlyrep"</span><span class="op">)</span>
-<span class="co">#&gt; Deleted '1_1-outcome-1_0/yearlyrep'.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># throw away the core tables</span></span>
+<span><span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"nonrep"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Deleted '2_1-core-1_0/nonrep'.</span></span>
+<span><span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"yearlyrep"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Deleted '2_1-core-1_0/yearlyrep'.</span></span>
+<span><span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"trimesterrep"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Deleted '2_1-core-1_0/trimesterrep'.</span></span>
+<span><span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"monthlyrep"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Deleted '2_1-core-1_0/monthlyrep'.</span></span>
+<span></span>
+<span><span class="co"># throw away the outcome tables</span></span>
+<span><span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"1_1-outcome-1_0"</span>, <span class="st">"nonrep"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Deleted '1_1-outcome-1_0/nonrep'.</span></span>
+<span><span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"1_1-outcome-1_0"</span>, <span class="st">"yearlyrep"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Deleted '1_1-outcome-1_0/yearlyrep'.</span></span></code></pre></div>
 <p>Now you can delete the project.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/armadillo.delete_project.html">armadillo.delete_project</a></span><span class="op">(</span><span class="st">"cohort1"</span><span class="op">)</span>
-<span class="co">#&gt; Deleted project 'cohort1'</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.delete_project.html">armadillo.delete_project</a></span><span class="op">(</span><span class="st">"cohort1"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Deleted project 'cohort1'</span></span></code></pre></div>
 </div>
   </div>
 
@@ -368,7 +368,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MolgenisArmadillo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -98,7 +98,7 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/molgenis/molgenis-r-armadillo/" class="external-link">MolgenisArmadillo</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/molgenis/molgenis-r-armadillo/" class="external-link">MolgenisArmadillo</a></span><span class="op">)</span></span></code></pre></div>
 <p>To be able to test your package as a developer you can install your package using the MolgenisArmadillo. There are a few preconditions in other to use the install_packages function.</p>
 <ul>
 <li>Make sure you have the <code>superuser</code> role.</li>
@@ -109,46 +109,46 @@
 </h2>
 <p>You first need to login to the Armadillo (as <code>superuser</code>)</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/armadillo.login.html">armadillo.login</a></span><span class="op">(</span><span class="st">"https://armadillo.dev.molgenis.org"</span>,
-      <span class="st">"https://armadillo-minio.dev.molgenis.org"</span><span class="op">)</span>
-<span class="co">#&gt; [1] "We're opening a browser so you can log in with code B56HHX"</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.login.html">armadillo.login</a></span><span class="op">(</span><span class="st">"https://armadillo.dev.molgenis.org"</span>,</span>
+<span>      <span class="st">"https://armadillo-minio.dev.molgenis.org"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "We're opening a browser so you can log in with code B56HHX"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="install-packages">Install packages<a class="anchor" aria-label="anchor" href="#install-packages"></a>
 </h2>
 <p>If you want to install a package on the Armadillo Rserver you can execute the following endpoint. The selected profile is always <code>default</code> if none is specified.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/armadillo.install_packages.html">armadillo.install_packages</a></span><span class="op">(</span><span class="st">"data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz"</span><span class="op">)</span>
-<span class="co">#&gt; Attempting to install package [ 'data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz' ]</span>
-<span class="co">#&gt; Package [ 'data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz' ] installed</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.install_packages.html">armadillo.install_packages</a></span><span class="op">(</span><span class="st">"data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Attempting to install package [ 'data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz' ]</span></span>
+<span><span class="co">#&gt; Package [ 'data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz' ] installed</span></span></code></pre></div>
 <p>In order to install the packages on a specific profile you can specify the profile.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/armadillo.install_packages.html">armadillo.install_packages</a></span><span class="op">(</span><span class="st">"data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz"</span>, profile <span class="op">=</span> <span class="st">"exposome"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.install_packages.html">armadillo.install_packages</a></span><span class="op">(</span><span class="st">"data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz"</span>, profile <span class="op">=</span> <span class="st">"exposome"</span><span class="op">)</span></span></code></pre></div>
 <p>You can install multiple packages as well by specifying a vector</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/armadillo.install_packages.html">armadillo.install_packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz"</span>, <span class="st">"data/packages/dsBase_6.1.0.9000.tar.gz"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.install_packages.html">armadillo.install_packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz"</span>, <span class="st">"data/packages/dsBase_6.1.0.9000.tar.gz"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="whitelist-packages">Whitelist packages<a class="anchor" aria-label="anchor" href="#whitelist-packages"></a>
 </h2>
 <p>To be able to use new packages in the Armadillo you need to add them to the whitelist. You can do this by executing the following method.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/armadillo.whitelist_packages.html">armadillo.whitelist_packages</a></span><span class="op">(</span><span class="st">"MolgenisArmadillo"</span><span class="op">)</span>
-<span class="co">#&gt; Attempting to whitelist package [ 'MolgenisArmadillo' ]</span>
-<span class="co">#&gt; Package [ 'MolgenisArmadillo' ] added to the whitelist</span>
-<span class="co">#&gt; Packages whitelisted:</span>
-<span class="co">#&gt;  * [ 'dsBase' ]</span>
-<span class="co">#&gt;  * [ 'MolgenisArmadillo' ]</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">armadillo.whitelist_packages</span><span class="op">(</span><span class="st">"MolgenisArmadillo"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Attempting to whitelist package [ 'MolgenisArmadillo' ]</span></span>
+<span><span class="co">#&gt; Package [ 'MolgenisArmadillo' ] added to the whitelist</span></span>
+<span><span class="co">#&gt; Packages whitelisted:</span></span>
+<span><span class="co">#&gt;  * [ 'dsBase' ]</span></span>
+<span><span class="co">#&gt;  * [ 'MolgenisArmadillo' ]</span></span></code></pre></div>
 <p>You are able to whilist mulitple packages as well using the following line:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/armadillo.whitelist_packages.html">armadillo.whitelist_packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MolgenisArmadillo"</span>, <span class="st">"dsBase"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Attempting to whitelist package [ 'MolgenisArmadillo' ]</span>
-<span class="co">#&gt; Package [ 'MolgenisArmadillo' ] added to the whitelist</span>
-<span class="co">#&gt; Attempting to whitelist package [ 'dsBase' ]</span>
-<span class="co">#&gt; Package [ 'dsBase' ] added to the whitelist</span>
-<span class="co">#&gt; Packages whitelisted:</span>
-<span class="co">#&gt;  * [ 'dsBase' ]</span>
-<span class="co">#&gt;  * [ 'MolgenisArmadillo' ]</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">armadillo.whitelist_packages</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MolgenisArmadillo"</span>, <span class="st">"dsBase"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Attempting to whitelist package [ 'MolgenisArmadillo' ]</span></span>
+<span><span class="co">#&gt; Package [ 'MolgenisArmadillo' ] added to the whitelist</span></span>
+<span><span class="co">#&gt; Attempting to whitelist package [ 'dsBase' ]</span></span>
+<span><span class="co">#&gt; Package [ 'dsBase' ] added to the whitelist</span></span>
+<span><span class="co">#&gt; Packages whitelisted:</span></span>
+<span><span class="co">#&gt;  * [ 'dsBase' ]</span></span>
+<span><span class="co">#&gt;  * [ 'MolgenisArmadillo' ]</span></span></code></pre></div>
 </div>
   </div>
 
@@ -169,7 +169,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

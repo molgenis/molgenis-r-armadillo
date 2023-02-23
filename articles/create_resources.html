@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MolgenisArmadillo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -98,7 +98,7 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/molgenis/molgenis-r-armadillo/" class="external-link">MolgenisArmadillo</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/molgenis/molgenis-r-armadillo/" class="external-link">MolgenisArmadillo</a></span><span class="op">)</span></span></code></pre></div>
 <p>If you want to perform “omics”-like you need to upload the data to perform the resources. Within the Armadillo you can upload files up to 5TB. If you upload the data you can assign the data with the <code>s3.file.resourcer</code> package.</p>
 <p>There are 2 roles you can assume using the package. The datamanager role and the researcher role.</p>
 <div class="section level2">
@@ -130,16 +130,16 @@
 </h3>
 <p>You first need to login to the Armadillo (as <code>superuser</code>)</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/armadillo.login.html">armadillo.login</a></span><span class="op">(</span><span class="st">"https://armadillo.dev.molgenis.org"</span>,
-      <span class="st">"https://armadillo-minio.dev.molgenis.org"</span><span class="op">)</span>
-<span class="co">#&gt; [1] "We're opening a browser so you can log in with code NCN8FY"</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.login.html">armadillo.login</a></span><span class="op">(</span><span class="st">"https://armadillo.dev.molgenis.org"</span>,</span>
+<span>      <span class="st">"https://armadillo-minio.dev.molgenis.org"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "We're opening a browser so you can log in with code NCN8FY"</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="install-prerequisites">Install prerequisites<a class="anchor" aria-label="anchor" href="#install-prerequisites"></a>
 </h4>
 <p>If you want to install a package on the Armadillo Rserver you can execute the following endpoint. The selected profile is always <code>default</code> if none is specified.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"resourcer"</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">resourcer</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"resourcer"</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">resourcer</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="create-resources">Create resources<a class="anchor" aria-label="anchor" href="#create-resources"></a>
@@ -201,7 +201,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
