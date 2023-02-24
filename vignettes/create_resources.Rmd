@@ -14,7 +14,8 @@ vignette: >
 library(MolgenisArmadillo)
 ```
 
-If you want to perform "omics"-like you need to upload the data to perform the resources. Within the Armadillo you can upload files up to 5TB. If you upload the data you can assign the data with the `s3.file.resourcer` package.
+If you want to perform "omics"-like you need to upload the data to perform the resources. By default, within the Armadillo you can upload files up to 500MB. 
+If you need to upload larger resources, please contact molgenis-support@umcg.nl.
 
 There are 2 roles you can assume using the package. The datamanager role and the researcher role.
 
@@ -22,59 +23,60 @@ There are 2 roles you can assume using the package. The datamanager role and the
 The datamanager needs to make the data available to the researchers. Besides this you need to create the resources to access the data.
 
 ### Upload the data
-You need to access the Minio webinterface to be able to access the resource. 
+You need to access the Armadillo webinterface to be able to access the resource. 
 
 1. We are using data from the following sources:
   - https://github.com/isglobal-brge/brge_data_large/blob/master/data/gse66351_1.rda
   - https://github.com/isglobal-brge/brge_data_large/blob/master/data/gse66351_2.rda
-2. Login via ELIXIR
-3. Create a bucket with the prefix `shared-`. For example `shared-omics`
-4. Upload the omics data to a folder. For example `ewas`. You will get something like this `shared-omics/ewas/gse66351_1.rda`
+2. Login with your institute account.
+3. Create a project. For example `omics`.
+4. Click on the edit project button to the right of the name of your project.
+5. Create a new folder for your data. For example `ewas`.
+6. Click on the "Select a file to upload" button or drag your file to upload to the box and click on "Upload". Upload the omics data.
 
 Done!
 
-### Upload the resources
+### Upload the resources (in R studio)
 You first need to login to the Armadillo (as `superuser`)
 
 
 
 ```r
-armadillo.login("https://armadillo.dev.molgenis.org",
-      "https://armadillo-minio.dev.molgenis.org")
+armadillo.login("https://armadillo3.demo.molgenis.net")
 #> [1] "We're opening a browser so you can log in with code NCN8FY"
 ```
 
 #### Install prerequisites
-If you want to install a package on the Armadillo Rserver you can execute the following endpoint. The selected profile is always `default` if none is specified.
+If you want to install a package on the Armadillo Rserver you can execute the following endpoint. The selected profile is always `default` if none is specified. If your profile doesn't have the `resourcer` package installed, install it:
 
 
 ```r
 install.packages("resourcer")
+
+```
+Then use it:
+```r
 library(resourcer)
 ```
 
 #### Create resources
-In order to be able to asign the data uploaded in the Minio you need to create the resources as well. 
+In order to be able to asign the data uploaded in the armadillo you need to create the resources as well.
 
-
+# create resource
 ```r
 resGSE1 <- resourcer::newResource(
   name = "GSE66351_1",
-  url = "s3+http://armadillo-minio:9000/shared-omics/ewas/gse66351_1.rda",
-  identity = "molgenis",
-  secret = "molgenis",
+  url = "https://armadillo3.demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
   format = "ExpressionSet"
 )
 resGSE2 <- resourcer::newResource(
   name = "GSE66351_1",
-  url = "s3+http://armadillo-minio:9000/shared-omics/ewas/gse66351_1.rda",
-  identity = "molgenis",
-  secret = "molgenis",
+  url = "https://armadillo3.demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
   format = "ExpressionSet"
 )
 
-armadillo.create_project("omics")
-#> Created project 'omics'
+armadillo.login("https://armadillo3.demo.molgenis.net/")
+
 armadillo.upload_resource(project="omics", folder="ewas", resource = resGSE1, name = "GSE66351_1")
 #> Compressing...
 #> 
