@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 library(MolgenisArmadillo)
 ```
 
-If you want to perform "omics"-like you need to upload the data to perform the resources. By default, within the Armadillo you can upload files up to 500MB.
+If you want to perform “omics”-like analyses you propably need to upload data (resources). By default Armadillo supports file uploads up to 500MB.
 If you need to upload larger resources, please contact molgenis-support@umcg.nl.
 
 There are 2 roles you can assume using the package. The datamanager role and the researcher role.
@@ -26,8 +26,11 @@ There are 2 roles you can assume using the package. The datamanager role and the
 ## Datamanager
 The datamanager needs to make the data available to the researchers. Besides this you need to create the resources to access the data.
 
+## Researcher
+The researcher can call DataSHIELD analysis methods on the data uploaded by the datamanager.
+
 ### Upload the data
-You need to access the Minio webinterface to be able to access the resource.
+As a datamanager you need to access the Armadillo webinterface to be able to access the resource. 
 
 1. We are using data from the following sources:
   - https://github.com/isglobal-brge/brge_data_large/blob/master/data/gse66351_1.rda
@@ -38,10 +41,10 @@ You need to access the Minio webinterface to be able to access the resource.
 5. Create a new folder for your data. For example `ewas`.
 6. Click on the "Select a file to upload" button or drag your file to upload to the box and click on "Upload". Upload the omics data.
 
-Done!
 
-### Upload the resources
-You first need to login to the Armadillo (as `superuser`)
+### Upload the resources (in Rstudio)
+A second option to upload data (resources) is on the [Central Analysis Server (CAS)](https://lifecycle.analysis.molgenis.org/) within Rstudio
+As datamanager you first need to login to Armadillo (as `superuser`)
 
 
 ```{r, login to the armadillo server}
@@ -49,7 +52,7 @@ armadillo.login("https://armadillo3.demo.molgenis.net")
 ```
 
 #### Install prerequisites
-If you want to install a package on the Armadillo Rserver you can execute the following endpoint. The selected profile is always `default` if none is specified. If your profile doesn't have the `resourcer` package installed, install it and include the library:
+If you want to install a package on the Armadillo Rserver you can execute the following. The selected profile is always `default` if none is specified. If your profile doesn't have the `resourcer` package installed, install it:
 
 ```{r, install resourcer package}
 install.packages("resourcer")
@@ -57,7 +60,7 @@ library(resourcer)
 ```
 
 #### Create resources
-In order to be able to asign the data uploaded in the Minio you need to create the resources as well.
+In order to be able to assign the data uploaded in the armadillo you need to create the resources as well.
 
 ```{r, create s3 file resources}
 resGSE1 <- resourcer::newResource(
