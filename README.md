@@ -81,7 +81,7 @@ If you already installed another version of the package, you might want to run t
 ``` r
 remove.packages("MolgenisArmadillo")
 ```
-On windows, loading older releases of R packages, you might have to load additional packages.
+On windows additional R packages like `rtools` might be required in order to install the `tar.gz` package from the url.
 
 ## For developers
 
