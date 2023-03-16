@@ -45,8 +45,8 @@ As datamanager you first need to login to Armadillo (as `superuser`)
 
 
 ```r
-armadillo.login("https://armadillo3.demo.molgenis.net")
-#> Error in curl::curl_fetch_memory(url, handle = handle): SSL peer certificate or SSH remote key was not OK: [armadillo3.demo.molgenis.net] SSL certificate problem: self signed certificate
+armadillo.login("https://armadillo3-01.molgeniscloud.org")
+#> [1] "We're opening a browser so you can log in with code T9Y2CT"
 ```
 
 #### Install prerequisites
@@ -55,59 +55,37 @@ If you want to install a package on the Armadillo Rserver you can execute the fo
 
 ```r
 install.packages("resourcer")
-#> 
-#> The downloaded binary packages are in
-#> 	/var/folders/sy/d5l5fdyj6z98mgclrl_bbkzr0000gn/T//Rtmpef3Onx/downloaded_packages
+#> Error in install.packages : Updating loaded packages
 library(resourcer)
-#> Loading required package: R6
-#> Loading required package: httr
-#> Registering LocalFileResourceGetter...
-#> Registering HttpFileResourceGetter...
-#> Registering ScpFileResourceGetter...
-#> Registering GridFsFileResourceGetter...
-#> Registering OpalFileResourceGetter...
-#> Registering MariaDBResourceConnector...
-#> Registering PostgresResourceConnector...
-#> Registering SparkResourceConnector...
-#> Registering PrestoResourceConnector...
-#> Registering TidyFileResourceResolver...
-#> Registering ShellResourceResolver...
-#> Registering SshResourceResolver...
-#> Registering RDataFileResourceResolver...
-#> Registering RDSFileResourceResolver...
-#> Registering SQLResourceResolver...
-#> Registering NoSQLResourceResolver...
 ```
 
 #### Create resources
 In order to be able to assign the data uploaded in the armadillo you need to create the resources as well.
 The data files you uploaded to armadillo, can be retrieved via the following URL:
 `yoururl + /storage/projects/{project name}/objects/{folder name}%2F{filename}` and example is:
-`https://armadillo3.demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda`. Here the URL is
-`https://armadillo3.demo.molgenis.net`, the project name is `omics`, the fodler is `ewas` and the name of the
+`https://armadillo3-01.molgeniscloud.org/storage/projects/omics/objects/ewas%2Fgse66351_1.rda`. Here the URL is
+`https://armadillo3-01.molgeniscloud.org`, the project name is `omics`, the folder is `ewas` and the name of the
 data file is `gse66351_1.rda`.
 
 
 ```r
 resGSE1 <- resourcer::newResource(
   name = "GSE66351_1",
-  url = "https://armadillo3.demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
+  url = "https://armadillo3-01.molgeniscloud.org/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
   format = "ExpressionSet"
 )
 resGSE2 <- resourcer::newResource(
   name = "GSE66351_1",
-  url = "https://armadillo3.demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
+  url = "https://armadillo3-01.molgeniscloud.org/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
   format = "ExpressionSet"
 )
 
 armadillo.upload_resource(project="omics", folder="ewas", resource = resGSE1, name = "GSE66351_1")
 #> Compressing...
-#> Error: You are not logged in.
-#>          Please log in with armadillo.login('<YOUR_SERVER>')
+#> Uploaded ewas/GSE66351_1
 armadillo.upload_resource(project="omics", folder="ewas", resource = resGSE2, name = "GSE66351_2")
 #> Compressing...
-#> Error: You are not logged in.
-#>          Please log in with armadillo.login('<YOUR_SERVER>')
+#> Uploaded ewas/GSE66351_2
 ```
 
 The data is now available for researcher to assign.

@@ -9,3 +9,5 @@ docs
 Meta
 .idea/*
 .DS_Store
+/doc/
+/Meta/
