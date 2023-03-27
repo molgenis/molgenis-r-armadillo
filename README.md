@@ -73,26 +73,15 @@ with Armadillo version 3. If you still use Armadillo 2, you should use
 the 1.1.13 version of MolgenisArmadillo. You can install this specific
 version using the following commands:
 
-For windows:
-
 ``` r
-packageurl <- "https://cran.rstudio.com/bin/windows/contrib/4.2/MolgenisArmadillo_1.1.3.zip"
+packageurl <- "https://cran.r-project.org/src/contrib/Archive/MolgenisArmadillo/MolgenisArmadillo_1.1.3.tar.gz"
 install.packages(packageurl, repos=NULL, type="source")
 ```
-
-For Mac:
-
+If you already installed another version of the package, you might want to run this first:
 ``` r
-packageurl <- "https://cran.rstudio.com/bin/macosx/contrib/4.2/MolgenisArmadillo_1.1.3.tgz"
-install.packages(packageurl, repos=NULL, type="source")
+remove.packages("MolgenisArmadillo")
 ```
-
-For Linux:
-
-``` r
-packageurl <- "https://cran.rstudio.com/src/contrib/MolgenisArmadillo_1.1.3.tar.gz"
-install.packages(packageurl, repos=NULL, type="source")
-```
+On windows additional R packages like `rtools` might be required in order to install the `tar.gz` package from the url.
 
 ## For developers
 
