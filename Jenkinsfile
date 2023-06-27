@@ -19,7 +19,7 @@ pipeline {
                     script {
                         env.GITHUB_TOKEN = sh(script: 'vault read -field=value secret/ops/token/github', returnStdout: true)
                         env.GITHUB_PAT = env.GITHUB_TOKEN
-                        env.GITHUB_DEPLOY_PRIVATE_KEY_BASE64 = sh(script: 'vault read -field=ssh_private_base64 secret/ops/account/github', returnStdout: true)                        
+                        env.GITHUB_DEPLOY_PRIVATE_KEY_BASE64 = sh(script: 'vault read -field=ssh_private_base64 secret/ops/account/github', returnStdout: true)
                         env.CODECOV_TOKEN = sh(script: 'vault read -field=molgenis-r-armadillo secret/ops/token/codecov', returnStdout: true)
                         env.NEXUS_USER = sh(script: 'vault read -field=username secret/ops/account/nexus', returnStdout: true)
                         env.NEXUS_PASS = sh(script: 'vault read -field=password secret/ops/account/nexus', returnStdout: true)
@@ -31,7 +31,7 @@ pipeline {
                 sh "git remote set-url origin https://${GITHUB_TOKEN}@github.com/${REPOSITORY}.git"
                 sh "git fetch --tags"
                 container('r') {
-                    sh "install2.r --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery httr urltools xml2 aws.iam aws.s3 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr"
+                    sh "install2.r --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr"
                     sh "installGithub.r fdlk/lintr"
                     sh "Rscript -e \"git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')\""
                     sh "mkdir -m 700 -p /root/.ssh"
@@ -75,6 +75,8 @@ pipeline {
                     script {
                         env.TAG = sh(script: "grep Version DESCRIPTION | head -n1 | cut -d':' -f2", returnStdout: true).trim()
                     }
+                    // this solves git's "dubious ownership" complaint, but we have no idea why and how only this repo is suddenly affected
+                    sh "git config --global --add safe.directory /home/jenkins/agent/workspace/enis_molgenis-r-armadillo_master"
                     sh "git commit -a -m 'Increment version number'"
                     sh "echo 'Building ${PACKAGE} v${TAG}'"
                     sh "R CMD build ."
@@ -137,6 +139,8 @@ pipeline {
                     script {
                         env.TAG = sh(script: "grep Version DESCRIPTION | head -n1 | cut -d':' -f2", returnStdout: true).trim()
                     }
+                    // this solves git's "dubious ownership" complaint, but we have no idea why and how only this repo is suddenly affected
+                    sh "git config --global --add safe.directory /home/jenkins/agent/workspace/enis_molgenis-r-armadillo_master"
                     sh "git commit -a -m 'Increment version number'"
                     sh "echo \"Releasing ${PACKAGE} v${TAG}\""
                     sh "R CMD build ."

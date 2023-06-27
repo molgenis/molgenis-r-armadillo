@@ -13,6 +13,6 @@ armadillo.get_token(server)
 The ID token string
 }
 \description{
-Get an ID token to log in on an Armadillo server or its MinIO filestore.
+Get an ID token to log in on an Armadillo server.
 }
 \keyword{internal}

@@ -1,3 +1,6 @@
+handle <- httr::handle("https://test.nl")
+withr::local_options("MolgenisArmadillo.armadillo.handle" = handle)
+
 test_that("armadillo.create_project checks folder name", {
   expect_error(
     armadillo.create_project("example_folder"),
@@ -6,58 +9,74 @@ test_that("armadillo.create_project checks folder name", {
 })
 
 test_that("armadillo.create_project creates a folder", {
-  put_bucket <- mock(TRUE)
-  use_https <- mock(FALSE)
+  stub_request("put", uri = "https://test.nl/access/projects") %>%
+    wi_th(
+      headers = list(
+      "Accept" = "application/json, text/xml, application/xml, */*",
+      "Content-Type" = "application/json"),
+      body = "{\"name\":\"project\"}"
+    ) %>%
+    to_return(
+      status = 204
+    )
 
-  result <- with_mock(
+  expect_message(
     armadillo.create_project("project"),
-    "aws.s3::put_bucket" = put_bucket,
-    "MolgenisArmadillo:::.use_https" = use_https
+    "Created project 'project'"
   )
 
-  expect_true(result)
-  expect_args(put_bucket, 1, "shared-project", use_https = FALSE)
+  stub_registry_clear()
 })
 
 test_that("armadillo.list_projects lists all shared buckets", {
-  bucketlist <- mock(buckets)
-  use_https <- mock(FALSE)
+  stub_request("get", uri = "https://test.nl/access/projects") %>%
+    to_return(
+      status = 200,
+      body = "[
+        {
+          \"name\": \"lifecycle\",
+          \"users\": []
+        },
+        {
+          \"name\": \"test\",
+          \"users\": []
+        }
+      ]",
+      headers = list("Content-Type" = "application/json")
+    )
 
-  folders <- with_mock(
-    armadillo.list_projects(),
-    "aws.s3::bucketlist" = bucketlist,
-    "MolgenisArmadillo:::.use_https" = use_https
-  )
+  res <- armadillo.list_projects()
+  expect_equal(res, c("lifecycle", "test"))
 
-  expect_equal(
-    folders,
-    c("diabetes", "gecko")
-  )
-  expect_args(bucketlist, 1, use_https = FALSE)
+  stub_registry_clear()
 })
 
-test_that("armadillo.delete_project checks if project exists", {
-  bucketexists <- mock(FALSE)
+test_that("armadillo.delete_project handles errors", {
+  stub_request("delete", uri = "https://test.nl/access/projects/project") %>%
+    to_return(
+      status = 404,
+      body = "{
+        \"message\": \"project not found\"
+      }",
+      headers = list("Content-Type" = "application/json")
+    )
 
   expect_error(
-    with_mock(
-      "aws.s3::bucket_exists" = bucketexists,
-      armadillo.delete_project("project")
-    ), "Project 'project' does not exist."
+    armadillo.delete_project("project"),
+    "project not found"
   )
+
+  stub_registry_clear()
 })
 
 test_that("armadillo.delete_project deletes project", {
-  deletebucket <- mock(TRUE)
+  stub_request("delete", uri = "https://test.nl/access/projects/project") %>%
+    to_return(status = 204)
 
   expect_message(
-    with_mock(
-      armadillo.delete_project("project"),
-      "aws.s3::bucket_exists" = mock(TRUE),
-      "aws.s3::delete_bucket" = deletebucket,
-      "MolgenisArmadillo:::.use_https" = mock(TRUE, cycle = TRUE)
-    ), "Deleted project 'project'"
+    armadillo.delete_project("project"),
+    "Deleted project 'project'"
   )
 
-  expect_args(deletebucket, 1, "shared-project", use_https = TRUE)
+  stub_registry_clear()
 })

@@ -15,9 +15,6 @@ armadillo.upload_table(project, folder, table, name = NULL)
 
 \item{name}{name of the table (optional)}
 }
-\value{
-TRUE if successful, otherwise an object of class aws_error details
-}
 \description{
 Uploads a table to a folder in a project
 }

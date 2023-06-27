@@ -14,82 +14,97 @@ vignette: >
 library(MolgenisArmadillo)
 ```
 
-If you want to perform "omics"-like you need to upload the data to perform the resources. Within the Armadillo you can upload files up to 5TB. If you upload the data you can assign the data with the `s3.file.resourcer` package.
+If you want to perform “omics”-like analyses you probably need to upload data (resources). By default Armadillo supports file uploads up to 500MB.
+If you need to upload larger resources, please contact molgenis-support@umcg.nl.
 
 There are 2 roles you can assume using the package. The datamanager role and the researcher role.
 
 ## Datamanager
 The datamanager needs to make the data available to the researchers. Besides this you need to create the resources to access the data.
 
+## Researcher
+The researcher can call DataSHIELD analysis methods on the data uploaded by the datamanager.
+
 ### Upload the data
-You need to access the Minio webinterface to be able to access the resource. 
+As a datamanager you need to access the Armadillo webinterface to be able to access the resource.
 
 1. We are using data from the following sources:
   - https://github.com/isglobal-brge/brge_data_large/blob/master/data/gse66351_1.rda
   - https://github.com/isglobal-brge/brge_data_large/blob/master/data/gse66351_2.rda
-2. Login via ELIXIR
-3. Create a bucket with the prefix `shared-`. For example `shared-omics`
-4. Upload the omics data to a folder. For example `ewas`. You will get something like this `shared-omics/ewas/gse66351_1.rda`
+2. Login with your institute account.
+3. Create a project. For example `omics`.
+4. Click on the edit project button to the right of the name of your project.
+5. Create a new folder for your data. For example `ewas`.
+6. Click on the "Select a file to upload" button or drag your file to upload to the box and click on "Upload". Upload the omics data.
 
-Done!
 
-### Upload the resources
-You first need to login to the Armadillo (as `superuser`)
+### Upload the resources (in Rstudio)
+A second option to upload data (resources) is on the [Central Analysis Server (CAS)](https://lifecycle.analysis.molgenis.org/) within Rstudio
+As datamanager you first need to login to Armadillo (as `superuser`)
 
 
 
 ```r
-armadillo.login("https://armadillo.dev.molgenis.org",
-      "https://armadillo-minio.dev.molgenis.org")
-#> [1] "We're opening a browser so you can log in with code NCN8FY"
+armadillo.login("https://armadillo3-01.molgeniscloud.org")
+#> [1] "We're opening a browser so you can log in with code DNW9MK"
 ```
 
 #### Install prerequisites
-If you want to install a package on the Armadillo Rserver you can execute the following endpoint. The selected profile is always `default` if none is specified.
+If you want to install a package on the Armadillo Rserver you can execute the following. The selected profile is always `default` if none is specified. If your profile doesn't have the `resourcer` package installed, install it:
 
 
 ```r
 install.packages("resourcer")
+#> 
+#> The downloaded binary packages are in
+#> 	/var/folders/sy/d5l5fdyj6z98mgclrl_bbkzr0000gn/T//RtmpsH0W60/downloaded_packages
 library(resourcer)
+#> Loading required package: R6
+#> Loading required package: httr
+#> Registering LocalFileResourceGetter...
+#> Registering HttpFileResourceGetter...
+#> Registering ScpFileResourceGetter...
+#> Registering GridFsFileResourceGetter...
+#> Registering OpalFileResourceGetter...
+#> Registering MariaDBResourceConnector...
+#> Registering PostgresResourceConnector...
+#> Registering SparkResourceConnector...
+#> Registering PrestoResourceConnector...
+#> Registering TidyFileResourceResolver...
+#> Registering ShellResourceResolver...
+#> Registering SshResourceResolver...
+#> Registering RDataFileResourceResolver...
+#> Registering RDSFileResourceResolver...
+#> Registering SQLResourceResolver...
+#> Registering NoSQLResourceResolver...
 ```
 
 #### Create resources
-In order to be able to asign the data uploaded in the Minio you need to create the resources as well. 
+In order to be able to assign the data uploaded in the armadillo you need to create the resources as well.
+The data files you uploaded to armadillo, can be retrieved via the following URL:
+`yoururl + /storage/projects/{project name}/objects/{folder name}%2F{filename}` and example is:
+`https://armadillo3-01.molgeniscloud.org/storage/projects/omics/objects/ewas%2Fgse66351_1.rda`. Here the URL is
+`https://armadillo3-01.molgeniscloud.org`, the project name is `omics`, the folder is `ewas` and the name of the
+data file is `gse66351_1.rda`.
 
 
 ```r
 resGSE1 <- resourcer::newResource(
   name = "GSE66351_1",
-  url = "s3+http://armadillo-minio:9000/shared-omics/ewas/gse66351_1.rda",
-  identity = "molgenis",
-  secret = "molgenis",
+  url = "https://armadillo3-01.molgeniscloud.org/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
   format = "ExpressionSet"
 )
 resGSE2 <- resourcer::newResource(
   name = "GSE66351_1",
-  url = "s3+http://armadillo-minio:9000/shared-omics/ewas/gse66351_1.rda",
-  identity = "molgenis",
-  secret = "molgenis",
+  url = "https://armadillo3-01.molgeniscloud.org/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
   format = "ExpressionSet"
 )
 
-armadillo.create_project("omics")
-#> Created project 'omics'
 armadillo.upload_resource(project="omics", folder="ewas", resource = resGSE1, name = "GSE66351_1")
 #> Compressing...
-#> 
-  |                                                                                                 
-  |                                                                                           |   0%
-  |                                                                                                 
-  |===========================================================================================| 100%
 #> Uploaded ewas/GSE66351_1
 armadillo.upload_resource(project="omics", folder="ewas", resource = resGSE2, name = "GSE66351_2")
 #> Compressing...
-#> 
-  |                                                                                                 
-  |                                                                                           |   0%
-  |                                                                                                 
-  |===========================================================================================| 100%
 #> Uploaded ewas/GSE66351_2
 ```
 

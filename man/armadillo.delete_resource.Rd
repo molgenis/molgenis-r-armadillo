@@ -13,9 +13,6 @@ armadillo.delete_resource(project, folder, name)
 
 \item{name}{resource name}
 }
-\value{
-TRUE if successful, otherwise an object of class aws_error details
-}
 \description{
 Delete resource
 }

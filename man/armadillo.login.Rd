@@ -4,29 +4,24 @@
 \alias{armadillo.login}
 \title{Login}
 \usage{
-armadillo.login(armadillo, minio, duration = 900)
+armadillo.login(armadillo)
 }
 \arguments{
 \item{armadillo}{URL of the Armadillo server,}
-
-\item{minio}{URL of the Armadillo MinIO server}
-
-\item{duration}{MinIO session duration in seconds}
 }
 \value{
 the id token
 }
 \description{
-Interactively obtains an id token and uses it to create a session token on
-the minio server.
+Interactively obtains an id token and uses it to create a session token for
+an Armadillo Service
 }
 \examples{
 \dontrun{
 armadillo.login(
-  "https://armadillo.dev.molgenis.org",
-  "https://armadillo-minio.dev.molgenis.org"
+  "https://armadillo.dev.molgenis.org"
 )
-armadillo.login("http://localhost:8080", "http://localhost:9000")
+armadillo.login("http://localhost:8080")
 }
 
 }
