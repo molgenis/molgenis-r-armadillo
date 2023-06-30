@@ -15,6 +15,7 @@ core <- data.frame(
   death_m_age=c(233,950,1096,303,454))
 
 tables <- tibble(
+  project='gecko',
   folder='2_1_core_1_0',
   table='non_rep',
   vars_to_subset=list(
@@ -95,7 +96,8 @@ test_that("armadillo.subset_definition will throw error when vars are NULL", {
 })
 
 test_that(".get_tables throws error when tables are missing", {
-  tables <- c("1_1_outcome_1_0/non_rep", "1_1_outcome_1_0/yearly_rep", "2_1_core_1_0/monthly_rep", "2_1_core_1_0/non_rep", "2_1_core_1_0/trimester_rep", "2_1_core_1_0/yearly_rep")
+  tables <- c("gecko/1_1_outcome_1_0/non_rep", "gecko/1_1_outcome_1_0/yearly_rep", "gecko/2_1_core_1_0/monthly_rep", "gecko/2_1_core_1_0/non_rep", "gecko/2_1_core_1_0/trimester_rep", "gecko/2_1_core_1_0/yearly_rep")
+  
   
   subset_def <- tibble(
     folder=c('outcome'), 
@@ -112,7 +114,7 @@ test_that(".get_tables throws error when tables are missing", {
 })
 
 test_that(".get_tables returns tables", {
-  table_list <- c("1_1_outcome_1_0/non_rep", "1_1_outcome_1_0/yearly_rep", "2_1_core_1_0/monthly_rep", "2_1_core_1_0/non_rep", "2_1_core_1_0/trimester_rep", "2_1_core_1_0/yearly_rep")
+  table_list <- c("gecko/1_1_outcome_1_0/non_rep", "gecko/1_1_outcome_1_0/yearly_rep", "gecko/2_1_core_1_0/monthly_rep", "gecko/2_1_core_1_0/non_rep", "gecko/2_1_core_1_0/trimester_rep", "gecko/2_1_core_1_0/yearly_rep")
   
   expected <- tibble(
     folder='2_1_core_1_0', 
