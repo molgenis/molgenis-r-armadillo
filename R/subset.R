@@ -74,11 +74,12 @@ armadillo.subset <- function(source_project = NULL,
 .get_tables <- function(source_project, subset_def) {
   type <- folder <- . <- NULL
   
-  source_tables <- armadillo.list_tables(source_project) %>%
+  
+  source_tables <- within(armadillo.list_tables(source_project) %>%
     str_split("/", simplify = TRUE) %>%
     as_tibble(.name_repair = "unique") %>%
-    set_names("folder", "table") %>%
-    mutate(type = "source")
+    set_names("project", "folder", "table") %>%
+    mutate(type = "source"), rm("project"))
   
   missing_tables <- left_join(subset_def, source_tables, by = c("folder", "table")) %>%
     dplyr::filter(is.na(type)) %>%

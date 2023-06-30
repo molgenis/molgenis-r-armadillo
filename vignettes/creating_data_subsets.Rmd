@@ -2,7 +2,7 @@
 title: "Creating data subsets"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{creatingDataSubsets}
+  %\VignetteIndexEntry{Creating data subsets}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -31,7 +31,7 @@ In order to access the files on the MinIO fileserver you need to log in using th
 ```r
 armadillo.login("https://armadillo.test.molgenis.org",
       "https://armadillo-minio.test.molgenis.org")
-#> [1] "We're opening a browser so you can log in with code WRHTDH"
+#> Error in armadillo.login("https://armadillo.test.molgenis.org", "https://armadillo-minio.test.molgenis.org"): unused argument ("https://armadillo-minio.test.molgenis.org")
 ```
 
 A session will be created and the credentials are stored in the environment.
@@ -47,28 +47,17 @@ We need to define at least one .csv file containing 3 columns:
 | 2_1_core_1_0 | yearly_rep  | green_size_   |
 | 2_1_core_1_0 | yearly_rep  | green_access_ |
 
-You can define a .csv file with the meta columns as well.
-
-| folder       | table       | variable  |
-| ------------ | ----------- | --------- |
-| 2_1_core_1_0 | monthly_rep | row_id    |
-| 2_1_core_1_0 | monthly_rep | child_id  |
-| 2_1_core_1_0 | monthly_rep | age_years |
-
 If you defined the tables then you can construct the `subset_definition`.
 
 
 ```r
 subset_definition <- armadillo.subset_definition(
   vars = "data/subset/vars.csv",
-  metadata = "data/subset/meta.csv")
 subset_definition
-#> # A tibble: 3 × 3
-#>   folder          table      vars_to_subset   
-#>   <chr>           <chr>      <list>           
-#> 1 2_1_core_1_0    yearly_rep <tibble [15 × 1]>
-#> 2 1_1_outcome_1_0 yearly_rep <tibble [9 × 1]> 
-#> 3 2_1_core_1_0    non_rep    <tibble [7 × 1]>
+#> Error: <text>:4:0: unexpected end of input
+#> 2:   vars = "data/subset/vars.csv",
+#> 3: subset_definition
+#>   ^
 ```
 
 After this you can create a new subset using the subset method on the Armadillo. First we are going to perform a dry-run to see which output is given by the function.
@@ -81,24 +70,9 @@ not_available <- armadillo.subset(
 	subset_def = subset_definition,
 	dry_run = TRUE
 )
-#> New names:
-#> * `` -> ...1
-#> * `` -> ...2
+#> Error in armadillo.subset(source_project = "gecko", new_project = "study1", : object 'subset_definition' not found
 not_available
-#> # A tibble: 23 × 3
-#>    folder       table      missing      
-#>    <chr>        <chr>      <chr>        
-#>  1 2_1_core_1_0 yearly_rep green_dist_  
-#>  2 2_1_core_1_0 yearly_rep green_size_  
-#>  3 2_1_core_1_0 yearly_rep green_access_
-#>  4 2_1_core_1_0 yearly_rep ndvi100_     
-#>  5 2_1_core_1_0 yearly_rep ndvi300_     
-#>  6 2_1_core_1_0 yearly_rep ndvi500_     
-#>  7 2_1_core_1_0 yearly_rep blue_dist_   
-#>  8 2_1_core_1_0 yearly_rep blue_size_   
-#>  9 2_1_core_1_0 yearly_rep blue_access_ 
-#> 10 2_1_core_1_0 yearly_rep no2_         
-#> # … with 13 more rows
+#> Error in eval(expr, envir, enclos): object 'not_available' not found
 ```
 
 This outputs the variables that are missing within the actual data. You can check wether you suspected this or this is an anomaly.
@@ -112,33 +86,9 @@ not_available <- armadillo.subset(
 	new_project = "study1",
 	subset_def = subset_definition
 )
-#> New names:
-#> * `` -> ...1
-#> * `` -> ...2
-#> Compressing...
-#>   |                                                                                      |                                                                              |   0%  |                                                                                      |==============================================================================| 100%
-#> Uploaded 2_1_core_1_0/yearly_rep
-#> Compressing...
-#>   |                                                                                      |                                                                              |   0%  |                                                                                      |==============================================================================| 100%
-#> Uploaded 1_1_outcome_1_0/yearly_rep
-#> Compressing...
-#>   |                                                                                      |                                                                              |   0%  |                                                                                      |==============================================================================| 100%
-#> Uploaded 2_1_core_1_0/non_rep
+#> Error in armadillo.subset(source_project = "gecko", new_project = "study1", : object 'subset_definition' not found
 not_available
-#> # A tibble: 23 × 3
-#>    folder       table      missing      
-#>    <chr>        <chr>      <chr>        
-#>  1 2_1_core_1_0 yearly_rep green_dist_  
-#>  2 2_1_core_1_0 yearly_rep green_size_  
-#>  3 2_1_core_1_0 yearly_rep green_access_
-#>  4 2_1_core_1_0 yearly_rep ndvi100_     
-#>  5 2_1_core_1_0 yearly_rep ndvi300_     
-#>  6 2_1_core_1_0 yearly_rep ndvi500_     
-#>  7 2_1_core_1_0 yearly_rep blue_dist_   
-#>  8 2_1_core_1_0 yearly_rep blue_size_   
-#>  9 2_1_core_1_0 yearly_rep blue_access_ 
-#> 10 2_1_core_1_0 yearly_rep no2_         
-#> # … with 13 more rows
+#> Error in eval(expr, envir, enclos): object 'not_available' not found
 ```
 
 Now you can also take a look at the files in the user interface of the MinIO

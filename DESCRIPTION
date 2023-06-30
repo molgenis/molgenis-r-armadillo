@@ -39,16 +39,11 @@ Imports:
     base64enc,
     httr,
     urltools,
-    xml2,
-    aws.iam,
-    aws.s3,
-    MolgenisAuth,
-    arrow,
     dplyr,
     purrr,
     stringr,
     tidyr,
-    tibble
+    tibble,
     MolgenisAuth (>= 0.0.25),
     arrow
 Suggests:
