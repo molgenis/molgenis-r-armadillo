@@ -50,7 +50,6 @@ armadillo.subset <- function(source_project = NULL,
   tables_local <- .get_tables(source_project, subset_def)
   
   missing <- .check_available_vars(tables_local)
-  print(dry_run)
   if (dry_run == FALSE) {
     .make_subset(new_project, tables_local)
   }
@@ -73,13 +72,14 @@ armadillo.subset <- function(source_project = NULL,
 #' @noRd
 .get_tables <- function(source_project, subset_def) {
   type <- folder <- . <- NULL
-  
-  
-  source_tables <- within(armadillo.list_tables(source_project) %>%
+    
+  suppressMessages(
+    source_tables <- within(armadillo.list_tables("gecko") %>%
     str_split("/", simplify = TRUE) %>%
     as_tibble(.name_repair = "unique") %>%
     set_names("project", "folder", "table") %>%
     mutate(type = "source"), rm("project"))
+  )
   
   missing_tables <- left_join(subset_def, source_tables, by = c("folder", "table")) %>%
     dplyr::filter(is.na(type)) %>%

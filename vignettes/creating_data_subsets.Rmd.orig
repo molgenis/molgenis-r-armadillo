@@ -2,7 +2,7 @@
 title: "Creating data subsets"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{creatingDataSubsets}
+  %\VignetteIndexEntry{Creating data subsets}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-When researchers request access to your data they may in many cases not be granted access to the whole dataset, but only to a subset. On the MinIO fileserver access is regulated on the project level, so you will need to create a new project using a subset of the data. Here you can see the different relevant steps you need to take to create these subsets.
+When researchers request access to your data they may in many cases not be granted access to the whole dataset, but only to a subset. In Armadilllo, access is regulated on the project level, so you will need to create a new project using a subset of the data. Here are the required steps to create these subsets.
 
 ## Install and load the package
 You need to install and load the package first to be able to create the subsets.
@@ -28,11 +28,10 @@ library(MolgenisArmadillo)
 ```
 
 ## Logging in
-In order to access the files on the MinIO fileserver you need to log in using the URLs of the Armadillo server and the MinIO fileserver. A browser window will be opened where you can identify yourself with the ID provider.
+In order to access the files you need to log in using the URL of the Armadillo server. A browser window will be opened where you can identify yourself with the ID provider.
 
-```{r, login to the armadillo storage server}
-armadillo.login("https://armadillo.test.molgenis.org",
-      "https://armadillo-minio.test.molgenis.org")
+```{r, login to armadillo}
+armadillo.login("https://armadillo-demo.molgenis.net/")
 ```
 
 A session will be created and the credentials are stored in the environment.
@@ -40,7 +39,7 @@ A session will be created and the credentials are stored in the environment.
 ## Defining the subset
 Let's assume you are in a consortium which has data that can not be shared in total to the researchers. You want to share a subset of the whole dataset with certain researchers that applied for access to your data.
 
-We need to define at least one .csv file containing 3 columns:
+For each research project, we need to define a .csv file containing 3 columns:
 
 | folder       | table       | variable      |
 | ------------ | ----------- | ------------- |
@@ -48,24 +47,17 @@ We need to define at least one .csv file containing 3 columns:
 | 2_1_core_1_0 | yearly_rep  | green_size_   |
 | 2_1_core_1_0 | yearly_rep  | green_access_ |
 
-You can define a .csv file with the meta columns as well.
+'folder' refers a folder within the master project; 'table' refers to the name of a table within this folder, and 'variable' refers to one or more variables within this table. Note that these columns need to be named exactly as above.
 
-| folder       | table       | variable  |
-| ------------ | ----------- | --------- |
-| 2_1_core_1_0 | monthly_rep | row_id    |
-| 2_1_core_1_0 | monthly_rep | child_id  |
-| 2_1_core_1_0 | monthly_rep | age_years |
-
-If you defined the tables then you can construct the `subset_definition`.
+If you defined the tables then you can construct the `subset_definition`. This creates a tibble within R holding the details from the .csv file.
 
 ```{r, create the subset definition object}
 subset_definition <- armadillo.subset_definition(
-  vars = "data/subset/vars.csv",
-  metadata = "data/subset/meta.csv")
+  vars = "vignettes/data/subset/vars.csv")
 subset_definition
 ```
 
-After this you can create a new subset using the subset method on the Armadillo. First we are going to perform a dry-run to see which output is given by the function.
+After this you can create a new subset using the subset method on the Armadillo. First we are going to perform a dry-run to check whether the required folder, tables and variables are present.
 
 ```{r, create a subset in dry-run mode}
 not_available <- armadillo.subset(
@@ -77,18 +69,17 @@ not_available <- armadillo.subset(
 not_available
 ```
 
-This outputs the variables that are missing within the actual data. You can check wether you suspected this or this is an anomaly.
+This outputs a tibble with details of any variables that are missing within the actual data. You can check whether you suspected this or this is an anomaly.
 
 If you are confident that it will work you can run the subset method without dry_run.
 
 ```{r, running the subset for real}
-not_available <- armadillo.subset(
+armadillo.subset(
 	source_project = "gecko",
 	new_project = "study1",
-	subset_def = subset_definition
+	subset_def = subset_definition, 
+	dry_run = FALSE
 )
-not_available
 ```
 
-Now you can also take a look at the files in the user interface of the MinIO
-fileserver if you open the MinIO server URL in a browser window. The test server you can find here: https://armadillo-minio.test.molgenis.org/.
+Now you can also take a look at the files in the armadillo user interface, if you open it in a browser window.
