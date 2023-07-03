@@ -27,7 +27,7 @@ You first need to login to the Armadillo (as `superuser`)
 ```r
 armadillo.login("https://armadillo.dev.molgenis.org",
       "https://armadillo-minio.dev.molgenis.org")
-#> [1] "We're opening a browser so you can log in with code B56HHX"
+#> Error in armadillo.login("https://armadillo.dev.molgenis.org", "https://armadillo-minio.dev.molgenis.org"): unused argument ("https://armadillo-minio.dev.molgenis.org")
 ```
 
 ## Install packages
@@ -36,8 +36,8 @@ If you want to install a package on the Armadillo Rserver you can execute the fo
 
 ```r
 armadillo.install_packages("data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz")
-#> Attempting to install package [ 'data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz' ]
-#> Package [ 'data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz' ] installed
+#> Error: You are not logged in.
+#>          Please log in with armadillo.login('<YOUR_SERVER>')
 ```
 
 In order to install the packages on a specific profile you can specify the profile.
@@ -60,11 +60,7 @@ To be able to use new packages in the Armadillo you need to add them to the whit
 
 ```r
 armadillo.whitelist_packages("MolgenisArmadillo")
-#> Attempting to whitelist package [ 'MolgenisArmadillo' ]
-#> Package [ 'MolgenisArmadillo' ] added to the whitelist
-#> Packages whitelisted:
-#>  * [ 'dsBase' ]
-#>  * [ 'MolgenisArmadillo' ]
+#> Error in armadillo.whitelist_packages("MolgenisArmadillo"): could not find function "armadillo.whitelist_packages"
 ```
 
 You are able to whilist mulitple packages as well using the following line:
@@ -72,13 +68,7 @@ You are able to whilist mulitple packages as well using the following line:
 
 ```r
 armadillo.whitelist_packages(c("MolgenisArmadillo", "dsBase"))
-#> Attempting to whitelist package [ 'MolgenisArmadillo' ]
-#> Package [ 'MolgenisArmadillo' ] added to the whitelist
-#> Attempting to whitelist package [ 'dsBase' ]
-#> Package [ 'dsBase' ] added to the whitelist
-#> Packages whitelisted:
-#>  * [ 'dsBase' ]
-#>  * [ 'MolgenisArmadillo' ]
+#> Error in armadillo.whitelist_packages(c("MolgenisArmadillo", "dsBase")): could not find function "armadillo.whitelist_packages"
 ```
 
 

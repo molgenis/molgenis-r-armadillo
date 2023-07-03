@@ -1,16 +1,14 @@
-# Set work directory (N.B. user specific!)
-setwd("~/git/molgenis-r-armadillo/vignettes")
-
 # To update the vignette:
-knitr::knit("MolgenisArmadillo.Rmd.orig", output = "MolgenisArmadillo.Rmd")
-knitr::knit("creating_data_subsets.Rmd.orig",
-            output = "creating_data_subsets.Rmd")
-knitr::knit("install_packages.Rmd.orig", output = "install_packages.Rmd")
-knitr::knit("create_resources.Rmd.orig", output = "create_resources.Rmd")
+knitr::knit("vignettes/MolgenisArmadillo.Rmd.orig", output = "vignettes/MolgenisArmadillo.Rmd")
+knitr::knit("vignettes/creating_data_subsets.Rmd.orig",
+            output = "vignettes/creating_data_subsets.Rmd")
+knitr::knit("vignettes/install_packages.Rmd.orig", output = "vignettes/install_packages.Rmd")
+knitr::knit("vignettes/create_resources.Rmd.orig", output = "vignettes/create_resources.Rmd")
+knitr::knit("vignettes/creating_data_subsets.Rmd.orig",
+            output = "vignettes/creating_data_subsets.Rmd")
 
 # To create a script that uploads the files:
-knitr::purl("MolgenisArmadillo.Rmd.orig", output = "MolgenisArmadillo.R")
-knitr::purl("creating_data_subsets.Rmd.orig",
-            output = "creating_data_subsets.R")
-knitr::purl("install_packages.Rmd.orig", output = "install_packages.R")
-knitr::purl("create_resources.Rmd.orig", output = "create_resources.Rmd")
+knitr::purl("vignettes/MolgenisArmadillo.Rmd.orig", output = "vignettes/MolgenisArmadillo.R")
+knitr::purl("vignettes/install_packages.Rmd.orig", output = "vignettes/install_packages.R")
+knitr::purl("vignettes/create_resources.Rmd.orig", output = "vignettes/create_resources.Rmd")
+knitr::purl("vignettes/creating_data_subsets.Rmd.orig", output = "vignettes/creating_data_subsets.Rmd")

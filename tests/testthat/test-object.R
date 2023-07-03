@@ -268,7 +268,8 @@ test_that(".load_object loads the object from file", {
     to_return(status = 200, body = stringi::stri_read_raw(file))
 
   expect_silent(
-    with_mock({
+    with_mock(
+      {
         result <- .load_object(
           project = "project",
           folder = "core",

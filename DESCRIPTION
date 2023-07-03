@@ -39,6 +39,11 @@ Imports:
     base64enc,
     httr,
     urltools,
+    dplyr,
+    purrr,
+    stringr,
+    tidyr,
+    tibble,
     MolgenisAuth (>= 0.0.25),
     arrow
 Suggests:
@@ -49,7 +54,6 @@ Suggests:
     webmockr,
     mockery,
     datasets,
-    tibble,
     rmarkdown,
     DSMolgenisArmadillo
 License: LGPL (>= 2.1)

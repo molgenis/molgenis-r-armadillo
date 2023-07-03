@@ -46,7 +46,7 @@ As datamanager you first need to login to Armadillo (as `superuser`)
 
 ```r
 armadillo.login("https://armadillo3-01.molgeniscloud.org")
-#> [1] "We're opening a browser so you can log in with code DNW9MK"
+#> Error in .get_info(server): Bad Gateway (HTTP 502). Failed to fetch server info.
 ```
 
 #### Install prerequisites
@@ -57,7 +57,7 @@ If you want to install a package on the Armadillo Rserver you can execute the fo
 install.packages("resourcer")
 #> 
 #> The downloaded binary packages are in
-#> 	/var/folders/sy/d5l5fdyj6z98mgclrl_bbkzr0000gn/T//RtmpsH0W60/downloaded_packages
+#> 	/var/folders/sy/d5l5fdyj6z98mgclrl_bbkzr0000gn/T//Rtmp2sXukB/downloaded_packages
 library(resourcer)
 #> Loading required package: R6
 #> Loading required package: httr
@@ -102,10 +102,12 @@ resGSE2 <- resourcer::newResource(
 
 armadillo.upload_resource(project="omics", folder="ewas", resource = resGSE1, name = "GSE66351_1")
 #> Compressing...
-#> Uploaded ewas/GSE66351_1
+#> Error: You are not logged in.
+#>          Please log in with armadillo.login('<YOUR_SERVER>')
 armadillo.upload_resource(project="omics", folder="ewas", resource = resGSE2, name = "GSE66351_2")
 #> Compressing...
-#> Uploaded ewas/GSE66351_2
+#> Error: You are not logged in.
+#>          Please log in with armadillo.login('<YOUR_SERVER>')
 ```
 
 The data is now available for researcher to assign.

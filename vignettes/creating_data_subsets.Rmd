@@ -9,216 +9,91 @@ vignette: >
 
 
 
+When researchers request access to your data they may in many cases not be granted access to the whole dataset, but only to a subset. In Armadilllo, access is regulated on the project level, so you will need to create a new project using a subset of the data. Here are the required steps to create these subsets.
+
+## Install and load the package
+You need to install and load the package first to be able to create the subsets.
+
+
+```r
+install.packages("MolgenisArmadillo")
+```
+
 
 ```r
 library(MolgenisArmadillo)
-library(dplyr)
 ```
 
-When researchers request access to your data they may in many cases not be granted access to the whole dataset, but only to a subset. On the MinIO fileserver access is regulated on the project level, so you will need to create a new project using a subset of the data. Here you can see the different relevant steps you need to take to create these subsets.
-
 ## Logging in
-In order to access the files on the MinIO fileserver you need to log in using the URLs of the Armadillo server and the MinIO fileserver. A browser window will be opened where you can identify yourself with the ID provider.
+In order to access the files you need to log in using the URL of the Armadillo server. A browser window will be opened where you can identify yourself with the ID provider.
 
 
 ```r
-armadillo.login("https://armadillo.test.molgenis.org",
-      "https://armadillo-minio.test.molgenis.org")
-#> [1] "We're opening a browser so you can log in with code 5K2S2N"
+armadillo.login("https://armadillo-demo.molgenis.net/")
+#> [1] "We're opening a browser so you can log in with code KLFMJS"
 ```
 
 A session will be created and the credentials are stored in the environment.
 
-## Sharing data
-Let's assume you are in a consortium which has core-variables and outcome-variables. You want to share a subset of the whole dataset with certain researchers that applied for access to your data.
+## Defining the subset
+Let's assume you are in a consortium which has data that can not be shared in total to the researchers. You want to share a subset of the whole dataset with certain researchers that applied for access to your data.
 
-First we will create a project, here called 'subset1'. 
+For each research project, we need to define a .csv file containing 3 columns:
 
+| folder       | table       | variable      |
+| ------------ | ----------- | ------------- |
+| 2_1_core_1_0 | yearly_rep  | green_dist_   |
+| 2_1_core_1_0 | yearly_rep  | green_size_   |
+| 2_1_core_1_0 | yearly_rep  | green_access_ |
 
-```r
-armadillo.create_project("subset1")
-#> Created project 'subset1'
-```
+'folder' refers a folder within the master project; 'table' refers to the name of a table within this folder, and 'variable' refers to one or more variables within this table. Note that these columns need to be named exactly as above.
 
-#list projects on the MinIO file server
-
-Secondly we will explore the data and find the relevant variables to share.
-
-
-```r
-armadillo.list_projects()
-#> [1] "cohort1"            "cohort2"            "cohort3"            "dnbc"              
-#> [5] "example-dictionary" "exampledictionary"  "methylationclocks"  "subset1"
-```
-
-#List the tables in a project
-
-You want to share data from 'cohort1'. We will list the available tables within this project. 
+If you defined the tables then you can construct the `subset_definition`. This creates a tibble within R holding the details from the .csv file.
 
 
 ```r
-armadillo.list_tables("cohort1")
-#> [1] "1_1-outcome-1_0/nonrep"    "1_1-outcome-1_0/yearlyrep" "2_1-core-1_0/monthlyrep"  
-#> [4] "2_1-core-1_0/nonrep"       "2_1-core-1_0/trimesterrep" "2_1-core-1_0/yearlyrep"
+subset_definition <- armadillo.subset_definition(
+  vars = "vignettes/data/subset/vars.csv")
+#> Error in armadillo.subset_definition(vars = "vignettes/data/subset/vars.csv"): impossible de trouver la fonction "armadillo.subset_definition"
+subset_definition
+#>            folder      table
+#> 1    2_1_core_1_0 yearly_rep
+#> 2 1_1_outcome_1_0 yearly_rep
+#> 3    2_1_core_1_0    non_rep
+#>                                                                                                                                                vars_to_subset
+#> 1 green_dist_, green_size_, green_access_, ndvi100_, ndvi300_, ndvi500_, blue_dist_, blue_size_, blue_access_, no2_, nox_, edu_m_, edu_f_, smk_exp, hhincome_
+#> 2                                                                             wm_age_, wm_avg_, wm_eval_, wm_instr_, wm_pc_, wm_pro_, wm_raw_, wm_std_, ahdhR
+#> 3                                                         cohort_id, sex, agebirth_m_y, breastfed_any, breastfed_ever, eusilc_income, eusilc_income_quintiles
 ```
 
-##Making subsets of the data
-Since the core and outcome data tables have the same names we will first subset the outcome variables and afterwards subset the core variables. 
-
-#Subset the outcome variables
-We will now download the outcome tables to the local environment
+After this you can create a new subset using the subset method on the Armadillo. First we are going to perform a dry-run to check whether the required folder, tables and variables are present.
 
 
 ```r
-non_rep <- armadillo.load_table("cohort1", "1_1-outcome-1_0", "nonrep")
-yearly_rep <- armadillo.load_table("cohort1", "1_1-outcome-1_0", "yearlyrep")
+not_available <- armadillo.subset(
+	source_project = "gecko",
+	new_project = "study1",
+	subset_def = subset_definition,
+	dry_run = TRUE
+)
+#> Error in armadillo.subset(source_project = "gecko", new_project = "study1", : impossible de trouver la fonction "armadillo.subset"
+not_available
+#> Error in eval(expr, envir, enclos): objekt 'not_available' blev ikke fundet
 ```
 
-, list their variables
+This outputs a tibble with details of any variables that are missing within the actual data. You can check whether you suspected this or this is an anomaly.
+
+If you are confident that it will work you can run the subset method without dry_run.
 
 
 ```r
-colnames(non_rep)
-#>  [1] "row_id"                "child_id"              "pets_preg"            
-#>  [4] "asthma_ever_CHICOS"    "asthma_ever_MeDALL"    "asthma_current_MeDALL"
-#>  [7] "asthma_current_ISAAC"  "allergy_any_m"         "allergy_inh_m"        
-#> [10] "anaphylaxis"
-colnames(yearly_rep)
-#>  [1] "row_id"                  "child_id"                "age_years"              
-#>  [4] "whe_"                    "asthma_"                 "asthma_med_"            
-#>  [7] "asthma_med_spec_"        "FEV1_z_"                 "FVC_z_"                 
-#> [10] "FEV1FVC_z_"              "repro_"                  "FeNO_"                  
-#> [13] "inh_all_sens_SPT_"       "inh_all_sens_IgE_HDM_"   "inh_all_sens_IgE_CAT_"  
-#> [16] "inh_all_sens_IgE_RYE_"   "inh_all_sens_IgE_MOULD_"
+armadillo.subset(
+	source_project = "gecko",
+	new_project = "study1",
+	subset_def = subset_definition, 
+	dry_run = FALSE
+)
+#> Error in armadillo.subset(source_project = "gecko", new_project = "study1", : impossible de trouver la fonction "armadillo.subset"
 ```
 
-, and subset the variables that were requested.
-
-
-```r
-subset_outcome_non_rep <- non_rep %>% select(child_id, pets_preg, asthma_ever_CHICOS)
-
-subset_outcome_yearly_rep <- yearly_rep %>% select(child_id, asthma_med_)
-```
-
-#Subset the core variables
-We will now download the relevant core tables to the local environment
-
-
-```r
-non_rep <- armadillo.load_table("cohort1", "2_1-core-1_0", "nonrep")
-yearly_rep <- armadillo.load_table("cohort1", "2_1-core-1_0", "yearlyrep")
-```
-
-, list their variables
-
-
-```r
-colnames(non_rep)
-#>   [1] "row_id"              "child_id"            "mother_id"           "cohort_id"          
-#>   [5] "preg_no"             "child_no"            "coh_country"         "recruit_age"        
-#>   [9] "cob_m"               "ethn1_m"             "ethn2_m"             "ethn3_m"            
-#>  [13] "agebirth_m_y"        "agebirth_m_d"        "death_m"             "death_m_age"        
-#>  [17] "prepreg_weight"      "prepreg_weight_mes"  "prepreg_weight_ga"   "latepreg_weight"    
-#>  [21] "latepreg_weight_mes" "latepreg_weight_ga"  "preg_gain"           "preg_gain_mes"      
-#>  [25] "height_m"            "height_mes_m"        "prepreg_dia"         "preg_dia"           
-#>  [29] "preg_thyroid"        "preg_fever"          "preeclam"            "preg_ht"            
-#>  [33] "asthma_m"            "prepreg_psych"       "preg_psych"          "ppd"                
-#>  [37] "prepreg_smk"         "prepreg_cig"         "preg_smk"            "preg_cig"           
-#>  [41] "prepreg_alc"         "prepreg_alc_unit"    "preg_alc"            "preg_alc_unit"      
-#>  [45] "folic_prepreg"       "folic_preg12"        "folic_post12"        "parity_m"           
-#>  [49] "preg_plan"           "mar"                 "ivf"                 "outcome"            
-#>  [53] "mode_delivery"       "plac_abrup"          "cob_p"               "cob_p_fath"         
-#>  [57] "ethn1_p"             "ethn2_p"             "ethn3_p"             "ethn_p_fath"        
-#>  [61] "agebirth_p_y"        "agebirth_p_d"        "agebirth_p_fath"     "death_p"            
-#>  [65] "death_p_age"         "death_p_fath"        "weight_f1"           "weight_mes_f1"      
-#>  [69] "weight_f1_fath"      "height_f1"           "height_mes_f1"       "height_f1_fath"     
-#>  [73] "dia_bf"              "asthma_bf"           "psych_bf"            "smk_p"              
-#>  [77] "smk_cig_p"           "smk_fath"            "birth_month"         "birth_year"         
-#>  [81] "apgar"               "neo_unit"            "sex"                 "plurality"          
-#>  [85] "ga_lmp"              "ga_us"               "ga_mr"               "ga_bj"              
-#>  [89] "birth_weight"        "birth_length"        "birth_head_circum"   "weight_who_ga"      
-#>  [93] "plac_weight"         "con_anomalies"       "major_con_anomalies" "cer_palsy"          
-#>  [97] "sibling_pos"         "death_child"         "death_child_age"     "breastfed_excl"     
-#> [101] "breastfed_any"       "breastfed_ever"      "solid_food"          "childcare_intro"    
-#> [105] "cats_preg"           "dogs_preg"           "cats_quant_preg"     "dogs_quant_preg"
-colnames(yearly_rep)
-#>  [1] "row_id"            "child_id"          "age_years"         "cohab_"           
-#>  [5] "occup_m_"          "occupcode_m_"      "edu_m_"            "occup_f1_"        
-#>  [9] "occup_f1_fath"     "occup_f2_"         "occup_f2_fath"     "occupcode_f1_"    
-#> [13] "occupcode_f1_fath" "occupcode_f2_"     "occupcode_f2_fath" "edu_f1_"          
-#> [17] "edu_f1_fath"       "edu_f2_"           "edu_f2_fath"       "childcare_"       
-#> [21] "childcarerel_"     "childcareprof_"    "childcarecentre_"  "smk_exp"          
-#> [25] "pets_"             "cats_"             "cats_quant_"       "dogs_"            
-#> [29] "dogs_quant_"       "mental_exp"        "hhincome_"         "fam_splitup"      
-#> [33] "famsize_child"     "famsize_adult"
-```
-
-, and subset the variables that were requested.
-
-
-```r
-subset_core_non_rep <- non_rep %>% select(child_id, asthma_m, breastfed_any)
-
-subset_core_yearly_rep <- yearly_rep %>% select(child_id, pets_)
-```
-
-##Uploading the data subset
-
-#Check the data subset before uploading
-
-
-```r
-colnames(subset_outcome_non_rep)
-#> [1] "child_id"           "pets_preg"          "asthma_ever_CHICOS"
-colnames(subset_outcome_yearly_rep)
-#> [1] "child_id"    "asthma_med_"
-colnames(subset_core_non_rep)
-#> [1] "child_id"      "asthma_m"      "breastfed_any"
-colnames(subset_core_yearly_rep)
-#> [1] "child_id" "pets_"
-```
-
-#Upload the data subset
-
-
-```r
-armadillo.upload_table("subset1", "1_1_outcome_1_0", subset_outcome_non_rep, "non_rep")
-#> Compressing...
-#> 
-  |                                                                                              
-  |                                                                                        |   0%
-  |                                                                                              
-  |========================================================================================| 100%
-#> Uploaded 1_1_outcome_1_0/non_rep
-
-armadillo.upload_table("subset1", "1_1_outcome_1_0", subset_outcome_yearly_rep, "yearly_rep")
-#> Compressing...
-#> 
-  |                                                                                              
-  |                                                                                        |   0%
-  |                                                                                              
-  |========================================================================================| 100%
-#> Uploaded 1_1_outcome_1_0/yearly_rep
-
-armadillo.upload_table("subset1", "2_1_core_1_0", subset_core_non_rep, "non_rep")
-#> Compressing...
-#> 
-  |                                                                                              
-  |                                                                                        |   0%
-  |                                                                                              
-  |========================================================================================| 100%
-#> Uploaded 2_1_core_1_0/non_rep
-
-armadillo.upload_table("subset1", "2_1_core_1_0", subset_core_yearly_rep, "yearly_rep")
-#> Compressing...
-#> 
-  |                                                                                              
-  |                                                                                        |   0%
-  |                                                                                              
-  |========================================================================================| 100%
-#> Uploaded 2_1_core_1_0/yearly_rep
-```
-
-Now you can also take a look at the files in the user interface of the MinIO
-fileserver if you open the MinIO server URL in a browser window.
+Now you can also take a look at the files in the armadillo user interface, if you open it in a browser window.
