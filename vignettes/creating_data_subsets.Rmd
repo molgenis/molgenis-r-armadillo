@@ -2,7 +2,7 @@
 title: "Creating data subsets"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Creating data subsets}
+  %\VignetteIndexEntry{creatingDataSubsets}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,6 +22,7 @@ install.packages("MolgenisArmadillo")
 
 ```r
 library(MolgenisArmadillo)
+#> Error in library(MolgenisArmadillo): there is no package called 'MolgenisArmadillo'
 ```
 
 ## Logging in
@@ -31,7 +32,7 @@ In order to access the files on the MinIO fileserver you need to log in using th
 ```r
 armadillo.login("https://armadillo.test.molgenis.org",
       "https://armadillo-minio.test.molgenis.org")
-#> Error in armadillo.login("https://armadillo.test.molgenis.org", "https://armadillo-minio.test.molgenis.org"): unused argument ("https://armadillo-minio.test.molgenis.org")
+#> Error in armadillo.login("https://armadillo.test.molgenis.org", "https://armadillo-minio.test.molgenis.org"): could not find function "armadillo.login"
 ```
 
 A session will be created and the credentials are stored in the environment.
@@ -47,17 +48,24 @@ We need to define at least one .csv file containing 3 columns:
 | 2_1_core_1_0 | yearly_rep  | green_size_   |
 | 2_1_core_1_0 | yearly_rep  | green_access_ |
 
+You can define a .csv file with the meta columns as well.
+
+| folder       | table       | variable  |
+| ------------ | ----------- | --------- |
+| 2_1_core_1_0 | monthly_rep | row_id    |
+| 2_1_core_1_0 | monthly_rep | child_id  |
+| 2_1_core_1_0 | monthly_rep | age_years |
+
 If you defined the tables then you can construct the `subset_definition`.
 
 
 ```r
 subset_definition <- armadillo.subset_definition(
   vars = "data/subset/vars.csv",
+  metadata = "data/subset/meta.csv")
+#> Error in armadillo.subset_definition(vars = "data/subset/vars.csv", metadata = "data/subset/meta.csv"): could not find function "armadillo.subset_definition"
 subset_definition
-#> Error: <text>:4:0: unexpected end of input
-#> 2:   vars = "data/subset/vars.csv",
-#> 3: subset_definition
-#>   ^
+#> Error in eval(expr, envir, enclos): object 'subset_definition' not found
 ```
 
 After this you can create a new subset using the subset method on the Armadillo. First we are going to perform a dry-run to see which output is given by the function.
@@ -70,7 +78,7 @@ not_available <- armadillo.subset(
 	subset_def = subset_definition,
 	dry_run = TRUE
 )
-#> Error in armadillo.subset(source_project = "gecko", new_project = "study1", : object 'subset_definition' not found
+#> Error in armadillo.subset(source_project = "gecko", new_project = "study1", : could not find function "armadillo.subset"
 not_available
 #> Error in eval(expr, envir, enclos): object 'not_available' not found
 ```
@@ -86,7 +94,7 @@ not_available <- armadillo.subset(
 	new_project = "study1",
 	subset_def = subset_definition
 )
-#> Error in armadillo.subset(source_project = "gecko", new_project = "study1", : object 'subset_definition' not found
+#> Error in armadillo.subset(source_project = "gecko", new_project = "study1", : could not find function "armadillo.subset"
 not_available
 #> Error in eval(expr, envir, enclos): object 'not_available' not found
 ```
