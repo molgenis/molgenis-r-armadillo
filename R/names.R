@@ -62,8 +62,8 @@
 
   if (!grepl("^[a-zA-Z0-9_:-]+$", name, perl = TRUE)) {
     stop(paste0(
-      "Valid name characters are ",
-      "ASCII letters, digits, '_', '-' and ':'"
+      "Name: ", name, " has invalid characters.\n",
+      "Only ASCII letters, digits, '_', '-' and ':' are permitted."
     ),
     call. = FALSE
     )
