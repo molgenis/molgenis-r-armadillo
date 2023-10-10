@@ -28,19 +28,18 @@ test_that(".upload_object handles errors", {
 
   expect_error(
     with_mock({
-      .upload_object(
-        project = "project",
-        folder = "example",
-        object = datasets::iris,
-        name = "test",
-        compression_function = compress
-      )},
-      "tempfile" = function() {
-        file
-      }),
+               .upload_object(
+                 project = "project",
+                 folder = "example",
+                 object = datasets::iris,
+                 name = "test",
+                 compression_function = compress
+               )},
+    "tempfile" = function() {
+      file
+    }),
     "project not found"
   )
-
   stub_registry_clear()
 })
 
@@ -65,19 +64,18 @@ test_that(".upload_object uploads object", {
 
   expect_message(
     with_mock({
-      .upload_object(
-        project = "project",
-        folder = "example",
-        object = datasets::iris,
-        name = "test",
-        compression_function = compress
-      )},
-      "tempfile" = function() {
-        file
-      }),
+               .upload_object(
+                 project = "project",
+                 folder = "example",
+                 object = datasets::iris,
+                 name = "test",
+                 compression_function = compress
+               )},
+    "tempfile" = function() {
+      file
+    }),
     "Uploaded example/test"
   )
-
   stub_registry_clear()
 })
 
@@ -111,7 +109,7 @@ test_that(".list_objects_by_extension lists the objects in a project", {
         \"core/resource.rds\"
       ]",
       headers = list("Content-Type" = "application/json")
-      )
+    )
 
   res <- .list_objects_by_extension("project", ".parquet")
   expect_equal(res, c("core/nonrep", "core/yearlyrep"))
@@ -122,7 +120,7 @@ test_that(".list_objects_by_extension lists the objects in a project", {
 test_that(".delete_object handles errors", {
   stub_request("delete",
                uri = paste0("https://test.nl/storage/projects/project/",
-               "objects/core%2Fnonrep.parquet")) %>%
+                            "objects/core%2Fnonrep.parquet")) %>%
     to_return(
       status = 404,
       body = "{
@@ -142,7 +140,7 @@ test_that(".delete_object handles errors", {
 test_that(".delete_object deletes an object", {
   stub_request("delete",
                uri = paste0("https://test.nl/storage/projects/project/objects/",
-               "core%2Fnonrep.parquet")) %>%
+                            "core%2Fnonrep.parquet")) %>%
     to_return(
       status = 204
     )
@@ -158,7 +156,7 @@ test_that(".delete_object deletes an object", {
 test_that(".copy_object handles errors", {
   stub_request("post",
                uri = paste0("https://test.nl/storage/projects/project/objects/",
-               "core%2Fnonrep.parquet/copy")) %>%
+                            "core%2Fnonrep.parquet/copy")) %>%
     wi_th(
       headers = list("Accept" = "application/json"),
       body = list(name = "core/copy.parquet")
@@ -201,7 +199,7 @@ test_that(".copy_object warns if you copy an object onto itself", {
 test_that(".copy_object copies object", {
   stub_request("post",
                uri = paste0("https://test.nl/storage/projects/project/objects/",
-               "core%2Fnonrep.parquet/copy")) %>%
+                            "core%2Fnonrep.parquet/copy")) %>%
     wi_th(
       headers = list("Accept" = "application/json"),
       body = list(name = "core/copy.parquet")
@@ -226,7 +224,7 @@ test_that(".copy_object copies object", {
 test_that(".load_object handles errors", {
   stub_request("get",
                uri = paste0("https://test.nl/storage/projects/project/objects/",
-               "core%2Fnonrep.rds")) %>%
+                            "core%2Fnonrep.rds")) %>%
     wi_th(headers = list("Accept" = "application/octet-stream")) %>%
     to_return(status = 401)
 
@@ -263,7 +261,7 @@ test_that(".load_object loads the object from file", {
 
   stub_request("get",
                uri = paste0("https://test.nl/storage/projects/project/objects/",
-               "core%2Fnonrep.parquet")) %>%
+                            "core%2Fnonrep.parquet")) %>%
     wi_th(headers = list("Accept" = "application/octet-stream")) %>%
     to_return(status = 200, body = stringi::stri_read_raw(file))
 
@@ -292,7 +290,7 @@ test_that(".load_object loads the object from file", {
 test_that(".move_object handles errors", {
   stub_request("post",
                uri = paste0("https://test.nl/storage/projects/project/objects/",
-               "core%2Fnonrep.parquet/move")) %>%
+                            "core%2Fnonrep.parquet/move")) %>%
     wi_th(
       headers = list("Accept" = "application/json"),
       body = list(name = "other/renamed.parquet")
@@ -335,7 +333,7 @@ test_that(".move_object warns if you move an object onto itself", {
 test_that(".move_object moves object", {
   stub_request("post",
                uri = paste0("https://test.nl/storage/projects/project/objects/",
-               "core%2Fnonrep.parquet/move")) %>%
+                            "core%2Fnonrep.parquet/move")) %>%
     wi_th(
       headers = list("Accept" = "application/json"),
       body = list(name = "other/renamed.parquet")

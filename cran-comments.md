@@ -1,3 +1,8 @@
+## 2.1.0 Subset function and bugfixes
+* Add subset function
+* Fix unclear error message when table name is not specified 
+* Fix load_table and assign functions for arrow 3 update
+
 ## 2.0.0 Make compatible with armadillo 3
 * Armadillo 3 compatibility
 * Discontinue Armadillo 2 compatibility (breaking)

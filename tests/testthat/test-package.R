@@ -36,8 +36,8 @@ test_that("profile not found when installing packages", {
       "httr:::content" = httr_content
     ),
     paste0(
-      "Endpoint doesn't exist. ",
-      "Make sure you're running Armadillo in development mode.")
+           "Endpoint doesn't exist. ",
+           "Make sure you're running Armadillo in development mode.")
   )
 })
 
@@ -103,8 +103,8 @@ test_that("install packages fails because of empty path", {
       "httr:::upload_file" = mock()
     ),
     paste0(
-      "You need to specify the full path(s) of the package(s);",
-      "e.g. 'C:/User/test.tar.gz'"),
+           "You need to specify the full path(s) of the package(s);",
+           "e.g. 'C:/User/test.tar.gz'"),
     fixed = TRUE
   )
 })
@@ -127,6 +127,6 @@ test_that("is_empty: empty string", {
 
 test_that("is_empty: non character type", {
   expect_error(
-    .is_empty("message", NULL),
-    "Datatype of package should be character: [] is type of [NULL]")
+               .is_empty("message", NULL),
+               "Datatype of package should be character: [] is type of [NULL]")
 })
