@@ -142,7 +142,7 @@ armadillo.load_table <- function(project, folder, name) { # nolint
 #' @return the contents of the file, as data frame
 #'
 .load_table <- function(file) {
-  arrow::read_parquet(file)
+  as.data.frame(arrow::read_parquet(file, as_data_frame = FALSE))
 }
 
 #' Move the table
