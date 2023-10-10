@@ -16,10 +16,10 @@ test_that("armadillo.upload_resource calls .upload_object", {
   upload_object <- mock()
 
   with_mock(armadillo.upload_resource("project",
-    "folder",
-    resource = datasets::iris
-  ),
-  "MolgenisArmadillo:::.upload_object" = upload_object
+      "folder",
+      resource = datasets::iris
+    ),
+    "MolgenisArmadillo:::.upload_object" = upload_object
   )
 
   expect_args(upload_object, 1,

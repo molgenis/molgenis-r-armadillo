@@ -31,7 +31,7 @@
       httr::add_headers(.headers = c(
         "Content-Type" = "multipart/form-data",
         .get_auth_header()
-        ))
+      ))
   )
   .handle_request_error(response)
 
@@ -151,7 +151,7 @@
   function(project, folder, name, new_folder = folder, new_name = name,
            extension) {
     if (folder == new_folder &&
-        name == new_name) {
+          name == new_name) {
       stop("Cannot move table or resource onto itself.", call. = FALSE)
     }
     .check_full_name(new_folder, new_name)

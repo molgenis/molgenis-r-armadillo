@@ -12,13 +12,13 @@
     stop("Forbidden", call. = FALSE)
   } else if (response$status_code == 404) {
     stop(
-        httr::content(response, as = "parsed", encoding = "UTF-8")$message,
-        call. = FALSE
+      httr::content(response, as = "parsed", encoding = "UTF-8")$message,
+      call. = FALSE
     )
   } else if (response$status_code == 409) {
     stop(
-        httr::content(response, as = "parsed", encoding = "UTF-8")$message,
-        call. = FALSE
+      httr::content(response, as = "parsed", encoding = "UTF-8")$message,
+      call. = FALSE
     )
   } else if (response$status_code == 500) {
     stop(
@@ -69,7 +69,8 @@
   } else if (exists("auth_username", envir = .pkgglobalenv)) {
     encoded <- base64enc::base64encode(
       charToRaw(
-        paste0(.pkgglobalenv$auth_username, ":", .pkgglobalenv$auth_password))
+                paste0(.pkgglobalenv$auth_username, ":",
+                       .pkgglobalenv$auth_password))
     )
     c("Authorization" = paste0("Basic ", encoded))
   } else {
