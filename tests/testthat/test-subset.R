@@ -45,11 +45,10 @@ test_that(".read_subset will throw error when one of headers is missing", {
   df <- data.frame(matrix(ncol = 3, nrow = 0))
   cols <- c("folder", "table", "var")
   colnames(df) <- cols
-
+  message <- paste0(".csv file must contain exactly three columns entitled ",
+                    "'folder', 'table' and 'variable'")
   with_mock(read.csv = mock(df), {
-    expect_error(.read_subset("broken.csv"), ".csv file must contain exactly
-                 three columns entitled 'folder', 'table' and 'variable'",
-                 fixed = TRUE)
+    expect_error(.read_subset("broken.csv"), message, fixed = TRUE)
   })
 })
 
@@ -59,8 +58,9 @@ test_that(".read_subset will throw error when number of columns incorrect", {
   colnames(df) <- cols
 
   with_mock(read.csv = mock(df), {
-    expect_error(.read_subset("broken.csv"), ".csv file must contain exactly
-                 three columns entitled 'folder', 'table' and 'variable'",
+    message <- paste0(".csv file must contain exactly three columns entitled ",
+                      "'folder', 'table' and 'variable'")
+    expect_error(.read_subset("broken.csv"), message,
                  fixed = TRUE)
   })
 })
@@ -112,8 +112,9 @@ test_that("armadillo.subset_definition will throw error when vars are NULL", {
                    variable = c("row_id", "child_id", "int_raw_3"))
 
   with_mock(read.csv = mock(df), {
-    expect_error(armadillo.subset_definition(NULL), "You must provide a .csv
-                 file with variables and tables to subset", fixed = TRUE)
+    message <- paste0("You must provide a .csv file with variables and tables ",
+                      "to subset")
+    expect_error(armadillo.subset_definition(NULL), message, fixed = TRUE)
   })
 })
 
@@ -134,14 +135,15 @@ test_that(".get_tables throws error when tables are missing", {
                                                                "int_raw_3"),
                                                              column_name =
                                                                "variable"))))
+  message <- paste0("The following folders & tables: [ outcome] are included",
+                    " in your reference object, but don't exist within the ",
+                    "specified projectThe following folders & tables: ",
+                    "[ yearly_rep] are included in your reference object, ",
+                    "but don't exist within the specified project")
 
   with_mock(armadillo.list_tables = mock(tables), {
     expect_error(.get_tables("test-project", subset_def),
-                 "The following folders & tables: [ outcome ] are included in
-                 your reference object, but don't exist\n  within the specified
-                 projectThe following folders & tables: [ yearly_rep ] are
-                 included in your reference object, but don't exist\n  within
-                 the specified project",
+                 message,
                  fixed = TRUE)
   })
 })
@@ -175,9 +177,10 @@ test_that(".get_tables returns tables", {
 })
 
 test_that("armadillo.subset fails if source project is NULL", {
+  message <- paste0("You must provide the name of the source ",
+                    "project from which you will subset")
   expect_error(armadillo.subset(NULL, "my_project", subset_def),
-               "You must provide the name of the source project from which you
-               will subset",
+               message,
                fixed = TRUE)
 })
 
@@ -188,10 +191,11 @@ test_that("armadillo.subset fails if new project is NULL", {
 })
 
 test_that("armadillo.subset fails if subset_def is NULL", {
+  message <- paste0("You must provide an object created by ",
+                    "armadillo.subset_definition containing details of the ",
+                    "variables and tables to include in the subset")
   expect_error(armadillo.subset("gecko", "my_project", NULL),
-               "You must provide an object created by
-               armadillo.subset_definition containing details of the variables
-               and tables to include in the subset",
+               message,
                fixed = TRUE)
 })
 
@@ -217,7 +221,7 @@ test_that("armadillo.subset will return missing and call make_subset", {
 })
 
 test_that("armadillo.subset returns missing and make_subset for dryrun", {
-  with_mock("Molgenis Armadillo:::.get_tables" = mock(tables), {
+  with_mock("MolgenisArmadillo:::.get_tables" = mock(tables), {
     with_mock(armadillo.list_projects = mock(projects), {
       with_mock("MolgenisArmadillo:::.check_available_vars" =
                   mock(missing), {
