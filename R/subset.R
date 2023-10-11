@@ -33,8 +33,9 @@ armadillo.subset <- function(source_project = NULL,
   folder <- subset_vars <- . <- NULL
 
   if (is.null(source_project)) {
-    stop("You must provide the name of the source project from which you will
-         subset")
+    message <- paste0("You must provide the name of the source project from ",
+                      "which you will subset")
+    stop(message)
   }
 
   if (is.null(new_project)) {
@@ -42,8 +43,10 @@ armadillo.subset <- function(source_project = NULL,
   }
 
   if (is.null(subset_def)) {
-    stop("You must provide an object created by armadillo.subset_definition
-    containing details of the variables and tables to include in the subset")
+    message <- paste0("You must provide an object created by ",
+                      "armadillo.subset_definition containing details of the ",
+                      "variables and tables to include in the subset")
+    stop(message)
   }
 
   if (source_project %in% armadillo.list_projects() == FALSE) {
@@ -92,9 +95,10 @@ armadillo.subset <- function(source_project = NULL,
     dplyr::select(folder, table)
 
   if (nrow(missing_tables) > 0) {
-    stop(paste0("The following folders & tables: [ ", missing_tables, " ] are
-    included in your reference object, but don't exist within the specified
-                project"))
+    message <- paste0("The following folders & tables: [ ", missing_tables,
+                      "] are included in your reference object, but don't ",
+                      "exist within the specified project")
+    stop(message)
   }
 
   tables_out <- subset_def %>%
@@ -246,14 +250,14 @@ armadillo.subset_definition <- function(vars = NULL) {
 
   subset_in <- read.csv(file = vars, fileEncoding = "UTF-8-BOM")
 
+  message <- paste0(".csv file must contain exactly three columns entitled ",
+                    "'folder', 'table' and 'variable'")
   if (any(colnames(subset_in) %in% c("folder", "table", "variable") == FALSE)) {
-    stop(".csv file must contain exactly three columns entitled 'folder', 
-         'table' and 'variable'")
+    stop(message)
   }
 
   if (length(colnames(subset_in)) != 3) {
-    stop(".csv file must contain exactly three columns entitled 'folder', 
-         'table' and 'variable'")
+    stop(message)
   }
 
   subset_out <- subset_in %>%
