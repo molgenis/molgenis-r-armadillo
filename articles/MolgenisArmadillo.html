@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MolgenisArmadillo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.0</span>
       </span>
     </div>
 
@@ -107,14 +107,19 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.login.html">armadillo.login</a></span><span class="op">(</span><span class="st">"https://armadillo.test.molgenis.org"</span>,</span>
 <span>      <span class="st">"https://armadillo-minio.test.molgenis.org"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "We're opening a browser so you can log in with code 5HBGK8"</span></span></code></pre></div>
+<span><span class="co">#&gt; Error in armadillo.login("https://armadillo.test.molgenis.org", "https://armadillo-minio.test.molgenis.org"): unused argument ("https://armadillo-minio.test.molgenis.org")</span></span></code></pre></div>
 <p>It will create a session and store the credentials in the environment.</p>
 </div>
 <div class="section level2">
 <h2 id="structure">Structure<a class="anchor" aria-label="anchor" href="#structure"></a>
 </h2>
 <p>If you need to share data via Armadillo you can have a nested structure to save you data.</p>
-<p>We distinguish: - projects - folders - tables</p>
+<p>We distinguish:</p>
+<ul>
+<li>projects</li>
+<li>folders</li>
+<li>tables</li>
+</ul>
 <div class="section level3">
 <h3 id="projects">Projects<a class="anchor" aria-label="anchor" href="#projects"></a>
 </h3>
@@ -138,10 +143,19 @@
 <p>First we will create the project. In our case “cohort1”.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.create_project.html">armadillo.create_project</a></span><span class="op">(</span><span class="st">"cohort1"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Created project 'cohort1'</span></span></code></pre></div>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span></code></pre></div>
 <p>Secondly we will load the table(s) we want to upload to Armadillo in the R-environment. We have test data which is in <code>arrow</code> format, the upload will take any object that has a table like structure to upload into the Armadillo. This can be SPSS, STATA, SAS or R-based data as well.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/apache/arrow/" class="external-link">arrow</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'arrow'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:testthat':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     matches</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:utils':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     timestamp</span></span>
 <span></span>
 <span><span class="co"># load the core data</span></span>
 <span><span class="va">nonrep</span> <span class="op">&lt;-</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html" class="external-link">read_parquet</a></span><span class="op">(</span><span class="st">"data/core/nonrep.parquet"</span><span class="op">)</span></span>
@@ -151,154 +165,42 @@
 <p>The third step is determining the second level, which contains in this case the datamodel-version the type of variables and the data-version.</p>
 <p>y_y-#variable-type#-x_x</p>
 <p>y_y = datamodel version x_x = data version</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># upload the core variables</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_table</span>(<span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, nonrep)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                                        <span class="er">|</span>   <span class="dv">0</span>%</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="er">|===========================</span>                                                             <span class="er">|</span>  <span class="dv">30</span>%</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="er">|=====================================================</span>                                   <span class="er">|</span>  <span class="dv">60</span>%</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="er">|================================================================================</span>        <span class="er">|</span>  <span class="dv">90</span>%</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========================================================================================|</span> <span class="dv">100</span>%</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 2_1-core-1_0/nonrep</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_table</span>(<span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, yearlyrep)</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                                        <span class="er">|</span>   <span class="dv">0</span>%</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="er">|==========</span>                                                                              <span class="er">|</span>  <span class="dv">11</span>%</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="er">|====================</span>                                                                    <span class="er">|</span>  <span class="dv">23</span>%</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="er">|==============================</span>                                                          <span class="er">|</span>  <span class="dv">34</span>%</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========================================</span>                                                <span class="er">|</span>  <span class="dv">46</span>%</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  <span class="er">|==================================================</span>                                      <span class="er">|</span>  <span class="dv">57</span>%</span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  <span class="er">|============================================================</span>                            <span class="er">|</span>  <span class="dv">69</span>%</span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>  <span class="er">|======================================================================</span>                  <span class="er">|</span>  <span class="dv">80</span>%</span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  <span class="er">|=================================================================================</span>       <span class="er">|</span>  <span class="dv">92</span>%</span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========================================================================================|</span> <span class="dv">100</span>%</span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 2_1-core-1_0/yearlyrep</span></span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_table</span>(<span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, monthlyrep)</span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                                        <span class="er">|</span>   <span class="dv">0</span>%</span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>  <span class="er">|===</span>                                                                                     <span class="er">|</span>   <span class="dv">3</span>%</span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>  <span class="er">|=====</span>                                                                                   <span class="er">|</span>   <span class="dv">6</span>%</span>
-<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========</span>                                                                                <span class="er">|</span>   <span class="dv">9</span>%</span>
-<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>  <span class="er">|==========</span>                                                                              <span class="er">|</span>  <span class="dv">11</span>%</span>
-<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>  <span class="er">|=============</span>                                                                           <span class="er">|</span>  <span class="dv">14</span>%</span>
-<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>  <span class="er">|===============</span>                                                                         <span class="er">|</span>  <span class="dv">17</span>%</span>
-<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>  <span class="er">|==================</span>                                                                      <span class="er">|</span>  <span class="dv">20</span>%</span>
-<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>  <span class="er">|====================</span>                                                                    <span class="er">|</span>  <span class="dv">23</span>%</span>
-<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>  <span class="er">|=======================</span>                                                                 <span class="er">|</span>  <span class="dv">26</span>%</span>
-<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>  <span class="er">|=========================</span>                                                               <span class="er">|</span>  <span class="dv">29</span>%</span>
-<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>  <span class="er">|============================</span>                                                            <span class="er">|</span>  <span class="dv">31</span>%</span>
-<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>  <span class="er">|==============================</span>                                                          <span class="er">|</span>  <span class="dv">34</span>%</span>
-<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>  <span class="er">|=================================</span>                                                       <span class="er">|</span>  <span class="dv">37</span>%</span>
-<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>  <span class="er">|===================================</span>                                                     <span class="er">|</span>  <span class="dv">40</span>%</span>
-<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>  <span class="er">|======================================</span>                                                  <span class="er">|</span>  <span class="dv">43</span>%</span>
-<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========================================</span>                                                <span class="er">|</span>  <span class="dv">46</span>%</span>
-<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>  <span class="er">|===========================================</span>                                             <span class="er">|</span>  <span class="dv">49</span>%</span>
-<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a>  <span class="er">|=============================================</span>                                           <span class="er">|</span>  <span class="dv">51</span>%</span>
-<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a>  <span class="er">|================================================</span>                                        <span class="er">|</span>  <span class="dv">54</span>%</span>
-<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a>  <span class="er">|==================================================</span>                                      <span class="er">|</span>  <span class="dv">57</span>%</span>
-<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a>  <span class="er">|=====================================================</span>                                   <span class="er">|</span>  <span class="dv">60</span>%</span>
-<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a>  <span class="er">|=======================================================</span>                                 <span class="er">|</span>  <span class="dv">63</span>%</span>
-<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a>  <span class="er">|==========================================================</span>                              <span class="er">|</span>  <span class="dv">66</span>%</span>
-<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a>  <span class="er">|============================================================</span>                            <span class="er">|</span>  <span class="dv">69</span>%</span>
-<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a>  <span class="er">|===============================================================</span>                         <span class="er">|</span>  <span class="dv">71</span>%</span>
-<span id="cb5-95"><a href="#cb5-95" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-96"><a href="#cb5-96" aria-hidden="true" tabindex="-1"></a>  <span class="er">|=================================================================</span>                       <span class="er">|</span>  <span class="dv">74</span>%</span>
-<span id="cb5-97"><a href="#cb5-97" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-98"><a href="#cb5-98" aria-hidden="true" tabindex="-1"></a>  <span class="er">|====================================================================</span>                    <span class="er">|</span>  <span class="dv">77</span>%</span>
-<span id="cb5-99"><a href="#cb5-99" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-100"><a href="#cb5-100" aria-hidden="true" tabindex="-1"></a>  <span class="er">|======================================================================</span>                  <span class="er">|</span>  <span class="dv">80</span>%</span>
-<span id="cb5-101"><a href="#cb5-101" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-102"><a href="#cb5-102" aria-hidden="true" tabindex="-1"></a>  <span class="er">|=========================================================================</span>               <span class="er">|</span>  <span class="dv">83</span>%</span>
-<span id="cb5-103"><a href="#cb5-103" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-104"><a href="#cb5-104" aria-hidden="true" tabindex="-1"></a>  <span class="er">|===========================================================================</span>             <span class="er">|</span>  <span class="dv">86</span>%</span>
-<span id="cb5-105"><a href="#cb5-105" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-106"><a href="#cb5-106" aria-hidden="true" tabindex="-1"></a>  <span class="er">|==============================================================================</span>          <span class="er">|</span>  <span class="dv">89</span>%</span>
-<span id="cb5-107"><a href="#cb5-107" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-108"><a href="#cb5-108" aria-hidden="true" tabindex="-1"></a>  <span class="er">|================================================================================</span>        <span class="er">|</span>  <span class="dv">91</span>%</span>
-<span id="cb5-109"><a href="#cb5-109" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-110"><a href="#cb5-110" aria-hidden="true" tabindex="-1"></a>  <span class="er">|===================================================================================</span>     <span class="er">|</span>  <span class="dv">94</span>%</span>
-<span id="cb5-111"><a href="#cb5-111" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-112"><a href="#cb5-112" aria-hidden="true" tabindex="-1"></a>  <span class="er">|=====================================================================================</span>   <span class="er">|</span>  <span class="dv">97</span>%</span>
-<span id="cb5-113"><a href="#cb5-113" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-114"><a href="#cb5-114" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========================================================================================|</span> <span class="dv">100</span>%</span>
-<span id="cb5-115"><a href="#cb5-115" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 2_1-core-1_0/monthlyrep</span></span>
-<span id="cb5-116"><a href="#cb5-116" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_table</span>(<span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, trimesterrep)</span>
-<span id="cb5-117"><a href="#cb5-117" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
-<span id="cb5-118"><a href="#cb5-118" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-119"><a href="#cb5-119" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-120"><a href="#cb5-120" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                                        <span class="er">|</span>   <span class="dv">0</span>%</span>
-<span id="cb5-121"><a href="#cb5-121" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb5-122"><a href="#cb5-122" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========================================================================================|</span> <span class="dv">100</span>%</span>
-<span id="cb5-123"><a href="#cb5-123" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 2_1-core-1_0/trimesterrep</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># upload the core variables</span></span>
+<span><span class="fu"><a href="../reference/armadillo.upload_table.html">armadillo.upload_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="va">nonrep</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compressing...</span></span>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span>
+<span><span class="fu"><a href="../reference/armadillo.upload_table.html">armadillo.upload_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="va">yearlyrep</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compressing...</span></span>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span>
+<span><span class="fu"><a href="../reference/armadillo.upload_table.html">armadillo.upload_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="va">monthlyrep</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compressing...</span></span>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span>
+<span><span class="fu"><a href="../reference/armadillo.upload_table.html">armadillo.upload_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="va">trimesterrep</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compressing...</span></span>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span></code></pre></div>
 <p>If you have more tables containing the same naming scheme you need to drop the data frames in memory and then you can reassign them. See the example below.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># drop the old assignments</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(nonrep, yearlyrep, monthlyrep, trimesterrep)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># load the outcome data</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>yearlyrep <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(<span class="st">"data/outcome/yearlyrep.parquet"</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>nonrep <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(<span class="st">"data/outcome/nonrep.parquet"</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># upload the outcome variables</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_table</span>(<span class="st">"cohort1"</span>, <span class="st">"1_1-outcome-1_0"</span>, nonrep)</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                                        <span class="er">|</span>   <span class="dv">0</span>%</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========================================================================================|</span> <span class="dv">100</span>%</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 1_1-outcome-1_0/nonrep</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_table</span>(<span class="st">"cohort1"</span>, <span class="st">"1_1-outcome-1_0"</span>, yearlyrep)</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                                        <span class="er">|</span>   <span class="dv">0</span>%</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========================================================================================|</span> <span class="dv">100</span>%</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 1_1-outcome-1_0/yearlyrep</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># drop the old assignments</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">nonrep</span>, <span class="va">yearlyrep</span>, <span class="va">monthlyrep</span>, <span class="va">trimesterrep</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># load the outcome data</span></span>
+<span><span class="va">yearlyrep</span> <span class="op">&lt;-</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html" class="external-link">read_parquet</a></span><span class="op">(</span><span class="st">"data/outcome/yearlyrep.parquet"</span><span class="op">)</span></span>
+<span><span class="va">nonrep</span> <span class="op">&lt;-</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html" class="external-link">read_parquet</a></span><span class="op">(</span><span class="st">"data/outcome/nonrep.parquet"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># upload the outcome variables</span></span>
+<span><span class="fu"><a href="../reference/armadillo.upload_table.html">armadillo.upload_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"1_1-outcome-1_0"</span>, <span class="va">nonrep</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compressing...</span></span>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span>
+<span><span class="fu"><a href="../reference/armadillo.upload_table.html">armadillo.upload_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"1_1-outcome-1_0"</span>, <span class="va">yearlyrep</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compressing...</span></span>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="looking-at-the-data">Looking at the data<a class="anchor" aria-label="anchor" href="#looking-at-the-data"></a>
@@ -307,21 +209,23 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># listing tables per project</span></span>
 <span><span class="fu"><a href="../reference/armadillo.list_projects.html">armadillo.list_projects</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "cohort1"            "cohort2"            "cohort3"            "dnbc"              </span></span>
-<span><span class="co">#&gt; [5] "example-dictionary" "exampledictionary"  "methylationclocks"  "subset1"</span></span></code></pre></div>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># listing tables per project</span></span>
 <span><span class="fu"><a href="../reference/armadillo.list_tables.html">armadillo.list_tables</a></span><span class="op">(</span><span class="st">"cohort1"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "1_1-outcome-1_0/nonrep"    "1_1-outcome-1_0/yearlyrep" "2_1-core-1_0/monthlyrep"  </span></span>
-<span><span class="co">#&gt; [4] "2_1-core-1_0/nonrep"       "2_1-core-1_0/trimesterrep" "2_1-core-1_0/yearlyrep"</span></span></code></pre></div>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span></code></pre></div>
 <p>You can download the data in the R-environment as well.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># download table to local R environment</span></span>
 <span><span class="va">trimesterrep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/armadillo.load_table.html">armadillo.load_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"trimesterrep"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span>
 <span></span>
 <span><span class="co"># check the column names from the local environment</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">trimesterrep</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "row_id"        "child_id"      "age_trimester" "smk_t"         "alc_t"</span></span></code></pre></div>
+<span><span class="co">#&gt; Error in is.data.frame(x): object 'trimesterrep' not found</span></span></code></pre></div>
 <p>Now you can also take a look at the files in the user interface of the MinIO fileserver if you open the MinIO server URL in a browser window.</p>
 </div>
 <div class="section level2">
@@ -331,23 +235,30 @@
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># throw away the core tables</span></span>
 <span><span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"nonrep"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Deleted '2_1-core-1_0/nonrep'.</span></span>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span>
 <span><span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"yearlyrep"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Deleted '2_1-core-1_0/yearlyrep'.</span></span>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span>
 <span><span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"trimesterrep"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Deleted '2_1-core-1_0/trimesterrep'.</span></span>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span>
 <span><span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"2_1-core-1_0"</span>, <span class="st">"monthlyrep"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Deleted '2_1-core-1_0/monthlyrep'.</span></span>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span>
 <span></span>
 <span><span class="co"># throw away the outcome tables</span></span>
 <span><span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"1_1-outcome-1_0"</span>, <span class="st">"nonrep"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Deleted '1_1-outcome-1_0/nonrep'.</span></span>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span>
 <span><span class="fu"><a href="../reference/armadillo.delete_table.html">armadillo.delete_table</a></span><span class="op">(</span><span class="st">"cohort1"</span>, <span class="st">"1_1-outcome-1_0"</span>, <span class="st">"yearlyrep"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Deleted '1_1-outcome-1_0/yearlyrep'.</span></span></code></pre></div>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span></code></pre></div>
 <p>Now you can delete the project.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.delete_project.html">armadillo.delete_project</a></span><span class="op">(</span><span class="st">"cohort1"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Deleted project 'cohort1'</span></span></code></pre></div>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span></code></pre></div>
 </div>
   </div>
 

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MolgenisArmadillo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.0</span>
       </span>
     </div>
 
@@ -111,7 +111,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.login.html">armadillo.login</a></span><span class="op">(</span><span class="st">"https://armadillo.dev.molgenis.org"</span>,</span>
 <span>      <span class="st">"https://armadillo-minio.dev.molgenis.org"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "We're opening a browser so you can log in with code B56HHX"</span></span></code></pre></div>
+<span><span class="co">#&gt; Error in armadillo.login("https://armadillo.dev.molgenis.org", "https://armadillo-minio.dev.molgenis.org"): unused argument ("https://armadillo-minio.dev.molgenis.org")</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="install-packages">Install packages<a class="anchor" aria-label="anchor" href="#install-packages"></a>
@@ -119,8 +119,8 @@
 <p>If you want to install a package on the Armadillo Rserver you can execute the following endpoint. The selected profile is always <code>default</code> if none is specified.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.install_packages.html">armadillo.install_packages</a></span><span class="op">(</span><span class="st">"data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Attempting to install package [ 'data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz' ]</span></span>
-<span><span class="co">#&gt; Package [ 'data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz' ] installed</span></span></code></pre></div>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span></code></pre></div>
 <p>In order to install the packages on a specific profile you can specify the profile.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.install_packages.html">armadillo.install_packages</a></span><span class="op">(</span><span class="st">"data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz"</span>, profile <span class="op">=</span> <span class="st">"exposome"</span><span class="op">)</span></span></code></pre></div>
@@ -134,21 +134,11 @@
 <p>To be able to use new packages in the Armadillo you need to add them to the whitelist. You can do this by executing the following method.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">armadillo.whitelist_packages</span><span class="op">(</span><span class="st">"MolgenisArmadillo"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Attempting to whitelist package [ 'MolgenisArmadillo' ]</span></span>
-<span><span class="co">#&gt; Package [ 'MolgenisArmadillo' ] added to the whitelist</span></span>
-<span><span class="co">#&gt; Packages whitelisted:</span></span>
-<span><span class="co">#&gt;  * [ 'dsBase' ]</span></span>
-<span><span class="co">#&gt;  * [ 'MolgenisArmadillo' ]</span></span></code></pre></div>
+<span><span class="co">#&gt; Error in armadillo.whitelist_packages("MolgenisArmadillo"): could not find function "armadillo.whitelist_packages"</span></span></code></pre></div>
 <p>You are able to whilist mulitple packages as well using the following line:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">armadillo.whitelist_packages</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MolgenisArmadillo"</span>, <span class="st">"dsBase"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Attempting to whitelist package [ 'MolgenisArmadillo' ]</span></span>
-<span><span class="co">#&gt; Package [ 'MolgenisArmadillo' ] added to the whitelist</span></span>
-<span><span class="co">#&gt; Attempting to whitelist package [ 'dsBase' ]</span></span>
-<span><span class="co">#&gt; Package [ 'dsBase' ] added to the whitelist</span></span>
-<span><span class="co">#&gt; Packages whitelisted:</span></span>
-<span><span class="co">#&gt;  * [ 'dsBase' ]</span></span>
-<span><span class="co">#&gt;  * [ 'MolgenisArmadillo' ]</span></span></code></pre></div>
+<span><span class="co">#&gt; Error in armadillo.whitelist_packages(c("MolgenisArmadillo", "dsBase")): could not find function "armadillo.whitelist_packages"</span></span></code></pre></div>
 </div>
   </div>
 

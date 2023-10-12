@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MolgenisArmadillo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.0</span>
       </span>
     </div>
 
@@ -135,7 +135,7 @@
 <p>A second option to upload data (resources) is on the <a href="https://lifecycle.analysis.molgenis.org/" class="external-link">Central Analysis Server (CAS)</a> within Rstudio As datamanager you first need to login to Armadillo (as <code>superuser</code>)</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.login.html">armadillo.login</a></span><span class="op">(</span><span class="st">"https://armadillo3-01.molgeniscloud.org"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "We're opening a browser so you can log in with code DNW9MK"</span></span></code></pre></div>
+<span><span class="co">#&gt; Error in .get_info(server): Bad Gateway (HTTP 502). Failed to fetch server info.</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="install-prerequisites">Install prerequisites<a class="anchor" aria-label="anchor" href="#install-prerequisites"></a>
 </h4>
@@ -144,7 +144,7 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"resourcer"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; The downloaded binary packages are in</span></span>
-<span><span class="co">#&gt;  /var/folders/sy/d5l5fdyj6z98mgclrl_bbkzr0000gn/T//RtmpsH0W60/downloaded_packages</span></span>
+<span><span class="co">#&gt;  /var/folders/sy/d5l5fdyj6z98mgclrl_bbkzr0000gn/T//Rtmp2sXukB/downloaded_packages</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">resourcer</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required package: R6</span></span>
 <span><span class="co">#&gt; Loading required package: httr</span></span>
@@ -183,10 +183,12 @@
 <span></span>
 <span><span class="fu"><a href="../reference/armadillo.upload_resource.html">armadillo.upload_resource</a></span><span class="op">(</span>project<span class="op">=</span><span class="st">"omics"</span>, folder<span class="op">=</span><span class="st">"ewas"</span>, resource <span class="op">=</span> <span class="va">resGSE1</span>, name <span class="op">=</span> <span class="st">"GSE66351_1"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Compressing...</span></span>
-<span><span class="co">#&gt; Uploaded ewas/GSE66351_1</span></span>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span>
 <span><span class="fu"><a href="../reference/armadillo.upload_resource.html">armadillo.upload_resource</a></span><span class="op">(</span>project<span class="op">=</span><span class="st">"omics"</span>, folder<span class="op">=</span><span class="st">"ewas"</span>, resource <span class="op">=</span> <span class="va">resGSE2</span>, name <span class="op">=</span> <span class="st">"GSE66351_2"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Compressing...</span></span>
-<span><span class="co">#&gt; Uploaded ewas/GSE66351_2</span></span></code></pre></div>
+<span><span class="co">#&gt; Error: You are not logged in.</span></span>
+<span><span class="co">#&gt;          Please log in with armadillo.login('&lt;YOUR_SERVER&gt;')</span></span></code></pre></div>
 <p>The data is now available for researcher to assign.</p>
 </div>
 </div>
