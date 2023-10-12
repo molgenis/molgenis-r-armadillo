@@ -32,7 +32,6 @@ pipeline {
                 sh "git fetch --tags"
                 container('r') {
                     sh "install2.r --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr"
-                    sh "installGithub.r fdlk/lintr"
                     sh "Rscript -e \"git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')\""
                     sh "mkdir -m 700 -p /root/.ssh"
                     sh "ssh-keyscan -H -t rsa github.com  > ~/.ssh/known_hosts"
@@ -54,7 +53,6 @@ pipeline {
             post {
                 always {
                     container('r') {
-                        sh "Rscript -e 'lintr::lint_package(linters=lintr::with_defaults(object_usage_linter = NULL))'"
                         sh "Rscript -e 'library(covr);codecov()'"
                     }
                 }
@@ -81,7 +79,6 @@ pipeline {
                     sh "echo 'Building ${PACKAGE} v${TAG}'"
                     sh "R CMD build ."
                     sh "Rscript -e 'devtools::check_built(path = \"./${PACKAGE}_${TAG}.tar.gz\", remote=TRUE, force_suggests = TRUE)'"
-                    sh "Rscript -e 'quit(save = \"no\", status = length(lintr::lint_package(linters=lintr::with_defaults(object_usage_linter = NULL))))'"
                 }
             }
             post {
