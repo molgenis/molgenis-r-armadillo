@@ -1,4 +1,4 @@
-# MolgenisArmadillo (development version)
+# MolgenisArmadillo 2.1.1
 
 # MolgenisArmadillo 2.1.0
 
