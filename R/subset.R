@@ -1,7 +1,7 @@
 #' Describes data available to subset and makes subset
 #'
 #' This automates the process of:
-#' \enumerate{
+#' \describe{
 #'   \item{1}{checking what data is available to create subsets}
 #'   \item{2}{make the subset}
 #' }
