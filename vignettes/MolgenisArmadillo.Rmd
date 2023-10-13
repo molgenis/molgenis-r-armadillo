@@ -65,9 +65,6 @@ Secondly we will load the table(s) we want to upload to Armadillo in the R-envir
 library(arrow)
 #> 
 #> Attaching package: 'arrow'
-#> The following object is masked from 'package:testthat':
-#> 
-#>     matches
 #> The following object is masked from 'package:utils':
 #> 
 #>     timestamp
@@ -160,7 +157,7 @@ trimesterrep <- armadillo.load_table("cohort1", "2_1-core-1_0", "trimesterrep")
 
 # check the column names from the local environment
 colnames(trimesterrep)
-#> Error in is.data.frame(x): object 'trimesterrep' not found
+#> Error in eval(expr, envir, enclos): object 'trimesterrep' not found
 ```
 
 Now you can also take a look at the files in the user interface of the MinIO

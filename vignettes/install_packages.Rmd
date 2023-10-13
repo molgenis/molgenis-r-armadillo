@@ -36,8 +36,7 @@ If you want to install a package on the Armadillo Rserver you can execute the fo
 
 ```r
 armadillo.install_packages("data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz")
-#> Error: You are not logged in.
-#>          Please log in with armadillo.login('<YOUR_SERVER>')
+#> Error in httr::upload_file(path): file.exists(path) is not TRUE
 ```
 
 In order to install the packages on a specific profile you can specify the profile.
