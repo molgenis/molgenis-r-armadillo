@@ -16,6 +16,10 @@ jobs:
     steps:
     - checkout
 
+    - restore_cache:
+        keys:
+        - always
+
     - run:
         name: Prepare environment
         command: |
@@ -31,14 +35,10 @@ jobs:
           export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
           echo "Prepared environment for test PR / release master of ${PACKAGE}:${TAG}"
 
-    - restore_cache:
-        keys:
-        - always
-
     - run:
-        name: install R stuffs, takes 15min so hopefully caching will help
+        name: install R stuffs, takes 15min so hopefully caching and skipinstalled will help
         command: |
-          install2.r --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr
+          install2.r --skipinstalled --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr
 
     - save_cache:
         paths:
