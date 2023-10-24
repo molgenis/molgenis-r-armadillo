@@ -51,6 +51,7 @@ jobs:
           wget https://github.com/GitTools/GitVersion/releases/download/5.12.0/gitversion-linux-x64-5.12.0.tar.gz
           tar -xvf gitversion-linux-x64-5.12.0.tar.gz
           mv gitversion /usr/local/bin
+          rm gitversion-linux-x64-5.12.0.tar.gz
           if [ "${CIRCLE_BRANCH}" = "master" ]; then
             export VERSION=`gitversion /output json /showvariable MajorMinorPatch`
           else 
@@ -71,34 +72,44 @@ jobs:
           Rscript -e "devtools::check_built(path = './${PACKAGE}_${TAG}.tar.gz', remote=TRUE, force_suggests = TRUE)"
           Rscript -e "pkgdown::build_site()"
 
+    # old via nexus
+    # set +x; curl -v --user '${NEXUS_USER}:${NEXUS_PASS}' --upload-file ${PACKAGE}_${TAG}.tar.gz ${REGISTRY_DEV}/src/contrib/${PACKAGE}_${TAG}.tar.gz
+    # new is to put package at github release (UNTESTED!)
     - run:
-        name: Release to nexus and to github (only on master)
+        name: Release to nexus and to github (only on master), and message slack
         command: |
-          PREVIOUS=$(git tag -l --sort -version:refname | head -n 1)
-          NEXT="v"`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
+          export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
+          export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
+          export PREVIOUS=$(git tag -l --sort -version:refname | head -n 1)
+          export CURRENT="v${TAG}"
+          apt-get install golang -y
+          go get -u github.com/digitalocean/github-changelog-generator
+          CHANGELOG=`/root/go/bin/github-changelog-generator -org molgenis -repo molgenis-r-armadillo -token ${GITHUB_TOKEN}`
           if [ "${CIRCLE_BRANCH}" = "master" && "$PREVIOUS" != "$NEXT" ]; then
-            export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
-            export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
-            echo "Releasing ${PACKAGE}:${TAG}"
+            echo "Releasing ${PACKAGE}:${TAG}, pushing to git and nexus"
             git commit -a -m 'Increment version number'
             git tag v${TAG}
             git push --tags origin master
-            set +x; curl -v --user '${NEXUS_USER}:${NEXUS_PASS}' --upload-file ${PACKAGE}_${TAG}.tar.gz ${REGISTRY_DEV}/src/contrib/${PACKAGE}_${TAG}.tar.gz
-            set +x; Rscript -e "pkgdown::deploy_site_github(ssh_id = '${GITHUB_DEPLOY_PRIVATE_KEY_BASE64}', tarball = '${PACKAGE}_${TAG}.tar.gz', repo_slug='${REPOSITORY}')"
+            curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/OWNER/REPO/releases \
+            -d '{"tag_name":"${CURRENT}","target_commitish":"master","name":"${CURRENT}","body":"${CHANGELOG}","draft":false,"prerelease":false,"generate_release_notes":true}'
+            set +x; Rscript -e "pkgdown::deploy_site_github(ssh_id = '${GITHUB_TOKEN}', tarball = '${PACKAGE}_${TAG}.tar.gz', repo_slug='${REPOSITORY}')"
             curl -d "token=${SLACK_TOKEN}" \
             -d "text=molgenis-r-armadillo version: v${TAG} is released." \
             -d "channel=C03AAGBH3PC" \
             -X POST https://slack.com/api/chat.postMessage      
           elif [ "${CIRCLE_BRANCH}" = "master" && "$PREVIOUS" = "$NEXT" ]; then
-            echo "skipping release, no significant commits, version is still $PREVIOUS"
+            echo "skipping release, no significant commits, version is still $TAG"
             curl -d "token=${SLACK_TOKEN}" \
-            -d "text=molgenis-r-armadillo master build success, no release because no significant commits added" \
+            -d "text=molgenis-r-armadillo master build success, no release because no significant commits added:
+            ${CHANGELOG}" \
             -d "channel=C0639V5KTCY" \
             -X POST https://slack.com/api/chat.postMessage
           else
             echo "skipping release, we are not on master branch"
             curl -d "token=${SLACK_TOKEN}" \
-            -d "text=*<${CIRCLE_PULL_REQUEST}|Circle-CI » Armadillo » molgenis-r-armadillo » PR-${CIRCLE_PULL_REQUEST##*/} #${CIRCLE_BUILD_NUM}>*" \
+            -d "text=*<${CIRCLE_PULL_REQUEST}|Circle-CI » Armadillo » molgenis-r-armadillo » PR-${CIRCLE_PULL_REQUEST##*/} #${CIRCLE_BUILD_NUM}>*
+            ${CHANGELOG}"" \
             -d "channel=C0639V5KTCY" \
             -X POST https://slack.com/api/chat.postMessage
           fi
