@@ -43,8 +43,7 @@ jobs:
         - /usr/local/lib/R/library
         - /usr/local/lib/R/site-library
         - /tmp/downloaded_packages
-        keys:
-        - always
+        key: always
 
     - run:
         name: check and build artifacts. todo find a way to automatically increment version number based on PR
