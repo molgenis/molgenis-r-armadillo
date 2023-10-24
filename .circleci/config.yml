@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
     # specify the version you desire here
-    - image: r-base:4.1.1
+    - image: rocker/verse:4.1.1
     working_directory: ~/repo
 
     # The resource_class feature allows configuring CPU and RAM resources for each job. Different resource classes are available for different executors. https://circleci.com/docs/2.0/configuration-reference/#resourceclass
@@ -20,7 +20,7 @@ jobs:
         name: prepare environment
         command: |
           apt-get update
-          apt-get install git curl ssh -y
+          apt-get install git curl ssh libcurl4-openssl-dev libssl-dev build-essential ninja-build cmake -y
           git remote set-url origin https://${GITHUB_TOKEN}@github.com/molgenis/molgenis-r-armadillo.git
           mkdir -m 700 -p /root/.ssh
           ssh-keyscan -H -t rsa github.com  > ~/.ssh/known_hosts
@@ -28,10 +28,18 @@ jobs:
           export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
           export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
           echo "Prepared environment for release of ${PACKAGE}:${TAG}"
+    
+
+    # install2.r --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr
+    #httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr
     - run:
-        name: install R stuffs, takes very long can we cache?
+        name: install R stuffs, takes very long can we cache in a docker image?
         command: |
-          install2.r --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr
+          apt-get install -y r-cran-devtools r-cran-pkgdown r-cran-markdown r-cran-rmarkdown r-cran-mockery 
+          apt-get install -y r-cran-webmockr r-cran-httr r-cran-xml2 r-cran-git2r 
+          apt-get install -y r-cran-ellipsis r-cran-vctrs r-cran-covr
+          install2.r --repo https://cloud.r-project.org urltool MolgenisAuth DSMolgenisArmadillo
+          install2.r --repo https://cloud.r-project.org arrow
 
     - run:
         name: check and build artifacts. todo find a way to automatically increment version number based on PR
