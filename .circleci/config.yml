@@ -19,7 +19,7 @@ jobs:
     # we cache once a day
     - restore_cache:
         keys:
-        - when-{{ `date` }}
+        - when-{{ date +"%m-%d-%y" }}
 
     - run:
         name: Prepare environment
@@ -46,7 +46,7 @@ jobs:
         - /usr/local/lib/R/library
         - /usr/local/lib/R/site-library
         - /tmp/downloaded_packages
-        key: when-{{ `date` }}
+        key: when-{{ date +"%m-%d-%y" }}
 
     - run:
         name: check and build artifacts. todo find a way to automatically increment version number based on PR
