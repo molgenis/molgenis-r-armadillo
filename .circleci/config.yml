@@ -37,7 +37,7 @@ jobs:
           echo "Prepared environment for test PR / release master of ${PACKAGE}:${TAG}"
 
     - run:
-        name: install R stuffs, skipinstalled using cache when this branch has installed them before
+        name: install R deps takes 15min, but no worries we skipinstalled from cache when this PR has installed them before
         command: |
           install2.r --skipinstalled --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr
 
@@ -54,7 +54,7 @@ jobs:
           Rscript -e 'devtools::check(remote=TRUE, force_suggests = TRUE, error_on="error")'
           Rscript -e 'library(covr);codecov()'
           R CMD build .
-          Rscript -e "devtools::check_built(path = \"./${PACKAGE}_${TAG}.tar.gz\", remote=TRUE, force_suggests = TRUE)"
+          Rscript -e "devtools::check_built(path = './${PACKAGE}_${TAG}.tar.gz', remote=TRUE, force_suggests = TRUE)"
           Rscript -e "pkgdown::build_site()"
 
     - run:
