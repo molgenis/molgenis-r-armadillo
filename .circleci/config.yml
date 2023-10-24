@@ -16,9 +16,10 @@ jobs:
     steps:
     - checkout
 
+    # we cache once a day
     - restore_cache:
         keys:
-        - when-${CIRCLE_PULL_REQUEST##*/}
+        - when-{{ `date` }}
 
     - run:
         name: Prepare environment
@@ -36,7 +37,7 @@ jobs:
           echo "Prepared environment for test PR / release master of ${PACKAGE}:${TAG}"
 
     - run:
-        name: install R stuffs, skipinstalled using cache when this PR has installed them before
+        name: install R stuffs, skipinstalled using cache when this branch has installed them before
         command: |
           install2.r --skipinstalled --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr
 
@@ -45,7 +46,7 @@ jobs:
         - /usr/local/lib/R/library
         - /usr/local/lib/R/site-library
         - /tmp/downloaded_packages
-        key: when-${CIRCLE_PULL_REQUEST##*/}
+        key: when-{{ `date` }}
 
     - run:
         name: check and build artifacts. todo find a way to automatically increment version number based on PR
