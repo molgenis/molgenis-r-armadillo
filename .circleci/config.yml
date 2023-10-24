@@ -18,7 +18,7 @@ jobs:
 
     - restore_cache:
         keys:
-        - always
+        - when-${CIRCLE_PULL_REQUEST##*/}
 
     - run:
         name: Prepare environment
@@ -29,14 +29,14 @@ jobs:
           git remote set-url origin https://${GITHUB_TOKEN}@github.com/molgenis/molgenis-r-armadillo.git
           mkdir -m 700 -p /root/.ssh
           ssh-keyscan -H -t rsa github.com  > ~/.ssh/known_hosts
-          install2.r --repo https://cloud.r-project.org git2r
+          install2.r --skipinstalled --repo https://cloud.r-project.org git2r
           Rscript -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
           export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
           export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
           echo "Prepared environment for test PR / release master of ${PACKAGE}:${TAG}"
 
     - run:
-        name: install R stuffs, takes 15min so hopefully caching and skipinstalled will help
+        name: install R stuffs, skipinstalled using cache when this PR has installed them before
         command: |
           install2.r --skipinstalled --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr
 
@@ -45,7 +45,7 @@ jobs:
         - /usr/local/lib/R/library
         - /usr/local/lib/R/site-library
         - /tmp/downloaded_packages
-        key: always
+        key: when-${CIRCLE_PULL_REQUEST##*/}
 
     - run:
         name: check and build artifacts. todo find a way to automatically increment version number based on PR
