@@ -1,0 +1,71 @@
+# Java Gradle CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+    # specify the version you desire here
+    - image: r-base:4.3.1
+    working_directory: ~/repo
+
+    # The resource_class feature allows configuring CPU and RAM resources for each job. Different resource classes are available for different executors. https://circleci.com/docs/2.0/configuration-reference/#resourceclass
+    resource_class: large
+
+    steps:
+    - checkout
+
+    - run:
+        name: prepare
+        command: |
+          env.PACKAGE = sh(script: "grep Package DESCRIPTION | head -n1 | cut -d':' -f2", returnStdout: true).trim()
+          git remote set-url origin https://${GITHUB_TOKEN}@github.com/${REPOSITORY}.git
+          sh "install2.r --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr"
+          sh "Rscript -e \"git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')\""
+          sh "mkdir -m 700 -p /root/.ssh"
+          sh "ssh-keyscan -H -t rsa github.com  > ~/.ssh/known_hosts"
+
+    - run:
+        name: install and test PR
+        command: |
+          env.TAG = sh(script: "grep Version DESCRIPTION | head -n1 | cut -d':' -f2", returnStdout: true).trim()
+          sh "Rscript -e 'devtools::check(remote=TRUE, force_suggests = TRUE, error_on=\"error\")'"
+          sh "Rscript -e 'library(covr);codecov()'"
+
+    - run:
+        name: release
+        command: |
+          if [ "${CIRCLE_BRANCH}" = "master" ]; then
+            changelog 'Increment version number'
+            sh "set +x; curl -v --user '${NEXUS_USER}:${NEXUS_PASS}' --upload-file ${PACKAGE}_${TAG}.tar.gz ${REGISTRY_DEV}/src/contrib/${PACKAGE}_${TAG}.tar.gz"
+            sh "git tag v${TAG}"
+            sh "git push --tags origin master"
+            sh "Rscript -e \"usethis::use_version('${RELEASE_SCOPE}')\""
+            sh "Rscript -e \"pkgdown::build_site()\""
+            env.TAG = sh(script: "grep Version DESCRIPTION | head -n1 | cut -d':' -f2", returnStdout: true).trim()
+            sh "git commit -a -m 'Increment version number'"
+            sh "echo \"Releasing ${PACKAGE} v${TAG}\""
+            sh "R CMD build ."
+            sh "Rscript -e 'devtools::check_built(path = \"./${PACKAGE}_${TAG}.tar.gz\", remote=TRUE, force_suggests = TRUE)'"
+            sh "set +x; curl -v --user '${NEXUS_USER}:${NEXUS_PASS}' --upload-file ${PACKAGE}_${TAG}.tar.gz ${REGISTRY}/src/contrib/${PACKAGE}_${TAG}.tar.gz"
+            sh "git tag v${TAG}"
+            sh "git push --tags origin master"
+            sh "set +x; Rscript -e \"pkgdown::deploy_site_github(ssh_id = '${GITHUB_DEPLOY_PRIVATE_KEY_BASE64}', tarball = '${PACKAGE}_${TAG}.tar.gz', repo_slug='${REPOSITORY}')\""
+          fi
+
+    - run:
+        name: message slack
+        command: |
+          if [ "${CIRCLE_BRANCH}" = "master" ]
+          then
+            curl -d "token=${SLACK_TOKEN}" \
+            -d "text=molgenis-r-armadillo version: v${TAG} is released." \
+            -d "channel=C02AZDG6QQ7" \
+            -X POST https://slack.com/api/chat.postMessage          
+          else
+            curl -d "token=${SLACK_TOKEN}" \
+            -d "text=*<${CIRCLE_PULL_REQUEST}|Circle-CI » Armadillo » molgenis-r-armadillo » PR-${CIRCLE_PULL_REQUEST##*/} #${CIRCLE_BUILD_NUM}>*"
+            -d "channel=C02AZDG6QQ7" \
+            -X POST https://slack.com/api/chat.postMessage
+          fi
