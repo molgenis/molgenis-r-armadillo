@@ -24,6 +24,7 @@ jobs:
           git remote set-url origin https://${GITHUB_TOKEN}@github.com/molgenis/molgenis-r-armadillo.git
           mkdir -m 700 -p /root/.ssh
           ssh-keyscan -H -t rsa github.com  > ~/.ssh/known_hosts
+          install2.r --repo https://cloud.r-project.org git2r
           Rscript -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
           export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
           export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
