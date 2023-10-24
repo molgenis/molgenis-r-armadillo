@@ -17,10 +17,11 @@ jobs:
     - checkout
 
     - run:
-        name: prepare environment
+        name: Prepare environment
         command: |
           apt-get update
           apt-get install git curl ssh libcurl4-openssl-dev libssl-dev build-essential ninja-build cmake -y
+          git fetch --all --tags
           git remote set-url origin https://${GITHUB_TOKEN}@github.com/molgenis/molgenis-r-armadillo.git
           mkdir -m 700 -p /root/.ssh
           ssh-keyscan -H -t rsa github.com  > ~/.ssh/known_hosts
@@ -28,14 +29,14 @@ jobs:
           Rscript -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
           export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
           export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
-          echo "Prepared environment for release of ${PACKAGE}:${TAG}"
+          echo "Prepared environment for test PR / release master of ${PACKAGE}:${TAG}"
 
     - restore_cache:
         keys:
         - always
 
     - run:
-        name: install R stuffs, takes long so hopefully caching will help
+        name: install R stuffs, takes 15min so hopefully caching will help
         command: |
           install2.r --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr
 
@@ -56,18 +57,18 @@ jobs:
           Rscript -e "pkgdown::build_site()"
 
     - run:
-        name: release to nexus and to github (only on master)
+        name: Release to nexus and to github (only on master)
         command: |
           if [ "${CIRCLE_BRANCH}" = "master" ]; then
             echo \"Releasing ${PACKAGE} v${TAG}\"
             set +x; curl -v --user '${NEXUS_USER}:${NEXUS_PASS}' --upload-file ${PACKAGE}_${TAG}.tar.gz ${REGISTRY_DEV}/src/contrib/${PACKAGE}_${TAG}.tar.gz
             git tag v${TAG}
             git push --tags origin master
-            set +x; Rscript -e \"pkgdown::deploy_site_github(ssh_id = '${GITHUB_DEPLOY_PRIVATE_KEY_BASE64}', tarball = '${PACKAGE}_${TAG}.tar.gz', repo_slug='${REPOSITORY}')\"
+            set +x; Rscript -e "pkgdown::deploy_site_github(ssh_id = '${GITHUB_DEPLOY_PRIVATE_KEY_BASE64}', tarball = '${PACKAGE}_${TAG}.tar.gz', repo_slug='${REPOSITORY}')"
           fi
 
     - run:
-        name: message slack
+        name: Message slack
         command: |
           if [ "${CIRCLE_BRANCH}" = "master" ]
           then
