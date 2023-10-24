@@ -24,29 +24,35 @@ jobs:
           git remote set-url origin https://${GITHUB_TOKEN}@github.com/molgenis/molgenis-r-armadillo.git
           mkdir -m 700 -p /root/.ssh
           ssh-keyscan -H -t rsa github.com  > ~/.ssh/known_hosts
-          script -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
+          Rscript -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
           export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
           export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
           echo "Prepared environment for release of ${PACKAGE}:${TAG}"
-    
 
-    # install2.r --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr
-    #httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr
+    - restore_cache:
+        keys:
+        - always
+
     - run:
-        name: install R stuffs, takes very long can we cache in a docker image?
+        name: install R stuffs, takes long so hopefully caching will help
         command: |
-          apt-get install -y r-cran-devtools r-cran-pkgdown r-cran-markdown r-cran-rmarkdown r-cran-mockery 
-          apt-get install -y r-cran-webmockr r-cran-httr r-cran-xml2 r-cran-git2r 
-          apt-get install -y r-cran-ellipsis r-cran-vctrs r-cran-covr
-          install2.r --repo https://cloud.r-project.org urltool MolgenisAuth DSMolgenisArmadillo
-          install2.r --repo https://cloud.r-project.org arrow
+          install2.r --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr
+
+    - save_cache:
+        paths:
+        - /usr/local/lib/R/library
+        - /usr/local/lib/R/site-library
+        - /tmp/downloaded_packages
+        keys:
+        - always
 
     - run:
         name: check and build artifacts. todo find a way to automatically increment version number based on PR
         command: |
-          R CMD build .
-          Rscript -e 'devtools::check_built(path = "./${PACKAGE}_${TAG}.tar.gz", remote=TRUE, force_suggests = TRUE)'
+          Rscript -e 'devtools::check(remote=TRUE, force_suggests = TRUE, error_on="error")'
           Rscript -e 'library(covr);codecov()'
+          R CMD build .
+          Rscript -e "devtools::check_built(path = \"./${PACKAGE}_${TAG}.tar.gz\", remote=TRUE, force_suggests = TRUE)"
           Rscript -e "pkgdown::build_site()"
 
     - run:
