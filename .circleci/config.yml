@@ -16,15 +16,10 @@ jobs:
     steps:
     - checkout
 
-    - run:
-        name: get current date as basis for caching
-        command: |
-          export CURRENT_DATE=`date +"%m-%d-%y"`
-
     # we cache once a day
     - restore_cache:
         keys:
-        - when-{{ .Environment.CIRCLE_PR_NUMBER }}-{{ checksum "DESCRIPTION" }}
+        - when-{{ .Environment.CIRCLE_PULL_REQUEST }}-{{ checksum "DESCRIPTION" }}
 
     - run:
         name: Prepare environment
@@ -51,7 +46,7 @@ jobs:
         - /usr/local/lib/R/library
         - /usr/local/lib/R/site-library
         - /tmp/downloaded_packages
-        key: when-{{ .Environment.CIRCLE_PR_NUMBER }}-{{ checksum "DESCRIPTION" }}
+        key: when-{{ .Environment.CIRCLE_PULL_REQUEST }}-{{ checksum "DESCRIPTION" }}
 
     - run:
         name: check and build artifacts. todo find a way to automatically increment version number based on PR
