@@ -17,9 +17,9 @@ jobs:
     - checkout
 
     - run:
-        name: current date
+        name: get current date as basis for caching
         command: |
-          export CURRENT_DATE=date +"%m-%d-%y"
+          export CURRENT_DATE=`date +"%m-%d-%y"`
 
     # we cache once a day
     - restore_cache:
