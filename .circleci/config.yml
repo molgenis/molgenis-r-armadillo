@@ -32,12 +32,9 @@ jobs:
           ssh-keyscan -H -t rsa github.com  > ~/.ssh/known_hosts
           install2.r --skipinstalled --repo https://cloud.r-project.org git2r
           Rscript -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
-          export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
-          export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
-          echo "Prepared environment for test PR / release master of ${PACKAGE}:${TAG}"
 
     - run:
-        name: install R deps takes 15min, but no worries we skipinstalled from cache when this PR has installed them before
+        name: Install R deps takes 15min, but no worries we skipinstalled from cache when this PR has installed them before
         command: |
           install2.r --skipinstalled --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr
 
@@ -49,8 +46,11 @@ jobs:
         key: when-{{ .Environment.CIRCLE_PULL_REQUEST }}-{{ checksum "DESCRIPTION" }}
 
     - run:
-        name: check and build artifacts. todo find a way to automatically increment version number based on PR
+        name: Check and build artifacts. todo find a way to automatically increment version number based on PR
         command: |
+          export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
+          export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
+          echo "Testing ${PACKAGE}:${TAG}"
           Rscript -e 'devtools::check(remote=TRUE, force_suggests = TRUE, error_on="error")'
           Rscript -e 'library(covr);codecov()'
           R CMD build .
@@ -61,7 +61,9 @@ jobs:
         name: Release to nexus and to github (only on master)
         command: |
           if [ "${CIRCLE_BRANCH}" = "master" ]; then
-            echo \"Releasing ${PACKAGE} v${TAG}\"
+            export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
+            export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
+            echo "Releasing ${PACKAGE}:${TAG}"
             set +x; curl -v --user '${NEXUS_USER}:${NEXUS_PASS}' --upload-file ${PACKAGE}_${TAG}.tar.gz ${REGISTRY_DEV}/src/contrib/${PACKAGE}_${TAG}.tar.gz
             git tag v${TAG}
             git push --tags origin master
@@ -73,13 +75,14 @@ jobs:
         command: |
           if [ "${CIRCLE_BRANCH}" = "master" ]
           then
+            export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
             curl -d "token=${SLACK_TOKEN}" \
             -d "text=molgenis-r-armadillo version: v${TAG} is released." \
-            -d "channel=C02AZDG6QQ7" \
+            -d "channel=C03AAGBH3PC" \
             -X POST https://slack.com/api/chat.postMessage          
           else
             curl -d "token=${SLACK_TOKEN}" \
             -d "text=*<${CIRCLE_PULL_REQUEST}|Circle-CI » Armadillo » molgenis-r-armadillo » PR-${CIRCLE_PULL_REQUEST##*/} #${CIRCLE_BUILD_NUM}>*"
-            -d "channel=C02AZDG6QQ7" \
+            -d "channel=C0639V5KTCY" \
             -X POST https://slack.com/api/chat.postMessage
           fi
