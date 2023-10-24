@@ -17,41 +17,39 @@ jobs:
     - checkout
 
     - run:
-        name: prepare
+        name: prepare environment
         command: |
-          env.PACKAGE = sh(script: "grep Package DESCRIPTION | head -n1 | cut -d':' -f2", returnStdout: true).trim()
-          git remote set-url origin https://${GITHUB_TOKEN}@github.com/${REPOSITORY}.git
-          sh "install2.r --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr"
-          sh "Rscript -e \"git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')\""
-          sh "mkdir -m 700 -p /root/.ssh"
-          sh "ssh-keyscan -H -t rsa github.com  > ~/.ssh/known_hosts"
+          apt-get update
+          apt-get install git curl ssh -y
+          git remote set-url origin https://${GITHUB_TOKEN}@github.com/molgenis/molgenis-r-armadillo.git
+          mkdir -m 700 -p /root/.ssh
+          ssh-keyscan -H -t rsa github.com  > ~/.ssh/known_hosts
+          script -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
+          export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
+          export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
+          echo "Prepared environment for release of ${PACKAGE}:${TAG}"
+    - run:
+        name: install R stuffs, takes very long can we cache?
+        command: |
+          install2.r --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr
 
     - run:
-        name: install and test PR
+        name: check and build artifacts. todo find a way to automatically increment version number based on PR
         command: |
-          env.TAG = sh(script: "grep Version DESCRIPTION | head -n1 | cut -d':' -f2", returnStdout: true).trim()
-          sh "Rscript -e 'devtools::check(remote=TRUE, force_suggests = TRUE, error_on=\"error\")'"
-          sh "Rscript -e 'library(covr);codecov()'"
+          R CMD build .
+          Rscript -e 'devtools::check_built(path = "./${PACKAGE}_${TAG}.tar.gz", remote=TRUE, force_suggests = TRUE)'
+          Rscript -e 'library(covr);codecov()'
+          Rscript -e "pkgdown::build_site()"
 
     - run:
-        name: release
+        name: release to nexus and to github (only on master)
         command: |
           if [ "${CIRCLE_BRANCH}" = "master" ]; then
-            changelog 'Increment version number'
-            sh "set +x; curl -v --user '${NEXUS_USER}:${NEXUS_PASS}' --upload-file ${PACKAGE}_${TAG}.tar.gz ${REGISTRY_DEV}/src/contrib/${PACKAGE}_${TAG}.tar.gz"
-            sh "git tag v${TAG}"
-            sh "git push --tags origin master"
-            sh "Rscript -e \"usethis::use_version('${RELEASE_SCOPE}')\""
-            sh "Rscript -e \"pkgdown::build_site()\""
-            env.TAG = sh(script: "grep Version DESCRIPTION | head -n1 | cut -d':' -f2", returnStdout: true).trim()
-            sh "git commit -a -m 'Increment version number'"
-            sh "echo \"Releasing ${PACKAGE} v${TAG}\""
-            sh "R CMD build ."
-            sh "Rscript -e 'devtools::check_built(path = \"./${PACKAGE}_${TAG}.tar.gz\", remote=TRUE, force_suggests = TRUE)'"
-            sh "set +x; curl -v --user '${NEXUS_USER}:${NEXUS_PASS}' --upload-file ${PACKAGE}_${TAG}.tar.gz ${REGISTRY}/src/contrib/${PACKAGE}_${TAG}.tar.gz"
-            sh "git tag v${TAG}"
-            sh "git push --tags origin master"
-            sh "set +x; Rscript -e \"pkgdown::deploy_site_github(ssh_id = '${GITHUB_DEPLOY_PRIVATE_KEY_BASE64}', tarball = '${PACKAGE}_${TAG}.tar.gz', repo_slug='${REPOSITORY}')\""
+            echo \"Releasing ${PACKAGE} v${TAG}\"
+            set +x; curl -v --user '${NEXUS_USER}:${NEXUS_PASS}' --upload-file ${PACKAGE}_${TAG}.tar.gz ${REGISTRY_DEV}/src/contrib/${PACKAGE}_${TAG}.tar.gz
+            git tag v${TAG}
+            git push --tags origin master
+            set +x; Rscript -e \"pkgdown::deploy_site_github(ssh_id = '${GITHUB_DEPLOY_PRIVATE_KEY_BASE64}', tarball = '${PACKAGE}_${TAG}.tar.gz', repo_slug='${REPOSITORY}')\"
           fi
 
     - run:
