@@ -36,7 +36,7 @@ jobs:
     - run:
         name: Install R deps takes 15min, but no worries we skipinstalled from cache when this PR has installed them before
         command: |
-          install2.r --skipinstalled --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr
+          install2.r --skipinstalled --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr desc
 
     - save_cache:
         paths:
@@ -45,10 +45,18 @@ jobs:
         - /tmp/downloaded_packages
         key: when-{{ .Environment.CIRCLE_PULL_REQUEST }}-{{ checksum "DESCRIPTION" }}
 
-#    - run:
-#        name: Set new version number based on semantic commits
-#        command: |
-#          Rscript -e "usethis::use_version('${RELEASE_SCOPE}')"
+    - run:
+        name: Set new version number based on semantic commits
+        command: |
+          wget https://github.com/GitTools/GitVersion/releases/download/5.12.0/gitversion-linux-x64-5.12.0.tar.gz
+          tar -xvf gitversion-linux-x64-5.12.0.tar.gz
+          mv gitversion /usr/local/bin
+          if [ "${CIRCLE_BRANCH}" = "master" ]; then
+            export VERSION=`gitversion /output json /showvariable MajorMinorPatch`
+          else 
+            export VERSION=`gitversion /output json /showvariable MajorMinorPatch`".${CIRCLE_BUILD_NUM}"
+          fi
+          Rscript -e "desc::desc_set_version('${VERSION}')"
 
     - run:
         name: Check and build artifacts. todo find a way to automatically increment version number based on PR
@@ -76,6 +84,8 @@ jobs:
             set +x; Rscript -e "pkgdown::deploy_site_github(ssh_id = '${GITHUB_DEPLOY_PRIVATE_KEY_BASE64}', tarball = '${PACKAGE}_${TAG}.tar.gz', repo_slug='${REPOSITORY}')"
           fi
 
+    # todo: prevent duplicate releases based on tag
+    # something like git checkout $(git tag -l --sort -version:refname | head -n 1)
     - run:
         name: Message slack
         command: |
