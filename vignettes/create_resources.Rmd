@@ -1,32 +1,32 @@
-## ---- include = FALSE---------------------------------------------------------------------------------------------------
+## ---- include = FALSE--------------------------------------------------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 
 
-## ----setup--------------------------------------------------------------------------------------------------------------
+## ----setup-------------------------------------------------------------------------------------------------------------
 library(MolgenisArmadillo)
 
 
-## ---- login to the armadillo server-------------------------------------------------------------------------------------
-armadillo.login("https://armadillo3-01.molgeniscloud.org")
+## ---- login to the armadillo server------------------------------------------------------------------------------------
+armadillo.login("https://armadillo-demo.molgenis.net/")
 
 
-## ---- install resourcer package-----------------------------------------------------------------------------------------
+## ---- install resourcer package----------------------------------------------------------------------------------------
 install.packages("resourcer")
 library(resourcer)
 
 
-## ---- create resources--------------------------------------------------------------------------------------------------
+## ---- create resources-------------------------------------------------------------------------------------------------
 resGSE1 <- resourcer::newResource(
   name = "GSE66351_1",
-  url = "https://armadillo3-01.molgeniscloud.org/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
+  url = "https://armadillo-demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
   format = "ExpressionSet"
 )
 resGSE2 <- resourcer::newResource(
   name = "GSE66351_1",
-  url = "https://armadillo3-01.molgeniscloud.org/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
+  url = "https://armadillo-demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
   format = "ExpressionSet"
 )
 
