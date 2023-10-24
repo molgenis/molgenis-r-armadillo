@@ -46,12 +46,16 @@ jobs:
         key: when-{{ .Environment.CIRCLE_PULL_REQUEST }}-{{ checksum "DESCRIPTION" }}
 
     - run:
-        name: Set new version number based on semantic commits
+        name: Install git semantic version tool
         command: |
           wget https://github.com/GitTools/GitVersion/releases/download/5.12.0/gitversion-linux-x64-5.12.0.tar.gz
           tar -xvf gitversion-linux-x64-5.12.0.tar.gz
           mv gitversion /usr/local/bin
           rm gitversion-linux-x64-5.12.0.tar.gz
+
+    - run:
+        name: Get new version number based on semantic commits
+        command: |
           if [ "${CIRCLE_BRANCH}" = "master" ]; then
             export VERSION=`gitversion /output json /showvariable MajorMinorPatch`
           else 
@@ -59,9 +63,8 @@ jobs:
           fi
           Rscript -e "desc::desc_set_version('${VERSION}')"
 
-    # todo prevent release if version has not been changed
     - run:
-        name: Check and build artifacts. todo find a way to automatically increment version number based on PR
+        name: Build and check artifacts
         command: |
           export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
           export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
@@ -72,20 +75,21 @@ jobs:
           Rscript -e "devtools::check_built(path = './${PACKAGE}_${TAG}.tar.gz', remote=TRUE, force_suggests = TRUE)"
           Rscript -e "pkgdown::build_site()"
 
-    # old via nexus
-    # set +x; curl -v --user '${NEXUS_USER}:${NEXUS_PASS}' --upload-file ${PACKAGE}_${TAG}.tar.gz ${REGISTRY_DEV}/src/contrib/${PACKAGE}_${TAG}.tar.gz
-    # new is to put package at github release (UNTESTED!)
     - run:
-        name: Release to nexus and to github (only on master), and message slack
+        name: Install changelog generator
         command: |
+          apt-get install golang -y
+          go get -u github.com/digitalocean/github-changelog-generator
+
+    - run:
+        name: If on master and significant commits then release to github and message slack
+        command: |
+          CHANGELOG=`/root/go/bin/github-changelog-generator -org molgenis -repo molgenis-r-armadillo -token ${GITHUB_TOKEN}`
           export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
           export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
           export PREVIOUS=$(git tag -l --sort -version:refname | head -n 1)
           export CURRENT="v${TAG}"
-          apt-get install golang -y
-          go get -u github.com/digitalocean/github-changelog-generator
-          CHANGELOG=`/root/go/bin/github-changelog-generator -org molgenis -repo molgenis-r-armadillo -token ${GITHUB_TOKEN}`
-          if [ "${CIRCLE_BRANCH}" = "master" && "$PREVIOUS" != "$NEXT" ]; then
+          if [ "${CIRCLE_BRANCH}" = "master"] && ["$PREVIOUS" != "$NEXT" ]; then
             echo "Releasing ${PACKAGE}:${TAG}, pushing to git"
             
             git commit -a -m 'Increment version number'
@@ -104,7 +108,7 @@ jobs:
             ${CHANGLOG}" \
             -d "channel=C03AAGBH3PC" \
             -X POST https://slack.com/api/chat.postMessage      
-          elif [ "${CIRCLE_BRANCH}" = "master" && "$PREVIOUS" = "$NEXT" ]; then
+          elif [ "${CIRCLE_BRANCH}" = "master"] && ["$PREVIOUS" = "$NEXT" ]; then
             echo "skipping release, no significant commits, version is still $TAG"
             
             curl -d "token=${SLACK_TOKEN}" \
@@ -123,5 +127,3 @@ jobs:
             -d "channel=C0639V5KTCY" \
             -X POST https://slack.com/api/chat.postMessage
           fi
-          echo "changes:"
-          echo ${CHANGELOG}
