@@ -123,5 +123,5 @@ jobs:
             -X POST https://slack.com/api/chat.postMessage
           fi
 
-      - store_artifacts:
-          path: build
+    - store_artifacts:
+        path: build
