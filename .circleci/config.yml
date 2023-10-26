@@ -16,11 +16,6 @@ jobs:
     steps:
     - checkout
 
-    # we cache once a day
-    - restore_cache:
-        keys:
-        - when-{{ .Environment.CIRCLE_PULL_REQUEST }}-{{ checksum "DESCRIPTION" }}
-
     - run:
         name: Prepare environment
         command: |
@@ -28,25 +23,9 @@ jobs:
           apt-get install git curl ssh libcurl4-openssl-dev libssl-dev build-essential ninja-build cmake -y
           git fetch --all --tags
           git remote set-url origin https://${GITHUB_TOKEN}@github.com/molgenis/molgenis-r-armadillo.git
-          mkdir -m 700 -p /root/.ssh
-          ssh-keyscan -H -t rsa github.com  > ~/.ssh/known_hosts
-          install2.r --skipinstalled --repo https://cloud.r-project.org git2r
-          Rscript -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
 
     - run:
-        name: Install R deps takes 15min, but no worries we skipinstalled from cache when this PR has installed them before
-        command: |
-          install2.r --skipinstalled --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr desc
-
-    - save_cache:
-        paths:
-        - /usr/local/lib/R/library
-        - /usr/local/lib/R/site-library
-        - /tmp/downloaded_packages
-        key: when-{{ .Environment.CIRCLE_PULL_REQUEST }}-{{ checksum "DESCRIPTION" }}
-
-    - run:
-        name: Install git semantic version tool
+        name: Install git semantic version bump tool
         command: |
           wget https://github.com/GitTools/GitVersion/releases/download/5.12.0/gitversion-linux-x64-5.12.0.tar.gz
           tar -xvf gitversion-linux-x64-5.12.0.tar.gz
@@ -54,14 +33,29 @@ jobs:
           rm gitversion-linux-x64-5.12.0.tar.gz
 
     - run:
-        name: Get new version number based on semantic commits
+        name: Get new version number based on semantic commits and put in package description
         command: |
-          if [ "${CIRCLE_BRANCH}" = "master" ]; then
-            export VERSION=`gitversion /output json /showvariable MajorMinorPatch`
-          else 
-            export VERSION=`gitversion /output json /showvariable MajorMinorPatch`".${CIRCLE_BUILD_NUM}"
-          fi
+          export VERSION=`gitversion /output json /showvariable MajorMinorPatch`
+          install2.r --repo https://cloud.r-project.org desc
           Rscript -e "desc::desc_set_version('${VERSION}')"
+
+    # we use version number for caching
+    - restore_cache:
+        keys:
+        - when-{{ .Environment.CIRCLE_PULL_REQUEST }}-{{ checksum "DESCRIPTION" }}
+
+    - run:
+        name: Install R deps takes 15min, but no worries we skipinstalled from cache when this PR has installed them before
+        command: |
+          install2.r --skipinstalled --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr desc
+          Rscript -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
+
+    - save_cache:
+        paths:
+        - /usr/local/lib/R/library
+        - /usr/local/lib/R/site-library
+        - /tmp/downloaded_packages
+        key: when-{{ .Environment.CIRCLE_PULL_REQUEST }}-{{ checksum "DESCRIPTION" }}
 
     - run:
         name: Build and check artifacts
@@ -76,20 +70,13 @@ jobs:
           Rscript -e "pkgdown::build_site()"
 
     - run:
-        name: Install changelog generator
-        command: |
-          apt-get install golang -y
-          go get -u github.com/digitalocean/github-changelog-generator
-
-    - run:
         name: If on master and significant commits then release to github and message slack
         command: |
-          CHANGELOG=`/root/go/bin/github-changelog-generator -org molgenis -repo molgenis-r-armadillo -token ${GITHUB_TOKEN}`
           export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
           export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
           export PREVIOUS=$(git tag -l --sort -version:refname | head -n 1)
           export NEXT="v${TAG}"
-          echo "NEXT=${CURRENT} and PREVIOUS=${PREVIOUS}" 
+          echo "NEXT=${NEXT} and PREVIOUS=${PREVIOUS}" 
           if [  $CIRCLE_BRANCH = "master" ] && [ $PREVIOUS != $NEXT  ]; then
             echo "Releasing ${PACKAGE}:${TAG}, pushing to git"
 
@@ -98,9 +85,9 @@ jobs:
 
             curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/molgenis/molgenis-r-armadillo/releases \
-            -d '{"tag_name":"'${NEXT}'","target_commitish":"master","name":"'${NEXT}'","body":"'${CHANGELOG}'","draft":false,"prerelease":false,"generate_release_notes":true}'
+            -d "{\"tag_name\":\"${NEXT}\",\"target_commitish\":\"master\",\"name\":\"${NEXT}\",\"draft\":false,\"prerelease\":false,\"generate_release_notes\":true}"
             
-            Rscript -e "pkgdown::deploy_site_github(tarball = '${PACKAGE}_${TAG}.tar.gz', repo_slug='molgenis/molgenis-r-armadillo')"
+            Rscript -e "usethis::use_pkgdown_github_pages()"
 
             curl -d "token=${SLACK_TOKEN}" \
             -d "text=:confetti_ball: molgenis-r-armadillo version: v${TAG} is released!
