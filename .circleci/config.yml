@@ -122,3 +122,6 @@ jobs:
             -d "channel=C0639V5KTCY" \
             -X POST https://slack.com/api/chat.postMessage
           fi
+
+      - store_artifacts:
+          path: build
