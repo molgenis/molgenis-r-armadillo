@@ -1,0 +1,129 @@
+# Java Gradle CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+    # specify the version you desire here
+    - image: rocker/verse:4.1.1
+    working_directory: ~/repo
+
+    # The resource_class feature allows configuring CPU and RAM resources for each job. Different resource classes are available for different executors. https://circleci.com/docs/2.0/configuration-reference/#resourceclass
+    resource_class: large
+
+    steps:
+    - checkout
+
+    # we cache once a day
+    - restore_cache:
+        keys:
+        - when-{{ .Environment.CIRCLE_PULL_REQUEST }}-{{ checksum "DESCRIPTION" }}
+
+    - run:
+        name: Prepare environment
+        command: |
+          apt-get update
+          apt-get install git curl ssh libcurl4-openssl-dev libssl-dev build-essential ninja-build cmake -y
+          git fetch --all --tags
+          git remote set-url origin https://${GITHUB_TOKEN}@github.com/molgenis/molgenis-r-armadillo.git
+          mkdir -m 700 -p /root/.ssh
+          ssh-keyscan -H -t rsa github.com  > ~/.ssh/known_hosts
+          install2.r --skipinstalled --repo https://cloud.r-project.org git2r
+          Rscript -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
+
+    - run:
+        name: Install R deps takes 15min, but no worries we skipinstalled from cache when this PR has installed them before
+        command: |
+          install2.r --skipinstalled --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr desc
+
+    - save_cache:
+        paths:
+        - /usr/local/lib/R/library
+        - /usr/local/lib/R/site-library
+        - /tmp/downloaded_packages
+        key: when-{{ .Environment.CIRCLE_PULL_REQUEST }}-{{ checksum "DESCRIPTION" }}
+
+    - run:
+        name: Install git semantic version tool
+        command: |
+          wget https://github.com/GitTools/GitVersion/releases/download/5.12.0/gitversion-linux-x64-5.12.0.tar.gz
+          tar -xvf gitversion-linux-x64-5.12.0.tar.gz
+          mv gitversion /usr/local/bin
+          rm gitversion-linux-x64-5.12.0.tar.gz
+
+    - run:
+        name: Get new version number based on semantic commits
+        command: |
+          if [ "${CIRCLE_BRANCH}" = "master" ]; then
+            export VERSION=`gitversion /output json /showvariable MajorMinorPatch`
+          else 
+            export VERSION=`gitversion /output json /showvariable MajorMinorPatch`".${CIRCLE_BUILD_NUM}"
+          fi
+          Rscript -e "desc::desc_set_version('${VERSION}')"
+
+    - run:
+        name: Build and check artifacts
+        command: |
+          export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
+          export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
+          echo "Testing ${PACKAGE}:${TAG}"
+          Rscript -e 'devtools::check(remote=TRUE, force_suggests = TRUE, error_on="error")'
+          Rscript -e 'library(covr);codecov()'
+          R CMD build .
+          Rscript -e "devtools::check_built(path = './${PACKAGE}_${TAG}.tar.gz', remote=TRUE, force_suggests = TRUE)"
+          Rscript -e "pkgdown::build_site()"
+
+    - run:
+        name: Install changelog generator
+        command: |
+          apt-get install golang -y
+          go get -u github.com/digitalocean/github-changelog-generator
+
+    - run:
+        name: If on master and significant commits then release to github and message slack
+        command: |
+          CHANGELOG=`/root/go/bin/github-changelog-generator -org molgenis -repo molgenis-r-armadillo -token ${GITHUB_TOKEN}`
+          export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
+          export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
+          export PREVIOUS=$(git tag -l --sort -version:refname | head -n 1)
+          export CURRENT="v${TAG}"
+          if [ "${CIRCLE_BRANCH}" = "master"] && ["$PREVIOUS" != "$NEXT" ]; then
+            echo "Releasing ${PACKAGE}:${TAG}, pushing to git"
+            
+            git commit -a -m 'Increment version number'
+            git tag v${TAG}
+            git push --tags origin master
+            
+            curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/OWNER/REPO/releases \
+            -d '{"tag_name":"${CURRENT}","target_commitish":"master","name":"${CURRENT}","body":"${CHANGELOG}","draft":false,"prerelease":false,"generate_release_notes":true}'
+            
+            set +x; Rscript -e "pkgdown::deploy_site_github(ssh_id = '${GITHUB_TOKEN}', tarball = '${PACKAGE}_${TAG}.tar.gz', repo_slug='${REPOSITORY}')"
+            
+            curl -d "token=${SLACK_TOKEN}" \
+            -d "text=:confetti_ball: molgenis-r-armadillo version: v${TAG} is released!
+            Changelog:
+            ${CHANGLOG}" \
+            -d "channel=C03AAGBH3PC" \
+            -X POST https://slack.com/api/chat.postMessage      
+          elif [ "${CIRCLE_BRANCH}" = "master"] && ["$PREVIOUS" = "$NEXT" ]; then
+            echo "skipping release, no significant commits, version is still $TAG"
+            
+            curl -d "token=${SLACK_TOKEN}" \
+            -d "text=molgenis-r-armadillo master build success, no release because no significant commits added.
+            Unreleased changes:
+            ${CHANGELOG}" \
+            -d "channel=C0639V5KTCY" \
+            -X POST https://slack.com/api/chat.postMessage
+          else
+            echo "skipping release, we are not on master branch"
+            
+            curl -d "token=${SLACK_TOKEN}" \
+            -d "text=*<${CIRCLE_PULL_REQUEST}|Circle-CI » Armadillo » molgenis-r-armadillo » PR-${CIRCLE_PULL_REQUEST##*/} #${CIRCLE_BUILD_NUM}>*
+            Unreleased changes:
+            ${CHANGELOG}" \
+            -d "channel=C0639V5KTCY" \
+            -X POST https://slack.com/api/chat.postMessage
+          fi
