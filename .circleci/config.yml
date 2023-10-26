@@ -27,15 +27,14 @@ jobs:
     - run:
         name: Install git semantic version bump tool
         command: |
-          wget https://github.com/GitTools/GitVersion/releases/download/5.12.0/gitversion-linux-x64-5.12.0.tar.gz
-          tar -xvf gitversion-linux-x64-5.12.0.tar.gz
-          mv gitversion /usr/local/bin
-          rm gitversion-linux-x64-5.12.0.tar.gz
+          echo 'deb [trusted=yes] https://apt.fury.io/caarlos0/ /' | sudo tee /etc/apt/sources.list.d/caarlos0.list
+          sudo apt update
+          sudo apt install svu
 
     - run:
         name: Get new version number based on semantic commits and put in package description
         command: |
-          export VERSION=`gitversion /output json /showvariable MajorMinorPatch`
+          export VERSION=`svu`
           install2.r --repo https://cloud.r-project.org desc
           Rscript -e "desc::desc_set_version('${VERSION}')"
 
