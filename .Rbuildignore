@@ -10,3 +10,4 @@ adr
 ^README.Rmd$
 ^cran-comments\.md$
 ^vignettes/data/packages/.*
+.circleci
