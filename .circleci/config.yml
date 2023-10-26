@@ -20,7 +20,7 @@ jobs:
         name: Prepare environment
         command: |
           apt-get update
-          apt-get install git curl ssh libcurl4-openssl-dev libssl-dev build-essential ninja-build cmake -y
+          apt-get install git curl ssh libcurl4-openssl-dev libssl-dev build-essential ninja-build cmake jq -y
           git fetch --all --tags
           git remote set-url origin https://${GITHUB_TOKEN}@github.com/molgenis/molgenis-r-armadillo.git
 
