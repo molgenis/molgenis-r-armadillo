@@ -88,8 +88,9 @@ jobs:
           export PACKAGE=`grep Package DESCRIPTION | head -n1 | cut -d':' -f2 | xargs`
           export TAG=`grep Version DESCRIPTION | head -n1 | cut -d':' -f2 | xargs` 
           export PREVIOUS=$(git tag -l --sort -version:refname | head -n 1)
-          export CURRENT="v${TAG}"
-          if [ "${CIRCLE_BRANCH}" = "master"] && ["$PREVIOUS" != "$NEXT" ]; then
+          export NEXT="v${TAG}"
+          echo "NEXT=${CURRENT} and PREVIOUS=${PREVIOUS} 
+          if [  $CIRCLE_BRANCH = "master" ] && [ $PREVIOUS != $NEXT  ]; then
             echo "Releasing ${PACKAGE}:${TAG}, pushing to git"
             
             git commit -a -m 'Increment version number'
@@ -108,7 +109,7 @@ jobs:
             ${CHANGLOG}" \
             -d "channel=C03AAGBH3PC" \
             -X POST https://slack.com/api/chat.postMessage      
-          elif [ "${CIRCLE_BRANCH}" = "master"] && ["$PREVIOUS" = "$NEXT" ]; then
+          elif [ $CIRCLE_BRANCH = "master" ] && [ $PREVIOUS = $NEXT ]; then
             echo "skipping release, no significant commits, version is still $TAG"
             
             curl -d "token=${SLACK_TOKEN}" \
