@@ -34,7 +34,7 @@ jobs:
     - run:
         name: Get new version number based on semantic commits and put in package description
         command: |
-          export VERSION=`svu`
+          export VERSION=`svu --strip-prefix`
           install2.r --repo https://cloud.r-project.org desc
           Rscript -e "desc::desc_set_version('${VERSION}')"
 
