@@ -1,4 +1,4 @@
-## 2.1.1 Subset function and bugfixes
+## 2.1.2 Subset function and bugfixes
 * Add subset function
 * Fix unclear error message when table name is not specified 
 * Fix load_table and assign functions for arrow 3 update
