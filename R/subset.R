@@ -1,11 +1,10 @@
 #' Describes data available to subset and makes subset
 #'
 #' This automates the process of:
-#' \describe{
-#'   \item{1}{checking what data is available to create subsets}
-#'   \item{2}{make the subset}
-#' }
-#'
+#' \begin{enumerate}
+#'   \item Checking what data is available to create subsets
+#'   \item Make the subset
+#' \end{enumerate}
 #' @param source_project project from which to subset data
 #' @param new_project project to upload subset to. Will be created if it doesn't
 #' exist.

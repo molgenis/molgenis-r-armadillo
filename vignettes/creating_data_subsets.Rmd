@@ -1,29 +1,29 @@
-## ---- include = FALSE---------------------------------------------------------------------------------------------------
+## ---- include = FALSE--------------------------------------------------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 
 
-## ---- install the package, eval = FALSE---------------------------------------------------------------------------------
+## ---- install the package, eval = FALSE--------------------------------------------------------------------------------
 ## install.packages("MolgenisArmadillo")
 
 
-## ---- load the package--------------------------------------------------------------------------------------------------
+## ---- load the package-------------------------------------------------------------------------------------------------
 library(MolgenisArmadillo)
 
 
-## ---- login to armadillo------------------------------------------------------------------------------------------------
+## ---- login to armadillo-----------------------------------------------------------------------------------------------
 armadillo.login("https://armadillo-demo.molgenis.net/")
 
 
-## ---- create the subset definition object-------------------------------------------------------------------------------
+## ---- create the subset definition object------------------------------------------------------------------------------
 subset_definition <- armadillo.subset_definition(
   vars = "vignettes/data/subset/vars.csv")
 subset_definition
 
 
-## ---- create a subset in dry-run mode-----------------------------------------------------------------------------------
+## ---- create a subset in dry-run mode----------------------------------------------------------------------------------
 not_available <- armadillo.subset(
 	source_project = "gecko",
 	new_project = "study1",
@@ -33,7 +33,7 @@ not_available <- armadillo.subset(
 not_available
 
 
-## ---- running the subset for real---------------------------------------------------------------------------------------
+## ---- running the subset for real--------------------------------------------------------------------------------------
 armadillo.subset(
 	source_project = "gecko",
 	new_project = "study1",

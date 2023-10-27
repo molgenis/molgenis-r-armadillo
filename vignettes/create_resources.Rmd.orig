@@ -48,7 +48,7 @@ As datamanager you first need to login to Armadillo (as `superuser`)
 
 
 ```{r, login to the armadillo server}
-armadillo.login("https://armadillo3-01.molgeniscloud.org")
+armadillo.login("https://armadillo-demo.molgenis.net/")
 ```
 
 #### Install prerequisites
@@ -62,20 +62,20 @@ library(resourcer)
 #### Create resources
 In order to be able to assign the data uploaded in the armadillo you need to create the resources as well.
 The data files you uploaded to armadillo, can be retrieved via the following URL:
-`yoururl + /storage/projects/{project name}/objects/{folder name}%2F{filename}` and example is:
-`https://armadillo3-01.molgeniscloud.org/storage/projects/omics/objects/ewas%2Fgse66351_1.rda`. Here the URL is
-`https://armadillo3-01.molgeniscloud.org`, the project name is `omics`, the folder is `ewas` and the name of the
+`yoururl + /storage/projects/{project name}/objects/{folder name}%2F{filename}` an example is:
+`https://armadillo-demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda`. Here the URL is
+`https://armadillo-demo.molgenis.net/`, the project name is `omics`, the folder is `ewas` and the name of the
 data file is `gse66351_1.rda`.
 
 ```{r, create resources}
 resGSE1 <- resourcer::newResource(
   name = "GSE66351_1",
-  url = "https://armadillo3-01.molgeniscloud.org/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
+  url = "https://armadillo-demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
   format = "ExpressionSet"
 )
 resGSE2 <- resourcer::newResource(
   name = "GSE66351_1",
-  url = "https://armadillo3-01.molgeniscloud.org/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
+  url = "https://armadillo-demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
   format = "ExpressionSet"
 )
 
