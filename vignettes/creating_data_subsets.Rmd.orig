@@ -53,7 +53,7 @@ If you defined the tables then you can construct the `subset_definition`. This c
 
 ```{r, create the subset definition object}
 subset_definition <- armadillo.subset_definition(
-  vars = "vignettes/data/subset/vars.csv")
+  vars = "data/subset/vars.csv")
 subset_definition
 ```
 

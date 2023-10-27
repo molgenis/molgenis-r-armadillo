@@ -54,8 +54,7 @@ armadillo.login("https://armadillo-demo.molgenis.net/")
 #### Install prerequisites
 If you want to install a package on the Armadillo Rserver you can execute the following. The selected profile is always `default` if none is specified. If your profile doesn't have the `resourcer` package installed, install it:
 
-```{r, install resourcer package}
-install.packages("resourcer")
+```{r, use resourcer package}
 library(resourcer)
 ```
 
