@@ -10,7 +10,8 @@ armadillo.subset_definition(vars = NULL)
 \item{vars}{\code{.csv} file containing vars to subset.}
 }
 \value{
-a dataframe containing variables that is used for input in the \code{armadillo.subset()} method
+a dataframe containing variables that is used for input in the
+\code{armadillo.subset()} method
 }
 \description{
 This file must contain three columns with the headers 'folder', 'table' and

@@ -14,9 +14,11 @@ armadillo.subset(
 \arguments{
 \item{source_project}{project from which to subset data}
 
-\item{new_project}{project to upload subset to. Will be created if it doesn't exist.}
+\item{new_project}{project to upload subset to. Will be created if it doesn't
+exist.}
 
-\item{subset_def}{R object containing subset definition created by \code{armadillo.subset_definition()}}
+\item{subset_def}{R object containing subset definition created by
+\code{armadillo.subset_definition()}}
 
 \item{dry_run}{you can dry-run the function to which variables are missing}
 }
@@ -26,8 +28,8 @@ missing variables provided in the subset definition
 \description{
 This automates the process of:
 \enumerate{
-  \item{1}{checking what data is available to create subsets}
-  \item{2}{make the subset}
+ \item Checking what data is available to create subsets
+ \item Make the subset
 }
 }
 \examples{
