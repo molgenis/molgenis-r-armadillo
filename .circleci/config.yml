@@ -100,7 +100,7 @@ jobs:
             Rscript -e "usethis::use_pkgdown_github_pages()"
 
             curl -d "token=${SLACK_TOKEN}" \
-            -d "text=:molgenis-armadillo: molgenis-r-armadillo version: v${TAG} is released :rocket:" \
+            -d "text=:molgenis-armadillo: molgenis-r-armadillo version: *<https://github.com/molgenis/molgenis-r-armadillo/releases/tag/v${TAG}|v${TAG}>* is released :rocket:" \
             -d "channel=C03AAGBH3PC" \
             -X POST https://slack.com/api/chat.postMessage      
 
