@@ -274,11 +274,6 @@ test_that(".load_object loads the object from file", {
                      'Content-Type' = 'application/octet-stream')
     ) %>%
     to_return(status = 200, body = stringi::stri_read_raw(file))
-  
-  stub_request('get', uri = 'https://test.nl/storage/projects/project/objects/core%2Fnonrep.parquet') %>%
-    wi_th(
-      headers = list('Accept' = 'application/json, text/xml, application/xml, */*', 'Authorization' = 'Bearer token', 'Content-Type' = 'application/octet-stream')
-    )
 
   expect_silent(
     with_mock(
