@@ -201,8 +201,8 @@
   response <- httr::GET(
     url = .get_url(),
     path = .to_object_uri(project, paste0(folder, "/", name), extension),
+    httr::content_type("application/octet-stream"),
     config = c(
-      httr::accept("application/octet-stream"),
       httr::add_headers(.get_auth_header())
     )
   )
