@@ -225,7 +225,12 @@ test_that(".load_object handles errors", {
   stub_request("get",
                uri = paste0("https://test.nl/storage/projects/project/objects/",
                             "core%2Fnonrep.rds")) %>%
-    wi_th(headers = list("Accept" = "application/octet-stream")) %>%
+    wi_th(
+      headers = list('Accept' = 
+                       'application/json, text/xml, application/xml, */*',
+                     'Authorization' = 'Bearer token',
+                     'Content-Type' = 'application/octet-stream')
+    ) %>%
     to_return(status = 401)
 
   expect_error(
@@ -262,7 +267,12 @@ test_that(".load_object loads the object from file", {
   stub_request("get",
                uri = paste0("https://test.nl/storage/projects/project/objects/",
                             "core%2Fnonrep.parquet")) %>%
-    wi_th(headers = list("Accept" = "application/octet-stream")) %>%
+    wi_th(
+      headers = list('Accept' = 
+                       'application/json, text/xml, application/xml, */*',
+                     'Authorization' = 'Bearer token',
+                     'Content-Type' = 'application/octet-stream')
+    ) %>%
     to_return(status = 200, body = stringi::stri_read_raw(file))
 
   expect_silent(

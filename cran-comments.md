@@ -1,3 +1,6 @@
+## 2.1.3 Bugfix
+* Fix #79 load_table function doesn't show error messages
+
 ## 2.1.2 Subset function and bugfixes
 * Add subset function
 * Fix unclear error message when table name is not specified 
