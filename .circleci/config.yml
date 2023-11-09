@@ -46,7 +46,7 @@ jobs:
     - run:
         name: Install R deps takes 15min, but no worries we skipinstalled from cache when this PR has installed them before
         command: |
-          install2.r --skipinstalled --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr desc
+          install2.r --skipinstalled --repo https://cloud.r-project.org devtools pkgdown markdown rmarkdown mockery webmockr httr urltools xml2 arrow MolgenisAuth DSMolgenisArmadillo git2r ellipsis vctrs covr descb rlist
           Rscript -e "git2r::config(user.email = 'molgenis+ci@gmail.com', user.name = 'MOLGENIS Jenkins')"
 
     - save_cache:

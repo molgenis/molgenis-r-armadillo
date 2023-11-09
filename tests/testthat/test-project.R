@@ -81,3 +81,97 @@ test_that("armadillo.delete_project deletes project", {
 
   stub_registry_clear()
 })
+
+test_that("armadillo.get_projects_info gets all projects and their users", {
+  test_data <- list(
+    list("name" = "lifecycle", "users" = list()),
+    list("name" = "other-project", "users" = list("john", "tommy"))
+  )
+  stub_request("get", uri = "https://test.nl/access/projects") %>%
+    to_return(
+      status = 200,
+      body = "[
+        {
+          \"name\": \"lifecycle\",
+          \"users\": []
+        },
+        {
+          \"name\": \"other-project\",
+          \"users\": [\"john\", \"tommy\"]
+        }
+      ]",
+      headers = list("Content-Type" = "application/json")
+    )
+  res <- armadillo.get_projects_info()
+  expect_equal(res, test_data)
+
+  stub_registry_clear()
+})
+
+test_that("armadillo.get_project_users with a project that has users", {
+  stub_request("get", uri = "https://test.nl/access/projects") %>%
+    to_return(
+      status = 200,
+      body = "[
+        {
+          \"name\": \"lifecycle\",
+          \"users\": []
+        },
+        {
+          \"name\": \"other-project\",
+          \"users\": [\"john\", \"tommy\"]
+        }
+      ]",
+      headers = list("Content-Type" = "application/json")
+    )
+  res <- armadillo.get_project_users("other-project")
+  expect_equal(res, list("john", "tommy"))
+
+  stub_registry_clear()
+})
+
+test_that("armadillo.get_project_users with a project that has no users", {
+  stub_request("get", uri = "https://test.nl/access/projects") %>%
+    to_return(
+      status = 200,
+      body = "[
+        {
+          \"name\": \"lifecycle\",
+          \"users\": []
+        },
+        {
+          \"name\": \"other-project\",
+          \"users\": [\"john\", \"tommy\"]
+        }
+      ]",
+      headers = list("Content-Type" = "application/json")
+    )
+  res <- armadillo.get_project_users("lifecycle")
+  expect_equal(res, list())
+
+  stub_registry_clear()
+})
+
+test_that("armadillo.get_project_users with a non existing project", {
+  stub_request("get", uri = "https://test.nl/access/projects") %>%
+    to_return(
+      status = 200,
+      body = "[
+        {
+          \"name\": \"lifecycle\",
+          \"users\": []
+        },
+        {
+          \"name\": \"other-project\",
+          \"users\": [\"john\", \"tommy\"]
+        }
+      ]",
+      headers = list("Content-Type" = "application/json")
+    )
+  expect_error(
+    armadillo.get_project_users("nonexisting-project"),
+    "Project nonexisting-project not found."
+  )
+
+  stub_registry_clear()
+})
