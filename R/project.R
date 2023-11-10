@@ -43,10 +43,15 @@ armadillo.create_project <- function(project_name) { # nolint
 #' }
 #'
 #' @export 
-armadillo.create_project_with_users(project_name, users) { #nolint
+armadillo.create_project_with_users <- function(project_name, users) { #nolint
   .create_project(project_name, users)
 
-  message(paste0("Created project '", project_name, "' with users: ", paste(unlist(users), collapse=", ")))
+  if (length(users) == 0){
+    usermessage <- "with no users."
+  } else {
+    usermessage <- paste0("with users: ", paste(unlist(users), collapse=", "))
+  }
+  message(paste0("Created project '", project_name, "' ", usermessage))
 }
 
 .create_project <- function(project_name, users) { 

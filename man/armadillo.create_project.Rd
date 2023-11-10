@@ -15,9 +15,6 @@ armadillo.create_project(project_name)
   \item{must consist of lowercase letters and numbers.}
   }}
 }
-\value{
-TRUE if successful
-}
 \description{
 Create a project for a variable collection
 }
