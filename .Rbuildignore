@@ -1,6 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-Jenkinsfile
 ..Rcheck
 adr
 ^doc$
@@ -11,3 +10,5 @@ adr
 ^cran-comments\.md$
 ^vignettes/data/packages/.*
 .circleci
+^_pkgdown\.yml$
+^pkgdown$
