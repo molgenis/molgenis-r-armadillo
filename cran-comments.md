@@ -1,3 +1,6 @@
+## 2.1.4 Fix documentation
+* Update github.io using CI
+
 ## 2.1.3 Bugfix
 * Fix #79 load_table function doesn't show error messages
 
