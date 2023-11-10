@@ -7,7 +7,7 @@
 #'   \item{cannot end with a \code{-}.}
 #'   \item{must consist of lowercase letters and numbers.}
 #'   }
-#' @return TRUE if successful
+#' @return NULL
 #'
 #' @importFrom httr PUT
 #'
@@ -18,19 +18,49 @@
 #'
 #' @export
 armadillo.create_project <- function(project_name) { # nolint
+  .create_project(project_name, list())
+
+  message(paste0("Created project '", project_name, "'"))
+}
+
+#' Create a project for a variable collection with supplied users
+#'
+#' @param project_name The name of the project to create. The project name
+#' \itemize{
+#'   \item{cannot be empty.}
+#'   \item{must be no more than 56 characters.}
+#'   \item{cannot end with a \code{-}.}
+#'   \item{must consist of lowercase letters and numbers.}
+#'   }
+#' @param users A list collection of the users that should have access to the project
+#' @return NULL
+#'
+#' @importFrom httr PUT
+#'
+#' @examples 
+#' \dontrun{
+#' armadillo.create_project("gecko", list("user1@users.com", "user2@users.com"))
+#' }
+#'
+#' @export 
+armadillo.create_project_with_users(project_name, users) { #nolint
+  .create_project(project_name, users)
+
+  message(paste0("Created project '", project_name, "' with users: ", paste(unlist(users), collapse=", ")))
+}
+
+.create_project <- function(project_name, users) { 
   .check_project_name(project_name)
 
   response <- httr::PUT(
     url = .get_url(),
     path = "/access/projects",
-    body = list(name = project_name),
+    body = list(name = project_name, users = users),
     config = c(httr::content_type_json(),
                httr::add_headers(.get_auth_header())),
     encode = "json"
   )
   .handle_request_error(response)
-
-  message(paste0("Created project '", project_name, "'"))
 }
 
 #' Delete project
