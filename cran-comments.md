@@ -1,7 +1,5 @@
-## 2.1.8 Fix documentation
+## 2.1.8 Bugfixes
 * Update github.io using CI
-
-## 2.1.3 Bugfix
 * Fix #79 load_table function doesn't show error messages
 
 ## 2.1.2 Subset function and bugfixes
