@@ -97,7 +97,7 @@ jobs:
             "https://uploads.github.com/repos/molgenis/molgenis-r-armadillo/releases/${RELEASE_ID}/assets?name=${PACKAGE}_${TAG}.tar.gz" \
             --data-binary "@${PACKAGE}_${TAG}.tar.gz"
 
-            Rscript -e "pkgdown::deploy_to_branch(message='Built site for MolgenisArmadillo: ${TAG}@', branch='gh-pages')"
+            Rscript -e "pkgdown::deploy_to_branch(commit_message='Built site for MolgenisArmadillo: ${TAG}@', branch='gh-pages')"
             Rscript -e "usethis::use_pkgdown_github_pages()"
 
             curl -d "token=${SLACK_TOKEN}" \
