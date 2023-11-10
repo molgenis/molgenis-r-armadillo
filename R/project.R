@@ -92,6 +92,8 @@ armadillo.get_projects_info <- function() { # nolint
 #' @param project_name the name of the project to extract the users from
 #' @return List of all users within "project_name"
 #'
+#' @import rlist
+#'
 #' @examples
 #' \dontrun{
 #' armadillo.get_project_users("some-project")
