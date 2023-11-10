@@ -1,4 +1,4 @@
-## 2.1.5 Fix documentation
+## 2.1.6 Fix documentation
 * Update github.io using CI
 
 ## 2.1.3 Bugfix
