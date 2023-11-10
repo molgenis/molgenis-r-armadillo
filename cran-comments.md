@@ -1,4 +1,4 @@
-## 2.1.8 Bugfixes
+## 2.1.9 Bugfixes
 * Update github pages using CI
 * Fix #79 load_table function doesn't show error messages
 
