@@ -40,21 +40,24 @@ test_that("armadillo.create_project creates a folder", {
   stub_registry_clear()
 })
 
-test_that("armadillo.create_project_with_users nonempty users creates a folder with users", {
+test_that("armadillo.create_project_with_users with nonempty users", {
   stub_request("put", uri = "https://test.nl/access/projects") %>%
     wi_th(
       headers = list(
                      "Accept" =
                        "application/json, text/xml, application/xml, */*",
                      "Content-Type" = "application/json"),
-      body = "{\"name\":\"project\",\"users\":[\"user1@users.com\",\"user2@users.com\"]}"
+      body = "{\"name\":\"project\",\"users\":[\"user1@users.com\",\"user2@users.com\"]}"  # nolint
     ) %>%
     to_return(
       status = 204
     )
 
   expect_message(
-    armadillo.create_project_with_users("project", list("user1@users.com", "user2@users.com")),
+    armadillo.create_project_with_users(
+      "project",
+      list("user1@users.com", "user2@users.com")
+    ),
     "Created project 'project' with users: user1@users.com, user2@users.com"
   )
 

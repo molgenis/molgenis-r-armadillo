@@ -15,7 +15,8 @@ armadillo.create_project_with_users(project_name, users)
   \item{must consist of lowercase letters and numbers.}
   }}
 
-\item{users}{A list collection of the users that should have access to the project}
+\item{users}{A list collection of the users that
+should have access to the project}
 }
 \description{
 Create a project for a variable collection with supplied users
