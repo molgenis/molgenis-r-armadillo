@@ -15,7 +15,7 @@ test_that("armadillo.create_project creates a folder", {
                      "Accept" =
                        "application/json, text/xml, application/xml, */*",
                      "Content-Type" = "application/json"),
-      body = "{\"name\":\"project\"}"
+      body = '{"name":"project"}'
     ) %>%
     to_return(
       status = 204
@@ -33,16 +33,16 @@ test_that("armadillo.list_projects lists all shared buckets", {
   stub_request("get", uri = "https://test.nl/access/projects") %>%
     to_return(
       status = 200,
-      body = "[
+      body = '[
         {
-          \"name\": \"lifecycle\",
-          \"users\": []
+          "name": "lifecycle",
+          "users": []
         },
         {
-          \"name\": \"test\",
-          \"users\": []
+          "name": "test",
+          "users": []
         }
-      ]",
+      ]',
       headers = list("Content-Type" = "application/json")
     )
 
@@ -56,9 +56,9 @@ test_that("armadillo.delete_project handles errors", {
   stub_request("delete", uri = "https://test.nl/access/projects/project") %>%
     to_return(
       status = 404,
-      body = "{
-        \"message\": \"project not found\"
-      }",
+      body = '{
+        "message": "project not found"
+      }',
       headers = list("Content-Type" = "application/json")
     )
 
