@@ -1,6 +1,17 @@
 handle <- httr::handle("https://test.nl")
 withr::local_options("MolgenisArmadillo.armadillo.handle" = handle)
 
+mock_projects_with_users = '[
+  {
+    "name": "lifecycle",
+    "users": []
+  },
+  {
+    "name": "other-project",
+    "users": ["john", "tommy"]
+  }
+]'
+
 test_that("armadillo.create_project checks folder name", {
   expect_error(
     armadillo.create_project("example_folder"),
@@ -90,16 +101,7 @@ test_that("armadillo.get_projects_info gets all projects and their users", {
   stub_request("get", uri = "https://test.nl/access/projects") %>%
     to_return(
       status = 200,
-      body = "[
-        {
-          \"name\": \"lifecycle\",
-          \"users\": []
-        },
-        {
-          \"name\": \"other-project\",
-          \"users\": [\"john\", \"tommy\"]
-        }
-      ]",
+      body = mock_projects_with_users,
       headers = list("Content-Type" = "application/json")
     )
   res <- armadillo.get_projects_info()
@@ -112,16 +114,7 @@ test_that("armadillo.get_project_users with a project that has users", {
   stub_request("get", uri = "https://test.nl/access/projects") %>%
     to_return(
       status = 200,
-      body = "[
-        {
-          \"name\": \"lifecycle\",
-          \"users\": []
-        },
-        {
-          \"name\": \"other-project\",
-          \"users\": [\"john\", \"tommy\"]
-        }
-      ]",
+      body = mock_projects_with_users,
       headers = list("Content-Type" = "application/json")
     )
   res <- armadillo.get_project_users("other-project")
@@ -134,16 +127,7 @@ test_that("armadillo.get_project_users with a project that has no users", {
   stub_request("get", uri = "https://test.nl/access/projects") %>%
     to_return(
       status = 200,
-      body = "[
-        {
-          \"name\": \"lifecycle\",
-          \"users\": []
-        },
-        {
-          \"name\": \"other-project\",
-          \"users\": [\"john\", \"tommy\"]
-        }
-      ]",
+      body = mock_projects_with_users,
       headers = list("Content-Type" = "application/json")
     )
   res <- armadillo.get_project_users("lifecycle")
@@ -156,16 +140,7 @@ test_that("armadillo.get_project_users with a non existing project", {
   stub_request("get", uri = "https://test.nl/access/projects") %>%
     to_return(
       status = 200,
-      body = "[
-        {
-          \"name\": \"lifecycle\",
-          \"users\": []
-        },
-        {
-          \"name\": \"other-project\",
-          \"users\": [\"john\", \"tommy\"]
-        }
-      ]",
+      body = mock_projects_with_users,
       headers = list("Content-Type" = "application/json")
     )
   expect_error(
