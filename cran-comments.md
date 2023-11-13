@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ## 2.1.11 Bugfixes
+=======
+## 2.1.10 Bugfixes
+>>>>>>> 2251988 (fix: ci build to generate github pages)
 * Update github pages using CI
 * Fix #98 Cannot create subsets for projects other than "gecko"
 * Fix #79 load_table function doesn't show error messages
