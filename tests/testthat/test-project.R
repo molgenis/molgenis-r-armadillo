@@ -47,7 +47,7 @@ test_that("armadillo.create_project_with_users with nonempty users", {
                      "Accept" =
                        "application/json, text/xml, application/xml, */*",
                      "Content-Type" = "application/json"),
-      body = "{\"name\":\"project\",\"users\":[\"user1@users.com\",\"user2@users.com\"]}"  # nolint
+      body = '{"name":"project","users":["user1@users.com","user2@users.com"]}'
     ) %>%
     to_return(
       status = 204
@@ -71,7 +71,7 @@ test_that("armadillo.create_project_with_users empty users list", {
                      "Accept" =
                        "application/json, text/xml, application/xml, */*",
                      "Content-Type" = "application/json"),
-      body = "{\"name\":\"project\"}"
+      body = '{"name":"project"}'
     ) %>%
     to_return(
       status = 204
