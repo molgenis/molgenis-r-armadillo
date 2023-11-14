@@ -40,7 +40,7 @@ test_that("armadillo.create_project creates a folder", {
   stub_registry_clear()
 })
 
-test_that("armadillo.create_project_with_users with nonempty users", {
+test_that("armadillo.create_project with users", {
   stub_request("put", uri = "https://test.nl/access/projects") %>%
     wi_th(
       headers = list(
@@ -54,7 +54,7 @@ test_that("armadillo.create_project_with_users with nonempty users", {
     )
 
   expect_message(
-    armadillo.create_project_with_users(
+    armadillo.create_project(
       "project",
       list("user1@users.com", "user2@users.com")
     ),
@@ -64,7 +64,7 @@ test_that("armadillo.create_project_with_users with nonempty users", {
   stub_registry_clear()
 })
 
-test_that("armadillo.create_project_with_users empty users list", {
+test_that("armadillo.create_project with empty user list", {
   stub_request("put", uri = "https://test.nl/access/projects") %>%
     wi_th(
       headers = list(
@@ -78,8 +78,8 @@ test_that("armadillo.create_project_with_users empty users list", {
     )
 
   expect_message(
-    armadillo.create_project_with_users("project", list()),
-    "Created project 'project' with no users."
+    armadillo.create_project("project", list()),
+    "Created project 'project' without users"
   )
 
   stub_registry_clear()

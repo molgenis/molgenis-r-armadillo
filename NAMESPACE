@@ -3,7 +3,6 @@
 export(armadillo.copy_resource)
 export(armadillo.copy_table)
 export(armadillo.create_project)
-export(armadillo.create_project_with_users)
 export(armadillo.delete_project)
 export(armadillo.delete_resource)
 export(armadillo.delete_table)
