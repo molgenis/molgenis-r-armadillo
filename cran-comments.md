@@ -1,8 +1,6 @@
-## 2.2.0 Add functions for projects
+## 2.3.0 
+* #80 Create project with users
 * #81 Retrieve users of projects
-
-## 2.1.11 Bugfixes
-* Update github pages using CI
 * Fix #98 Cannot create subsets for projects other than "gecko"
 * Fix #79 load_table function doesn't show error messages
 
