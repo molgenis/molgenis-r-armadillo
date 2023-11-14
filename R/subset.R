@@ -82,7 +82,7 @@ armadillo.subset <- function(source_project = NULL,
   type <- folder <- . <- NULL
 
   suppressMessages(
-    source_tables <- within(armadillo.list_tables("gecko") %>%
+    source_tables <- within(armadillo.list_tables(source_project) %>%
                               str_split("/", simplify = TRUE) %>%
                               as_tibble(.name_repair = "unique") %>%
                               set_names("project", "folder", "table") %>%

@@ -1,5 +1,6 @@
-## 2.1.9 Bugfixes
+## 2.1.11 Bugfixes
 * Update github pages using CI
+* Fix #98 Cannot create subsets for projects other than "gecko"
 * Fix #79 load_table function doesn't show error messages
 
 ## 2.1.2 Subset function and bugfixes
