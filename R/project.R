@@ -101,7 +101,10 @@ armadillo.get_projects_info <- function() { # nolint
 #'
 #' @export
 armadillo.get_project_users <- function(project_name) { # nolint
+  # workaround for NOTE: no binding for global variable name
+  name = NULL
   content <- .get_projects_content()
+  
   filtered <- rlist::list.filter(content, name == project_name)
   if (length(filtered) == 0) {
     stop(paste0("Project ", project_name, " not found."))
