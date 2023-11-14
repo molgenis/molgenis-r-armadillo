@@ -45,7 +45,8 @@ Imports:
     tidyr,
     tibble,
     MolgenisAuth (>= 0.0.25),
-    arrow
+    arrow,
+    rlist
 Suggests:
     stringi,
     withr,

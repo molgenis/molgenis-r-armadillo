@@ -1,3 +1,6 @@
+## 2.2.0 Add functions for projects
+* #81 Retrieve users of projects
+
 ## 2.1.11 Bugfixes
 * Update github pages using CI
 * Fix #98 Cannot create subsets for projects other than "gecko"

@@ -68,13 +68,57 @@ armadillo.delete_project <- function(project_name) { # nolint
 #'
 #' @export
 armadillo.list_projects <- function() { # nolint
+  content <- .get_projects_content()
+  sapply(content, function(project) project$name)
+}
+
+#' Gets the Projects information
+#'
+#' @return the projects and their information
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.get_projects_info()
+#' }
+#'
+#' @export
+armadillo.get_projects_info <- function() { # nolint
+  return(.get_projects_content())
+}
+
+
+#' Gets the users of an given project name
+#'
+#' @param project_name the name of the project to extract the users from
+#' @return List of all users within "project_name"
+#'
+#' @import rlist
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.get_project_users("some-project")
+#' }
+#'
+#' @export
+armadillo.get_project_users <- function(project_name) { # nolint
+  # workaround for NOTE: no binding for global variable name
+  name = NULL
+  content <- .get_projects_content()
+  
+  filtered <- rlist::list.filter(content, name == project_name)
+  if (length(filtered) == 0) {
+    stop(paste0("Project ", project_name, " not found."))
+  }
+  return(filtered[[1]]$users)
+}
+
+.get_projects_content <- function() {
   response <- httr::GET(
     url = .get_url(),
     path = "/access/projects",
     config = httr::add_headers(.get_auth_header())
   )
   .handle_request_error(response)
-
   content <- httr::content(response, as = "parsed")
-  sapply(content, function(project) project$name)
+  return(content)
 }
