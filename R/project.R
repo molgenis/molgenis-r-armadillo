@@ -7,6 +7,7 @@
 #'   \item{cannot end with a \code{-}.}
 #'   \item{must consist of lowercase letters and numbers.}
 #'   }
+#' @param users A list collection of the users that should have access to the project
 #' @return NULL
 #'
 #' @importFrom httr PUT
