@@ -40,6 +40,51 @@ test_that("armadillo.create_project creates a folder", {
   stub_registry_clear()
 })
 
+test_that("armadillo.create_project with users", {
+  stub_request("put", uri = "https://test.nl/access/projects") %>%
+    wi_th(
+      headers = list(
+                     "Accept" =
+                       "application/json, text/xml, application/xml, */*",
+                     "Content-Type" = "application/json"),
+      body = '{"name":"project","users":["user1@users.com","user2@users.com"]}'
+    ) %>%
+    to_return(
+      status = 204
+    )
+
+  expect_message(
+    armadillo.create_project(
+      "project",
+      list("user1@users.com", "user2@users.com")
+    ),
+    "Created project 'project' with users: user1@users.com, user2@users.com"
+  )
+
+  stub_registry_clear()
+})
+
+test_that("armadillo.create_project with empty user list", {
+  stub_request("put", uri = "https://test.nl/access/projects") %>%
+    wi_th(
+      headers = list(
+                     "Accept" =
+                       "application/json, text/xml, application/xml, */*",
+                     "Content-Type" = "application/json"),
+      body = '{"name":"project"}'
+    ) %>%
+    to_return(
+      status = 204
+    )
+
+  expect_message(
+    armadillo.create_project("project", list()),
+    "Created project 'project' without users"
+  )
+
+  stub_registry_clear()
+})
+
 test_that("armadillo.list_projects lists all shared buckets", {
   stub_request("get", uri = "https://test.nl/access/projects") %>%
     to_return(

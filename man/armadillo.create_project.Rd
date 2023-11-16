@@ -4,7 +4,7 @@
 \alias{armadillo.create_project}
 \title{Create a project for a variable collection}
 \usage{
-armadillo.create_project(project_name)
+armadillo.create_project(project_name, users = NULL)
 }
 \arguments{
 \item{project_name}{The name of the project to create. The project name
@@ -14,9 +14,8 @@ armadillo.create_project(project_name)
   \item{cannot end with a \code{-}.}
   \item{must consist of lowercase letters and numbers.}
   }}
-}
-\value{
-TRUE if successful
+
+\item{users}{A list collection of the users that should have access to the project}
 }
 \description{
 Create a project for a variable collection

@@ -7,7 +7,8 @@
 #'   \item{cannot end with a \code{-}.}
 #'   \item{must consist of lowercase letters and numbers.}
 #'   }
-#' @return TRUE if successful
+#' @param users A list collection of the users that should have access to the project
+#' @return NULL
 #'
 #' @importFrom httr PUT
 #'
@@ -17,20 +18,32 @@
 #' }
 #'
 #' @export
-armadillo.create_project <- function(project_name) { # nolint
+armadillo.create_project <- function(project_name, users = NULL) { # nolint
+  if (is.null(users)) {
+    users = list()
+  }
+  .create_project(project_name, users)
+
+  if (length(users) == 0){
+    usermessage <- "without users"
+  } else {
+    usermessage <- paste0("with users: ", paste(unlist(users), collapse=", "))
+  }
+  message(paste0("Created project '", project_name, "' ", usermessage))
+}
+
+.create_project <- function(project_name, users) {
   .check_project_name(project_name)
 
   response <- httr::PUT(
     url = .get_url(),
     path = "/access/projects",
-    body = list(name = project_name),
+    body = list(name = project_name, users = users),
     config = c(httr::content_type_json(),
                httr::add_headers(.get_auth_header())),
     encode = "json"
   )
   .handle_request_error(response)
-
-  message(paste0("Created project '", project_name, "'"))
 }
 
 #' Delete project
