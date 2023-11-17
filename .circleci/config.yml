@@ -123,9 +123,6 @@ jobs:
             -d "channel=C0639V5KTCY" \
             -X POST https://slack.com/api/chat.postMessage
           fi
-    - run:
-        name: Try to deploy github pages to a test branch
-        
 
     - store_artifacts:
         path: build
