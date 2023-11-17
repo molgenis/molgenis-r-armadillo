@@ -97,8 +97,8 @@ jobs:
             "https://uploads.github.com/repos/molgenis/molgenis-r-armadillo/releases/${RELEASE_ID}/assets?name=${PACKAGE}_${TAG}.tar.gz" \
             --data-binary "@${PACKAGE}_${TAG}.tar.gz"
 
-            Rscript -e "pkgdown::deploy_to_branch(commit_message='Built site for MolgenisArmadillo: ${TAG}@', branch='gh-pages', clean=TRUE)"
             Rscript -e "usethis::use_pkgdown_github_pages()"
+            Rscript -e "pkgdown::deploy_to_branch(commit_message='Built site for MolgenisArmadillo: ${TAG}@', branch='gh-pages', clean=TRUE)"
 
             curl -d "token=${SLACK_TOKEN}" \
             -d "text=:molgenis-armadillo: molgenis-r-armadillo version: *<https://github.com/molgenis/molgenis-r-armadillo/releases/tag/v${TAG}|v${TAG}>* is released :rocket:" \
@@ -115,8 +115,8 @@ jobs:
           else
             echo "skipping release, we are not on master branch"
             
-            Rscript -e "pkgdown::deploy_to_branch(commit_message='Built site for MolgenisArmadillo: ${TAG}@', branch='gh-pages-dev', clean=TRUE)"
             Rscript -e "usethis::use_pkgdown_github_pages()"
+            Rscript -e "pkgdown::deploy_to_branch(commit_message='Built site for MolgenisArmadillo: ${TAG}@', branch='gh-pages-dev', clean=TRUE)"
             
             curl -d "token=${SLACK_TOKEN}" \
             -d "text=:molgenis-armadillo: *<${CIRCLE_PULL_REQUEST}|Circle-CI » Armadillo » molgenis-r-armadillo » PR-${CIRCLE_PULL_REQUEST##*/} #${CIRCLE_BUILD_NUM}>*" \
