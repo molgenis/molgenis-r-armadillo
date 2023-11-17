@@ -49,6 +49,12 @@
     <loc>/reference/armadillo.delete_table.html</loc>
   </url>
   <url>
+    <loc>/reference/armadillo.get_project_users.html</loc>
+  </url>
+  <url>
+    <loc>/reference/armadillo.get_projects_info.html</loc>
+  </url>
+  <url>
     <loc>/reference/armadillo.get_token.html</loc>
   </url>
   <url>
