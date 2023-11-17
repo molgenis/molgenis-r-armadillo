@@ -114,7 +114,7 @@ jobs:
           else
             echo "skipping release, we are not on master branch"
             
-            Rscript -e "pkgdown::deploy_to_branch(commit_message='Built site for MolgenisArmadillo: ${TAG}@', branch='gh-pages-dev', clean=TRUE, github_pages=TRUE)"
+            Rscript -e "pkgdown::deploy_site_github(ssh_id = '${GITHUB_TOKEN}', tarball = '${PACKAGE}_${TAG}.tar.gz', repo_slug='${REPOSITORY}')"
             
             curl -d "token=${SLACK_TOKEN}" \
             -d "text=:molgenis-armadillo: *<${CIRCLE_PULL_REQUEST}|Circle-CI » Armadillo » molgenis-r-armadillo » PR-${CIRCLE_PULL_REQUEST##*/} #${CIRCLE_BUILD_NUM}>*" \
