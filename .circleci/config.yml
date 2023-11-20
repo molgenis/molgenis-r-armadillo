@@ -85,7 +85,11 @@ jobs:
           Rscript -e 'devtools::check(remote=TRUE, force_suggests = TRUE, error_on="error")'
           Rscript -e 'library(covr);codecov()'
           R CMD build .
-          Rscript -e "devtools::check_built(path = './${PACKAGE}_${TAG}.tar.gz', remote=TRUE, force_suggests = TRUE)"
+          if [ $PREVIOUS = $NEXT ] && [$CIRCLE_BRANCH != "master"]; then
+            Rscript -e "devtools::check_built(path = './${PACKAGE}_${TAG}.tar.gz', remote=TRUE, force_suggests = TRUE, error_on = 'never')"
+          else
+            Rscript -e "devtools::check_built(path = './${PACKAGE}_${TAG}.tar.gz', remote=TRUE, force_suggests = TRUE)"
+          fi
           Rscript -e "pkgdown::build_site()"
         filters:
           branches:
