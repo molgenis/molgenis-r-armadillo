@@ -87,7 +87,7 @@ jobs:
           R CMD build .
           
           echo "Previous version: $(git tag -l --sort -version:refname | head -n 1), current: v${TAG} branch: $CIRCLE_BRANCH"
-          if [ $(git tag -l --sort -version:refname | head -n 1) = v${TAG} ] && [$CIRCLE_BRANCH != "master"]; then
+          if [ $(git tag -l --sort -version:refname | head -n 1) = v${TAG} ] && [!($CIRCLE_BRANCH == "master")]; then
             echo "Running DEV not failing on errors in build"
             Rscript -e "devtools::check_built(path = './${PACKAGE}_${TAG}.tar.gz', remote=TRUE, force_suggests = TRUE, error_on = 'never')"
           else
