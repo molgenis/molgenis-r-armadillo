@@ -1,3 +1,5 @@
+## 2.3.1
+
 ## 2.3.0 
 * #80 Create project with users
 * #81 Retrieve users of projects
