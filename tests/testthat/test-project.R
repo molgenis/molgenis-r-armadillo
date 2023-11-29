@@ -1,7 +1,7 @@
 handle <- httr::handle("https://test.nl")
 withr::local_options("MolgenisArmadillo.armadillo.handle" = handle)
 
-mock_projects_with_users = '[
+mock_projects_with_users <- '[
   {
     "name": "lifecycle",
     "users": []
@@ -19,7 +19,10 @@ test_that("armadillo.create_project checks folder name", {
   )
 })
 
+get_projects_header <- list("Content-Type" = "application/json")
+
 test_that("armadillo.create_project creates a folder", {
+  # TODO: deze
   stub_request("put", uri = "https://test.nl/access/projects") %>%
     wi_th(
       headers = list(
@@ -31,6 +34,12 @@ test_that("armadillo.create_project creates a folder", {
     to_return(
       status = 204
     )
+  stub_request("get", uri = "https://test.nl/access/projects") %>%
+    to_return(
+      status = 200,
+      body = mock_projects_with_users,
+      headers = get_projects_header
+    )
 
   expect_message(
     armadillo.create_project("project"),
@@ -41,6 +50,7 @@ test_that("armadillo.create_project creates a folder", {
 })
 
 test_that("armadillo.create_project with users", {
+  # TODO: deze
   stub_request("put", uri = "https://test.nl/access/projects") %>%
     wi_th(
       headers = list(
@@ -51,6 +61,12 @@ test_that("armadillo.create_project with users", {
     ) %>%
     to_return(
       status = 204
+    )
+  stub_request("get", uri = "https://test.nl/access/projects") %>%
+    to_return(
+      status = 200,
+      body = mock_projects_with_users,
+      headers = get_projects_header
     )
 
   expect_message(
@@ -65,6 +81,7 @@ test_that("armadillo.create_project with users", {
 })
 
 test_that("armadillo.create_project with empty user list", {
+  # TODO: deze
   stub_request("put", uri = "https://test.nl/access/projects") %>%
     wi_th(
       headers = list(
@@ -75,6 +92,13 @@ test_that("armadillo.create_project with empty user list", {
     ) %>%
     to_return(
       status = 204
+    )
+
+  stub_request("get", uri = "https://test.nl/access/projects") %>%
+    to_return(
+      status = 200,
+      body = mock_projects_with_users,
+      headers = get_projects_header
     )
 
   expect_message(
