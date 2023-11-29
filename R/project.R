@@ -8,6 +8,7 @@
 #'   \item{must consist of lowercase letters and numbers.}
 #'   }
 #' @param users A list collection of the users that should have access to the project
+#' @param overwrite_existing Boolean whenever a project with the same name should be overwritten or not
 #' @return NULL
 #'
 #' @importFrom httr PUT
@@ -18,22 +19,43 @@
 #' }
 #'
 #' @export
-armadillo.create_project <- function(project_name, users = NULL) { # nolint
+armadillo.create_project <- function(project_name, users = NULL, overwrite_existing = FALSE) { # nolint
   if (is.null(users)) {
-    users = list()
+    users <- list()
   }
-  .create_project(project_name, users)
+  .create_project(project_name, users, overwrite_existing)
 
   if (length(users) == 0){
     usermessage <- "without users"
   } else {
-    usermessage <- paste0("with users: ", paste(unlist(users), collapse=", "))
+    usermessage <- paste0("with users: ", paste(unlist(users), collapse = ", "))
   }
   message(paste0("Created project '", project_name, "' ", usermessage))
 }
 
-.create_project <- function(project_name, users) {
+.create_project <- function(project_name, users, overwrite_existing) {
   .check_project_name(project_name)
+
+  if (overwrite_existing) {
+    warning(
+      paste0(
+        "Creating new project",
+        project_name,
+        " with overwrite_existing set to TRUE."
+      )
+    )
+  } else {
+    projects <- armadillo.list_projects()
+    if (toupper(project_name) %in% projects) {
+      stop(
+        paste0(
+          "Found existing ",
+          project_name,
+          " and overwrite is set to FALSE."
+        )
+      )
+    }
+  }
 
   response <- httr::PUT(
     url = .get_url(),
