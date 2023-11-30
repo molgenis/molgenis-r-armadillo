@@ -5,7 +5,7 @@
 #'  \item Checking what data is available to create subsets
 #'  \item Make the subset
 #' }
-#' 
+#'
 #' @param source_project project from which to subset data
 #' @param new_project project to upload subset to. Will be created if it doesn't
 #' exist.
@@ -25,12 +25,14 @@
 #' }
 #'
 #' @export
-armadillo.subset <- function(source_project = NULL,
-                             new_project = NULL,
-                             subset_def = NULL,
-                             dry_run = FALSE) {
+armadillo.subset <- function(  #nolint
+  source_project = NULL,
+  new_project = NULL,
+  subset_def = NULL,
+  dry_run = FALSE
+) {
   #spread out, set all to null
-  folder <- subset_vars <- . <- NULL
+  folder <- subset_vars <- . <- NULL  #nolint
 
   if (is.null(source_project)) {
     message <- paste0("You must provide the name of the source project from ",
@@ -185,6 +187,9 @@ armadillo.subset <- function(source_project = NULL,
   missing_out <- tables_with_missing %>%
     dplyr::select(folder, table, missing) %>%
     unnest(cols = missing)
+
+  # To reviewer: was this return statement missing or was this intended?
+  return(missing_out)
 }
 
 #' Builds an R object containing info required to make subsets
@@ -211,8 +216,8 @@ armadillo.subset <- function(source_project = NULL,
 #' }
 #'
 #' @export
-armadillo.subset_definition <- function(vars = NULL) {
-  variable <- folder <- . <- subset_vars <- vars_to_subset <- NULL
+armadillo.subset_definition <- function(vars = NULL) {  #nolint
+  variable <- folder <- . <- subset_vars <- vars_to_subset <- NULL  #nolint
 
   if (is.null(vars)) {
     stop("You must provide a .csv file with variables and tables to subset")
