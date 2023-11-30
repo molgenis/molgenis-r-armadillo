@@ -7,8 +7,10 @@
 #'   \item{cannot end with a \code{-}.}
 #'   \item{must consist of lowercase letters and numbers.}
 #'   }
-#' @param users A list collection of the users that should have access to the project
-#' @param overwrite_existing Boolean whenever a project with the same name should be overwritten or not
+#' @param users A list collection
+#' of the users that should have access to the project
+#' @param overwrite_existing Boolean whenever a project
+#' with the same name should be overwritten or not
 #' @return NULL
 #'
 #' @importFrom httr PUT
@@ -25,7 +27,7 @@ armadillo.create_project <- function(project_name, users = NULL, overwrite_exist
   }
   .create_project(project_name, users, overwrite_existing)
 
-  if (length(users) == 0){
+  if (length(users) == 0) {
     usermessage <- "without users"
   } else {
     usermessage <- paste0("with users: ", paste(unlist(users), collapse = ", "))
@@ -39,14 +41,14 @@ armadillo.create_project <- function(project_name, users = NULL, overwrite_exist
   if (overwrite_existing) {
     warning(
       paste0(
-        "Creating new project",
+        "Creating new project ",
         project_name,
         " with overwrite_existing set to TRUE."
       )
     )
   } else {
     projects <- armadillo.list_projects()
-    if (toupper(project_name) %in% projects) {
+    if (project_name %in% projects) {
       stop(
         paste0(
           "Found existing ",
@@ -137,9 +139,9 @@ armadillo.get_projects_info <- function() { # nolint
 #' @export
 armadillo.get_project_users <- function(project_name) { # nolint
   # workaround for NOTE: no binding for global variable name
-  name = NULL
+  name <- NULL
   content <- .get_projects_content()
-  
+
   filtered <- rlist::list.filter(content, name == project_name)
   if (length(filtered) == 0) {
     stop(paste0("Project ", project_name, " not found."))

@@ -22,7 +22,6 @@ test_that("armadillo.create_project checks folder name", {
 get_projects_header <- list("Content-Type" = "application/json")
 
 test_that("armadillo.create_project creates a folder", {
-  # TODO: deze
   stub_request("put", uri = "https://test.nl/access/projects") %>%
     wi_th(
       headers = list(
@@ -50,7 +49,6 @@ test_that("armadillo.create_project creates a folder", {
 })
 
 test_that("armadillo.create_project with users", {
-  # TODO: deze
   stub_request("put", uri = "https://test.nl/access/projects") %>%
     wi_th(
       headers = list(
@@ -81,7 +79,6 @@ test_that("armadillo.create_project with users", {
 })
 
 test_that("armadillo.create_project with empty user list", {
-  # TODO: deze
   stub_request("put", uri = "https://test.nl/access/projects") %>%
     wi_th(
       headers = list(
@@ -123,7 +120,7 @@ test_that("armadillo.list_projects lists all shared buckets", {
           "users": []
         }
       ]',
-      headers = list("Content-Type" = "application/json")
+      headers = get_projects_header
     )
 
   res <- armadillo.list_projects()
@@ -139,7 +136,7 @@ test_that("armadillo.delete_project handles errors", {
       body = '{
         "message": "project not found"
       }',
-      headers = list("Content-Type" = "application/json")
+      headers = get_projects_header
     )
 
   expect_error(
@@ -171,7 +168,7 @@ test_that("armadillo.get_projects_info gets all projects and their users", {
     to_return(
       status = 200,
       body = mock_projects_with_users,
-      headers = list("Content-Type" = "application/json")
+      headers = get_projects_header
     )
   res <- armadillo.get_projects_info()
   expect_equal(res, test_data)
@@ -184,7 +181,7 @@ test_that("armadillo.get_project_users with a project that has users", {
     to_return(
       status = 200,
       body = mock_projects_with_users,
-      headers = list("Content-Type" = "application/json")
+      headers = get_projects_header
     )
   res <- armadillo.get_project_users("other-project")
   expect_equal(res, list("john", "tommy"))
@@ -210,11 +207,109 @@ test_that("armadillo.get_project_users with a non existing project", {
     to_return(
       status = 200,
       body = mock_projects_with_users,
-      headers = list("Content-Type" = "application/json")
+      headers = get_projects_header
     )
   expect_error(
     armadillo.get_project_users("nonexisting-project"),
     "Project nonexisting-project not found."
+  )
+
+  stub_registry_clear()
+})
+
+test_that("armadillo.create_project without overwriting existing project", {
+  stub_request("get", uri = "https://test.nl/access/projects") %>%
+    to_return(
+      status = 200,
+      body = mock_projects_with_users,
+      headers = get_projects_header
+    )
+
+  stub_request("put", uri = "https://test.nl/access/projects") %>%
+    wi_th(
+      headers = list(
+                     "Accept" =
+                       "application/json, text/xml, application/xml, */*",
+                     "Content-Type" = "application/json"),
+      body = '{"name":"other-project"}'
+    ) %>%
+    to_return(
+      status = 204
+    )
+
+  # Case sensitive
+  expect_error(
+    armadillo.create_project("other-project"),
+    "Found existing other-project and overwrite is set to FALSE."
+  )
+
+  # Non case sensitive
+  expect_error(
+    armadillo.create_project("oTHeR-ProJEct"),
+    "Project name must consist of lowercase letters and numbers."
+  )
+
+  stub_registry_clear()
+})
+
+test_that("armadillo.create_project with existing overwrite", {
+  stub_request("get", uri = "https://test.nl/access/projects") %>%
+    to_return(
+      status = 200,
+      body = mock_projects_with_users,
+      headers = get_projects_header
+    )
+
+  stub_request("put", uri = "https://test.nl/access/projects") %>%
+    wi_th(
+      headers = list(
+                     "Accept" =
+                       "application/json, text/xml, application/xml, */*",
+                     "Content-Type" = "application/json"),
+      body = '{"name":"other-project"}'
+    ) %>%
+    to_return(
+      status = 204
+    )
+
+  expect_warning(
+    armadillo.create_project("other-project", overwrite_existing = TRUE),
+    "Creating new project other-project with overwrite_existing set to TRUE."
+  )
+
+  stub_registry_clear()
+})
+
+test_that("armadillo.create_project with nonexisting overwrite", {
+  stub_request("get", uri = "https://test.nl/access/projects") %>%
+    to_return(
+      status = 200,
+      body = mock_projects_with_users,
+      headers = get_projects_header
+    )
+
+  stub_request("put", uri = "https://test.nl/access/projects") %>%
+    wi_th(
+      headers = list(
+                     "Accept" =
+                       "application/json, text/xml, application/xml, */*",
+                     "Content-Type" = "application/json"),
+      body = '{"name":"other-projectnumbertwo"}'
+    ) %>%
+    to_return(
+      status = 204
+    )
+
+  expect_warning(
+    armadillo.create_project(
+      "other-projectnumbertwo",
+      overwrite_existing = TRUE
+    ),
+    # Required for linting
+    paste0(
+      "Creating new project other-projectnumbertwo",
+      " with overwrite_existing set to TRUE."
+    ),
   )
 
   stub_registry_clear()
