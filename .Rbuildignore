@@ -12,3 +12,4 @@ adr
 .circleci
 ^_pkgdown\.yml$
 ^pkgdown$
+^dev$
