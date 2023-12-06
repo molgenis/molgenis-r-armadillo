@@ -58,7 +58,7 @@ jobs:
 
     - run:
         name: Build and check artifacts
-        command: ./bin/check-and-build.bash
+        command: ./dev/bin/check-and-build.bash
 
     - store_artifacts:
         path: docs
