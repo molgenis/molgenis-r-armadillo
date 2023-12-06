@@ -13,3 +13,4 @@ adr
 ^_pkgdown\.yml$
 ^pkgdown$
 ^dev$
+^\.github$
