@@ -12,4 +12,6 @@ adr
 .circleci
 ^_pkgdown\.yml$
 ^pkgdown$
+^dev$
+^\.github$
 ^CONTRIBUTING.md$
