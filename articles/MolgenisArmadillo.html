@@ -98,9 +98,7 @@ The login method needs the URLs of the Armadillo server and the MinIO
 fileserver. It will open a browser window where you can identify
 yourself with the ID provider.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.login.html">armadillo.login</a></span><span class="op">(</span><span class="st">"https://armadillo.test.molgenis.org"</span>,</span>
-<span>      <span class="st">"https://armadillo-minio.test.molgenis.org"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in armadillo.login("https://armadillo.test.molgenis.org", "https://armadillo-minio.test.molgenis.org"): unused argument ("https://armadillo-minio.test.molgenis.org")</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.login.html">armadillo.login</a></span><span class="op">(</span><span class="st">"https://armadillo-demo.molgenis.net/"</span><span class="op">)</span></span></code></pre></div>
 <p>It will create a session and store the credentials in the
 environment.</p>
 </div>
@@ -156,6 +154,11 @@ to upload into the Armadillo. This can be SPSS, STATA, SAS or R-based
 data as well.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/apache/arrow/" class="external-link">arrow</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'arrow'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:utils':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     timestamp</span></span>
 <span></span>
 <span><span class="co"># load the core data</span></span>
 <span><span class="va">nonrep</span> <span class="op">&lt;-</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html" class="external-link">read_parquet</a></span><span class="op">(</span><span class="st">"data/core/nonrep.parquet"</span><span class="op">)</span></span>
@@ -209,13 +212,14 @@ storage.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># listing tables per project</span></span>
 <span><span class="fu"><a href="../reference/armadillo.list_projects.html">armadillo.list_projects</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "longitools"   "genr"         "gecko"        "omics"        "test"         "trajectories" "inma"        </span></span>
-<span><span class="co">#&gt; [8] "cohort1"      "study1"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "longitools"   "genr"         "gecko"        "test"         "omics"       </span></span>
+<span><span class="co">#&gt;  [6] "trajectories" "inma"         "subset13"     "cohort1"      "study1"</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># listing tables per project</span></span>
 <span><span class="fu"><a href="../reference/armadillo.list_tables.html">armadillo.list_tables</a></span><span class="op">(</span><span class="st">"cohort1"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "cohort1/2_1-core-1_0/trimesterrep" "cohort1/2_1-core-1_0/nonrep"       "cohort1/2_1-core-1_0/yearlyrep"   </span></span>
-<span><span class="co">#&gt; [4] "cohort1/2_1-core-1_0/monthlyrep"   "cohort1/1_1-outcome-1_0/nonrep"    "cohort1/1_1-outcome-1_0/yearlyrep"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "cohort1/2_1-core-1_0/trimesterrep" "cohort1/2_1-core-1_0/nonrep"      </span></span>
+<span><span class="co">#&gt; [3] "cohort1/2_1-core-1_0/yearlyrep"    "cohort1/2_1-core-1_0/monthlyrep"  </span></span>
+<span><span class="co">#&gt; [5] "cohort1/1_1-outcome-1_0/nonrep"    "cohort1/1_1-outcome-1_0/yearlyrep"</span></span></code></pre></div>
 <p>You can download the data in the R-environment as well.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># download table to local R environment</span></span>
@@ -223,7 +227,8 @@ storage.</p>
 <span></span>
 <span><span class="co"># check the column names from the local environment</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">trimesterrep</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "row_id"        "child_id"      "age_trimester" "smk_t"         "alc_t"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "row_id"        "child_id"      "age_trimester" "smk_t"        </span></span>
+<span><span class="co">#&gt; [5] "alc_t"</span></span></code></pre></div>
 <p>Now you can also take a look at the files in the user interface of
 the MinIO fileserver if you open the MinIO server URL in a browser
 window.</p>
