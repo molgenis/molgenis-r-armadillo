@@ -6,7 +6,7 @@ articles:
   create_resources: create_resources.html
   creating_data_subsets: creating_data_subsets.html
   install_packages: install_packages.html
-last_built: 2023-12-07T12:42Z
+last_built: 2023-12-14T13:05Z
 urls:
   reference: https://molgenis.github.io/molgenis-r-armadillo/reference
   article: https://molgenis.github.io/molgenis-r-armadillo/articles
