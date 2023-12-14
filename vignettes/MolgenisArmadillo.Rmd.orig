@@ -24,8 +24,7 @@ To share your data using Armadillo, you can see the different relevant steps you
 In order to access the files as a data manager, you need to log in. The login method needs the URLs of the Armadillo server and the MinIO fileserver. It will open a browser window where you can identify yourself with the ID provider.
 
 ```{r, login to the armadillo storage server}
-armadillo.login("https://armadillo.test.molgenis.org",
-      "https://armadillo-minio.test.molgenis.org")
+armadillo.login("https://armadillo-demo.molgenis.net/")
 ```
 
 It will create a session and store the credentials in the environment.

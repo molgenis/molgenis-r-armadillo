@@ -30,7 +30,6 @@ In order to access the files you need to log in using the URL of the Armadillo s
 
 ```r
 armadillo.login("https://armadillo-demo.molgenis.net/")
-#> [1] "We're opening a browser so you can log in with code 8T3ND2"
 ```
 
 A session will be created and the credentials are stored in the environment.
