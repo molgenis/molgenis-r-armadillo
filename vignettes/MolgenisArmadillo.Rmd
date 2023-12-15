@@ -21,9 +21,7 @@ In order to access the files as a data manager, you need to log in. The login me
 
 
 ```r
-armadillo.login("https://armadillo.test.molgenis.org",
-      "https://armadillo-minio.test.molgenis.org")
-#> Error in armadillo.login("https://armadillo.test.molgenis.org", "https://armadillo-minio.test.molgenis.org"): unused argument ("https://armadillo-minio.test.molgenis.org")
+armadillo.login("https://armadillo-demo.molgenis.net/")
 ```
 
 It will create a session and store the credentials in the environment.
@@ -62,6 +60,11 @@ Secondly we will load the table(s) we want to upload to Armadillo in the R-envir
 
 ```r
 library(arrow)
+#> 
+#> Attaching package: 'arrow'
+#> The following object is masked from 'package:utils':
+#> 
+#>     timestamp
 
 # load the core data
 nonrep <- arrow::read_parquet("data/core/nonrep.parquet")
@@ -122,16 +125,17 @@ There are helper functions to help you determine what is in the storage server. 
 ```r
 # listing tables per project
 armadillo.list_projects()
-#> [1] "longitools"   "genr"         "gecko"        "omics"        "test"         "trajectories" "inma"        
-#> [8] "cohort1"      "study1"
+#>  [1] "longitools"   "genr"         "gecko"        "test"         "omics"       
+#>  [6] "trajectories" "inma"         "subset13"     "cohort1"      "study1"
 ```
 
 
 ```r
 # listing tables per project
 armadillo.list_tables("cohort1")
-#> [1] "cohort1/2_1-core-1_0/trimesterrep" "cohort1/2_1-core-1_0/nonrep"       "cohort1/2_1-core-1_0/yearlyrep"   
-#> [4] "cohort1/2_1-core-1_0/monthlyrep"   "cohort1/1_1-outcome-1_0/nonrep"    "cohort1/1_1-outcome-1_0/yearlyrep"
+#> [1] "cohort1/2_1-core-1_0/trimesterrep" "cohort1/2_1-core-1_0/nonrep"      
+#> [3] "cohort1/2_1-core-1_0/yearlyrep"    "cohort1/2_1-core-1_0/monthlyrep"  
+#> [5] "cohort1/1_1-outcome-1_0/nonrep"    "cohort1/1_1-outcome-1_0/yearlyrep"
 ```
 
 You can download the data in the R-environment as well.
@@ -143,7 +147,8 @@ trimesterrep <- armadillo.load_table("cohort1", "2_1-core-1_0", "trimesterrep")
 
 # check the column names from the local environment
 colnames(trimesterrep)
-#> [1] "row_id"        "child_id"      "age_trimester" "smk_t"         "alc_t"
+#> [1] "row_id"        "child_id"      "age_trimester" "smk_t"        
+#> [5] "alc_t"
 ```
 
 Now you can also take a look at the files in the user interface of the MinIO
