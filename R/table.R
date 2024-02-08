@@ -35,9 +35,16 @@ armadillo.upload_table <- function(project, folder, table, name = NULL) { # noli
 #' @return the extension of the file
 #'
 .compress_table <- function(table, file) {
-  arrow::write_parquet(table, file)
-  ".parquet"
+  tryCatch(
+    {
+      arrow::write_parquet(table, file)
+      ".parquet"
+    },
+    error = function(cond) {
+      stop("Arrow isn't loaded")
+    })
 }
+  
 
 #' List the tables in a project
 #'
@@ -142,7 +149,15 @@ armadillo.load_table <- function(project, folder, name) { # nolint
 #' @return the contents of the file, as data frame
 #'
 .load_table <- function(file) {
-  as.data.frame(arrow::read_parquet(file, as_data_frame = FALSE))
+  tryCatch(
+    {
+    as.data.frame(arrow::read_parquet(file, as_data_frame = FALSE))
+      },
+    error = function(cond) {
+      stop("Arrow isn't loaded")
+    }
+  )
+  
 }
 
 #' Move the table

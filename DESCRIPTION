@@ -1,6 +1,6 @@
 Package: MolgenisArmadillo
 Type: Package
-Version: 2.1.4
+Version: 2.3.3
 Title: Armadillo Client for the Armadillo Service
 Description: A set of functions to manage data shared on a 
   'MOLGENIS Armadillo' server.
@@ -45,9 +45,9 @@ Imports:
     tidyr,
     tibble,
     MolgenisAuth (>= 0.0.25),
-    arrow,
     rlist
 Suggests:
+    arrow,
     stringi,
     withr,
     knitr,
@@ -64,3 +64,4 @@ BugReports: https://github.com/molgenis/molgenis-r-armadillo/issues/
 RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Encoding: UTF-8
+Additional_repositories: https://apache.r-universe.dev/builds,https://nightlies.apache.org/arrow/r/
