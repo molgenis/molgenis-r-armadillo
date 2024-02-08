@@ -1,3 +1,6 @@
+## 2.3.3
+* #113 Move arrow to the "suggests" to hopefully be able to stay on CRAN
+
 ## 2.3.0 
 * #80 Create project with users
 * #81 Retrieve users of projects
