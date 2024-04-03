@@ -24,20 +24,22 @@ armadillo.create_project <- function(project_name, users = NULL) { # nolint
     users <- list()
   }
   
-  if (project_name %in% armadillo.list_projects()) {
-    .handle_existing_project(project_name)
+  project_exists <- project_name %in% armadillo.list_projects()
+  
+  if(project_exists) {
+    choice <- .give_overwrite_choice(project_name)
   }
   
-  .create_project(project_name, users)
-  
-  if (length(users) == 0) {
-    usermessage <- "without users"
-  } else {
-    usermessage <- paste0("with users: ", paste(unlist(users), collapse = ", "))
+  if(!project_exists | choice == 1) {
+    .create_project(project_name, users)  
+    .create_project_message(users)
+    
+  } else{
+    message("Skipped: project ", "'", project_name, "'", " not overwritten")
   }
-  message(paste0("Created project '", project_name, "' ", usermessage))
-}
-
+    
+} 
+  
 .create_project <- function(project_name, users, overwrite_existing) {
   .check_project_name(project_name)
  
@@ -150,6 +152,27 @@ armadillo.get_project_users <- function(project_name) { # nolint
     title = paste0("Project ", "'", project_name, "'", " already exists: do you want to overwrite?")
   )
   if (choice == 2) {
-    stop("Project already exists")
+    warning("Project already exists", call. = FALSE)
   }
+}
+
+.give_overwrite_choice <- function(project_name){
+  
+  choice <- menu(
+    choices = c("Yes", "No"),
+    title = paste0("Project ", "'", project_name, "'", " already exists: do you want to overwrite?"))
+  
+  return(choice)
+  
+}
+
+.create_project_message <- function(users){
+  
+  if (length(users) == 0) {
+    usermessage <- "without users"
+  } else {
+    usermessage <- paste0("with users: ", paste(unlist(users), collapse = ", "))
+  }
+  message(paste0("Created project '", project_name, "' ", usermessage))
+  
 }
