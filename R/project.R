@@ -9,8 +9,6 @@
 #'   }
 #' @param users A list collection
 #' of the users that should have access to the project
-#' @param overwrite_existing Boolean whenever a project
-#' with the same name should be overwritten or not
 #' @return NULL
 #'
 #' @importFrom httr PUT
@@ -21,12 +19,17 @@
 #' }
 #'
 #' @export
-armadillo.create_project <- function(project_name, users = NULL, overwrite_existing = FALSE) { # nolint
+armadillo.create_project <- function(project_name, users = NULL) { # nolint
   if (is.null(users)) {
     users <- list()
   }
-  .create_project(project_name, users, overwrite_existing)
-
+  
+  if (project_name %in% armadillo.list_projects()) {
+    .handle_existing_project(project_name)
+  }
+  
+  .create_project(project_name, users)
+  
   if (length(users) == 0) {
     usermessage <- "without users"
   } else {
@@ -37,34 +40,15 @@ armadillo.create_project <- function(project_name, users = NULL, overwrite_exist
 
 .create_project <- function(project_name, users, overwrite_existing) {
   .check_project_name(project_name)
-
-  if (overwrite_existing) {
-    warning(
-      paste0(
-        "Creating new project ",
-        project_name,
-        " with overwrite_existing set to TRUE."
-      )
-    )
-  } else {
-    projects <- armadillo.list_projects()
-    if (project_name %in% projects) {
-      stop(
-        paste0(
-          "Found existing ",
-          project_name,
-          " and overwrite is set to FALSE."
-        )
-      )
-    }
-  }
-
+ 
   response <- httr::PUT(
     url = .get_url(),
     path = "/access/projects",
     body = list(name = project_name, users = users),
-    config = c(httr::content_type_json(),
-               httr::add_headers(.get_auth_header())),
+    config = c(
+      httr::content_type_json(),
+      httr::add_headers(.get_auth_header())
+    ),
     encode = "json"
   )
   .handle_request_error(response)
@@ -90,7 +74,7 @@ armadillo.delete_project <- function(project_name) { # nolint
     config = httr::add_headers(.get_auth_header())
   )
   .handle_request_error(response)
-
+  
   message(paste0("Deleted project '", project_name, "'"))
 }
 
@@ -141,7 +125,7 @@ armadillo.get_project_users <- function(project_name) { # nolint
   # workaround for NOTE: no binding for global variable name
   name <- NULL
   content <- .get_projects_content()
-
+  
   filtered <- rlist::list.filter(content, name == project_name)
   if (length(filtered) == 0) {
     stop(paste0("Project ", project_name, " not found."))
@@ -158,4 +142,14 @@ armadillo.get_project_users <- function(project_name) { # nolint
   .handle_request_error(response)
   content <- httr::content(response, as = "parsed")
   return(content)
+}
+
+.handle_existing_project <- function(project_name, users) {
+  choice <- menu(
+    choices = c("Yes", "No"),
+    title = paste0("Project ", "'", project_name, "'", " already exists: do you want to overwrite?")
+  )
+  if (choice == 2) {
+    stop("Project already exists")
+  }
 }
