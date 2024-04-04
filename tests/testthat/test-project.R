@@ -9,17 +9,28 @@ mock_projects_with_users <- '[
   {
     "name": "other-project",
     "users": ["john", "tommy"]
-  }
+  },
+  { 
+    "name": "other-projectnumbertwo",
+    "users": []
+    }
 ]'
 
+get_projects_header <- list("Content-Type" = "application/json")
+
 test_that("armadillo.create_project checks folder name", {
+  stub_request("get", uri = "https://test.nl/access/projects") %>%
+    to_return(
+      status = 200,
+      body = mock_projects_with_users,
+      headers = get_projects_header
+    )
   expect_error(
     armadillo.create_project("example_folder", overwrite = "no"),
     "Project name must consist of lowercase letters and numbers\\."
   )
+  stub_registry_clear()
 })
-
-get_projects_header <- list("Content-Type" = "application/json")
 
 test_that("armadillo.create_project creates a folder", {
   stub_request("put", uri = "https://test.nl/access/projects") %>%
@@ -162,7 +173,8 @@ test_that("armadillo.delete_project deletes project", {
 test_that("armadillo.get_projects_info gets all projects and their users", {
   test_data <- list(
     list("name" = "lifecycle", "users" = list()),
-    list("name" = "other-project", "users" = list("john", "tommy"))
+    list("name" = "other-project", "users" = list("john", "tommy")),
+    list("name" = "other-projectnumbertwo", "users" = list())
   )
   stub_request("get", uri = "https://test.nl/access/projects") %>%
     to_return(
