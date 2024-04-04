@@ -7,11 +7,11 @@
 #'   \item{cannot end with a \code{-}.}
 #'   \item{must consist of lowercase letters and numbers.}
 #'   }
-#' @param users A list collection
-#' of the users that should have access to the project
+#' @param users A list collection of the users that should have access to the project
 #' @return NULL
 #'
 #' @importFrom httr PUT
+#' @importFrom dplyr case_when
 #'
 #' @examples
 #' \dontrun{
@@ -19,16 +19,24 @@
 #' }
 #'
 #' @export
-armadillo.create_project <- function(project_name, users = NULL) { # nolint
+armadillo.create_project <- function(project_name = NULL, users = NULL, overwrite_existing = "choose") { # nolint
   if (is.null(users)) {
     users <- list()
   }
   
-  project_exists <- project_name %in% armadillo.list_projects()
-  
-  if(project_exists) {
-    choice <- .give_overwrite_choice(project_name)
+  if(!any(c("choose", "yes", "no") %in% overwrite_existing)){
+    stop("`overwrite` must be one of 'choose', 'yes', 'no'")
   }
+  
+  project_exists <- project_name %in% armadillo.list_projects()
+
+  if(project_exists & overwrite_existing == "choose") {
+    choice <- .give_overwrite_choice(project_name)
+  } else if(project_exists & overwrite_existing == "yes") {
+    choice <- 1
+  } else {
+    choice <- 2
+  } 
   
   if(!project_exists | choice == 1) {
     .create_project(project_name, users)  
@@ -156,6 +164,13 @@ armadillo.get_project_users <- function(project_name) { # nolint
   }
 }
 
+#' Displays a menu with choices if the project already exists
+#'
+#' @param project_name the name of the target project
+#' @return Either 1, 2, or 0 depending on menu choice
+#'
+#' @importFrom utils menu
+#' @noRd 
 .give_overwrite_choice <- function(project_name){
   
   choice <- menu(
@@ -166,6 +181,13 @@ armadillo.get_project_users <- function(project_name) { # nolint
   
 }
 
+#' Provides an exit message
+#'
+#' @param project_name the name of the target project
+#' @param users A list collection of the users that should have access to the project
+#' @return A message indicating what operation has been performed
+#'
+#' @noRd 
 .create_project_message <- function(project_name, users){
   
   if (length(users) == 0) {
