@@ -5,9 +5,9 @@
 \title{Create a project for a variable collection}
 \usage{
 armadillo.create_project(
-  project_name,
+  project_name = NULL,
   users = NULL,
-  overwrite_existing = FALSE
+  overwrite_existing = "choose"
 )
 }
 \arguments{
@@ -19,11 +19,7 @@ armadillo.create_project(
   \item{must consist of lowercase letters and numbers.}
   }}
 
-\item{users}{A list collection
-of the users that should have access to the project}
-
-\item{overwrite_existing}{Boolean whenever a project
-with the same name should be overwritten or not}
+\item{users}{A list collection of the users that should have access to the project}
 }
 \description{
 Create a project for a variable collection
