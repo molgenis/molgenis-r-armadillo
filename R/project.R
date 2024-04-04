@@ -8,6 +8,9 @@
 #'   \item{must consist of lowercase letters and numbers.}
 #'   }
 #' @param users A list collection of the users that should have access to the project
+#' @param overwrite_existing Character, specifying action to take if project still exists: 'choose' 
+#' (default) displays a menu giving the option to overwrite or not, 'yes' overwrites the 
+#' existing project and 'no' exists the function with a message.
 #' @return NULL
 #'
 #' @importFrom httr PUT
