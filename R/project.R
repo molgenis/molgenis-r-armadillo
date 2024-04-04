@@ -24,14 +24,18 @@ armadillo.create_project <- function(project_name = NULL, users = NULL, overwrit
     users <- list()
   }
 
-  choice <- .get_overwrite_choice(project_name, overwrite_existing)
+  project_exists <- project_name %in% armadillo.list_projects()
   
-  if(choice == 1) {
-    .create_project(project_name, users)  
-    .create_project_message(project_name, users)
-    
-  } else{
-    message("Skipped: project ", "'", project_name, "'", " not overwritten")
+  choice <- .get_overwrite_choice(project_name, project_exists, overwrite_existing)
+  
+  if(choice == 1 & !project_exists) {
+    .create_project(project_name, users)
+    message(.create_project_message(project_name, users))
+  } else if(choice == 1 & project_exists){
+    .create_project(project_name, users)
+    message(paste0(.create_project_message(project_name, users), " with overwrite set to 'yes'"))
+    } else {
+    message("Did not create project: ",  "'", project_name, "'", " already exists and overwrite is set to 'no'")
   }
     
 } 
@@ -169,13 +173,11 @@ armadillo.get_project_users <- function(project_name) { # nolint
   
 }
 
-.get_overwrite_choice <- function(project_name, overwrite_existing){
+.get_overwrite_choice <- function(project_name, project_exists, overwrite_existing){
   
   if(!any(c("choose", "yes", "no") %in% overwrite_existing)){
     stop("`overwrite` must be one of 'choose', 'yes', 'no'")
   }
-  
-  project_exists <- project_name %in% armadillo.list_projects()
   
   if(project_exists & overwrite_existing == "choose") {
     choice <- .make_overwrite_menu(project_name)
@@ -201,6 +203,6 @@ armadillo.get_project_users <- function(project_name) { # nolint
   } else {
     usermessage <- paste0("with users: ", paste(unlist(users), collapse = ", "))
   }
-  message(paste0("Created project '", project_name, "' ", usermessage))
+  paste0("Created project '", project_name, "' ", usermessage)
   
 }
