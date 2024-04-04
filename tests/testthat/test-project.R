@@ -14,7 +14,7 @@ mock_projects_with_users <- '[
 
 test_that("armadillo.create_project checks folder name", {
   expect_error(
-    armadillo.create_project("example_folder"),
+    armadillo.create_project("example_folder", overwrite = "no"),
     "Project name must consist of lowercase letters and numbers\\."
   )
 })
@@ -238,9 +238,9 @@ test_that("armadillo.create_project without overwriting existing project", {
     )
 
   # Case sensitive
-  expect_error(
-    armadillo.create_project("other-project"),
-    "Found existing other-project and overwrite is set to FALSE."
+  expect_message(
+    armadillo.create_project("other-project", overwrite_existing = "no"),
+    "Did not create project: 'other-project' already exists and overwrite is set to 'no'"
   )
 
   # Non case sensitive
@@ -272,9 +272,9 @@ test_that("armadillo.create_project with existing overwrite", {
       status = 204
     )
 
-  expect_warning(
-    armadillo.create_project("other-project", overwrite_existing = TRUE),
-    "Creating new project other-project with overwrite_existing set to TRUE."
+  expect_message(
+    armadillo.create_project("other-project", overwrite_existing = "yes"),
+    "Created project 'other-project' without users"
   )
 
   stub_registry_clear()
@@ -300,15 +300,14 @@ test_that("armadillo.create_project with nonexisting overwrite", {
       status = 204
     )
 
-  expect_warning(
+  expect_message(
     armadillo.create_project(
       "other-projectnumbertwo",
-      overwrite_existing = TRUE
+      overwrite_existing = "yes"
     ),
     # Required for linting
     paste0(
-      "Creating new project other-projectnumbertwo",
-      " with overwrite_existing set to TRUE."
+      "Created project 'other-projectnumbertwo' without users with overwrite set to 'yes'"
     ),
   )
 
