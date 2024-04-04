@@ -32,7 +32,7 @@ armadillo.create_project <- function(project_name, users = NULL) { # nolint
   
   if(!project_exists | choice == 1) {
     .create_project(project_name, users)  
-    .create_project_message(users)
+    .create_project_message(project_name, users)
     
   } else{
     message("Skipped: project ", "'", project_name, "'", " not overwritten")
@@ -166,7 +166,7 @@ armadillo.get_project_users <- function(project_name) { # nolint
   
 }
 
-.create_project_message <- function(users){
+.create_project_message <- function(project_name, users){
   
   if (length(users) == 0) {
     usermessage <- "without users"
