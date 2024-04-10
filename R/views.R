@@ -24,39 +24,11 @@
 #' }
 #'
 #' @export
-armadillo.make_views <- function(
-    # nolint
-  source_project = NULL,
-  new_project = NULL,
-  subset_def = NULL,
-  dry_run = FALSE) {
-  # spread out, set all to null
-  folder <- subset_vars <- . <- NULL # nolint
-  
-  if (is.null(source_project)) {
-    message <- paste0(
-      "You must provide the name of the source project from ",
-      "which you will subset"
-    )
-    stop(message)
-  }
-  
-  if (is.null(new_project)) {
-    stop("You must provide a name for the new project")
-  }
-  
-  if (is.null(subset_def)) {
-    message <- paste0(
-      "You must provide an object created by ",
-      "armadillo.subset_definition containing details of the ",
-      "variables and tables to include in the subset"
-    )
-    stop(message)
-  }
-  
-  if (source_project %in% armadillo.list_projects() == FALSE) {
-    stop("The source project specified does not exist")
-  }
+armadillo.make_views <- function(source_project = NULL, new_project = NULL, subset_def = NULL,
+                                 dry_run = FALSE) {
+
+  folder <- subset_vars <- . <- NULL
+  .check_args(source_project, new_project, subset_def)
   
   tables_local <- .get_tables(source_project, subset_def)
   
@@ -329,4 +301,32 @@ armadillo.subset_definition <- function(vars = NULL) { # nolint
   dplyr::filter(!map_lgl(subset_vars, is.null)) %>%
   dplyr::select(folder, table, vars_to_subset = subset_vars)
 return(reference_out)
+}
+
+.check_args <- function(source_project, new_project, subset_def) {
+  
+  if (is.null(source_project)) {
+    stop(
+      paste0("You must provide the name of the source project from ", "which you will subset")
+    )
+  }
+  
+  if (is.null(new_project)) {
+    stop("You must provide a name for the new project")
+  }
+  
+  if (is.null(subset_def)) {
+    stop(
+      paste0("You must provide an object created by ",
+            "armadillo.subset_definition containing details of the ", 
+            "variables and tables to include in the subset"
+            )
+    )
+    
+  }
+  
+  if (source_project %in% armadillo.list_projects() == FALSE) {
+    stop(paste0("Source project ", "'", source_project, "'", " does not exist"))
+  }
+  
 }
