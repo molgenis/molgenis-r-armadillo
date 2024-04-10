@@ -21,8 +21,8 @@ armadillo.create_project(
 
 \item{users}{A list collection of the users that should have access to the project}
 
-\item{overwrite_existing}{Character, specifying action to take if project still exists: 'choose' 
-(default) displays a menu giving the option to overwrite or not, 'yes' overwrites the 
+\item{overwrite_existing}{Character, specifying action to take if project still exists: 'choose'
+(default) displays a menu giving the option to overwrite or not, 'yes' overwrites the
 existing project and 'no' exists the function with a message.}
 }
 \description{

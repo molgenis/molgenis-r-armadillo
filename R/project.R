@@ -23,6 +23,8 @@
 #'
 #' @export
 armadillo.create_project <- function(project_name = NULL, users = NULL, overwrite_existing = "choose") { # nolint
+  askYesNo <- NULL
+  
   if (is.null(users)) {
     users <- list()
   }
@@ -149,22 +151,12 @@ armadillo.get_project_users <- function(project_name) { # nolint
   return(content)
 }
 
-.handle_existing_project <- function(project_name, users) {
-  choice <- menu(
-    choices = c("Yes", "No"),
-    title = paste0("Project ", "'", project_name, "'", " already exists: do you want to overwrite?")
-  )
-  if (choice == 2) {
-    warning("Project already exists", call. = FALSE)
-  }
-}
-
 #' Displays a menu with choices if the project already exists
 #'
 #' @param project_name the name of the target project
 #' @return Either 1, 2, or 0 depending on menu choice
 #'
-#' @importFrom utils menu
+#' @importFrom utils askYesNo
 #' @noRd
 .make_overwrite_menu <- function(project_name) {
   choice <- askYesNo(paste0("Project ", "'", project_name, "'", " already exists: do you want to overwrite?"))
@@ -181,10 +173,11 @@ armadillo.get_project_users <- function(project_name) { # nolint
   if (project_exists & overwrite_existing == "choose") {
     choice <- .make_overwrite_menu(project_name)
   } else if (!project_exists | (project_exists & overwrite_existing == "yes")) {
-    choice <- 1
+    choice <- TRUE
   } else {
-    choice <- 2
+    choice <- FALSE
   }
+  return(choice)
 }
 
 #' Provides an exit message

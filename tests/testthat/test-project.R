@@ -331,3 +331,52 @@ test_that("armadillo.create_project with nonexisting overwrite", {
 
   stub_registry_clear()
 })
+
+test_that(".make_overwrite_menu when user selects 'yes'", {
+  expect_true(
+    with_mocked_bindings(
+      .make_overwrite_menu(project_name = "lifecycle"),
+      askYesNo = function(title) TRUE
+      )
+  )
+})
+
+test_that(".make_overwrite_menu when user selects 'no'", {
+  expect_false(
+    with_mocked_bindings(
+      .make_overwrite_menu(project_name = "lifecycle"),
+      askYesNo = function(title) FALSE
+    )
+  )
+})
+
+test_that(".make_overwrite_menu when user selects 'cancel'", {
+  expect_equal(
+    with_mocked_bindings(
+      .make_overwrite_menu(project_name = "lifecycle"),
+      askYesNo = function(title) NA
+    ), 
+    "cancel"
+  )
+})
+
+test_that(".get_overwrite_choice where menu is displayed", {
+  expect_true(
+    with_mocked_bindings(
+      .get_overwrite_choice(project_name = "lifecycle", project_exists = TRUE, overwrite_existing = "choose"),
+      .make_overwrite_menu = function(project_name) TRUE
+    )
+  )
+})
+  
+test_that(".get_overwrite_choice where overwrite is set to TRUE", {
+  expect_true(
+     .get_overwrite_choice(project_name = "lifecycle", project_exists = TRUE, overwrite_existing = "yes"),
+    )
+})
+
+test_that(".get_overwrite_choice where overwrite is set to FALSE", {
+  expect_false(
+      .get_overwrite_choice(project_name = "lifecycle", project_exists = TRUE, overwrite_existing = "no"),
+    )
+})
