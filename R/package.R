@@ -10,8 +10,9 @@
 #' @export
 armadillo.install_packages <- function(paths, profile = "default") { # nolint
   msg <- paste0(
-                "You need to specify the full path(s) of the package(s);",
-                "e.g. 'C:/User/test.tar.gz'")
+    "You need to specify the full path(s) of the package(s);",
+    "e.g. 'C:/User/test.tar.gz'"
+  )
   .is_empty(msg, paths)
 
   response <- httr::POST(
@@ -51,8 +52,9 @@ armadillo.install_packages <- function(paths, profile = "default") { # nolint
 
   if (response$status_code == 404) {
     stop(paste0(
-                "Endpoint doesn't exist. Make sure you're running ",
-                "Armadillo in development mode."))
+      "Endpoint doesn't exist. Make sure you're running ",
+      "Armadillo in development mode."
+    ))
   }
   .handle_request_error(response)
 
@@ -74,10 +76,11 @@ armadillo.install_packages <- function(paths, profile = "default") { # nolint
     }
   } else {
     stop(paste0(
-                "Datatype of package should be character: [",
-                value,
-                "] is type of [",
-                typeof(value),
-                "]"))
+      "Datatype of package should be character: [",
+      value,
+      "] is type of [",
+      typeof(value),
+      "]"
+    ))
   }
 }

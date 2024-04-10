@@ -10,7 +10,7 @@ mock_projects_with_users <- '[
     "name": "other-project",
     "users": ["john", "tommy"]
   },
-  { 
+  {
     "name": "other-projectnumbertwo",
     "users": []
     }
@@ -36,9 +36,10 @@ test_that("armadillo.create_project creates a folder", {
   stub_request("put", uri = "https://test.nl/access/projects") %>%
     wi_th(
       headers = list(
-                     "Accept" =
-                       "application/json, text/xml, application/xml, */*",
-                     "Content-Type" = "application/json"),
+        "Accept" =
+          "application/json, text/xml, application/xml, */*",
+        "Content-Type" = "application/json"
+      ),
       body = '{"name":"project"}'
     ) %>%
     to_return(
@@ -63,9 +64,10 @@ test_that("armadillo.create_project with users", {
   stub_request("put", uri = "https://test.nl/access/projects") %>%
     wi_th(
       headers = list(
-                     "Accept" =
-                       "application/json, text/xml, application/xml, */*",
-                     "Content-Type" = "application/json"),
+        "Accept" =
+          "application/json, text/xml, application/xml, */*",
+        "Content-Type" = "application/json"
+      ),
       body = '{"name":"project","users":["user1@users.com","user2@users.com"]}'
     ) %>%
     to_return(
@@ -93,9 +95,10 @@ test_that("armadillo.create_project with empty user list", {
   stub_request("put", uri = "https://test.nl/access/projects") %>%
     wi_th(
       headers = list(
-                     "Accept" =
-                       "application/json, text/xml, application/xml, */*",
-                     "Content-Type" = "application/json"),
+        "Accept" =
+          "application/json, text/xml, application/xml, */*",
+        "Content-Type" = "application/json"
+      ),
       body = '{"name":"project"}'
     ) %>%
     to_return(
@@ -240,9 +243,10 @@ test_that("armadillo.create_project without overwriting existing project", {
   stub_request("put", uri = "https://test.nl/access/projects") %>%
     wi_th(
       headers = list(
-                     "Accept" =
-                       "application/json, text/xml, application/xml, */*",
-                     "Content-Type" = "application/json"),
+        "Accept" =
+          "application/json, text/xml, application/xml, */*",
+        "Content-Type" = "application/json"
+      ),
       body = '{"name":"other-project"}'
     ) %>%
     to_return(
@@ -275,9 +279,10 @@ test_that("armadillo.create_project with existing overwrite", {
   stub_request("put", uri = "https://test.nl/access/projects") %>%
     wi_th(
       headers = list(
-                     "Accept" =
-                       "application/json, text/xml, application/xml, */*",
-                     "Content-Type" = "application/json"),
+        "Accept" =
+          "application/json, text/xml, application/xml, */*",
+        "Content-Type" = "application/json"
+      ),
       body = '{"name":"other-project"}'
     ) %>%
     to_return(
@@ -303,9 +308,10 @@ test_that("armadillo.create_project with nonexisting overwrite", {
   stub_request("put", uri = "https://test.nl/access/projects") %>%
     wi_th(
       headers = list(
-                     "Accept" =
-                       "application/json, text/xml, application/xml, */*",
-                     "Content-Type" = "application/json"),
+        "Accept" =
+          "application/json, text/xml, application/xml, */*",
+        "Content-Type" = "application/json"
+      ),
       body = '{"name":"other-projectnumbertwo"}'
     ) %>%
     to_return(

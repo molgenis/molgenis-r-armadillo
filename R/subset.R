@@ -25,18 +25,20 @@
 #' }
 #'
 #' @export
-armadillo.subset <- function(  #nolint
-  source_project = NULL,
-  new_project = NULL,
-  subset_def = NULL,
-  dry_run = FALSE
-) {
-  #spread out, set all to null
-  folder <- subset_vars <- . <- NULL  #nolint
+armadillo.subset <- function(
+    # nolint
+    source_project = NULL,
+    new_project = NULL,
+    subset_def = NULL,
+    dry_run = FALSE) {
+  # spread out, set all to null
+  folder <- subset_vars <- . <- NULL # nolint
 
   if (is.null(source_project)) {
-    message <- paste0("You must provide the name of the source project from ",
-                      "which you will subset")
+    message <- paste0(
+      "You must provide the name of the source project from ",
+      "which you will subset"
+    )
     stop(message)
   }
 
@@ -45,9 +47,11 @@ armadillo.subset <- function(  #nolint
   }
 
   if (is.null(subset_def)) {
-    message <- paste0("You must provide an object created by ",
-                      "armadillo.subset_definition containing details of the ",
-                      "variables and tables to include in the subset")
+    message <- paste0(
+      "You must provide an object created by ",
+      "armadillo.subset_definition containing details of the ",
+      "variables and tables to include in the subset"
+    )
     stop(message)
   }
 
@@ -85,21 +89,25 @@ armadillo.subset <- function(  #nolint
 
   suppressMessages(
     source_tables <- within(armadillo.list_tables(source_project) %>%
-                              str_split("/", simplify = TRUE) %>%
-                              as_tibble(.name_repair = "unique") %>%
-                              set_names("project", "folder", "table") %>%
-                              mutate(type = "source"), rm("project"))
+      str_split("/", simplify = TRUE) %>%
+      as_tibble(.name_repair = "unique") %>%
+      set_names("project", "folder", "table") %>%
+      mutate(type = "source"), rm("project"))
   )
 
-  missing_tables <- left_join(subset_def, source_tables, by = c("folder",
-                                                                "table")) %>%
+  missing_tables <- left_join(subset_def, source_tables, by = c(
+    "folder",
+    "table"
+  )) %>%
     dplyr::filter(is.na(type)) %>%
     dplyr::select(folder, table)
 
   if (nrow(missing_tables) > 0) {
-    message <- paste0("The following folders & tables: [ ", missing_tables,
-                      "] are included in your reference object, but don't ",
-                      "exist within the specified project")
+    message <- paste0(
+      "The following folders & tables: [ ", missing_tables,
+      "] are included in your reference object, but don't ",
+      "exist within the specified project"
+    )
     stop(message)
   }
 
@@ -216,8 +224,8 @@ armadillo.subset <- function(  #nolint
 #' }
 #'
 #' @export
-armadillo.subset_definition <- function(vars = NULL) {  #nolint
-  variable <- folder <- . <- subset_vars <- vars_to_subset <- NULL  #nolint
+armadillo.subset_definition <- function(vars = NULL) { # nolint
+  variable <- folder <- . <- subset_vars <- vars_to_subset <- NULL # nolint
 
   if (is.null(vars)) {
     stop("You must provide a .csv file with variables and tables to subset")
@@ -255,8 +263,10 @@ armadillo.subset_definition <- function(vars = NULL) {  #nolint
 
   subset_in <- read.csv(file = vars, fileEncoding = "UTF-8-BOM")
 
-  message <- paste0(".csv file must contain exactly three columns entitled ",
-                    "'folder', 'table' and 'variable'")
+  message <- paste0(
+    ".csv file must contain exactly three columns entitled ",
+    "'folder', 'table' and 'variable'"
+  )
   if (any(colnames(subset_in) %in% c("folder", "table", "variable") == FALSE)) {
     stop(message)
   }

@@ -151,7 +151,7 @@
   function(project, folder, name, new_folder = folder, new_name = name,
            extension) {
     if (folder == new_folder &&
-          name == new_name) {
+      name == new_name) {
       stop("Cannot move table or resource onto itself.", call. = FALSE)
     }
     .check_full_name(new_folder, new_name)
@@ -226,8 +226,10 @@
 #' @noRd
 .to_object_uri <- function(project, object_name, extension) {
   full_name <- paste0(object_name, extension)
-  paste0("/storage/projects/",
-         project,
-         "/objects/",
-         utils::URLencode(full_name, reserved = TRUE))
+  paste0(
+    "/storage/projects/",
+    project,
+    "/objects/",
+    utils::URLencode(full_name, reserved = TRUE)
+  )
 }

@@ -15,7 +15,8 @@ test_that("armadillo.upload_resource checks if folder is provided", {
 test_that("armadillo.upload_resource calls .upload_object", {
   upload_object <- mock()
 
-  with_mock(armadillo.upload_resource("project",
+  with_mock(
+    armadillo.upload_resource("project",
       "folder",
       resource = datasets::iris
     ),
@@ -97,12 +98,13 @@ test_that("armadillo.load_resource calls .load_object", {
   load_object <- mock()
   environment <- new.env()
 
-  with_mock(armadillo.load_resource(
-    "project",
-    "folder",
-    "name"
-  ),
-  "MolgenisArmadillo:::.load_object" = load_object
+  with_mock(
+    armadillo.load_resource(
+      "project",
+      "folder",
+      "name"
+    ),
+    "MolgenisArmadillo:::.load_object" = load_object
   )
 
   expect_args(load_object, 1,
