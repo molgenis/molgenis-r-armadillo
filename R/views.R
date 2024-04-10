@@ -248,9 +248,7 @@ armadillo.subset_definition <- function(vars = NULL) { # nolint
 #'
 #' @param vars \code{.csv} file containing vars to subset.
 #'
-#' @importFrom dplyr %>% filter left_join bind_rows distinct
 #' @importFrom tidyr nest
-#' @importFrom utils read.csv
 #'
 #' @return a dataframe containing variables that is used for input in the
 #' \code{armadillo.subset()} method
@@ -265,26 +263,16 @@ armadillo.subset_definition <- function(vars = NULL) { # nolint
 #' @export
 armadillo.subset_definition <- function(vars = NULL) { # nolint
   variable <- folder <- . <- subset_vars <- vars_to_subset <- NULL # nolint
-  reference <- .read_reference_csv(vars)
-  .check_reference_columns()
+  reference <- .read_view_reference(vars)
+  .check_reference_columns(reference)
   reference_clean <- .format_reference(reference)
   return(reference_clean)
 }
 
-#' Reads in .csv file containing variables to subset and performs checks
-#'
-#' This file must contain
-#' three columns with the headers 'folder', 'table' & 'variables'. 'Folder' must
-#' refer to a folder in the armadillo project to be subsetted. 'Table' must
-#' refer to a table within that folder. 'variables' must refer to variables
-#' within that that table.
-#'
+#' Reads in .csv file containing variables 
+#' 
 #' @param vars .csv file containing vars to subset.
-#'
-#' @importFrom dplyr %>% filter
-#' @importFrom tidyr nest
-#' @importFrom purrr map_lgl
-#' @importFrom utils read.csv
+#' @importFrom readr read_csv
 #'
 #' @noRd
 .read_view_reference <- function(vars) {
@@ -298,6 +286,17 @@ armadillo.subset_definition <- function(vars = NULL) { # nolint
   return(reference)
 }
 
+#' Checks imported file for correct column names
+#'
+#' The imported file must contain three columns with the headers 'folder', 'table' & 'variables'. 
+#' 'Folder' must refer to a folder in the armadillo project which contains the master file with the 
+#' data from which to create a view. 'Table' must refer to a table within that folder. 
+#' 'variables' must refer to variables within that that table.
+#'
+#' @param vars .csv file containing vars to subset.
+#' @importFrom readr read_csv
+#'
+#' @noRd
 .check_reference_columns <- function(reference) {
   
   message <- paste0(
@@ -313,7 +312,15 @@ armadillo.subset_definition <- function(vars = NULL) { # nolint
   }
   
 }
-  
+
+#' Formats the reference file that has been imported
+#'
+#' @param vars .csv file containing vars to subset.
+#' @importFrom dplyr %>% filter select
+#' @importFrom tidyr nest
+#' @importFrom purrr map_lgl
+#'
+#' @noRd
 .format_reference <- function(reference){
 
   reference_out <- reference %>%
@@ -321,6 +328,5 @@ armadillo.subset_definition <- function(vars = NULL) { # nolint
   nest(subset_vars = c(variable)) %>%
   dplyr::filter(!map_lgl(subset_vars, is.null)) %>%
   dplyr::select(folder, table, vars_to_subset = subset_vars)
-
 return(reference_out)
 }
