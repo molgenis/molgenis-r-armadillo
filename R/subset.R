@@ -5,7 +5,6 @@
 #'  \item Checking what data is available to create subsets
 #'  \item Make the subset
 #' }
-#'
 #' @param source_project project from which to subset data
 #' @param new_project project to upload subset to. Will be created if it doesn't
 #' exist.
@@ -195,8 +194,6 @@ armadillo.subset <- function(
   missing_out <- tables_with_missing %>%
     dplyr::select(folder, table, missing) %>%
     unnest(cols = missing)
-
-  # To reviewer: was this return statement missing or was this intended?
   return(missing_out)
 }
 

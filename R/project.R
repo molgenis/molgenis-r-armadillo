@@ -80,7 +80,6 @@ armadillo.delete_project <- function(project_name) { # nolint
     config = httr::add_headers(.get_auth_header())
   )
   .handle_request_error(response)
-
   message(paste0("Deleted project '", project_name, "'"))
 }
 
@@ -172,7 +171,6 @@ armadillo.get_project_users <- function(project_name) { # nolint
   if (is.na(choice)) {
     choice <- "cancel"
   }
-
   return(choice)
 }
 
@@ -180,7 +178,6 @@ armadillo.get_project_users <- function(project_name) { # nolint
   if (!any(c("choose", "yes", "no") %in% overwrite_existing)) {
     stop("`overwrite` must be one of 'choose', 'yes', 'no'")
   }
-
   if (project_exists & overwrite_existing == "choose") {
     choice <- .make_overwrite_menu(project_name)
   } else if (!project_exists | (project_exists & overwrite_existing == "yes")) {
