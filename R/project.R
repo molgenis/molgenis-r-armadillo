@@ -31,13 +31,15 @@ armadillo.create_project <- function(project_name = NULL, users = NULL, overwrit
   
   choice <- .get_overwrite_choice(project_name, project_exists, overwrite_existing)
   
-  if(choice == 1 & !project_exists) {
+  if(choice == TRUE & !project_exists) {
     .create_project(project_name, users)
     message(.create_project_message(project_name, users))
-  } else if(choice == 1 & project_exists){
+  } else if(choice == TRUE & project_exists){
     .create_project(project_name, users)
     message(paste0(.create_project_message(project_name, users), " with overwrite set to 'yes'"))
-    } else {
+    } else if(choice == "cancel" & project_exists){
+    stop("Operation aborted by user")
+    } else{
     message("Did not create project: ",  "'", project_name, "'", " already exists and overwrite is set to 'no'")
   }
     
@@ -167,10 +169,10 @@ armadillo.get_project_users <- function(project_name) { # nolint
 #' @importFrom utils menu
 #' @noRd 
 .make_overwrite_menu <- function(project_name){
-  
-  choice <- menu(
-    choices = c("Yes", "No"),
-    title = paste0("Project ", "'", project_name, "'", " already exists: do you want to overwrite?"))
+
+  choice <- askYesNo(paste0("Project ", "'", project_name, "'", " already exists: do you want to overwrite?"))
+  if(is.na(choice)){
+    choice <- "cancel"}
   
   return(choice)
   
