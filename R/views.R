@@ -28,7 +28,12 @@ armadillo.make_views <- function(source_project = NULL, new_project = NULL, subs
                                  dry_run = FALSE) {
 
   folder <- subset_vars <- . <- NULL
-  .check_args(source_project, new_project, subset_def)
+  .check_args_valid(source_project, new_project, subset_def)
+  .check_source_project_exists(source_project)
+  requested_vars <- armadillo.subset_definition(subset_def)
+  .check_source_tables_exist(requested_vars, source_project)
+  
+  
   
   tables_local <- .get_tables(source_project, subset_def)
   
@@ -56,32 +61,7 @@ armadillo.make_views <- function(source_project = NULL, new_project = NULL, subs
 #'
 #' @noRd
 .get_tables <- function(source_project, subset_def) {
-  type <- folder <- . <- NULL
-  
-  suppressMessages(
-    source_tables <- within(armadillo.list_tables(source_project) %>%
-                              str_split("/", simplify = TRUE) %>%
-                              as_tibble(.name_repair = "unique") %>%
-                              set_names("project", "folder", "table") %>%
-                              mutate(type = "source"), rm("project"))
-  )
-  
-  missing_tables <- left_join(subset_def, source_tables, by = c(
-    "folder",
-    "table"
-  )) %>%
-    dplyr::filter(is.na(type)) %>%
-    dplyr::select(folder, table)
-  
-  if (nrow(missing_tables) > 0) {
-    message <- paste0(
-      "The following folders & tables: [ ", missing_tables,
-      "] are included in your reference object, but don't ",
-      "exist within the specified project"
-    )
-    stop(message)
-  }
-  
+
   tables_out <- subset_def %>%
     mutate(
       data = pmap(., function(folder, table, ...) {
@@ -303,7 +283,14 @@ armadillo.subset_definition <- function(vars = NULL) { # nolint
 return(reference_out)
 }
 
-.check_args <- function(source_project, new_project, subset_def) {
+#' Checks the input arguments are complete
+#'
+#' @param source_project project from which to subset data
+#' @param new_project project to upload subset to. Will be created if it doesn't
+#' exist.
+#' @param subset_def R object containing subset definition created by
+#' @noRd
+.check_args_valid <- function(source_project, new_project, subset_def){
   
   if (is.null(source_project)) {
     stop(
@@ -318,15 +305,45 @@ return(reference_out)
   if (is.null(subset_def)) {
     stop(
       paste0("You must provide an object created by ",
-            "armadillo.subset_definition containing details of the ", 
-            "variables and tables to include in the subset"
-            )
+             "armadillo.subset_definition containing details of the ", 
+             "variables and tables to include in the subset"
+      )
     )
     
   }
+  
+}
+
+#' Checks the specified source project exists
+#'
+#' @param source_project project from which to subset data
+#' @noRd
+.check_source_project_exists <- function(source_project){
   
   if (source_project %in% armadillo.list_projects() == FALSE) {
     stop(paste0("Source project ", "'", source_project, "'", " does not exist"))
   }
   
+}
+
+#' Checks the specified tables in subset_ref exist
+#'
+#' @param source_project project from which to subset data
+#' @noRd
+.check_source_tables_exist <- function(requested_vars, source_project){
+
+  existing_tables <- armadillo.list_tables(source_project)
+  requested_tables <- paste0(source_project, "/", requested_vars$table)
+  missing_tables <- requested_tables[!requested_tables %in% existing_tables]
+  
+if (length(missing_tables) > 0) {
+  
+  tables_for_message <- paste(missing_tables, collapse = ", ")
+  
+  message <- paste0(
+    "The following folders & tables: [", tables_for_message, 
+    "] are included in your reference object, but don't ", "exist within the specified project"
+    )
+  stop(message)
+}
 }
