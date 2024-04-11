@@ -24,137 +24,83 @@
 #' }
 #'
 #' @export
-armadillo.make_views <- function(source_project = NULL, new_project = NULL, subset_def = NULL,
+armadillo.make_views <- function(source_project = NULL, new_project = NULL, reference_csv = NULL,
                                  dry_run = FALSE) {
 
-  folder <- subset_vars <- . <- NULL
   .check_args_valid(source_project, new_project, subset_def)
-  .check_source_project_exists(source_project)
-  requested_vars <- armadillo.subset_definition(subset_def)
-  .check_source_tables_exist(requested_vars, source_project)
-  missing <- .check_available_vars(source_project, requested_vars)
+  view_reference <- armadillo.subset_definition(subset_def)
   
-  if (dry_run == FALSE) {
-    .make_subset(new_project, tables_local)
-  }
+  armadillo.create_project(new_project)
+  
+  posty <- requested_vars %>%
+    pmap(function(folder, table, vars_to_subset){
+      
+      new_path <- paste0(folder, "/", table)
+      
+      .make_views(source_project, new_project, new_path, vars_to_subset)
+      
+    })
+      
+    
   
   return(missing)
 }
 
-#' Performs checks and downloads armadillo tables based on subset definition
+
+        
+# .check_missing_vars <- function(source_project, requested_vars){
+#   . <- folder <- NULL
+#   
+#   existing_tables <- .get_tables(source_project, requested_vars)
+#   existing_vars <- existing_tables %>% map(colnames)
+#   expected_vars <- requested_vars$vars_to_subset %>% map(~.x$variable)
+#   
+#   missing_vars <- list(expected_vars, existing_vars) %>%
+#     pmap(function(x, y){
+#       unique(x[!x %in% y])
+#     })
+#   
+#   return(missing_vars)
+# }
+# 
+# .format_missing_vars <- function(requested_vars, missing_vars_list){
+#   missing_neat <- requested_vars %>%
+#     dplyr::select(folder, table) %>%
+#     mutate(missing = missing_vars_list) %>%
+#     unnest(missing)
+#   
+#   return(missing_neat)
+# }
+
+#' Checks the input arguments are complete
 #'
 #' @param source_project project from which to subset data
+#' @param new_project project to upload subset to. Will be created if it doesn't
+#' exist.
 #' @param subset_def R object containing subset definition created by
-#' \code{armadillo.subset_definition()}
-#'
-#' @importFrom stringr str_split
-#' @importFrom tibble as_tibble
-#' @importFrom purrr set_names pmap
-#' @importFrom dplyr %>% mutate left_join filter select
-#'
-#' @return tables that exists on the server and match with the provided subset
-#' definition
-#'
 #' @noRd
-.get_tables <- function(source_project, subset_def) {
-
-  tables_out <- subset_def %>%
-    pmap(., function(folder, table, ...) {
-        armadillo.load_table(source_project, folder, table) %>%
-        as_tibble
-      })
-  return(tables_out)
-}
-
-#' Creates a local subset of data based on reference object, and uploads this to
-#' server
-#'
-#' @param source_project project from which to subset data
-#' @param tables R object containing armadillo tables created by
-#' \code{.get_tables()}
-#'
-#' @importFrom dplyr %>% select any_of
-#' @importFrom purrr pmap pwalk
-#'
-#' @noRd
-.make_subset <- function(new_project, tables) {
-  . <- NULL
+.check_args_valid <- function(source_project, new_project, subset_def){
   
-  if (new_project %in% armadillo.list_projects() == FALSE) {
-    armadillo.create_project(new_project)
+  if (is.null(source_project)) {
+    stop(
+      paste0("You must provide the name of the source project from ", "which you will subset")
+    )
   }
   
-  local_subset <- tables %>%
-    mutate(data_to_upload = pmap(
-      .,
-      function(data, vars_to_subset, ...) {
-        data %>%
-          dplyr::select(any_of(vars_to_subset$variable))
-      }
-    ))
+  if (is.null(new_project)) {
+    stop("You must provide a name for the new project")
+  }
   
-  local_subset %>% pwalk(
-    function(folder, table, data_to_upload, ...) {
-      armadillo.upload_table(
-        project = new_project,
-        folder = folder,
-        table = data_to_upload,
-        name = table
+  if (is.null(subset_def)) {
+    stop(
+      paste0("You must provide an object created by ",
+             "armadillo.subset_definition containing details of the ", 
+             "variables and tables to include in the subset"
       )
-    }
-  )
-}
-
-#' Checks which of the variables specified in the reference object are missing
-#' in the source data
-#'
-#' @param tables R object containing armadillo tables created by
-#' \code{.get_tables()}
-#'
-#' @importFrom dplyr %>% select
-#' @importFrom purrr pmap
-#' @importFrom tidyr unnest
-#'
-#' @return missing variables
-#'
-#' @noRd
-#' 
-#' 
-#' 
-.check_available_vars <- function(source_project, requested_vars) {
-  . <- folder <- NULL
-  
-  missing_vars <- .check_missing_vars(source_project, requested_vars)
-  missing_neat <- .format_missing_vars(requested_vars, missing_vars)
-  if(nrow(missing_neat) > 0){
-    warning("Some of the variables specified in `subset_def` do not exist in the target data frame:
-    see table for more information")
-    return(missing_neat)
+    )
+    
   }
-}
-
-.check_missing_vars <- function(source_project, requested_vars){
-  . <- folder <- NULL
   
-  existing_tables <- .get_tables(source_project, requested_vars)
-  existing_vars <- existing_tables %>% map(colnames)
-  expected_vars <- requested_vars$vars_to_subset %>% map(~.x$variable)
-  
-  missing_vars <- list(expected_vars, existing_vars) %>%
-    pmap(function(x, y){
-      unique(x[!x %in% y])
-    })
-  
-  return(missing_vars)
-}
-
-.format_missing_vars <- function(requested_vars, missing_vars_list){
-  missing_neat <- requested_vars %>%
-    dplyr::select(folder, table) %>%
-    mutate(missing = missing_vars_list) %>%
-    unnest(missing)
-  
-  return(missing_neat)
 }
 
 #' Builds an R object containing info required to make subsets
@@ -250,70 +196,88 @@ armadillo.subset_definition <- function(vars = NULL) { # nolint
   reference_out <- reference %>%
   nest(subset_vars = c(variable)) %>%
   dplyr::select(folder, table, vars_to_subset = subset_vars)
+  
 return(reference_out)
 }
 
-#' Checks the input arguments are complete
+#' Performs checks and downloads armadillo tables based on subset definition
 #'
 #' @param source_project project from which to subset data
-#' @param new_project project to upload subset to. Will be created if it doesn't
-#' exist.
 #' @param subset_def R object containing subset definition created by
+#' \code{armadillo.subset_definition()}
+#'
+#' @importFrom stringr str_split
+#' @importFrom tibble as_tibble
+#' @importFrom purrr set_names pmap
+#' @importFrom dplyr %>% mutate left_join filter select
+#'
+#' @return tables that exists on the server and match with the provided subset
+#' definition
+#'
 #' @noRd
-.check_args_valid <- function(source_project, new_project, subset_def){
+.get_tables <- function(source_project, subset_def) {
   
-  if (is.null(source_project)) {
-    stop(
-      paste0("You must provide the name of the source project from ", "which you will subset")
-    )
-  }
+  tables_out <- subset_def %>%
+    pmap(., function(folder, table, ...) {
+      armadillo.load_table(source_project, folder, table) %>%
+        as_tibble
+    })
+  return(tables_out)
+}
+
+
+.loop_make_views <- function(reference){
   
-  if (is.null(new_project)) {
-    stop("You must provide a name for the new project")
-  }
+  reference %>%
+    pmap(function(folder, table, variable){
+      
+      
+      
+    })
   
-  if (is.null(subset_def)) {
-    stop(
-      paste0("You must provide an object created by ",
-             "armadillo.subset_definition containing details of the ", 
-             "variables and tables to include in the subset"
-      )
-    )
-    
-  }
   
 }
 
-#' Checks the specified source project exists
+#' Creates a local subset of data based on reference object, and uploads this to
+#' server
 #'
 #' @param source_project project from which to subset data
-#' @noRd
-.check_source_project_exists <- function(source_project){
-  
-  if (source_project %in% armadillo.list_projects() == FALSE) {
-    stop(paste0("Source project ", "'", source_project, "'", " does not exist"))
-  }
-  
-}
-
-#' Checks the specified tables in subset_ref exist
+#' @param tables R object containing armadillo tables created by
+#' \code{.get_tables()}
 #'
-#' @param source_project project from which to subset data
+#' @importFrom dplyr %>% select any_of
+#' @importFrom purrr pmap pwalk
+#'
 #' @noRd
-.check_source_tables_exist <- function(requested_vars, source_project){
-
-  existing_tables <- armadillo.list_tables(source_project)
-  requested_tables <- paste0(source_project, "/", requested_vars$folder, "/", requested_vars$table)
-  missing_tables <- requested_tables[!requested_tables %in% existing_tables]
+.make_views <- function(source_project, new_project, new_path, requested_vars) {
   
-if (length(missing_tables) > 0) {
+  body <- .make_json_body(source_project, new_project, new_path, requested_vars)
+  post_url <- .make_post_url(armadillo_url, new_project, new_path)
+  response <- POST(
+    url = post_url,
+    body = json_body,
+    encode = "json",
+    config = c(httr::content_type_json(), httr::add_headers(.get_auth_header()))
+  )
   
-  tables_for_message <- paste(missing_tables, collapse = ", ")
-  
-  message <- paste0(
-    "The following folders & tables: [", tables_for_message, 
-    "] are included in your reference object, but don't ", "exist within the specified project"
-    )
-  stop(message)
+  return(response)
 }
+
+if(content(response)$status == 204){
+  message("View ", "'", new_project, "/", new_path, "'", " successfully created")
+} else {
+  stop(content(response)$message)
+}
+
+.make_post_url <- function(armadillo_url, new_project, new_path){
+  return(sprintf("%sstorage/projects/%s/objects/link", armadillo_url, new_project))
+}
+
+.make_json_body <- function(source_project, new_project, new_path, requested_vars){  
+  json_body <- jsonlite::toJSON(
+    list(sourceObjectName = paste0(requested_vars$folder, "/", requested_vars$table),
+         sourceProject = source_project,
+         linkedObject = new_path,
+         variables = as.character(unlist(requested_vars$vars_to_subset)), 
+         auto_unbox = TRUE))
 }
