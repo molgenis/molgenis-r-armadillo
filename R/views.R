@@ -24,39 +24,15 @@
 #' }
 #'
 #' @export
-armadillo.subset <- function(
-    # nolint
-    source_project = NULL,
-    new_project = NULL,
-    subset_def = NULL,
-    dry_run = FALSE) {
-  # spread out, set all to null
-  folder <- subset_vars <- . <- NULL # nolint
+armadillo.make_views <- function(source_project = NULL, new_project = NULL, subset_def = NULL,
+                                 dry_run = FALSE) {
+  folder <- subset_vars <- . <- NULL
+  .check_args_valid(source_project, new_project, subset_def)
+  .check_source_project_exists(source_project)
+  requested_vars <- armadillo.subset_definition(subset_def)
+  .check_source_tables_exist(requested_vars, source_project)
 
-  if (is.null(source_project)) {
-    message <- paste0(
-      "You must provide the name of the source project from ",
-      "which you will subset"
-    )
-    stop(message)
-  }
 
-  if (is.null(new_project)) {
-    stop("You must provide a name for the new project")
-  }
-
-  if (is.null(subset_def)) {
-    message <- paste0(
-      "You must provide an object created by ",
-      "armadillo.subset_definition containing details of the ",
-      "variables and tables to include in the subset"
-    )
-    stop(message)
-  }
-
-  if (source_project %in% armadillo.list_projects() == FALSE) {
-    stop("The source project specified does not exist")
-  }
 
   tables_local <- .get_tables(source_project, subset_def)
 
@@ -84,32 +60,6 @@ armadillo.subset <- function(
 #'
 #' @noRd
 .get_tables <- function(source_project, subset_def) {
-  type <- folder <- . <- NULL
-
-  suppressMessages(
-    source_tables <- within(armadillo.list_tables(source_project) %>%
-      str_split("/", simplify = TRUE) %>%
-      as_tibble(.name_repair = "unique") %>%
-      set_names("project", "folder", "table") %>%
-      mutate(type = "source"), rm("project"))
-  )
-
-  missing_tables <- left_join(subset_def, source_tables, by = c(
-    "folder",
-    "table"
-  )) %>%
-    dplyr::filter(is.na(type)) %>%
-    dplyr::select(folder, table)
-
-  if (nrow(missing_tables) > 0) {
-    message <- paste0(
-      "The following folders & tables: [ ", missing_tables,
-      "] are included in your reference object, but don't ",
-      "exist within the specified project"
-    )
-    stop(message)
-  }
-
   tables_out <- subset_def %>%
     mutate(
       data = pmap(., function(folder, table, ...) {
@@ -239,43 +189,150 @@ armadillo.subset_definition <- function(vars = NULL) { # nolint
   return(out)
 }
 
-#' Reads in .csv file containing variables to subset and performs checks
+#' Builds an R object containing info required to make subsets
 #'
-#' This file must contain
-#' three columns with the headers 'folder', 'table' & 'variables'. 'Folder' must
-#' refer to a folder in the armadillo project to be subsetted. 'Table' must
-#' refer to a table within that folder. 'variables' must refer to variables
-#' within that that table.
+#' This file must contain three columns with the headers 'folder', 'table' and
+#' 'variables'. 'Folder' must refer to a folder in the armadillo project to be
+#' subsetted. 'Table' must refer to a table within that folder. 'variables' must
+#' refer to variables within that table.
+#'
+#' @param vars \code{.csv} file containing vars to subset.
+#'
+#' @importFrom tidyr nest
+#'
+#' @return a dataframe containing variables that is used for input in the
+#' \code{armadillo.subset()} method
+#'
+#' @examples
+#' \dontrun{
+#' armadillo.subset_definition(
+#'   vars = "C:/tmp/vars.csv"
+#' )
+#' }
+#'
+#' @export
+armadillo.subset_definition <- function(vars = NULL) { # nolint
+  variable <- folder <- . <- subset_vars <- vars_to_subset <- NULL # nolint
+  reference <- .read_view_reference(vars)
+  .check_reference_columns(reference)
+  reference_clean <- .format_reference(reference)
+  return(reference_clean)
+}
+
+#' Reads in .csv file containing variables
 #'
 #' @param vars .csv file containing vars to subset.
-#'
-#' @importFrom dplyr %>% filter
-#' @importFrom tidyr nest
-#' @importFrom purrr map_lgl
-#' @importFrom utils read.csv
+#' @importFrom readr read_csv
 #'
 #' @noRd
-.read_subset <- function(vars) {
+.read_view_reference <- function(vars) {
   variable <- subset_vars <- NULL
 
-  subset_in <- read.csv(file = vars, fileEncoding = "UTF-8-BOM")
+  if (is.null(vars)) {
+    stop("You must provide a .csv file with variables and tables to subset")
+  }
 
+  reference <- read_csv(file = vars, show_col_types = FALSE)
+  return(reference)
+}
+
+#' Checks imported file for correct column names
+#'
+#' The imported file must contain three columns with the headers 'folder', 'table' & 'variables'.
+#' 'Folder' must refer to a folder in the armadillo project which contains the master file with the
+#' data from which to create a view. 'Table' must refer to a table within that folder.
+#' 'variables' must refer to variables within that that table.
+#'
+#' @param vars .csv file containing vars to subset.
+#' @importFrom readr read_csv
+#'
+#' @noRd
+.check_reference_columns <- function(reference) {
   message <- paste0(
     ".csv file must contain exactly three columns entitled ",
     "'folder', 'table' and 'variable'"
   )
-  if (any(colnames(subset_in) %in% c("folder", "table", "variable") == FALSE)) {
+  if (any(colnames(reference) %in% c("folder", "table", "variable") == FALSE)) {
     stop(message)
   }
 
-  if (length(colnames(subset_in)) != 3) {
+  if (length(colnames(reference)) != 3) {
     stop(message)
   }
+}
 
-  subset_out <- subset_in %>%
+#' Formats the reference file that has been imported
+#'
+#' @param vars .csv file containing vars to subset.
+#' @importFrom dplyr %>% filter select
+#' @importFrom tidyr nest
+#' @importFrom purrr map_lgl
+#'
+#' @noRd
+.format_reference <- function(reference) {
+  reference_out <- reference %>%
     dplyr::filter(!is.na(variable)) %>%
     nest(subset_vars = c(variable)) %>%
-    dplyr::filter(!map_lgl(subset_vars, is.null))
+    dplyr::filter(!map_lgl(subset_vars, is.null)) %>%
+    dplyr::select(folder, table, vars_to_subset = subset_vars)
+  return(reference_out)
+}
 
-  return(subset_out)
+#' Checks the input arguments are complete
+#'
+#' @param source_project project from which to subset data
+#' @param new_project project to upload subset to. Will be created if it doesn't
+#' exist.
+#' @param subset_def R object containing subset definition created by
+#' @noRd
+.check_args_valid <- function(source_project, new_project, subset_def) {
+  if (is.null(source_project)) {
+    stop(
+      paste0("You must provide the name of the source project from ", "which you will subset")
+    )
+  }
+
+  if (is.null(new_project)) {
+    stop("You must provide a name for the new project")
+  }
+
+  if (is.null(subset_def)) {
+    stop(
+      paste0(
+        "You must provide an object created by ",
+        "armadillo.subset_definition containing details of the ",
+        "variables and tables to include in the subset"
+      )
+    )
+  }
+}
+
+#' Checks the specified source project exists
+#'
+#' @param source_project project from which to subset data
+#' @noRd
+.check_source_project_exists <- function(source_project) {
+  if (source_project %in% armadillo.list_projects() == FALSE) {
+    stop(paste0("Source project ", "'", source_project, "'", " does not exist"))
+  }
+}
+
+#' Checks the specified tables in subset_ref exist
+#'
+#' @param source_project project from which to subset data
+#' @noRd
+.check_source_tables_exist <- function(requested_vars, source_project) {
+  existing_tables <- armadillo.list_tables(source_project)
+  requested_tables <- paste0(source_project, "/", requested_vars$table)
+  missing_tables <- requested_tables[!requested_tables %in% existing_tables]
+
+  if (length(missing_tables) > 0) {
+    tables_for_message <- paste(missing_tables, collapse = ", ")
+
+    message <- paste0(
+      "The following folders & tables: [", tables_for_message,
+      "] are included in your reference object, but don't ", "exist within the specified project"
+    )
+    stop(message)
+  }
 }

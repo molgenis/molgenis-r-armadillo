@@ -4,7 +4,11 @@
 \alias{armadillo.create_project}
 \title{Create a project for a variable collection}
 \usage{
-armadillo.create_project(project_name, users = NULL)
+armadillo.create_project(
+  project_name = NULL,
+  users = NULL,
+  overwrite_existing = "choose"
+)
 }
 \arguments{
 \item{project_name}{The name of the project to create. The project name
@@ -16,6 +20,10 @@ armadillo.create_project(project_name, users = NULL)
   }}
 
 \item{users}{A list collection of the users that should have access to the project}
+
+\item{overwrite_existing}{Character, specifying action to take if project still exists: 'choose'
+(default) displays a menu giving the option to overwrite or not, 'yes' overwrites the
+existing project and 'no' exists the function with a message.}
 }
 \description{
 Create a project for a variable collection

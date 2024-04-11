@@ -22,7 +22,8 @@ test_that("armadillo.upload_table checks if folder is provided", {
 test_that("armadillo.upload_table calls .upload_object", {
   upload_object <- mock()
 
-  with_mock(armadillo.upload_table("project",
+  with_mock(
+    armadillo.upload_table("project",
       "folder",
       table = datasets::iris
     ),
@@ -103,12 +104,13 @@ test_that("armadillo.move_table calls .move_object", {
 test_that("armadillo.load_table calls .load_object", {
   load_object <- mock()
 
-  with_mock(armadillo.load_table(
-    "project",
-    "folder",
-    "name"
-  ),
-  "MolgenisArmadillo:::.load_object" = load_object
+  with_mock(
+    armadillo.load_table(
+      "project",
+      "folder",
+      "name"
+    ),
+    "MolgenisArmadillo:::.load_object" = load_object
   )
 
   expect_args(load_object, 1,

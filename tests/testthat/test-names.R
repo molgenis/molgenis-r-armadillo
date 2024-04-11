@@ -83,14 +83,22 @@ test_that(".check_full_name checks name length", {
 
 test_that(".check_full_name checks for valid characters", {
   expected_first_part <- "Name: "
-  expected_last_part <- paste0(" has invalid characters.\nOnly ASCII letters, ",
-                               "digits, '_', '-' and ':' are permitted.")
-  expect_error(.check_full_name("folder", "\U72B0"),
-               paste0(expected_first_part, "\U72B0", expected_last_part))
-  expect_error(.check_full_name("folder", "ármadïllø"),
-               paste0(expected_first_part, "ármadïllø", expected_last_part))
-  expect_error(.check_full_name("folder", "A b"),
-               paste0(expected_first_part, "A b", expected_last_part))
+  expected_last_part <- paste0(
+    " has invalid characters.\nOnly ASCII letters, ",
+    "digits, '_', '-' and ':' are permitted."
+  )
+  expect_error(
+    .check_full_name("folder", "\U72B0"),
+    paste0(expected_first_part, "\U72B0", expected_last_part)
+  )
+  expect_error(
+    .check_full_name("folder", "ármadïllø"),
+    paste0(expected_first_part, "ármadïllø", expected_last_part)
+  )
+  expect_error(
+    .check_full_name("folder", "A b"),
+    paste0(expected_first_part, "A b", expected_last_part)
+  )
 })
 
 test_that(".check_full_table_name allows valid names", {

@@ -51,7 +51,8 @@
   if (!exists("armadillo_url", envir = .pkgglobalenv)) {
     stop("You are not logged in.
          Please log in with armadillo.login('<YOUR_SERVER>')",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   .pkgglobalenv$armadillo_url
 }
@@ -69,13 +70,17 @@
   } else if (exists("auth_username", envir = .pkgglobalenv)) {
     encoded <- base64enc::base64encode(
       charToRaw(
-                paste0(.pkgglobalenv$auth_username, ":",
-                       .pkgglobalenv$auth_password))
+        paste0(
+          .pkgglobalenv$auth_username, ":",
+          .pkgglobalenv$auth_password
+        )
+      )
     )
     c("Authorization" = paste0("Basic ", encoded))
   } else {
     stop("You are not logged in.
          Please log in with armadillo.login('<YOUR_SERVER>')",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 }
