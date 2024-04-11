@@ -32,12 +32,8 @@ armadillo.make_views <- function(source_project = NULL, new_project = NULL, subs
   .check_source_project_exists(source_project)
   requested_vars <- armadillo.subset_definition(subset_def)
   .check_source_tables_exist(requested_vars, source_project)
+  missing <- .check_available_vars(source_project, requested_vars)
   
-  
-  
-  tables <- .get_tables(source_project, requested_vars)
-  
-  missing <- .check_available_vars(tables_local)
   if (dry_run == FALSE) {
     .make_subset(new_project, tables_local)
   }
@@ -63,15 +59,13 @@ armadillo.make_views <- function(source_project = NULL, new_project = NULL, subs
 .get_tables <- function(source_project, subset_def) {
 
   tables_out <- subset_def %>%
-    mutate(
-      data = pmap(., function(folder, table, ...) {
-        armadillo.load_table(source_project, folder, table)
+    pmap(., function(folder, table, ...) {
+        armadillo.load_table(source_project, folder, table) %>%
+        as_tibble
       })
-    )
   return(tables_out)
 }
 
-requested_vars
 #' Creates a local subset of data based on reference object, and uploads this to
 #' server
 #'
@@ -124,72 +118,43 @@ requested_vars
 #' @return missing variables
 #'
 #' @noRd
-.check_available_vars <- function(tables) {
+#' 
+#' 
+#' 
+.check_available_vars <- function(source_project, requested_vars) {
   . <- folder <- NULL
   
-  tables_with_missing <- tables %>%
-    mutate(missing = pmap(
-      .,
-      function(vars_to_subset, data, ...) {
-        subset_vars <- ""
-        if (is.atomic(vars_to_subset)) {
-          subset_vars <- vars_to_subset["variable"]
-        } else {
-          subset_vars <- vars_to_subset$variable
-        }
-        setdiff(
-          x = subset_vars,
-          y = colnames(data)
-        )
-      }
-    ))
-  
-  missing_out <- tables_with_missing %>%
-    dplyr::select(folder, table, missing) %>%
-    unnest(cols = missing)
-  return(missing_out)
+  missing_vars <- .check_missing_vars(source_project, requested_vars)
+  missing_neat <- .format_missing_vars(requested_vars, missing_vars)
+  if(nrow(missing_neat) > 0){
+    warning("Some of the variables specified in `subset_def` do not exist in the target data frame:
+    see table for more information")
+    return(missing_neat)
+  }
 }
 
-#' Builds an R object containing info required to make subsets
-#'
-#' This file must contain three columns with the headers 'folder', 'table' and
-#' 'variables'. 'Folder' must refer to a folder in the armadillo project to be
-#' subsetted. 'Table' must refer to a table within that folder. 'variables' must
-#' refer to variables within that table.
-#'
-#' @param vars \code{.csv} file containing vars to subset.
-#'
-#' @importFrom dplyr %>% filter left_join bind_rows distinct
-#' @importFrom tidyr nest
-#' @importFrom utils read.csv
-#'
-#' @return a dataframe containing variables that is used for input in the
-#' \code{armadillo.subset()} method
-#'
-#' @examples
-#' \dontrun{
-#' armadillo.subset_definition(
-#'   vars = "C:/tmp/vars.csv"
-#' )
-#' }
-#'
-#' @export
-armadillo.subset_definition <- function(vars = NULL) { # nolint
-  variable <- folder <- . <- subset_vars <- vars_to_subset <- NULL # nolint
+.check_missing_vars <- function(source_project, requested_vars){
+  . <- folder <- NULL
   
-  if (is.null(vars)) {
-    stop("You must provide a .csv file with variables and tables to subset")
-  }
+  existing_tables <- .get_tables(source_project, requested_vars)
+  existing_vars <- existing_tables %>% map(colnames)
+  expected_vars <- requested_vars$vars_to_subset %>% map(~.x$variable)
   
-  sub_clean <- .read_subset(vars)
+  missing_vars <- list(expected_vars, existing_vars) %>%
+    pmap(function(x, y){
+      unique(x[!x %in% y])
+    })
   
-  sub_out <- sub_clean %>%
-    mutate(vars_to_subset = subset_vars)
+  return(missing_vars)
+}
+
+.format_missing_vars <- function(requested_vars, missing_vars_list){
+  missing_neat <- requested_vars %>%
+    dplyr::select(folder, table) %>%
+    mutate(missing = missing_vars_list) %>%
+    unnest(missing)
   
-  out <- sub_out %>%
-    dplyr::select(folder, table, vars_to_subset)
-  
-  return(out)
+  return(missing_neat)
 }
 
 #' Builds an R object containing info required to make subsets
@@ -235,7 +200,9 @@ armadillo.subset_definition <- function(vars = NULL) { # nolint
     stop("You must provide a .csv file with variables and tables to subset")
   }
   
-  reference <- read_csv(file = vars, show_col_types = FALSE)
+  reference <- suppressWarnings(
+    read_csv(file = vars, show_col_types = FALSE, trim_ws = TRUE)
+  )
   return(reference)
 }
 
@@ -264,6 +231,10 @@ armadillo.subset_definition <- function(vars = NULL) { # nolint
     stop(message)
   }
   
+  if(any(reference %>% unlist %>% is.na)){
+    stop("The input .csv file contains empty cells: please check and try again")
+  }
+  
 }
 
 #' Formats the reference file that has been imported
@@ -277,9 +248,7 @@ armadillo.subset_definition <- function(vars = NULL) { # nolint
 .format_reference <- function(reference){
 
   reference_out <- reference %>%
-  dplyr::filter(!is.na(variable)) %>%
   nest(subset_vars = c(variable)) %>%
-  dplyr::filter(!map_lgl(subset_vars, is.null)) %>%
   dplyr::select(folder, table, vars_to_subset = subset_vars)
 return(reference_out)
 }
