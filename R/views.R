@@ -35,7 +35,7 @@ armadillo.make_views <- function(source_project = NULL, new_project = NULL, subs
   
   
   
-  tables_local <- .get_tables(source_project, subset_def)
+  tables <- .get_tables(source_project, requested_vars)
   
   missing <- .check_available_vars(tables_local)
   if (dry_run == FALSE) {
@@ -71,6 +71,7 @@ armadillo.make_views <- function(source_project = NULL, new_project = NULL, subs
   return(tables_out)
 }
 
+requested_vars
 #' Creates a local subset of data based on reference object, and uploads this to
 #' server
 #'
@@ -333,7 +334,7 @@ return(reference_out)
 .check_source_tables_exist <- function(requested_vars, source_project){
 
   existing_tables <- armadillo.list_tables(source_project)
-  requested_tables <- paste0(source_project, "/", requested_vars$table)
+  requested_tables <- paste0(source_project, "/", requested_vars$folder, "/", requested_vars$table)
   missing_tables <- requested_tables[!requested_tables %in% existing_tables]
   
 if (length(missing_tables) > 0) {
