@@ -337,7 +337,7 @@ test_that(".make_overwrite_menu when user selects 'yes'", {
     with_mocked_bindings(
       .make_overwrite_menu(project_name = "lifecycle"),
       askYesNo = function(title) TRUE
-      )
+    )
   )
 })
 
@@ -355,7 +355,7 @@ test_that(".make_overwrite_menu when user selects 'cancel'", {
     with_mocked_bindings(
       .make_overwrite_menu(project_name = "lifecycle"),
       askYesNo = function(title) NA
-    ), 
+    ),
     "cancel"
   )
 })
@@ -368,15 +368,15 @@ test_that(".get_overwrite_choice where menu is displayed", {
     )
   )
 })
-  
+
 test_that(".get_overwrite_choice where overwrite is set to TRUE", {
   expect_true(
-     .get_overwrite_choice(project_name = "lifecycle", project_exists = TRUE, overwrite_existing = "yes"),
-    )
+    .get_overwrite_choice(project_name = "lifecycle", project_exists = TRUE, overwrite_existing = "yes"),
+  )
 })
 
 test_that(".get_overwrite_choice where overwrite is set to FALSE", {
   expect_false(
-      .get_overwrite_choice(project_name = "lifecycle", project_exists = TRUE, overwrite_existing = "no"),
-    )
+    .get_overwrite_choice(project_name = "lifecycle", project_exists = TRUE, overwrite_existing = "no"),
+  )
 })
