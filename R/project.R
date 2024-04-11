@@ -24,7 +24,7 @@
 #' @export
 armadillo.create_project <- function(project_name = NULL, users = NULL, overwrite_existing = "choose") { # nolint
   askYesNo <- NULL
-  
+
   if (is.null(users)) {
     users <- list()
   }
@@ -159,7 +159,18 @@ armadillo.get_project_users <- function(project_name) { # nolint
 #' @importFrom utils askYesNo
 #' @noRd
 .make_overwrite_menu <- function(project_name) {
-  choice <- askYesNo(paste0("Project ", "'", project_name, "'", " already exists: do you want to overwrite?"))
+  choice <- NULL
+  while (is.null(choice)) {
+    tryCatch(
+      {
+        choice <- askYesNo(paste0("Project ", "'", project_name, "'", " already exists: do you want to overwrite?"))
+      },
+      error = function(cond) {
+        print("Unrecognised response: please choose from 'yes', 'no' or 'cancel'")
+      }
+    )
+  }
+
   if (is.na(choice)) {
     choice <- "cancel"
   }
