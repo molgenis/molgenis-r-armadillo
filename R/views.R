@@ -24,22 +24,12 @@
 #' }
 #'
 #' @export
-armadillo.make_views <- function(source_project = NULL, target_project, new_project = NULL, reference_csv = NULL,
-                                 dry_run = "asdsa") {
-  
-  
-
-  #change column names but allow old ones
+armadillo.make_views <- function(reference_csv = NULL, source_project = NULL, source_folder = NULL,
+                                 source_table = NULL, target_project = NULL, target_folder = NULL,
+                                 target_table = NULL, new_project = NULL, dry_run = NULL) {
   
   .check_args_valid(source_project, new_project, subset_def, dry_run)
   view_reference <- armadillo.subset_definition(subset_def)
-  
-  view_reference <- view_reference %>%
-    mutate(
-      target_folder = folder,
-      target_table = table
-    )
-  
   armadillo.create_project(new_project)
   posts <- .loop_make_views(reference, source_project, target_project)
   statuses <- .get_status(posts)
@@ -66,8 +56,6 @@ armadillo.make_views <- function(source_project = NULL, target_project, new_proj
   
 }
 
-
-        
 # .check_missing_vars <- function(source_project, requested_vars){
 #   . <- folder <- NULL
 #   
@@ -159,8 +147,9 @@ armadillo.subset_definition <- function(vars = NULL) { # nolint
   reference <- .rename_reference_columns(reference, "folder", "source_folder")
   reference <- .rename_reference_columns(reference, "project", "source_project")
   .check_reference_columns(reference)
-  reference_clean <- .format_reference(reference)
-  return(reference_clean)
+  reference <- .format_reference(reference)
+  reference <- .set_default_targets(reference)
+  return(reference)
 }
 
 #' Reads in .csv file containing variables 
@@ -324,4 +313,27 @@ if(content(response)$status == 204){
       content(x)[["status"]]
     })
   return(status)
+}
+
+
+.set_default_targets <- function(reference){
+  
+  if("target_folder" %in% colnames(reference)) {
+    
+    message("target_folder not specified in .csv file: defaulting to source folder name")
+    reference <- reference %>%
+      mutate(target_folder = source_folder)
+    
+  }
+  
+  if("target_table" %in% colnames(reference)) {
+    
+    message("target_table not specified in .csv file: defaulting to source table name")
+    reference <- reference %>%
+      mutate(target_folder = source_table)
+    
+  }
+  
+  return(reference)
+  
 }
