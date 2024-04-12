@@ -28,57 +28,19 @@ armadillo.make_views <- function(reference_csv = NULL, source_project = NULL, so
                                  source_table = NULL, target_project = NULL, target_folder = NULL,
                                  target_table = NULL, new_project = NULL, dry_run = NULL) {
   
-  .check_args_valid(source_project, new_project, subset_def, dry_run)
-  view_reference <- armadillo.subset_definition(subset_def)
-  armadillo.create_project(new_project)
-  posts <- .loop_make_views(reference, source_project, target_project)
+  .check_args_valid(source_project, new_project, reference_csv, dry_run)
+  view_reference <- armadillo.subset_definition(reference_csv)
+  armadillo.create_project(target_project, overwrite_existing = "no")
+  posts <- .loop_make_views(view_reference, source_project, target_project)
   statuses <- .get_status(posts)
   
-  if(any(status == 404)){
+  if(any(!statuses == 201)){
     warning("One or more views were not created correctly, see details below.", 
             immediate. = T)
     .get_messages(posts, statuses, view_reference)
   }
   
-  .get_messages <- function(posts, statuses, reference){
-    messages <- posty %>%
-      map_chr(function(x){
-        content(x)[["message"]]
-        })
-  messages <- view_reference %>%
-    mutate(
-      status = unlist(status),
-      message = unlist(messages)) %>%
-    dplyr::select(folder, table, target_folder, target_table, status, message)
-  
-  return(messages)
-  }
-  
 }
-
-# .check_missing_vars <- function(source_project, requested_vars){
-#   . <- folder <- NULL
-#   
-#   existing_tables <- .get_tables(source_project, requested_vars)
-#   existing_vars <- existing_tables %>% map(colnames)
-#   expected_vars <- requested_vars$vars_to_subset %>% map(~.x$variable)
-#   
-#   missing_vars <- list(expected_vars, existing_vars) %>%
-#     pmap(function(x, y){
-#       unique(x[!x %in% y])
-#     })
-#   
-#   return(missing_vars)
-# }
-# 
-# .format_missing_vars <- function(requested_vars, missing_vars_list){
-#   missing_neat <- requested_vars %>%
-#     dplyr::select(folder, table) %>%
-#     mutate(missing = missing_vars_list) %>%
-#     unnest(missing)
-#   
-#   return(missing_neat)
-# }
 
 #' Checks the input arguments are complete
 #'
@@ -87,7 +49,12 @@ armadillo.make_views <- function(reference_csv = NULL, source_project = NULL, so
 #' exist.
 #' @param subset_def R object containing subset definition created by
 #' @noRd
-.check_args_valid <- function(source_project, new_project, subset_def, dry_run){
+.check_args_valid <- function(source_project, target_project, new_project, reference_csv, dry_run){
+  
+  if(!is.null(new_project)){
+    target_project <- new_project
+    message("Argument `new project` has now been depricated: please use `target_project` instead")
+  }
   
   if (is.null(source_project)) {
     stop(
@@ -95,8 +62,8 @@ armadillo.make_views <- function(reference_csv = NULL, source_project = NULL, so
     )
   }
   
-  if (is.null(new_project)) {
-    stop("You must provide a name for the new project")
+  if (is.null(target_project)) {
+    stop("You must provide a name for the target project")
   }
   
   if (is.null(subset_def)) {
@@ -111,9 +78,7 @@ armadillo.make_views <- function(reference_csv = NULL, source_project = NULL, so
       message("Argument `dry_run` is now defunct")
     }
     
-    if(!is.null(new_project)){
-      message("Argument `new project` has now been depricated: please use `target_project` instead")
-    }
+  
     
   }
   
@@ -141,11 +106,11 @@ armadillo.make_views <- function(reference_csv = NULL, source_project = NULL, so
 #' }
 #'
 #' @export
-armadillo.subset_definition <- function(vars = NULL) { # nolint
+armadillo.subset_definition <- function(reference_csv) { # nolint
   variable <- folder <- . <- subset_vars <- vars_to_subset <- NULL # nolint
-  reference <- .read_view_reference(vars)
+  reference <- .read_view_reference(reference_csv)
   reference <- .rename_reference_columns(reference, "folder", "source_folder")
-  reference <- .rename_reference_columns(reference, "project", "source_project")
+  reference <- .rename_reference_columns(reference, "table", "source_table")
   .check_reference_columns(reference)
   reference <- .format_reference(reference)
   reference <- .set_default_targets(reference)
@@ -158,15 +123,15 @@ armadillo.subset_definition <- function(vars = NULL) { # nolint
 #' @importFrom readr read_csv
 #'
 #' @noRd
-.read_view_reference <- function(vars) {
+.read_view_reference <- function(reference_csv) {
   variable <- subset_vars <- NULL
   
-  if (is.null(vars)) {
+  if (is.null(reference_csv)) {
     stop("You must provide a .csv file with variables and tables to subset")
   }
   
   reference <- suppressWarnings(
-    read_csv(file = vars, show_col_types = FALSE, trim_ws = TRUE)
+    read_csv(file = reference_csv, show_col_types = FALSE, trim_ws = TRUE)
   )
   return(reference)
 }
@@ -228,7 +193,7 @@ armadillo.subset_definition <- function(vars = NULL) { # nolint
 
   reference_out <- reference %>%
   nest(subset_vars = c(variable)) %>%
-  dplyr::select(folder, table, vars_to_subset = subset_vars)
+  dplyr::select(source_folder, source_table, vars_to_subset = subset_vars)
   
 return(reference_out)
 }
@@ -247,7 +212,7 @@ return(reference_out)
 .make_views <- function(source_project, source_folder, source_table, target_project, target_folder, 
                         target_table, target_vars) {
   
-  target_path <- paste0(target_folder, "/", target_name)
+  target_path <- paste0(target_folder, "/", target_table)
   
   body <- .make_json_body(source_project, source_folder, source_table, target_project, target_path, 
                           requested_vars)
@@ -267,11 +232,11 @@ return(reference_out)
 .loop_make_views <- function(reference, source_project, target_project){
   
   reference %>%
-    pmap(function(folder, table, vars_to_subset){
+    pmap(function(source_folder, source_table, target_folder, target_table, vars_to_subset){
       .make_views(
         source_project = source_project, 
-        source_folder = folder,
-        source_table = table,
+        source_folder = source_folder,
+        source_table = source_table,
         target_project = target_project, 
         target_folder = target_folder,
         target_table = target_table,
@@ -318,22 +283,36 @@ if(content(response)$status == 204){
 
 .set_default_targets <- function(reference){
   
-  if("target_folder" %in% colnames(reference)) {
+  if(!"target_folder" %in% colnames(reference)) {
     
-    message("target_folder not specified in .csv file: defaulting to source folder name")
+    message("'target_folder' not specified in .csv file: defaulting to source folder name")
     reference <- reference %>%
       mutate(target_folder = source_folder)
     
   }
   
-  if("target_table" %in% colnames(reference)) {
+  if(!"target_table" %in% colnames(reference)) {
     
-    message("target_table not specified in .csv file: defaulting to source table name")
+    message("'target_table' not specified in .csv file: defaulting to source table name")
     reference <- reference %>%
-      mutate(target_folder = source_table)
+      mutate(target_table = source_table)
     
   }
   
   return(reference)
   
+}
+
+.get_messages <- function(posts, statuses, reference){
+  messages <- posts %>%
+    map_chr(function(x){
+      content(x)[["message"]]
+    })
+  messages <- view_reference %>%
+    mutate(
+      status = unlist(statuses),
+      message = unlist(messages)) %>%
+    dplyr::select(source_folder, source_table, target_folder, target_table, status, message)
+  
+  return(messages)
 }
