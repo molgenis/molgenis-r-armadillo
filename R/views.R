@@ -29,19 +29,28 @@ armadillo.make_views <- function(subset_def = NULL, source_project = NULL, sourc
                                  target_table = NULL, new_project = NULL, dry_run = NULL) {
   .check_args_valid(source_project, target_project, new_project, subset_def, dry_run)
   armadillo.create_project(target_project, overwrite_existing = "no")
-  posts <- .loop_make_views(subset_def, source_project, target_project)
+  posts <- .loop_api_request(subset_def, source_project, target_project)
   statuses <- .get_status(posts)
+  success <- subset_def 
 
-  if (any(!statuses == 201)) {
+  if (any(!statuses == 204)) {
     warning("One or more views were not created correctly, see details below.",
       immediate. = T
     )
     messages <- .get_messages(posts)
     .format_messages(messages, statuses, subset_def)
+  } else {
+    
+    
+    statuses
+    
+    cli_alert_success(c("View ", "'", "test", "/", "001", "/", "project_1", "'", " successfully created"))
+    
+    message("View ", "'", new_project, "/", new_path, "'", " successfully created")
+    
+    
   }
 }
-
-str(messages[[1]])
 
 #' Checks the input arguments are complete
 #'
@@ -109,15 +118,15 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
             this message")
     reference_csv <- vars
   }
-
+browser()
   variable <- folder <- . <- subset_vars <- vars_to_subset <- NULL # nolint
-  reference <- .read_view_reference(reference_csv)
-  reference <- .rename_reference_columns(reference, "folder", "source_folder")
-  reference <- .rename_reference_columns(reference, "table", "source_table")
-  .check_reference_columns(reference)
-  reference <- .format_reference(reference)
-  reference <- .set_default_targets(reference)
-  return(reference)
+  reference_tibble <- .read_view_reference(reference_csv)
+  reference_tibble <- .rename_reference_columns(reference_tibble, "folder", "source_folder")
+  reference_tibble <- .rename_reference_columns(reference_tibble, "table", "source_table")
+  .check_reference_columns(reference_tibble)
+  reference_tibble <- .format_reference(reference_tibble)
+  reference_tibble <- .set_default_targets(reference_tibble)
+  return(reference_tibble)
 }
 
 #' Reads in .csv file containing variables
@@ -163,7 +172,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @noRd
 .check_reference_columns <- function(reference) {
-  if (!all(colnames(reference) %in% c("source_folder", "source_table", "variable"))) {
+  if (!all(c("source_folder", "source_table", "variable") %in% colnames(reference))) {
     stop(".csv file must contain columns entitled 'source_folder', 'source_table' and 'variable'")
   }
 
@@ -191,9 +200,9 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @noRd
 .format_reference <- function(subset_ref) {
+  
   subset_ref <- subset_ref %>%
-    nest(subset_vars = c(variable)) %>%
-    dplyr::select(source_folder, source_table, target_vars = subset_vars)
+    nest(target_vars = c(variable))
 
   return(subset_ref)
 }
@@ -209,34 +218,37 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @importFrom purrr pmap pwalk
 #'
 #' @noRd
-.make_views <- function(source_project, source_folder, source_table, target_project, target_folder,
+.make_api_request <- function(source_project, source_folder, source_table, target_project, target_folder,
                         target_table, target_vars) {
-  body <- .make_json_body(
-    source_project, source_folder, source_table, target_project, target_folder,
-    target_table, target_vars
-  )
+  
   post_url <- .make_post_url(armadillo_url, target_project)
-  req <- .make_request(body, post_url)
+  body_content <- .make_json_body(source_project, source_folder, source_table, target_project,
+                           target_folder, target_table, target_vars)
+  header_content <- .make_headers()
+    
+  req <- request(post_url) |>
+    req_body_json(body_content) |>
+    req_headers(!!!header_content)
 
-  response <- req |>
+    return(req)
+  }
+  
+.put_api_request <- function(request){
+  
+  response <- request |>
     req_error(is_error = \(resp) FALSE) |>
     req_perform()
-
+  
   return(response)
+  
 }
 
-.loop_make_views <- function(subset_ref, source_project, target_project) {
+.loop_api_request <- function(subset_ref, source_project, target_project) {
   subset_ref %>%
     pmap(function(source_folder, source_table, target_folder, target_table, target_vars) {
-      .make_views(
-        source_project = source_project,
-        source_folder = source_folder,
-        source_table = source_table,
-        target_project = target_project,
-        target_folder = target_folder,
-        target_table = target_table,
-        target_vars = unlist(target_vars)
-      )
+      .make_api_request(source_project, source_folder, source_table, target_project, 
+                             target_folder, target_table, unlist(target_vars)) |>
+        .put_api_request()
     })
 }
 
@@ -254,17 +266,14 @@ handle_post_errors <- function() {
 
 .make_json_body <- function(source_project, source_folder, source_table, target_project,
                             target_folder, target_table, target_vars) {
-  json_body <- jsonlite::toJSON(
-    list(
-      sourceObjectName = paste0(source_folder, "/", source_table),
-      sourceProject = source_project,
-      linkedObject = paste0(target_folder, "/", target_table),
-      variables = target_vars
-    ),
-    auto_unbox = TRUE
+  body <- list(
+    sourceObjectName = paste0(source_folder, "/", source_table),
+    sourceProject = source_project,
+    linkedObject = paste0(target_folder, "/", target_table),
+    variables = paste0(target_vars, collapse = ",")
   )
-
-  return(json_body)
+    
+  return(body)
 }
 
 .get_status <- function(posts) {
@@ -310,14 +319,11 @@ handle_post_errors <- function() {
   return(formatted_messages)
 }
 
-.make_request <- function(body, post_url) {
-  req <- request(post_url) |>
-    req_body_raw(body) |>
-    req_headers(
-      "Accept" = "*/*",
-      "Content-Type" = "application/json",
-      "Authorization" = .get_auth_header()
-    )
-
-  return(req)
+.make_headers <- function(){
+  headers <- list(
+    "Accept" = "*/*", 
+    "Content-Type" = "application/json", 
+    "Authorization" = .get_auth_header()
+  )
+  return(headers)
 }
