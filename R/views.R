@@ -30,21 +30,31 @@ armadillo.make_views <- function(subset_def = NULL, source_project = NULL, sourc
   .check_args_valid(source_project, target_project, new_project, subset_def, dry_run)
   armadillo.create_project(target_project, overwrite_existing = "no")
   posts <- .loop_api_request(subset_def, source_project, target_project)
-  statuses <- .get_status(posts)
-  success <- subset_def 
-
-  if (any(!statuses == 204)) {
+  api_post_summary <- .summarise_api_posts(posts, subset_def)
+  
+  browser()
+  
+  if (any(api_post_summary$status != 204)) {
     warning("One or more views were not created correctly, see details below.",
       immediate. = T
     )
-    messages <- .get_messages(posts)
-    .format_messages(messages, statuses, subset_def)
+    failures <- api_post_summary %>% dplyr::filter(status != 204)
+    
+    failures <- failures %>%  mutate(message = .get_messages(post))
+    
+    messages <- .make_failure_message(failures)
+    messages %>% map(cli_alert_danger)
+    
+    successes <- api_post_summary %>% dplyr::filter(status == 204)
+
+    cli_alert_success(c("View ", "'", "test", "/", "001", "/", "project_1", "'", " successfully created"))
+    
   } else {
     
     
     statuses
     
-    cli_alert_success(c("View ", "'", "test", "/", "001", "/", "project_1", "'", " successfully created"))
+    
     
     message("View ", "'", new_project, "/", new_path, "'", " successfully created")
     
@@ -118,7 +128,6 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
             this message")
     reference_csv <- vars
   }
-browser()
   variable <- folder <- . <- subset_vars <- vars_to_subset <- NULL # nolint
   reference_tibble <- .read_view_reference(reference_csv)
   reference_tibble <- .rename_reference_columns(reference_tibble, "folder", "source_folder")
@@ -220,7 +229,6 @@ browser()
 #' @noRd
 .make_api_request <- function(source_project, source_folder, source_table, target_project, target_folder,
                         target_table, target_vars) {
-  
   post_url <- .make_post_url(armadillo_url, target_project)
   body_content <- .make_json_body(source_project, source_folder, source_table, target_project,
                            target_folder, target_table, target_vars)
@@ -326,4 +334,26 @@ handle_post_errors <- function() {
     "Authorization" = .get_auth_header()
   )
   return(headers)
+}
+
+.summarise_api_posts <- function(posts, subset_def){
+  
+  subset_def %>%
+    mutate(
+      post = posts,
+      status = .get_status(posts)) %>%
+  dplyr::select(target_folder, target_table, post, status)
+}
+
+
+.make_failure_message <- function(failures){
+  
+  failure_message <- failures %>%
+    pmap(function(target_folder, target_table, status, message, ...){
+      
+      sprintf("View '%s/%s' failed with status '%s': '%s", target_folder, 
+              target_table, status, message)
+    })
+  return(failure_message)
+  
 }
