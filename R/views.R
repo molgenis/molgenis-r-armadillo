@@ -24,20 +24,19 @@
 #' }
 #'
 #' @export
-armadillo.make_views <- function(reference_csv = NULL, source_project = NULL, source_folder = NULL,
+armadillo.make_views <- function(subset_def = NULL, source_project = NULL, source_folder = NULL,
                                  source_table = NULL, target_project = NULL, target_folder = NULL,
                                  target_table = NULL, new_project = NULL, dry_run = NULL) {
   
-  .check_args_valid(source_project, new_project, reference_csv, dry_run)
-  view_reference <- armadillo.subset_definition(reference_csv)
+  .check_args_valid(source_project, target_project, new_project, subset_def, dry_run)
   armadillo.create_project(target_project, overwrite_existing = "no")
-  posts <- .loop_make_views(view_reference, source_project, target_project)
+  posts <- .loop_make_views(subset_def, source_project, target_project)
   statuses <- .get_status(posts)
   
   if(any(!statuses == 201)){
     warning("One or more views were not created correctly, see details below.", 
             immediate. = T)
-    .get_messages(posts, statuses, view_reference)
+    .get_messages(posts, statuses, subset_def)
   }
   
 }
@@ -66,7 +65,7 @@ armadillo.make_views <- function(reference_csv = NULL, source_project = NULL, so
     stop("You must provide a name for the target project")
   }
   
-  if (is.null(subset_def)) {
+  if (is.null(reference_csv)) {
     stop(
       paste0("You must provide an object created by ",
              "armadillo.subset_definition containing details of the ", 
@@ -106,7 +105,13 @@ armadillo.make_views <- function(reference_csv = NULL, source_project = NULL, so
 #' }
 #'
 #' @export
-armadillo.subset_definition <- function(reference_csv) { # nolint
+armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # nolint
+  if(!is.null(vars)){
+    message("Argument `vars` has been renamed `reference_csv`: please rename argument to silence 
+            this message")
+    reference_csv <- vars
+  }
+  
   variable <- folder <- . <- subset_vars <- vars_to_subset <- NULL # nolint
   reference <- .read_view_reference(reference_csv)
   reference <- .rename_reference_columns(reference, "folder", "source_folder")
@@ -213,19 +218,15 @@ return(reference_out)
                         target_table, target_vars) {
   
   target_path <- paste0(target_folder, "/", target_table)
-  
   body <- .make_json_body(source_project, source_folder, source_table, target_project, target_path, 
-                          requested_vars)
-  
+                          target_vars)
   post_url <- .make_post_url(armadillo_url, target_project)
-  
   response <- POST(
     url = post_url,
-    body = json_body,
+    body = body,
     encode = "json",
     config = c(httr::content_type_json(), httr::add_headers(.get_auth_header()))
-  )
-  
+  )  
   return(response)
 }
 
@@ -272,8 +273,8 @@ if(content(response)$status == 204){
   return(json_body)
 }
 
-.get_status <- function(post){
-  status <- post %>% 
+.get_status <- function(posts){
+  status <- posts %>% 
     map_int(function(x){
       content(x)[["status"]]
     })
@@ -303,12 +304,12 @@ if(content(response)$status == 204){
   
 }
 
-.get_messages <- function(posts, statuses, reference){
+.get_messages <- function(posts, statuses, subset_def){
   messages <- posts %>%
     map_chr(function(x){
       content(x)[["message"]]
     })
-  messages <- view_reference %>%
+  messages <- subset_def %>%
     mutate(
       status = unlist(statuses),
       message = unlist(messages)) %>%
