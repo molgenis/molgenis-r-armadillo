@@ -48,7 +48,7 @@ armadillo.make_views <- function(subset_def = NULL, source_project = NULL, sourc
 #' exist.
 #' @param subset_def R object containing subset definition created by
 #' @noRd
-.check_args_valid <- function(source_project, target_project, new_project, reference_csv, dry_run){
+.check_args_valid <- function(source_project, target_project, new_project, subset_ref, dry_run){
   
   if(!is.null(new_project)){
     target_project <- new_project
@@ -65,7 +65,7 @@ armadillo.make_views <- function(subset_def = NULL, source_project = NULL, sourc
     stop("You must provide a name for the target project")
   }
   
-  if (is.null(reference_csv)) {
+  if (is.null(subset_ref)) {
     stop(
       paste0("You must provide an object created by ",
              "armadillo.subset_definition containing details of the ", 
@@ -194,13 +194,13 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @importFrom purrr map_lgl
 #'
 #' @noRd
-.format_reference <- function(reference){
+.format_reference <- function(subset_ref){
 
-  reference_out <- reference %>%
+  subset_ref <- subset_ref %>%
   nest(subset_vars = c(variable)) %>%
-  dplyr::select(source_folder, source_table, vars_to_subset = subset_vars)
+  dplyr::select(source_folder, source_table, target_vars = subset_vars)
   
-return(reference_out)
+return(subset_ref)
 }
 
 #' Creates a local subset of data based on reference object, and uploads this to
@@ -216,7 +216,6 @@ return(reference_out)
 #' @noRd
 .make_views <- function(source_project, source_folder, source_table, target_project, target_folder, 
                         target_table, target_vars) {
-  
   target_path <- paste0(target_folder, "/", target_table)
   body <- .make_json_body(source_project, source_folder, source_table, target_project, target_path, 
                           target_vars)
@@ -227,13 +226,14 @@ return(reference_out)
     encode = "json",
     config = c(httr::content_type_json(), httr::add_headers(.get_auth_header()))
   )  
+  browser()
   return(response)
 }
 
-.loop_make_views <- function(reference, source_project, target_project){
+.loop_make_views <- function(subset_ref, source_project, target_project){
   
-  reference %>%
-    pmap(function(source_folder, source_table, target_folder, target_table, vars_to_subset){
+  subset_ref %>%
+    pmap(function(source_folder, source_table, target_folder, target_table, target_vars){
       .make_views(
         source_project = source_project, 
         source_folder = source_folder,
@@ -241,7 +241,7 @@ return(reference_out)
         target_project = target_project, 
         target_folder = target_folder,
         target_table = target_table,
-        target_vars = unlist(vars_to_subset)
+        target_vars = unlist(target_vars)
         )
     })
   
@@ -262,14 +262,13 @@ if(content(response)$status == 204){
 
 .make_json_body <- function(source_project, source_folder, source_table, target_project, target_path, 
                             target_vars){  
-  
   json_body <- jsonlite::toJSON(
     list(sourceObjectName = paste0(source_folder, "/", source_table),
          sourceProject = source_project,
          linkedObject = target_path,
-         variables = target_vars, 
-         auto_unbox = TRUE))
-  
+         variables = target_vars), 
+         auto_unbox = TRUE)
+
   return(json_body)
 }
 
@@ -282,25 +281,25 @@ if(content(response)$status == 204){
 }
 
 
-.set_default_targets <- function(reference){
+.set_default_targets <- function(subset_ref){
   
-  if(!"target_folder" %in% colnames(reference)) {
+  if(!"target_folder" %in% colnames(subset_ref)) {
     
     message("'target_folder' not specified in .csv file: defaulting to source folder name")
-    reference <- reference %>%
+    subset_ref <- subset_ref %>%
       mutate(target_folder = source_folder)
     
   }
   
-  if(!"target_table" %in% colnames(reference)) {
+  if(!"target_table" %in% colnames(subset_ref)) {
     
     message("'target_table' not specified in .csv file: defaulting to source table name")
-    reference <- reference %>%
+    subset_ref <- subset_ref %>%
       mutate(target_table = source_table)
     
   }
   
-  return(reference)
+  return(subset_ref)
   
 }
 
