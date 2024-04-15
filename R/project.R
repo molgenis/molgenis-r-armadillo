@@ -24,7 +24,7 @@
 #' @export
 armadillo.create_project <- function(project_name = NULL, users = NULL, overwrite_existing = "choose") { # nolint
   askYesNo <- NULL
-  
+
   if (is.null(users)) {
     users <- list()
   }

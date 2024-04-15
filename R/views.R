@@ -31,14 +31,14 @@ armadillo.make_views <- function(subset_def = NULL, source_project = NULL, sourc
   armadillo.create_project(target_project, overwrite_existing = "no")
   posts <- .loop_make_views(subset_def, source_project, target_project)
   statuses <- .get_status(posts)
-  
-  if(any(!statuses == 201)){
-    warning("One or more views were not created correctly, see details below.", 
-            immediate. = T)
-    messages <- .get_messages(posts) 
+
+  if (any(!statuses == 201)) {
+    warning("One or more views were not created correctly, see details below.",
+      immediate. = T
+    )
+    messages <- .get_messages(posts)
     .format_messages(messages, statuses, subset_def)
   }
-  
 }
 
 str(messages[[1]])
@@ -50,39 +50,35 @@ str(messages[[1]])
 #' exist.
 #' @param subset_def R object containing subset definition created by
 #' @noRd
-.check_args_valid <- function(source_project, target_project, new_project, subset_ref, dry_run){
-  
-  if(!is.null(new_project)){
+.check_args_valid <- function(source_project, target_project, new_project, subset_ref, dry_run) {
+  if (!is.null(new_project)) {
     target_project <- new_project
     message("Argument `new project` has now been depricated: please use `target_project` instead")
   }
-  
+
   if (is.null(source_project)) {
     stop(
       paste0("You must provide the name of the source project from ", "which you will subset")
     )
   }
-  
+
   if (is.null(target_project)) {
     stop("You must provide a name for the target project")
   }
-  
+
   if (is.null(subset_ref)) {
     stop(
-      paste0("You must provide an object created by ",
-             "armadillo.subset_definition containing details of the ", 
-             "variables and tables to include in the subset"
+      paste0(
+        "You must provide an object created by ",
+        "armadillo.subset_definition containing details of the ",
+        "variables and tables to include in the subset"
       )
     )
-    
-    if(!is.null(dry_run)){
+
+    if (!is.null(dry_run)) {
       message("Argument `dry_run` is now defunct")
     }
-    
-  
-    
   }
-  
 }
 
 #' Builds an R object containing info required to make subsets
@@ -108,12 +104,12 @@ str(messages[[1]])
 #'
 #' @export
 armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # nolint
-  if(!is.null(vars)){
-    message("Argument `vars` has been renamed `reference_csv`: please rename argument to silence 
+  if (!is.null(vars)) {
+    message("Argument `vars` has been renamed `reference_csv`: please rename argument to silence
             this message")
     reference_csv <- vars
   }
-  
+
   variable <- folder <- . <- subset_vars <- vars_to_subset <- NULL # nolint
   reference <- .read_view_reference(reference_csv)
   reference <- .rename_reference_columns(reference, "folder", "source_folder")
@@ -124,19 +120,19 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
   return(reference)
 }
 
-#' Reads in .csv file containing variables 
-#' 
+#' Reads in .csv file containing variables
+#'
 #' @param vars .csv file containing vars to subset.
 #' @importFrom readr read_csv
 #'
 #' @noRd
 .read_view_reference <- function(reference_csv) {
   variable <- subset_vars <- NULL
-  
+
   if (is.null(reference_csv)) {
     stop("You must provide a .csv file with variables and tables to subset")
   }
-  
+
   reference <- suppressWarnings(
     read_csv(file = reference_csv, show_col_types = FALSE, trim_ws = TRUE)
   )
@@ -144,23 +140,22 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 }
 
 
-.rename_reference_columns <- function(reference, old_name, new_name){
-  
+.rename_reference_columns <- function(reference, old_name, new_name) {
   colname_message <- "Renaming .csv column name `%s` to `%s`: please update your .csv file to silence this message."
-  
+
   if (any(colnames(reference) %in% old_name)) {
     message(sprintf(colname_message, old_name, new_name))
     colnames(reference) <- str_replace(colnames(reference), old_name, new_name)
   }
-  
+
   return(reference)
 }
 
 #' Checks imported file for correct column names
 #'
-#' The imported file must contain three columns with the headers 'folder', 'table' & 'variables'. 
-#' 'Folder' must refer to a folder in the armadillo project which contains the master file with the 
-#' data from which to create a view. 'Table' must refer to a table within that folder. 
+#' The imported file must contain three columns with the headers 'folder', 'table' & 'variables'.
+#' 'Folder' must refer to a folder in the armadillo project which contains the master file with the
+#' data from which to create a view. 'Table' must refer to a table within that folder.
 #' 'variables' must refer to variables within that that table.
 #'
 #' @param vars .csv file containing vars to subset.
@@ -168,24 +163,23 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @noRd
 .check_reference_columns <- function(reference) {
-  
-  if(!all(colnames(reference) %in% c("source_folder", "source_table", "variable"))){
+  if (!all(colnames(reference) %in% c("source_folder", "source_table", "variable"))) {
     stop(".csv file must contain columns entitled 'source_folder', 'source_table' and 'variable'")
   }
-  
+
   allowed_cols <- c("source_folder", "source_table", "variable", "target_folder", "target_table")
-  
-  if (any(colnames(reference) %in% allowed_cols == FALSE))  {
+
+  if (any(colnames(reference) %in% allowed_cols == FALSE)) {
     incorrect_name <- colnames(reference)[!colnames(reference) %in% allowed_cols]
     stop(paste0(
       ".csv column name ", "'", incorrect_name, "'", " is not permitted: allowed names are ", "'",
-      paste0(allowed_cols, collapse = ", "), "'"))
-  }  
-    
-  if(any(reference %>% unlist %>% is.na)){
+      paste0(allowed_cols, collapse = ", "), "'"
+    ))
+  }
+
+  if (any(reference %>% unlist() %>% is.na())) {
     stop("The input .csv file contains empty cells: please check and try again")
   }
-  
 }
 
 #' Formats the reference file that has been imported
@@ -196,13 +190,12 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @importFrom purrr map_lgl
 #'
 #' @noRd
-.format_reference <- function(subset_ref){
-
+.format_reference <- function(subset_ref) {
   subset_ref <- subset_ref %>%
-  nest(subset_vars = c(variable)) %>%
-  dplyr::select(source_folder, source_table, target_vars = subset_vars)
-  
-return(subset_ref)
+    nest(subset_vars = c(variable)) %>%
+    dplyr::select(source_folder, source_table, target_vars = subset_vars)
+
+  return(subset_ref)
 }
 
 #' Creates a local subset of data based on reference object, and uploads this to
@@ -216,119 +209,115 @@ return(subset_ref)
 #' @importFrom purrr pmap pwalk
 #'
 #' @noRd
-.make_views <- function(source_project, source_folder, source_table, target_project, target_folder, 
+.make_views <- function(source_project, source_folder, source_table, target_project, target_folder,
                         target_table, target_vars) {
-  body <- .make_json_body(source_project, source_folder, source_table, target_project, target_folder,
-                          target_table, target_vars)
+  body <- .make_json_body(
+    source_project, source_folder, source_table, target_project, target_folder,
+    target_table, target_vars
+  )
   post_url <- .make_post_url(armadillo_url, target_project)
   req <- .make_request(body, post_url)
-  
-  response <- req |> 
+
+  response <- req |>
     req_error(is_error = \(resp) FALSE) |>
     req_perform()
-  
+
   return(response)
 }
 
-.loop_make_views <- function(subset_ref, source_project, target_project){
-  
+.loop_make_views <- function(subset_ref, source_project, target_project) {
   subset_ref %>%
-    pmap(function(source_folder, source_table, target_folder, target_table, target_vars){
+    pmap(function(source_folder, source_table, target_folder, target_table, target_vars) {
       .make_views(
-        source_project = source_project, 
+        source_project = source_project,
         source_folder = source_folder,
         source_table = source_table,
-        target_project = target_project, 
+        target_project = target_project,
         target_folder = target_folder,
         target_table = target_table,
         target_vars = unlist(target_vars)
-        )
+      )
     })
-  
-}
-  
-handle_post_errors <- function(){
-if(content(response)$status == 204){
-  message("View ", "'", new_project, "/", new_path, "'", " successfully created")
-} else {
-  stop(content(response)$message)
 }
 
-.make_post_url <- function(armadillo_url, target_project){
-  return(sprintf("%sstorage/projects/%s/objects/link", armadillo_url, target_project))
+handle_post_errors <- function() {
+  if (content(response)$status == 204) {
+    message("View ", "'", new_project, "/", new_path, "'", " successfully created")
+  } else {
+    stop(content(response)$message)
+  }
+
+  .make_post_url <- function(armadillo_url, target_project) {
+    return(sprintf("%sstorage/projects/%s/objects/link", armadillo_url, target_project))
+  }
 }
 
-}
-
-.make_json_body <- function(source_project, source_folder, source_table, target_project, 
-                            target_folder, target_table, target_vars){ 
-  
+.make_json_body <- function(source_project, source_folder, source_table, target_project,
+                            target_folder, target_table, target_vars) {
   json_body <- jsonlite::toJSON(
-    list(sourceObjectName = paste0(source_folder, "/", source_table),
-         sourceProject = source_project,
-         linkedObject = paste0(target_folder, "/", target_table),
-         variables = target_vars), 
-         auto_unbox = TRUE)
+    list(
+      sourceObjectName = paste0(source_folder, "/", source_table),
+      sourceProject = source_project,
+      linkedObject = paste0(target_folder, "/", target_table),
+      variables = target_vars
+    ),
+    auto_unbox = TRUE
+  )
 
   return(json_body)
 }
 
-.get_status <- function(posts){
-  status <- posts %>% 
-    map_int(function(x){
+.get_status <- function(posts) {
+  status <- posts %>%
+    map_int(function(x) {
       resp_status(x)
     })
   return(status)
 }
 
 
-.set_default_targets <- function(subset_ref){
-  
-  if(!"target_folder" %in% colnames(subset_ref)) {
-    
+.set_default_targets <- function(subset_ref) {
+  if (!"target_folder" %in% colnames(subset_ref)) {
     message("'target_folder' not specified in .csv file: defaulting to source folder name")
     subset_ref <- subset_ref %>%
       mutate(target_folder = source_folder)
-    
   }
-  
-  if(!"target_table" %in% colnames(subset_ref)) {
-    
+
+  if (!"target_table" %in% colnames(subset_ref)) {
     message("'target_table' not specified in .csv file: defaulting to source table name")
     subset_ref <- subset_ref %>%
       mutate(target_table = source_table)
-    
   }
-  
+
   return(subset_ref)
-  
 }
 
-.get_messages <- function(posts){
+.get_messages <- function(posts) {
   messages <- posts %>%
-    map(function(x){
+    map(function(x) {
       resp_body_json(x)$message
     })
   return(messages)
 }
 
-.format_messages <- function(messages, statuses, subset_def){
-  
+.format_messages <- function(messages, statuses, subset_def) {
   formatted_messages <- subset_def %>%
     mutate(
       status = unlist(statuses),
-      message = unlist(messages)) %>%
+      message = unlist(messages)
+    ) %>%
     dplyr::select(source_folder, source_table, target_folder, target_table, status, message)
   return(formatted_messages)
 }
-  
-.make_request <- function(body, post_url){
+
+.make_request <- function(body, post_url) {
   req <- request(post_url) |>
     req_body_raw(body) |>
     req_headers(
       "Accept" = "*/*",
       "Content-Type" = "application/json",
-      "Authorization" = .get_auth_header())
-  
+      "Authorization" = .get_auth_header()
+    )
+
   return(req)
 }
