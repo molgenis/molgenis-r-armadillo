@@ -27,7 +27,6 @@
 armadillo.make_views <- function(subset_def = NULL, source_project = NULL, source_folder = NULL,
                                  source_table = NULL, target_project = NULL, target_folder = NULL,
                                  target_table = NULL, new_project = NULL, dry_run = NULL) {
-  
   .check_args_valid(source_project, target_project, new_project, subset_def, dry_run)
   armadillo.create_project(target_project, overwrite_existing = "no")
   posts <- .loop_make_views(subset_def, source_project, target_project)
@@ -36,10 +35,13 @@ armadillo.make_views <- function(subset_def = NULL, source_project = NULL, sourc
   if(any(!statuses == 201)){
     warning("One or more views were not created correctly, see details below.", 
             immediate. = T)
-    .get_messages(posts, statuses, subset_def)
+    messages <- .get_messages(posts) 
+    .format_messages(messages, statuses, subset_def)
   }
   
 }
+
+str(messages[[1]])
 
 #' Checks the input arguments are complete
 #'
@@ -216,17 +218,15 @@ return(subset_ref)
 #' @noRd
 .make_views <- function(source_project, source_folder, source_table, target_project, target_folder, 
                         target_table, target_vars) {
-  target_path <- paste0(target_folder, "/", target_table)
-  body <- .make_json_body(source_project, source_folder, source_table, target_project, target_path, 
-                          target_vars)
+  body <- .make_json_body(source_project, source_folder, source_table, target_project, target_folder,
+                          target_table, target_vars)
   post_url <- .make_post_url(armadillo_url, target_project)
-  response <- POST(
-    url = post_url,
-    body = body,
-    encode = "json",
-    config = c(httr::content_type_json(), httr::add_headers(.get_auth_header()))
-  )  
-  browser()
+  req <- .make_request(body, post_url)
+  
+  response <- req |> 
+    req_error(is_error = \(resp) FALSE) |>
+    req_perform()
+  
   return(response)
 }
 
@@ -260,12 +260,13 @@ if(content(response)$status == 204){
 
 }
 
-.make_json_body <- function(source_project, source_folder, source_table, target_project, target_path, 
-                            target_vars){  
+.make_json_body <- function(source_project, source_folder, source_table, target_project, 
+                            target_folder, target_table, target_vars){ 
+  
   json_body <- jsonlite::toJSON(
     list(sourceObjectName = paste0(source_folder, "/", source_table),
          sourceProject = source_project,
-         linkedObject = target_path,
+         linkedObject = paste0(target_folder, "/", target_table),
          variables = target_vars), 
          auto_unbox = TRUE)
 
@@ -275,7 +276,7 @@ if(content(response)$status == 204){
 .get_status <- function(posts){
   status <- posts %>% 
     map_int(function(x){
-      content(x)[["status"]]
+      resp_status(x)
     })
   return(status)
 }
@@ -303,16 +304,31 @@ if(content(response)$status == 204){
   
 }
 
-.get_messages <- function(posts, statuses, subset_def){
+.get_messages <- function(posts){
   messages <- posts %>%
-    map_chr(function(x){
-      content(x)[["message"]]
+    map(function(x){
+      resp_body_json(x)$message
     })
-  messages <- subset_def %>%
+  return(messages)
+}
+
+.format_messages <- function(messages, statuses, subset_def){
+  
+  formatted_messages <- subset_def %>%
     mutate(
       status = unlist(statuses),
       message = unlist(messages)) %>%
     dplyr::select(source_folder, source_table, target_folder, target_table, status, message)
+  return(formatted_messages)
+}
   
-  return(messages)
+.make_request <- function(body, post_url){
+  req <- request(post_url) |>
+    req_body_raw(body) |>
+    req_headers(
+      "Accept" = "*/*",
+      "Content-Type" = "application/json",
+      "Authorization" = .get_auth_header())
+  
+  return(req)
 }
