@@ -16,6 +16,7 @@
 #' @param target_variables variables from `source_table` to include in the view
 #' @param new_project Defunct: project to upload subset to. Replaced by `target_project`
 #' @param dry_run Defunct: previously enabgled dry-run to check which variables are missing
+#' @importFrom cli cli_alert_success
 #'
 #' @return missing variables provided in the subset definition
 #'
@@ -170,7 +171,6 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' Checks imported file for correct column names
 #'
 #' @param reference Reference dataframe
-#' @importFrom dplyr all colnames filter
 #' @importFrom purrr map_lgl
 #' @noRd
 .check_reference_columns <- function(reference) {
@@ -200,6 +200,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @importFrom tidyr nest
 #' @noRd
 .format_reference <- function(subset_ref) {
+  variable <- NULL
   subset_ref <- subset_ref %>%
     nest(target_vars = c(variable))
 
@@ -211,14 +212,15 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @param source_project Project from which to subset data
 #' @param source_folder Folder from which to subset data
 #' @param source_table Table from which to subset data
-#' @param target_project Project to upload subset to. Will be created if it doesn't exist
+#' @param target_project Project to upload subset to.
 #' @param target_folder Folder to upload subset to. Will be created if it doesn't exist
 #' @param target_table Table to upload subset to.
 #' @param target_vars  Variables from `source_table` to include in the view
+#' @importFrom httr2 request req_body_json req_headers
 #' @noRd
 .make_api_request <- function(source_project, source_folder, source_table, target_project, target_folder,
                               target_table, target_vars) {
-  post_url <- .make_post_url(armadillo_url, target_project)
+  post_url <- .make_post_url(target_project)
   body_content <- .make_json_body(
     source_project, source_folder, source_table, target_project,
     target_folder, target_table, target_vars
@@ -264,6 +266,13 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
     })
 }
 
+#' Creates the URL for the API request
+#' @param target_project Project to upload subset to.
+#' @noRd
+.make_post_url <- function(target_project){
+  return(sprintf("%sstorage/projects/%s/objects/link", .get_url(), target_project))
+}
+
 #' Creates JSON body for the API request
 #'
 #' @param source_project Project from which to subset data
@@ -289,7 +298,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' Gets the status of API responses
 #'
 #' @importFrom purrr map_int
-#' @importFrom httr resp_status
+#' @importFrom httr2 resp_status
 #' @noRd
 .get_status <- function(posts) {
   status <- posts %>%
@@ -306,6 +315,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @importFrom dplyr mutate %>%
 #' @noRd
 .set_default_targets <- function(subset_ref) {
+  source_folder <- source_table <- NULL
   if (!"target_folder" %in% colnames(subset_ref)) {
     message("'target_folder' not specified in .csv file: defaulting to source folder name")
     subset_ref <- subset_ref %>%
@@ -349,6 +359,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 }
 
 .format_api_posts <- function(posts, subset_def) {
+  target_folder <- target_table <- post <- status <- NULL
   subset_def %>%
     mutate(
       post = posts,
@@ -382,6 +393,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @importFrom dplyr filter
 #' @noRd
 .split_success_failure <- function(api_post_summary) {
+  success <- failure <- status <- NULL
   out <- list(
     success = api_post_summary %>% dplyr::filter(status == 204),
     failure = api_post_summary %>% dplyr::filter(status != 204)
@@ -413,8 +425,10 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @importFrom purrr walk
 #' @importFrom dplyr %>%
+#' @importFrom cli cli_alert_danger
 #' @noRd
 .handle_failure_messages <- function(failure_summary) {
+  . <- NULL
   failures <- failure_summary %>%
     mutate(message = .get_failure_messages(.$post))
   failures_neat <- .format_failure_message(failures)
@@ -426,6 +440,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @param successes Success messages
 #'
 #' @importFrom purrr walk
+#' @importFrom cli cli_alert_success
 #' @noRd
 .handle_success_messages <- function(successes) {
   success_neat <- .format_success_message(successes)
