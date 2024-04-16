@@ -5,15 +5,19 @@
 #'  \item Checking what data is available to create subsets
 #'  \item Make the subset
 #' }
+#' @param input_source Character specifying how information about the target view is provided: choose
+#' 'subset_def' if providing a subset definition object, or 'arguments' if providing information directly.
 #' @param subset_def R object containing subset definition created by
-#' \code{armadillo.subset_definition()}
+#' \code{armadillo.subset_definition()}. Compulsory if input_source = 'subset_def'
 #' @param source_project project from which to subset data
-#' @param source_folder folder from which to subset data
-#' @param source_table table from which to subset data
-#' @param target_project project to upload subset to. Will be created if it doesn't exist
-#' @param target_folder folder to upload subset to. Will be created if it doesn't exist
-#' @param target_table table to upload subset to.
-#' @param target_variables variables from `source_table` to include in the view
+#' @param source_folder folder from which to subset data. Compulsory if input_source = 'arguments'.
+#' @param source_table table from which to subset data. Compulsory if input_source = 'arguments'.
+#' @param target_project project to upload subset to. Will be created if it doesn't exist.
+#' @param target_folder folder to upload subset to. Will be created if it doesn't exist. 
+#' Compulsory if input_source = 'arguments'.
+#' @param target_table table to upload subset to. Compulsory if input_source = 'arguments'.
+#' @param target_variables variables from `source_table` to include in the view. 
+#' Compulsory if input_source = 'arguments'.
 #' @param new_project Defunct: project to upload subset to. Replaced by `target_project`
 #' @param dry_run Defunct: previously enabgled dry-run to check which variables are missing
 #' @importFrom cli cli_alert_success
@@ -30,11 +34,24 @@
 #' }
 #'
 #' @export
-armadillo.make_views <- function(subset_def = NULL, source_project = NULL, source_folder = NULL,
+armadillo.make_views <- function(input_source = NULL, subset_def = NULL, source_project = NULL, source_folder = NULL,
                                  source_table = NULL, target_project = NULL, target_folder = NULL,
-                                 target_table = NULL, target_variables = NULL, new_project = NULL,
+                                 target_table = NULL, target_vars = NULL, new_project = NULL,
                                  dry_run = NULL) {
-  .check_args_valid(source_project, target_project, new_project, subset_def, dry_run)
+  .check_args_valid(input_source, subset_def, source_project, source_folder, source_table,
+                    target_project, target_folder, target_table, target_vars, new_project, 
+                    dry_run)
+  
+  if(input_source == "arguments"){
+   
+    subset_def <- tibble(
+      target_vars = list(tibble(target_vars)),
+      source_folder = source_folder,
+      source_table = source_table,
+      target_folder = target_folder,
+      target_table = target_table)
+  }
+  
   armadillo.create_project(target_project, overwrite_existing = "no")
   posts <- .loop_api_request(subset_def, source_project, target_project)
   api_post_summary <- .format_api_posts(posts, subset_def)
@@ -67,7 +84,9 @@ armadillo.make_views <- function(subset_def = NULL, source_project = NULL, sourc
 #' @param dry_run If TRUE, performs a dry-run to check which variables are missing
 #'
 #' @noRd
-.check_args_valid <- function(source_project, target_project, new_project, subset_ref, dry_run) {
+.check_args_valid <- function(input_source, subset_def, source_project, source_folder, source_table,
+                              target_project, target_folder, target_table, target_variables, new_project, 
+                              dry_run) {
   if (!is.null(new_project)) {
     target_project <- new_project
     message("Argument `new project` has now been depricated: please use `target_project` instead")
@@ -83,20 +102,20 @@ armadillo.make_views <- function(subset_def = NULL, source_project = NULL, sourc
     stop("You must provide a name for the target project")
   }
 
-  if (is.null(subset_ref)) {
+  if (input_source == "subset_def" & is.null(subset_def)) {
     stop(
-      paste0(
-        "You must provide an object created by ",
-        "armadillo.subset_definition containing details of the ",
-        "variables and tables to include in the subset"
+      "You have specified `input_source = subset_ref` but you have not provided an object created by armadillo.subset_definition containing details of the variables and tables to include in the subset"
       )
-    )
-
+  }
+  
+  if(input_source == "arguments" & is.null(source_folder) & (is.null(source_table) | is.null(target_folder) | is.null(target_table) | is.null(target_variables))){
+    stop("You must provide source_folder, source_table, target_folder, target_table and target_variables if input_source = 'arguments'")
+  }
+  
     if (!is.null(dry_run)) {
       message("Argument `dry_run` is now defunct")
     }
   }
-}
 
 #' Builds an R object containing info required to make subsets
 #'
