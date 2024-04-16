@@ -5,12 +5,17 @@
 #'  \item Checking what data is available to create subsets
 #'  \item Make the subset
 #' }
-#' @param source_project project from which to subset data
-#' @param new_project project to upload subset to. Will be created if it doesn't
-#' exist.
 #' @param subset_def R object containing subset definition created by
 #' \code{armadillo.subset_definition()}
-#' @param dry_run you can dry-run the function to which variables are missing
+#' @param source_project project from which to subset data
+#' @param source_folder folder from which to subset data
+#' @param source_table table from which to subset data
+#' @param target_project project to upload subset to. Will be created if it doesn't exist
+#' @param target_folder folder to upload subset to. Will be created if it doesn't exist
+#' @param target_table table to upload subset to.
+#' @param target_variables variables from `source_table` to include in the view
+#' @param new_project Defunct: project to upload subset to. Replaced by `target_project`
+#' @param dry_run Defunct: previously enabgled dry-run to check which variables are missing
 #'
 #' @return missing variables provided in the subset definition
 #'
@@ -26,41 +31,40 @@
 #' @export
 armadillo.make_views <- function(subset_def = NULL, source_project = NULL, source_folder = NULL,
                                  source_table = NULL, target_project = NULL, target_folder = NULL,
-                                 target_table = NULL, new_project = NULL, dry_run = NULL) {
+                                 target_table = NULL, target_variables = NULL, new_project = NULL,
+                                 dry_run = NULL) {
   .check_args_valid(source_project, target_project, new_project, subset_def, dry_run)
   armadillo.create_project(target_project, overwrite_existing = "no")
   posts <- .loop_api_request(subset_def, source_project, target_project)
   api_post_summary <- .format_api_posts(posts, subset_def)
   api_post_summary_split <- .split_success_failure(api_post_summary)
 
-  if(nrow(api_post_summary_split$success) == 0){
-    
+  if (nrow(api_post_summary_split$success) == 0) {
     warning("All views failed, see details below.",
-            immediate. = T, call. = F)
-    
-    .handle_failure_messages(api_post_summary_split$failure)
+      immediate. = T, call. = F
+    )
 
+    .handle_failure_messages(api_post_summary_split$failure)
   } else if (nrow(api_post_summary_split$failure) > 0 & nrow(api_post_summary_split$success) > 0) {
     warning("One or more views were not created correctly, see details below.",
-      immediate. = T, call. = F)
-    
+      immediate. = T, call. = F
+    )
+
     .handle_failure_messages(api_post_summary_split$failure)
     .handle_success_messages(api_post_summary_split$success)
-    
-    } else if (nrow(api_post_summary_split$failure) == 0) {
+  } else if (nrow(api_post_summary_split$failure) == 0) {
     message(cli_alert_success("All views were successfully created!"))
     .handle_success_messages(api_post_summary_split$success)
   }
-  
 }
 
-
-#' Checks the input arguments are complete
+#' Checks if the input arguments are complete
 #'
-#' @param source_project project from which to subset data
-#' @param new_project project to upload subset to. Will be created if it doesn't
-#' exist.
-#' @param subset_def R object containing subset definition created by
+#' @param source_project Project from which to subset data
+#' @param new_project Project to upload subset to. Will be created if it doesn't exist
+#' @param subset_def R object containing subset definition created by \code{armadillo.subset_definition()}
+#' @param dry_run If TRUE, performs a dry-run to check which variables are missing
+#'
 #' @noRd
 .check_args_valid <- function(source_project, target_project, new_project, subset_ref, dry_run) {
   if (!is.null(new_project)) {
@@ -95,25 +99,20 @@ armadillo.make_views <- function(subset_def = NULL, source_project = NULL, sourc
 
 #' Builds an R object containing info required to make subsets
 #'
-#' This file must contain three columns with the headers 'folder', 'table' and
-#' 'variables'. 'Folder' must refer to a folder in the armadillo project to be
-#' subsetted. 'Table' must refer to a table within that folder. 'variables' must
-#' refer to variables within that table.
+#' @param reference_csv \code{.csv} file containing vars to subset
 #'
-#' @param vars \code{.csv} file containing vars to subset.
-#'
-#' @importFrom tidyr nest
-#'
-#' @return a dataframe containing variables that is used for input in the
+#' @return A dataframe containing variables that is used for input in the
 #' \code{armadillo.subset()} method
 #'
 #' @examples
 #' \dontrun{
 #' armadillo.subset_definition(
-#'   vars = "C:/tmp/vars.csv"
+#'   reference_csv = "C:/tmp/vars.csv"
 #' )
 #' }
 #'
+#' @importFrom readr read_csv
+#' @importFrom tidyr nest
 #' @export
 armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # nolint
   if (!is.null(vars)) {
@@ -133,10 +132,10 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 
 #' Reads in .csv file containing variables
 #'
-#' @param vars .csv file containing vars to subset.
-#' @importFrom readr read_csv
+#' @param reference_csv .csv file containing vars to subset
 #'
 #' @noRd
+#' @importFrom readr read_csv
 .read_view_reference <- function(reference_csv) {
   variable <- subset_vars <- NULL
 
@@ -150,7 +149,13 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
   return(reference)
 }
 
-
+#' Renames columns in the reference dataframe
+#'
+#' @param reference Reference dataframe
+#' @param old_name Old column name to be renamed
+#' @param new_name New column name
+#' @importFrom stringr str_replace
+#' @noRd
 .rename_reference_columns <- function(reference, old_name, new_name) {
   colname_message <- "Renaming .csv column name `%s` to `%s`: please update your .csv file to silence this message."
 
@@ -164,14 +169,9 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 
 #' Checks imported file for correct column names
 #'
-#' The imported file must contain three columns with the headers 'folder', 'table' & 'variables'.
-#' 'Folder' must refer to a folder in the armadillo project which contains the master file with the
-#' data from which to create a view. 'Table' must refer to a table within that folder.
-#' 'variables' must refer to variables within that that table.
-#'
-#' @param vars .csv file containing vars to subset.
-#' @importFrom readr read_csv
-#'
+#' @param reference Reference dataframe
+#' @importFrom dplyr all colnames filter
+#' @importFrom purrr map_lgl
 #' @noRd
 .check_reference_columns <- function(reference) {
   if (!all(c("source_folder", "source_table", "variable") %in% colnames(reference))) {
@@ -195,76 +195,85 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 
 #' Formats the reference file that has been imported
 #'
-#' @param vars .csv file containing vars to subset.
-#' @importFrom dplyr %>% filter select
+#' @param subset_ref Subset reference dataframe
+#' @importFrom dplyr mutate
 #' @importFrom tidyr nest
-#' @importFrom purrr map_lgl
-#'
 #' @noRd
 .format_reference <- function(subset_ref) {
-  
   subset_ref <- subset_ref %>%
     nest(target_vars = c(variable))
 
   return(subset_ref)
 }
 
-#' Creates a local subset of data based on reference object, and uploads this to
-#' server
+#' Builds the API request object and puts request to the server
 #'
-#' @param source_project project from which to subset data
-#' @param tables R object containing armadillo tables created by
-#' \code{.get_tables()}
-#'
-#' @importFrom dplyr %>% select any_of
-#' @importFrom purrr pmap pwalk
-#'
+#' @param source_project Project from which to subset data
+#' @param source_folder Folder from which to subset data
+#' @param source_table Table from which to subset data
+#' @param target_project Project to upload subset to. Will be created if it doesn't exist
+#' @param target_folder Folder to upload subset to. Will be created if it doesn't exist
+#' @param target_table Table to upload subset to.
+#' @param target_vars  Variables from `source_table` to include in the view
 #' @noRd
 .make_api_request <- function(source_project, source_folder, source_table, target_project, target_folder,
-                        target_table, target_vars) {
+                              target_table, target_vars) {
   post_url <- .make_post_url(armadillo_url, target_project)
-  body_content <- .make_json_body(source_project, source_folder, source_table, target_project,
-                           target_folder, target_table, target_vars)
+  body_content <- .make_json_body(
+    source_project, source_folder, source_table, target_project,
+    target_folder, target_table, target_vars
+  )
   header_content <- .make_headers()
-    
+
   req <- request(post_url) |>
     req_body_json(body_content) |>
     req_headers(!!!header_content)
+  return(req)
+}
 
-    return(req)
-  }
-  
-.put_api_request <- function(request){
-  
+#' Sends a PUT request to the API
+#'
+#' @param request Request object
+#'
+#' @importFrom httr2 req_perform req_error
+#' @noRd
+.put_api_request <- function(request) {
   response <- request |>
     req_error(is_error = \(resp) FALSE) |>
     req_perform()
-  
+
   return(response)
-  
 }
 
+#' Loops through API requests for each subset
+#'
+#' @param subset_ref Subset reference dataframe
+#' @param source_project Project from which to subset data
+#' @param target_project Project to upload subset to
+#'
+#' @importFrom purrr pmap
+#' @noRd
 .loop_api_request <- function(subset_ref, source_project, target_project) {
   subset_ref %>%
     pmap(function(source_folder, source_table, target_folder, target_table, target_vars) {
-      .make_api_request(source_project, source_folder, source_table, target_project, 
-                             target_folder, target_table, unlist(target_vars)) |>
+      .make_api_request(
+        source_project, source_folder, source_table, target_project,
+        target_folder, target_table, unlist(target_vars)
+      ) |>
         .put_api_request()
     })
 }
 
-handle_post_errors <- function() {
-  if (content(response)$status == 204) {
-    message("View ", "'", new_project, "/", new_path, "'", " successfully created")
-  } else {
-    stop(content(response)$message)
-  }
-
-  .make_post_url <- function(armadillo_url, target_project) {
-    return(sprintf("%sstorage/projects/%s/objects/link", armadillo_url, target_project))
-  }
-}
-
+#' Creates JSON body for the API request
+#'
+#' @param source_project Project from which to subset data
+#' @param source_folder Folder from which to subset data
+#' @param source_table Table from which to subset data
+#' @param target_project Project to upload subset to. Will be created if it doesn't exist
+#' @param target_folder Folder to upload subset to. Will be created if it doesn't exist
+#' @param target_table Table to upload subset to.
+#' @param target_vars  Variables from `source_table` to include in the view
+#' @noRd
 .make_json_body <- function(source_project, source_folder, source_table, target_project,
                             target_folder, target_table, target_vars) {
   body <- list(
@@ -273,10 +282,15 @@ handle_post_errors <- function() {
     linkedObject = paste0(target_folder, "/", target_table),
     variables = paste0(target_vars, collapse = ",")
   )
-    
+
   return(body)
 }
 
+#' Gets the status of API responses
+#'
+#' @importFrom purrr map_int
+#' @importFrom httr resp_status
+#' @noRd
 .get_status <- function(posts) {
   status <- posts %>%
     map_int(function(x) {
@@ -285,7 +299,12 @@ handle_post_errors <- function() {
   return(status)
 }
 
-
+#' Sets default targets if not specified in the subset reference
+#'
+#' @param subset_ref Subset reference dataframe
+#'
+#' @importFrom dplyr mutate %>%
+#' @noRd
 .set_default_targets <- function(subset_ref) {
   if (!"target_folder" %in% colnames(subset_ref)) {
     message("'target_folder' not specified in .csv file: defaulting to source folder name")
@@ -302,6 +321,13 @@ handle_post_errors <- function() {
   return(subset_ref)
 }
 
+#' Gets failure messages from API response
+#'
+#' @param posts API response posts
+#'
+#' @importFrom purrr map
+#' @importFrom httr2 resp_body_json
+#' @noRd
 .get_failure_messages <- function(posts) {
   messages <- posts %>%
     map(function(x) {
@@ -310,79 +336,98 @@ handle_post_errors <- function() {
   return(messages)
 }
 
-.format_messages <- function(messages, statuses, subset_def) {
-  formatted_messages <- subset_def %>%
-    mutate(
-      status = unlist(statuses),
-      message = unlist(messages)
-    ) %>%
-    dplyr::select(source_folder, source_table, target_folder, target_table, status, message)
-  return(formatted_messages)
-}
-
-.make_headers <- function(){
+#' Makes headers for API requests
+#'
+#' @noRd
+.make_headers <- function() {
   headers <- list(
-    "Accept" = "*/*", 
-    "Content-Type" = "application/json", 
+    "Accept" = "*/*",
+    "Content-Type" = "application/json",
     "Authorization" = .get_auth_header()
   )
   return(headers)
 }
 
-.format_api_posts <- function(posts, subset_def){
-  
+.format_api_posts <- function(posts, subset_def) {
   subset_def %>%
     mutate(
       post = posts,
-      status = .get_status(posts)) %>%
-  dplyr::select(target_folder, target_table, post, status)
+      status = .get_status(posts)
+    ) %>%
+    dplyr::select(target_folder, target_table, post, status)
 }
 
-
-.format_failure_message <- function(failures){
-  
+#' Formats failure messages for display
+#'
+#' @param failures Failure messages
+#'
+#' @importFrom purrr pmap
+#' @importFrom dplyr %>%
+#' @noRd
+.format_failure_message <- function(failures) {
   failure_message <- failures %>%
-    pmap(function(target_folder, target_table, status, message, ...){
-      
-      sprintf("View '%s/%s' failed with status '%s': '%s", target_folder, 
-              target_table, status, message)
+    pmap(function(target_folder, target_table, status, message, ...) {
+      sprintf(
+        "View '%s/%s' failed with status '%s': '%s", target_folder,
+        target_table, status, message
+      )
     })
   return(failure_message)
-  
 }
 
-.split_success_failure <- function(api_post_summary){
-  
+#' Splits API response summary into success and failure messages
+#'
+#' @param api_post_summary API response summary
+#'
+#' @importFrom dplyr filter
+#' @noRd
+.split_success_failure <- function(api_post_summary) {
   out <- list(
     success = api_post_summary %>% dplyr::filter(status == 204),
-    failure = api_post_summary %>% dplyr::filter(status != 204))
-    
+    failure = api_post_summary %>% dplyr::filter(status != 204)
+  )
+
   return(out)
 }
 
-.format_success_message <- function(success){
-  
+#' Formats success messages for display
+#'
+#' @param success Success messages
+#'
+#' @noRd
+#' @importFrom purrr pmap
+.format_success_message <- function(success) {
   success_message <- success %>%
-    pmap(function(target_folder, target_table, status, ...){
-      
-      sprintf("View '%s/%s' successfully created", target_folder, 
-              target_table)
+    pmap(function(target_folder, target_table, status, ...) {
+      sprintf(
+        "View '%s/%s' successfully created", target_folder,
+        target_table
+      )
     })
   return(success_message)
 }
 
-.handle_failure_messages <- function(failure_summary){
-  
-  failures <- failure_summary %>%  
+#' Prints neat failure messages
+#'
+#' @param failure_summary Failure summary
+#'
+#' @importFrom purrr walk
+#' @importFrom dplyr %>%
+#' @noRd
+.handle_failure_messages <- function(failure_summary) {
+  failures <- failure_summary %>%
     mutate(message = .get_failure_messages(.$post))
   failures_neat <- .format_failure_message(failures)
   failures_neat %>% walk(cli_alert_danger)
-  
 }
 
-.handle_success_messages <- function(successes){
-  
+#' Handles success messages
+#'
+#' @param successes Success messages
+#'
+#' @importFrom purrr walk
+#' @noRd
+.handle_success_messages <- function(successes) {
   success_neat <- .format_success_message(successes)
   success_neat %>% walk(cli_alert_success)
-  
 }
