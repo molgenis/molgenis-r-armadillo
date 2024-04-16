@@ -233,7 +233,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
     )
   }
   
-  if(input_source == "arguments" & is.null(source_folder) & (is.null(source_table) | is.null(target_folder) | is.null(target_table) | is.null(target_variables))){
+  if(input_source == "arguments" & (is.null(source_folder) | is.null(source_table) | is.null(target_folder) | is.null(target_table) | is.null(target_variables))){
     stop("You must provide source_folder, source_table, target_folder, target_table and target_variables if input_source = 'arguments'")
   }
   
@@ -291,20 +291,6 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
   return(req)
 }
 
-#' Sends a PUT request to the API
-#'
-#' @param request Request object
-#'
-#' @importFrom httr2 req_perform req_error
-#' @noRd
-.put_api_request <- function(request) {
-  response <- request |>
-    req_error(is_error = \(resp) FALSE) |>
-    req_perform()
-  
-  return(response)
-}
-
 #' Creates the URL for the API request
 #' @param target_project Project to upload subset to.
 #' @noRd
@@ -344,6 +330,20 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
     "Authorization" = .get_auth_header()
   )
   return(headers)
+}
+
+#' Sends a PUT request to the API
+#'
+#' @param request Request object
+#'
+#' @importFrom httr2 req_perform req_error
+#' @noRd
+.put_api_request <- function(request) {
+  response <- request |>
+    req_error(is_error = \(resp) FALSE) |>
+    req_perform()
+  
+  return(response)
 }
 
 #' Loops through API requests for each subset
