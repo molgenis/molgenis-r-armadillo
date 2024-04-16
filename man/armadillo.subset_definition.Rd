@@ -4,26 +4,23 @@
 \alias{armadillo.subset_definition}
 \title{Builds an R object containing info required to make subsets}
 \usage{
-armadillo.subset_definition(vars = NULL)
+armadillo.subset_definition(reference_csv = NULL, vars = NULL)
 
-armadillo.subset_definition(vars = NULL)
+armadillo.subset_definition(reference_csv = NULL, vars = NULL)
 }
 \arguments{
+\item{reference_csv}{\code{.csv} file containing vars to subset}
+
 \item{vars}{\code{.csv} file containing vars to subset.}
 }
 \value{
 a dataframe containing variables that is used for input in the
 \code{armadillo.subset()} method
 
-a dataframe containing variables that is used for input in the
+A dataframe containing variables that is used for input in the
 \code{armadillo.subset()} method
 }
 \description{
-This file must contain three columns with the headers 'folder', 'table' and
-'variables'. 'Folder' must refer to a folder in the armadillo project to be
-subsetted. 'Table' must refer to a table within that folder. 'variables' must
-refer to variables within that table.
-
 This file must contain three columns with the headers 'folder', 'table' and
 'variables'. 'Folder' must refer to a folder in the armadillo project to be
 subsetted. 'Table' must refer to a table within that folder. 'variables' must
@@ -38,7 +35,7 @@ armadillo.subset_definition(
 
 \dontrun{
 armadillo.subset_definition(
-  vars = "C:/tmp/vars.csv"
+  reference_csv = "C:/tmp/vars.csv"
 )
 }
 

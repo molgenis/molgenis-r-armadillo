@@ -5,22 +5,39 @@
 \title{Describes data available to subset and makes subset}
 \usage{
 armadillo.make_views(
+  subset_def = NULL,
   source_project = NULL,
+  source_folder = NULL,
+  source_table = NULL,
+  target_project = NULL,
+  target_folder = NULL,
+  target_table = NULL,
+  target_variables = NULL,
   new_project = NULL,
-  reference_csv = NULL,
-  dry_run = FALSE
+  dry_run = NULL
 )
 }
 \arguments{
-\item{source_project}{project from which to subset data}
-
-\item{new_project}{project to upload subset to. Will be created if it doesn't
-exist.}
-
-\item{dry_run}{you can dry-run the function to which variables are missing}
-
 \item{subset_def}{R object containing subset definition created by
 \code{armadillo.subset_definition()}}
+
+\item{source_project}{project from which to subset data}
+
+\item{source_folder}{folder from which to subset data}
+
+\item{source_table}{table from which to subset data}
+
+\item{target_project}{project to upload subset to. Will be created if it doesn't exist}
+
+\item{target_folder}{folder to upload subset to. Will be created if it doesn't exist}
+
+\item{target_table}{table to upload subset to.}
+
+\item{target_variables}{variables from `source_table` to include in the view}
+
+\item{new_project}{Defunct: project to upload subset to. Replaced by `target_project`}
+
+\item{dry_run}{Defunct: previously enabgled dry-run to check which variables are missing}
 }
 \value{
 missing variables provided in the subset definition
