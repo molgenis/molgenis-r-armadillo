@@ -41,15 +41,10 @@ armadillo.make_views <- function(input_source = NULL, subset_def = NULL, source_
   .check_args_valid(input_source, subset_def, source_project, source_folder, source_table,
                     target_project, target_folder, target_table, target_vars, new_project, 
                     dry_run)
-  
+
   if(input_source == "arguments"){
-   
-    subset_def <- tibble(
-      target_vars = list(tibble(target_vars)),
-      source_folder = source_folder,
-      source_table = source_table,
-      target_folder = target_folder,
-      target_table = target_table)
+    subset_def <- .create_subset_def_from_arguments(target_vars, source_folder, source_table, 
+                                                    target_folder, target_table)
   }
   
   armadillo.create_project(target_project, overwrite_existing = "no")
@@ -464,4 +459,27 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 .handle_success_messages <- function(successes) {
   success_neat <- .format_success_message(successes)
   success_neat %>% walk(cli_alert_success)
+}
+
+#' Creates a subset definition object if parameters are passed via arguments
+#' 
+#' @param target_vars Variables from `source_table` to include in the view
+#' @param source_folder Folder from which to subset data
+#' @param source_table Table from which to subset data
+#' @param target_folder Folder to upload subset to.
+#' @param target_table Table to upload subset to.
+#' @importFrom tibble tibble 
+#' @noRd
+.create_subset_def_from_arguments <- function(target_vars, source_folder, source_table, target_folder, 
+                                              target_table){
+  
+  subset_def <- tibble(
+    target_vars = list(tibble(target_vars)),
+    source_folder = source_folder,
+    source_table = source_table,
+    target_folder = target_folder,
+    target_table = target_table)
+  
+  return(subset_def)
+  
 }
