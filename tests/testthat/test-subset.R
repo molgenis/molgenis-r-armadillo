@@ -248,10 +248,49 @@ test_that("It makes headers for API requests", {
   )
   })
 
+test_that("It builds the API request object correctly", {
+  source_project <- "source_project"
+  source_folder <- "source_folder"
+  source_table <- "source_table"
+  target_project <- "target_project"
+  target_folder <- "target_folder"
+  target_table <- "target_table"
+  target_vars <- c("var1", "var2", "var3")
+  
+  expected_body <- list(
+    sourceObjectName = paste0(source_folder, "/", source_table),
+    sourceProject = source_project,
+    linkedObject = paste0(target_folder, "/", target_table),
+    variables = paste0(target_vars, collapse = ",")
+  )
+  
+  expected_headers <- list(
+    Accept = "*/*",
+    `Content-Type` = "application/json",
+    Authorization = structure("Basic YWRtaW46YWRtaW4=", names = "Authorization")
+  )
+  
+  attr(expected_headers, "redact") <- 0
+  attr(expected_headers$Authorization, "names") <- "Authorization"
+  
+  expected_req <- request("mocked_post_url") |>
+    req_body_json(expected_body) |>
+    req_headers(!!!expected_headers)
+  
+  expect_equal(
+    with_mocked_bindings(
+      .make_api_request(
+      "source_project", "source_folder", "source_table", "target_project", 
+      "target_folder", "target_table", c("var1", "var2", "var3")
+    ),
+    ".make_post_url" = function(target_project) "mocked_post_url"), 
+    expected_req, 
+    fixed = T)
+  
+})
 
-
-
-
+## Refactor so reused sections sit outside tests
+    
 
 
 
