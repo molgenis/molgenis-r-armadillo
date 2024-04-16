@@ -56,13 +56,11 @@ armadillo.make_views <- function(input_source = NULL, subset_def = NULL, source_
     warning("All views failed, see details below.",
       immediate. = T, call. = F
     )
-
     .handle_failure_messages(api_post_summary_split$failure)
   } else if (nrow(api_post_summary_split$failure) > 0 & nrow(api_post_summary_split$success) > 0) {
     warning("One or more views were not created correctly, see details below.",
       immediate. = T, call. = F
     )
-
     .handle_failure_messages(api_post_summary_split$failure)
     .handle_success_messages(api_post_summary_split$success)
   } else if (nrow(api_post_summary_split$failure) == 0) {
@@ -70,47 +68,6 @@ armadillo.make_views <- function(input_source = NULL, subset_def = NULL, source_
     .handle_success_messages(api_post_summary_split$success)
   }
 }
-
-#' Checks if the input arguments are complete
-#'
-#' @param source_project Project from which to subset data
-#' @param new_project Project to upload subset to. Will be created if it doesn't exist
-#' @param subset_def R object containing subset definition created by \code{armadillo.subset_definition()}
-#' @param dry_run If TRUE, performs a dry-run to check which variables are missing
-#'
-#' @noRd
-.check_args_valid <- function(input_source, subset_def, source_project, source_folder, source_table,
-                              target_project, target_folder, target_table, target_variables, new_project, 
-                              dry_run) {
-  if (!is.null(new_project)) {
-    target_project <- new_project
-    message("Argument `new project` has now been depricated: please use `target_project` instead")
-  }
-
-  if (is.null(source_project)) {
-    stop(
-      paste0("You must provide the name of the source project from ", "which you will subset")
-    )
-  }
-
-  if (is.null(target_project)) {
-    stop("You must provide a name for the target project")
-  }
-
-  if (input_source == "subset_def" & is.null(subset_def)) {
-    stop(
-      "You have specified `input_source = subset_ref` but you have not provided an object created by armadillo.subset_definition containing details of the variables and tables to include in the subset"
-      )
-  }
-  
-  if(input_source == "arguments" & is.null(source_folder) & (is.null(source_table) | is.null(target_folder) | is.null(target_table) | is.null(target_variables))){
-    stop("You must provide source_folder, source_table, target_folder, target_table and target_variables if input_source = 'arguments'")
-  }
-  
-    if (!is.null(dry_run)) {
-      message("Argument `dry_run` is now defunct")
-    }
-  }
 
 #' Builds an R object containing info required to make subsets
 #'
@@ -221,6 +178,93 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
   return(subset_ref)
 }
 
+#' Sets default targets if not specified in the subset reference
+#'
+#' @param subset_ref Subset reference dataframe
+#'
+#' @importFrom dplyr mutate %>%
+#' @noRd
+.set_default_targets <- function(subset_ref) {
+  source_folder <- source_table <- NULL
+  if (!"target_folder" %in% colnames(subset_ref)) {
+    message("'target_folder' not specified in .csv file: defaulting to source folder name")
+    subset_ref <- subset_ref %>%
+      mutate(target_folder = source_folder)
+  }
+  
+  if (!"target_table" %in% colnames(subset_ref)) {
+    message("'target_table' not specified in .csv file: defaulting to source table name")
+    subset_ref <- subset_ref %>%
+      mutate(target_table = source_table)
+  }
+  
+  return(subset_ref)
+}
+
+#' Checks if the input arguments are complete
+#'
+#' @param source_project Project from which to subset data
+#' @param new_project Project to upload subset to. Will be created if it doesn't exist
+#' @param subset_def R object containing subset definition created by \code{armadillo.subset_definition()}
+#' @param dry_run If TRUE, performs a dry-run to check which variables are missing
+#'
+#' @noRd
+.check_args_valid <- function(input_source, subset_def, source_project, source_folder, source_table,
+                              target_project, target_folder, target_table, target_variables, new_project, 
+                              dry_run) {
+  if (!is.null(new_project)) {
+    target_project <- new_project
+    message("Argument `new project` has now been depricated: please use `target_project` instead")
+  }
+  
+  if (is.null(source_project)) {
+    stop(
+      paste0("You must provide the name of the source project from ", "which you will subset")
+    )
+  }
+  
+  if (is.null(target_project)) {
+    stop("You must provide a name for the target project")
+  }
+  
+  if (input_source == "subset_def" & is.null(subset_def)) {
+    stop(
+      "You have specified `input_source = subset_ref` but you have not provided an object created by armadillo.subset_definition containing details of the variables and tables to include in the subset"
+    )
+  }
+  
+  if(input_source == "arguments" & is.null(source_folder) & (is.null(source_table) | is.null(target_folder) | is.null(target_table) | is.null(target_variables))){
+    stop("You must provide source_folder, source_table, target_folder, target_table and target_variables if input_source = 'arguments'")
+  }
+  
+  if (!is.null(dry_run)) {
+    message("Argument `dry_run` is now defunct")
+  }
+}
+
+#' Creates a subset definition object if parameters are passed via arguments
+#' 
+#' @param target_vars Variables from `source_table` to include in the view
+#' @param source_folder Folder from which to subset data
+#' @param source_table Table from which to subset data
+#' @param target_folder Folder to upload subset to.
+#' @param target_table Table to upload subset to.
+#' @importFrom tibble tibble 
+#' @noRd
+.create_subset_def_from_arguments <- function(target_vars, source_folder, source_table, target_folder, 
+                                              target_table){
+  
+  subset_def <- tibble(
+    target_vars = list(tibble(target_vars)),
+    source_folder = source_folder,
+    source_table = source_table,
+    target_folder = target_folder,
+    target_table = target_table)
+  
+  return(subset_def)
+  
+}
+
 #' Builds the API request object and puts request to the server
 #'
 #' @param source_project Project from which to subset data
@@ -261,25 +305,6 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
   return(response)
 }
 
-#' Loops through API requests for each subset
-#'
-#' @param subset_ref Subset reference dataframe
-#' @param source_project Project from which to subset data
-#' @param target_project Project to upload subset to
-#'
-#' @importFrom purrr pmap
-#' @noRd
-.loop_api_request <- function(subset_ref, source_project, target_project) {
-  subset_ref %>%
-    pmap(function(source_folder, source_table, target_folder, target_table, target_vars) {
-      .make_api_request(
-        source_project, source_folder, source_table, target_project,
-        target_folder, target_table, unlist(target_vars)
-      ) |>
-        .put_api_request()
-    })
-}
-
 #' Creates the URL for the API request
 #' @param target_project Project to upload subset to.
 #' @noRd
@@ -305,8 +330,39 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
     linkedObject = paste0(target_folder, "/", target_table),
     variables = paste0(target_vars, collapse = ",")
   )
-
+  
   return(body)
+}
+
+#' Makes headers for API requests
+#'
+#' @noRd
+.make_headers <- function() {
+  headers <- list(
+    "Accept" = "*/*",
+    "Content-Type" = "application/json",
+    "Authorization" = .get_auth_header()
+  )
+  return(headers)
+}
+
+#' Loops through API requests for each subset
+#'
+#' @param subset_ref Subset reference dataframe
+#' @param source_project Project from which to subset data
+#' @param target_project Project to upload subset to
+#'
+#' @importFrom purrr pmap
+#' @noRd
+.loop_api_request <- function(subset_ref, source_project, target_project) {
+  subset_ref %>%
+    pmap(function(source_folder, source_table, target_folder, target_table, target_vars) {
+      .make_api_request(
+        source_project, source_folder, source_table, target_project,
+        target_folder, target_table, unlist(target_vars)
+      ) |>
+        .put_api_request()
+    })
 }
 
 #' Gets the status of API responses
@@ -322,29 +378,6 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
   return(status)
 }
 
-#' Sets default targets if not specified in the subset reference
-#'
-#' @param subset_ref Subset reference dataframe
-#'
-#' @importFrom dplyr mutate %>%
-#' @noRd
-.set_default_targets <- function(subset_ref) {
-  source_folder <- source_table <- NULL
-  if (!"target_folder" %in% colnames(subset_ref)) {
-    message("'target_folder' not specified in .csv file: defaulting to source folder name")
-    subset_ref <- subset_ref %>%
-      mutate(target_folder = source_folder)
-  }
-
-  if (!"target_table" %in% colnames(subset_ref)) {
-    message("'target_table' not specified in .csv file: defaulting to source table name")
-    subset_ref <- subset_ref %>%
-      mutate(target_table = source_table)
-  }
-
-  return(subset_ref)
-}
-
 #' Gets failure messages from API response
 #'
 #' @param posts API response posts
@@ -358,18 +391,6 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
       resp_body_json(x)$message
     })
   return(messages)
-}
-
-#' Makes headers for API requests
-#'
-#' @noRd
-.make_headers <- function() {
-  headers <- list(
-    "Accept" = "*/*",
-    "Content-Type" = "application/json",
-    "Authorization" = .get_auth_header()
-  )
-  return(headers)
 }
 
 .format_api_posts <- function(posts, subset_def) {
@@ -459,27 +480,4 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 .handle_success_messages <- function(successes) {
   success_neat <- .format_success_message(successes)
   success_neat %>% walk(cli_alert_success)
-}
-
-#' Creates a subset definition object if parameters are passed via arguments
-#' 
-#' @param target_vars Variables from `source_table` to include in the view
-#' @param source_folder Folder from which to subset data
-#' @param source_table Table from which to subset data
-#' @param target_folder Folder to upload subset to.
-#' @param target_table Table to upload subset to.
-#' @importFrom tibble tibble 
-#' @noRd
-.create_subset_def_from_arguments <- function(target_vars, source_folder, source_table, target_folder, 
-                                              target_table){
-  
-  subset_def <- tibble(
-    target_vars = list(tibble(target_vars)),
-    source_folder = source_folder,
-    source_table = source_table,
-    target_folder = target_folder,
-    target_table = target_table)
-  
-  return(subset_def)
-  
 }
