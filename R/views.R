@@ -30,37 +30,30 @@ armadillo.make_views <- function(subset_def = NULL, source_project = NULL, sourc
   .check_args_valid(source_project, target_project, new_project, subset_def, dry_run)
   armadillo.create_project(target_project, overwrite_existing = "no")
   posts <- .loop_api_request(subset_def, source_project, target_project)
-  api_post_summary <- .summarise_api_posts(posts, subset_def)
-  
-  browser()
-  
-  if (any(api_post_summary$status != 204)) {
-    warning("One or more views were not created correctly, see details below.",
-      immediate. = T
-    )
-    failures <- api_post_summary %>% dplyr::filter(status != 204)
-    
-    failures <- failures %>%  mutate(message = .get_messages(post))
-    
-    messages <- .make_failure_message(failures)
-    messages %>% map(cli_alert_danger)
-    
-    successes <- api_post_summary %>% dplyr::filter(status == 204)
+  api_post_summary <- .format_api_posts(posts, subset_def)
+  api_post_summary_split <- .split_success_failure(api_post_summary)
 
-    cli_alert_success(c("View ", "'", "test", "/", "001", "/", "project_1", "'", " successfully created"))
+  if(nrow(api_post_summary_split$success) == 0){
     
-  } else {
+    warning("All views failed, see details below.",
+            immediate. = T, call. = F)
     
+    .handle_failure_messages(api_post_summary_split$failure)
+
+  } else if (nrow(api_post_summary_split$failure) > 0 & nrow(api_post_summary_split$success) > 0) {
+    warning("One or more views were not created correctly, see details below.",
+      immediate. = T, call. = F)
     
-    statuses
+    .handle_failure_messages(api_post_summary_split$failure)
+    .handle_success_messages(api_post_summary_split$success)
     
-    
-    
-    message("View ", "'", new_project, "/", new_path, "'", " successfully created")
-    
-    
+    } else if (nrow(api_post_summary_split$failure) == 0) {
+    message(cli_alert_success("All views were successfully created!"))
+    .handle_success_messages(api_post_summary_split$success)
   }
+  
 }
+
 
 #' Checks the input arguments are complete
 #'
@@ -309,7 +302,7 @@ handle_post_errors <- function() {
   return(subset_ref)
 }
 
-.get_messages <- function(posts) {
+.get_failure_messages <- function(posts) {
   messages <- posts %>%
     map(function(x) {
       resp_body_json(x)$message
@@ -336,7 +329,7 @@ handle_post_errors <- function() {
   return(headers)
 }
 
-.summarise_api_posts <- function(posts, subset_def){
+.format_api_posts <- function(posts, subset_def){
   
   subset_def %>%
     mutate(
@@ -346,7 +339,7 @@ handle_post_errors <- function() {
 }
 
 
-.make_failure_message <- function(failures){
+.format_failure_message <- function(failures){
   
   failure_message <- failures %>%
     pmap(function(target_folder, target_table, status, message, ...){
@@ -355,5 +348,41 @@ handle_post_errors <- function() {
               target_table, status, message)
     })
   return(failure_message)
+  
+}
+
+.split_success_failure <- function(api_post_summary){
+  
+  out <- list(
+    success = api_post_summary %>% dplyr::filter(status == 204),
+    failure = api_post_summary %>% dplyr::filter(status != 204))
+    
+  return(out)
+}
+
+.format_success_message <- function(success){
+  
+  success_message <- success %>%
+    pmap(function(target_folder, target_table, status, ...){
+      
+      sprintf("View '%s/%s' successfully created", target_folder, 
+              target_table)
+    })
+  return(success_message)
+}
+
+.handle_failure_messages <- function(failure_summary){
+  
+  failures <- failure_summary %>%  
+    mutate(message = .get_failure_messages(.$post))
+  failures_neat <- .format_failure_message(failures)
+  failures_neat %>% walk(cli_alert_danger)
+  
+}
+
+.handle_success_messages <- function(successes){
+  
+  success_neat <- .format_success_message(successes)
+  success_neat %>% walk(cli_alert_success)
   
 }
