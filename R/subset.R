@@ -49,6 +49,7 @@ armadillo.subset <- function(input_source = NULL, subset_def = NULL, source_proj
   
   armadillo.create_project(target_project, overwrite_existing = "no")
   posts <- .loop_api_request(subset_def, source_project, target_project)
+  browser()
   api_post_summary <- .format_api_posts(posts, subset_def)
   api_post_summary_split <- .split_success_failure(api_post_summary)
   
@@ -391,6 +392,26 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
       resp_body_json(x)$message
     })
   return(messages)
+}
+
+#' Formats API posts based on subset definition
+#'
+#' @param posts A list of API posts
+#' @param subset_def A tibble containing subset definition
+#' 
+#' @return A tibble consisting of original subset_def with columns 'posts' and 'status' appended.
+#' 
+#' @importFrom dplyr mutate select %>%
+#' @export
+#'
+.format_api_posts <- function(posts, subset_def) {
+  target_folder <- target_table <- post <- status <- NULL
+  subset_def %>%
+    mutate(
+      post = posts,
+      status = .get_status(posts)
+    ) %>%
+    dplyr::select(target_folder, target_table, post, status)
 }
 
 .format_api_posts <- function(posts, subset_def) {
