@@ -219,7 +219,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
                               dry_run) {
   if (!is.null(new_project)) {
     target_project <- new_project
-    message("Argument `new project` has now been depricated: please use `target_project` instead")
+    message("Argument `new project` has now been deprecated: please use `target_project` instead")
   }
 
   if (is.null(source_project)) {
