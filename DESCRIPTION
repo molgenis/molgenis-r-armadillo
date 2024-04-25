@@ -46,7 +46,8 @@ Imports:
     tibble,
     MolgenisAuth (>= 0.0.25),
     arrow,
-    rlist
+    rlist, 
+    readr
 Suggests:
     stringi,
     withr,

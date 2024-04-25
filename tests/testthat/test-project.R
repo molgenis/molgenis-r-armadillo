@@ -1,3 +1,4 @@
+library(testthat)
 handle <- httr::handle("https://test.nl")
 withr::local_options("MolgenisArmadillo.armadillo.handle" = handle)
 
@@ -336,7 +337,7 @@ test_that(".make_overwrite_menu when user selects 'yes'", {
   expect_true(
     with_mocked_bindings(
       .make_overwrite_menu(project_name = "lifecycle"),
-      askYesNo = function(title) TRUE
+      askYesNo = function(title, default) TRUE
     )
   )
 })
@@ -345,7 +346,7 @@ test_that(".make_overwrite_menu when user selects 'no'", {
   expect_false(
     with_mocked_bindings(
       .make_overwrite_menu(project_name = "lifecycle"),
-      askYesNo = function(title) FALSE
+      askYesNo = function(title, default) FALSE
     )
   )
 })
@@ -354,7 +355,7 @@ test_that(".make_overwrite_menu when user selects 'cancel'", {
   expect_equal(
     with_mocked_bindings(
       .make_overwrite_menu(project_name = "lifecycle"),
-      askYesNo = function(title) NA
+      askYesNo = function(title, default) NA
     ),
     "cancel"
   )
