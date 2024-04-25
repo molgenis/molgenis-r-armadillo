@@ -72,68 +72,31 @@ Make the subset
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">armadillo.subset</span><span class="op">(</span></span>
-<span>  input_source <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  subset_def <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  source_project <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  source_folder <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  source_table <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  target_project <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  target_folder <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  target_table <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  target_vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  new_project <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  dry_run <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  subset_def <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>input_source</dt>
-<dd><p>Character specifying how information about the target view is provided: choose
-'subset_def' if providing a subset definition object, or 'arguments' if providing information directly.</p></dd>
+    <dl><dt>source_project</dt>
+<dd><p>project from which to subset data</p></dd>
+
+
+<dt>new_project</dt>
+<dd><p>project to upload subset to. Will be created if it doesn't
+exist.</p></dd>
 
 
 <dt>subset_def</dt>
 <dd><p>R object containing subset definition created by
-<code><a href="armadillo.subset_definition.html">armadillo.subset_definition()</a></code>. Compulsory if input_source = 'subset_def'</p></dd>
-
-
-<dt>source_project</dt>
-<dd><p>project from which to subset data</p></dd>
-
-
-<dt>source_folder</dt>
-<dd><p>folder from which to subset data. Compulsory if input_source = 'arguments'.</p></dd>
-
-
-<dt>source_table</dt>
-<dd><p>table from which to subset data. Compulsory if input_source = 'arguments'.</p></dd>
-
-
-<dt>target_project</dt>
-<dd><p>project to upload subset to. Will be created if it doesn't exist.</p></dd>
-
-
-<dt>target_folder</dt>
-<dd><p>folder to upload subset to. Will be created if it doesn't exist.
-Compulsory if input_source = 'arguments'.</p></dd>
-
-
-<dt>target_table</dt>
-<dd><p>table to upload subset to. Compulsory if input_source = 'arguments'.</p></dd>
-
-
-<dt>target_vars</dt>
-<dd><p>variables from `source_table` to include in the view.
-Compulsory if input_source = 'arguments'.</p></dd>
-
-
-<dt>new_project</dt>
-<dd><p>Deprecated: use <code>target_project</code> instead</p></dd>
+<code><a href="armadillo.subset_definition.html">armadillo.subset_definition()</a></code></p></dd>
 
 
 <dt>dry_run</dt>
-<dd><p>Defunct: previously enabgled dry-run to check which variables are missing</p></dd>
+<dd><p>you can dry-run the function to which variables are missing</p></dd>
 
 </dl></div>
     <div class="section level2">
