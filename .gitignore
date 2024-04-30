@@ -1,0 +1,16 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+inst/doc
+..Rcheck
+doc
+docs
+Meta
+.idea/*
+*\.DS_Store
+.DS_Store
+/doc/
+/Meta/
+/MolgenisArmadillo/
+/MolgenisArmadillo_2.1.4.tar.gz

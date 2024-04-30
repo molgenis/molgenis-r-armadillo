@@ -1,0 +1,17 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+..Rcheck
+adr
+^doc$
+^docs$
+^Meta$
+.travis.yml
+^README.Rmd$
+^cran-comments\.md$
+^vignettes/data/packages/.*
+.circleci
+^_pkgdown\.yml$
+^pkgdown$
+^dev$
+^\.github$
+^CONTRIBUTING.md$

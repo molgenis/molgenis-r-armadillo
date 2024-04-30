@@ -1,0 +1,183 @@
+---
+title: "MolgenisArmadillo"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{MolgenisArmadillo}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+
+```r
+library(MolgenisArmadillo)
+```
+
+To share your data using Armadillo, you can see the different relevant steps you can take before the shared data can be transferred to the researchers.
+
+## Login
+In order to access the files as a data manager, you need to log in. The login method needs the URLs of the Armadillo server and the MinIO fileserver. It will open a browser window where you can identify yourself with the ID provider.
+
+
+```r
+armadillo.login("https://armadillo-demo.molgenis.net/")
+```
+
+It will create a session and store the credentials in the environment.
+
+## Structure
+If you need to share data via Armadillo you can have a nested structure to save you data.
+
+We distinguish:
+
+- projects
+- folders
+- tables
+
+### Projects
+Projects are a sort of root-folders you can give persons permissions on. you can imagine that you will use a seperate project for each study you need to support. This way you make sure people can not see eachothers variables.
+
+### Folders
+Folder objects can be used to version the different tables you want to share in Armadillo. This is not mandatory and are free to use the folder level as you see fit. In our examples we will go into the versioning part a bit deeper.
+
+### Tables 
+Tables are actual tables in R which contain the data you want to share. This can be all the data on a certain subject, mostly used in consortia or a specific study you want to expose.
+
+## Sharing data
+Let's asume you are in a consortia which has core-variables and outcome-variables. You want to share and version the whole dataset to all researchers which applied to access your data.
+
+First we will create the project. In our case "cohort1".
+
+
+```r
+armadillo.create_project("cohort1")
+#> Created project 'cohort1'
+```
+
+Secondly we will load the table(s) we want to upload to Armadillo in the R-environment. We have test data which is in `arrow` format, the upload will take any object that has a table like structure to upload into the Armadillo. This can be SPSS, STATA, SAS or R-based data as well.
+
+
+```r
+library(arrow)
+#> 
+#> Attaching package: 'arrow'
+#> The following object is masked from 'package:utils':
+#> 
+#>     timestamp
+
+# load the core data
+nonrep <- arrow::read_parquet("data/core/nonrep.parquet")
+yearlyrep <- arrow::read_parquet("data/core/yearlyrep.parquet")
+monthlyrep <- arrow::read_parquet("data/core/monthlyrep.parquet")
+trimesterrep <- arrow::read_parquet("data/core/trimesterrep.parquet")
+```
+
+The third step is determining the second level, which contains in this case the datamodel-version the type of variables and the data-version.
+
+y_y-#variable-type#-x_x
+
+y_y = datamodel version
+x_x = data version
+
+
+```r
+# upload the core variables
+armadillo.upload_table("cohort1", "2_1-core-1_0", nonrep)
+#> Compressing...
+#> Uploaded 2_1-core-1_0/nonrep
+armadillo.upload_table("cohort1", "2_1-core-1_0", yearlyrep)
+#> Compressing...
+#> Uploaded 2_1-core-1_0/yearlyrep
+armadillo.upload_table("cohort1", "2_1-core-1_0", monthlyrep)
+#> Compressing...
+#> Uploaded 2_1-core-1_0/monthlyrep
+armadillo.upload_table("cohort1", "2_1-core-1_0", trimesterrep)
+#> Compressing...
+#> Uploaded 2_1-core-1_0/trimesterrep
+```
+
+If you have more tables containing the same naming scheme you need to drop the
+data frames in memory and then you can reassign them. See the example below.
+
+
+```r
+# drop the old assignments
+rm(nonrep, yearlyrep, monthlyrep, trimesterrep)
+
+# load the outcome data
+yearlyrep <- arrow::read_parquet("data/outcome/yearlyrep.parquet")
+nonrep <- arrow::read_parquet("data/outcome/nonrep.parquet")
+
+# upload the outcome variables
+armadillo.upload_table("cohort1", "1_1-outcome-1_0", nonrep)
+#> Compressing...
+#> Uploaded 1_1-outcome-1_0/nonrep
+armadillo.upload_table("cohort1", "1_1-outcome-1_0", yearlyrep)
+#> Compressing...
+#> Uploaded 1_1-outcome-1_0/yearlyrep
+```
+
+## Looking at the data
+There are helper functions to help you determine what is in the storage server. You can list projects and tables to what's in the storage.
+
+
+```r
+# listing tables per project
+armadillo.list_projects()
+#>  [1] "longitools"   "genr"         "gecko"        "test"         "omics"       
+#>  [6] "trajectories" "inma"         "subset13"     "cohort1"      "study1"
+```
+
+
+```r
+# listing tables per project
+armadillo.list_tables("cohort1")
+#> [1] "cohort1/2_1-core-1_0/trimesterrep" "cohort1/2_1-core-1_0/nonrep"      
+#> [3] "cohort1/2_1-core-1_0/yearlyrep"    "cohort1/2_1-core-1_0/monthlyrep"  
+#> [5] "cohort1/1_1-outcome-1_0/nonrep"    "cohort1/1_1-outcome-1_0/yearlyrep"
+```
+
+You can download the data in the R-environment as well.
+
+
+```r
+# download table to local R environment
+trimesterrep <- armadillo.load_table("cohort1", "2_1-core-1_0", "trimesterrep")
+
+# check the column names from the local environment
+colnames(trimesterrep)
+#> [1] "row_id"        "child_id"      "age_trimester" "smk_t"        
+#> [5] "alc_t"
+```
+
+Now you can also take a look at the files in the user interface of the MinIO
+fileserver if you open the MinIO server URL in a browser window.
+
+## Deleting the data
+To delete the data you need to throw away the contents first.
+
+
+```r
+# throw away the core tables
+armadillo.delete_table("cohort1", "2_1-core-1_0", "nonrep")
+#> Deleted '2_1-core-1_0/nonrep'
+armadillo.delete_table("cohort1", "2_1-core-1_0", "yearlyrep")
+#> Deleted '2_1-core-1_0/yearlyrep'
+armadillo.delete_table("cohort1", "2_1-core-1_0", "trimesterrep")
+#> Deleted '2_1-core-1_0/trimesterrep'
+armadillo.delete_table("cohort1", "2_1-core-1_0", "monthlyrep")
+#> Deleted '2_1-core-1_0/monthlyrep'
+
+# throw away the outcome tables
+armadillo.delete_table("cohort1", "1_1-outcome-1_0", "nonrep")
+#> Deleted '1_1-outcome-1_0/nonrep'
+armadillo.delete_table("cohort1", "1_1-outcome-1_0", "yearlyrep")
+#> Deleted '1_1-outcome-1_0/yearlyrep'
+```
+Now you can delete the project.
+
+```r
+armadillo.delete_project("cohort1")
+#> Deleted project 'cohort1'
+```

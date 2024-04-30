@@ -1,0 +1,127 @@
+---
+title: "Creating data subsets"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Creating data subsets}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+When researchers request access to your data they may in many cases not be granted access to the whole dataset, but only to a subset. In Armadilllo, access is regulated on the project level, so you will need to create a new project using a subset of the data. Here are the required steps to create these subsets.
+
+## Install and load the package
+You need to install and load the package first to be able to create the subsets.
+
+
+```r
+install.packages("MolgenisArmadillo")
+```
+
+
+```r
+library(MolgenisArmadillo)
+```
+
+## Logging in
+In order to access the files you need to log in using the URL of the Armadillo server. A browser window will be opened where you can identify yourself with the ID provider.
+
+
+```r
+armadillo.login("https://armadillo-demo.molgenis.net/")
+```
+
+A session will be created and the credentials are stored in the environment.
+
+## Defining the subset
+Let's assume you are in a consortium which has data that can not be shared in total to the researchers. You want to share a subset of the whole dataset with certain researchers that applied for access to your data.
+
+For each research project, we need to define a .csv file containing 3 columns:
+
+| folder       | table       | variable      |
+| ------------ | ----------- | ------------- |
+| 2_1_core_1_0 | yearly_rep  | green_dist_   |
+| 2_1_core_1_0 | yearly_rep  | green_size_   |
+| 2_1_core_1_0 | yearly_rep  | green_access_ |
+
+'folder' refers a folder within the master project; 'table' refers to the name of a table within this folder, and 'variable' refers to one or more variables within this table. Note that these columns need to be named exactly as above.
+
+If you defined the tables then you can construct the `subset_definition`. This creates a tibble within R holding the details from the .csv file.
+
+
+```r
+subset_definition <- armadillo.subset_definition(
+  vars = "data/subset/vars.csv")
+subset_definition
+#> # A tibble: 3 × 3
+#>   folder          table     vars_to_subset   
+#>   <chr>           <chr>     <list>           
+#> 1 2_1-core-1_0    yearlyrep <tibble [15 × 1]>
+#> 2 1_1-outcome-1_0 yearlyrep <tibble [9 × 1]> 
+#> 3 2_1-core-1_0    nonrep    <tibble [7 × 1]>
+```
+
+After this you can create a new subset using the subset method on the Armadillo. First we are going to perform a dry-run to check whether the required folder, tables and variables are present.
+
+
+```r
+not_available <- armadillo.subset(
+	source_project = "gecko",
+	new_project = "study1",
+	subset_def = subset_definition,
+	dry_run = TRUE
+)
+not_available
+#> # A tibble: 23 × 3
+#>    folder       table     missing      
+#>    <chr>        <chr>     <chr>        
+#>  1 2_1-core-1_0 yearlyrep green_dist_  
+#>  2 2_1-core-1_0 yearlyrep green_size_  
+#>  3 2_1-core-1_0 yearlyrep green_access_
+#>  4 2_1-core-1_0 yearlyrep ndvi100_     
+#>  5 2_1-core-1_0 yearlyrep ndvi300_     
+#>  6 2_1-core-1_0 yearlyrep ndvi500_     
+#>  7 2_1-core-1_0 yearlyrep blue_dist_   
+#>  8 2_1-core-1_0 yearlyrep blue_size_   
+#>  9 2_1-core-1_0 yearlyrep blue_access_ 
+#> 10 2_1-core-1_0 yearlyrep no2_         
+#> # ℹ 13 more rows
+```
+
+This outputs a tibble with details of any variables that are missing within the actual data. You can check whether you suspected this or this is an anomaly.
+
+If you are confident that it will work you can run the subset method without dry_run.
+
+
+```r
+armadillo.subset(
+	source_project = "gecko",
+	new_project = "study1",
+	subset_def = subset_definition, 
+	dry_run = FALSE
+)
+#> Created project 'study1'
+#> Compressing...
+#> Uploaded 2_1-core-1_0/yearlyrep
+#> Compressing...
+#> Uploaded 1_1-outcome-1_0/yearlyrep
+#> Compressing...
+#> Uploaded 2_1-core-1_0/nonrep
+#> # A tibble: 23 × 3
+#>    folder       table     missing      
+#>    <chr>        <chr>     <chr>        
+#>  1 2_1-core-1_0 yearlyrep green_dist_  
+#>  2 2_1-core-1_0 yearlyrep green_size_  
+#>  3 2_1-core-1_0 yearlyrep green_access_
+#>  4 2_1-core-1_0 yearlyrep ndvi100_     
+#>  5 2_1-core-1_0 yearlyrep ndvi300_     
+#>  6 2_1-core-1_0 yearlyrep ndvi500_     
+#>  7 2_1-core-1_0 yearlyrep blue_dist_   
+#>  8 2_1-core-1_0 yearlyrep blue_size_   
+#>  9 2_1-core-1_0 yearlyrep blue_access_ 
+#> 10 2_1-core-1_0 yearlyrep no2_         
+#> # ℹ 13 more rows
+```
+
+Now you can also take a look at the files in the armadillo user interface, if you open it in a browser window.
