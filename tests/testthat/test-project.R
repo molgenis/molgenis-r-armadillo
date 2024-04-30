@@ -1,5 +1,4 @@
 library(testthat)
-library(httr2)
 handle <- httr::handle("https://test.nl")
 withr::local_options("MolgenisArmadillo.armadillo.handle" = handle)
 
