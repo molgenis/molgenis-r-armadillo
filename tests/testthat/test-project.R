@@ -335,7 +335,7 @@ test_that("armadillo.create_project with nonexisting overwrite", {
 
 test_that(".make_overwrite_menu when user selects 'yes'", {
   expect_true(
-    testthat:with_mocked_bindings(
+    testthat::with_mocked_bindings(
       .make_overwrite_menu(project_name = "lifecycle"),
       askYesNo = function(title, default) TRUE
     )
@@ -344,7 +344,7 @@ test_that(".make_overwrite_menu when user selects 'yes'", {
 
 test_that(".make_overwrite_menu when user selects 'no'", {
   expect_false(
-    testthat:with_mocked_bindings(
+    testthat::with_mocked_bindings(
       .make_overwrite_menu(project_name = "lifecycle"),
       askYesNo = function(title, default) FALSE
     )
@@ -353,7 +353,7 @@ test_that(".make_overwrite_menu when user selects 'no'", {
 
 test_that(".make_overwrite_menu when user selects 'cancel'", {
   expect_equal(
-    testthat:with_mocked_bindings(
+    testthat::with_mocked_bindings(
       .make_overwrite_menu(project_name = "lifecycle"),
       askYesNo = function(title, default) NA
     ),
@@ -363,7 +363,7 @@ test_that(".make_overwrite_menu when user selects 'cancel'", {
 
 test_that(".get_overwrite_choice where menu is displayed", {
   expect_true(
-    testthat:with_mocked_bindings(
+    testthat::with_mocked_bindings(
       .get_overwrite_choice(project_name = "lifecycle", project_exists = TRUE, overwrite_existing = "choose"),
       .make_overwrite_menu = function(project_name) TRUE
     )
