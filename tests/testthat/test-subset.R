@@ -188,7 +188,7 @@ test_that("It displays a message if new_project is provided (deprecated)", {
       target_table = "target_table", target_variables = "target_variables",
       dry_run = NULL
     ),
-    "Argument `new project` has now been depricated: please use `target_project` instead"
+    "Argument `new project` has now been deprecated: please use `target_project` instead"
   )
 })
 
