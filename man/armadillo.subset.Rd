@@ -5,22 +5,45 @@
 \title{Describes data available to subset and makes subset}
 \usage{
 armadillo.subset(
-  source_project = NULL,
-  new_project = NULL,
+  input_source = NULL,
   subset_def = NULL,
-  dry_run = FALSE
+  source_project = NULL,
+  source_folder = NULL,
+  source_table = NULL,
+  target_project = NULL,
+  target_folder = NULL,
+  target_table = NULL,
+  target_vars = NULL,
+  new_project = NULL,
+  dry_run = NULL
 )
 }
 \arguments{
-\item{source_project}{project from which to subset data}
-
-\item{new_project}{project to upload subset to. Will be created if it doesn't
-exist.}
+\item{input_source}{Character specifying how information about the target view is provided: choose
+'subset_def' if providing a subset definition object, or 'arguments' if providing information directly.}
 
 \item{subset_def}{R object containing subset definition created by
-\code{armadillo.subset_definition()}}
+\code{armadillo.subset_definition()}. Compulsory if input_source = 'subset_def'}
 
-\item{dry_run}{you can dry-run the function to which variables are missing}
+\item{source_project}{project from which to subset data}
+
+\item{source_folder}{folder from which to subset data. Compulsory if input_source = 'arguments'.}
+
+\item{source_table}{table from which to subset data. Compulsory if input_source = 'arguments'.}
+
+\item{target_project}{project to upload subset to. Will be created if it doesn't exist.}
+
+\item{target_folder}{folder to upload subset to. Will be created if it doesn't exist.
+Compulsory if input_source = 'arguments'.}
+
+\item{target_table}{table to upload subset to. Compulsory if input_source = 'arguments'.}
+
+\item{target_vars}{variables from `source_table` to include in the view.
+Compulsory if input_source = 'arguments'.}
+
+\item{new_project}{Deprecated: use \code{target_project} instead}
+
+\item{dry_run}{Defunct: previously enabgled dry-run to check which variables are missing}
 }
 \value{
 missing variables provided in the subset definition
