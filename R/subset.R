@@ -68,7 +68,7 @@ armadillo.subset <- function(input_source = NULL, subset_def = NULL, source_proj
     .handle_failure_messages(api_post_summary_split$failure)
     .handle_success_messages(api_post_summary_split$success)
   } else if (nrow(api_post_summary_split$failure) == 0) {
-    message(cli_alert_success("All views were successfully created!"))
+    cli_alert_success("All views were successfully created!")
     .handle_success_messages(api_post_summary_split$success)
   }
 }
