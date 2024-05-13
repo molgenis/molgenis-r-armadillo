@@ -238,7 +238,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
     )
   }
 
-  if (input_source == "arguments" & (is.null(source_folder) | is.null(source_table) | is.null(target_folder) | is.null(target_table) | is.null(target_variables))) {
+  if (input_source == "arguments" & (is.null(source_folder) | is.null(source_table) | is.null(target_folder) | is.null(target_table) | is.null(target_vars))) {
     stop("You must provide source_folder, source_table, target_folder, target_table and target_variables if input_source = 'arguments'")
   }
 
