@@ -215,7 +215,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @noRd
 .check_args_valid <- function(input_source, subset_def, source_project, source_folder, source_table,
-                              target_project, target_folder, target_table, target_variables, new_project,
+                              target_project, target_folder, target_table, target_vars, new_project,
                               dry_run) {
   if (!is.null(new_project)) {
     target_project <- new_project
