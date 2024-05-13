@@ -28,7 +28,7 @@
 #' \dontrun{
 #' armadillo.subset(
 #'   source_project = "gecko",
-#'   new_project = "study1",
+#'   target_project = "study1",
 #'   subset_def = local_subset
 #' )
 #' }
@@ -75,7 +75,12 @@ armadillo.subset <- function(input_source = NULL, subset_def = NULL, source_proj
 
 #' Builds an R object containing info required to make subsets
 #'
-#' @param reference_csv \code{.csv} file containing vars to subset
+#' @param reference_csv \code{.csv} file containing details of the variable to subset. Must contain 
+#' 5 columns: 'source_folder' specifying the folder from which to subset, 'souce_table' specifying the
+#' table from which to subset, 'target_folder' specifying the folder in which to create the subset 
+#' 'target_table' specifying the name of the subset and 'variable' specifying the variable(s) to 
+#' include in the subset. Note that 'source_project' and 'target_project' are specified as arguments
+#' to `armadillo.subset`. 
 #' @param vars Deprecated: use \code{reference_csv} instead
 #'
 #' @return A dataframe containing variables that is used for input in the
