@@ -138,7 +138,7 @@ armadillo.load_table <- function(project, folder, name) { # nolint
   } else if(.object_exists(project, object_name, ".alf")) {
     info <- .get_linkfile_content(project, object_name)
     variables <- unlist(info$variables)
-    source <- strsplit(info$sourceLink,"/",fixed=T)
+    source <- strsplit(info$sourceLink,"/", fixed=T)
     .load_object(source[[1]][1], source[[1]][2], source[[1]][3], .load_linked_table, ".parquet", variables)
   } else {
     stop(paste0("Table ", project, "/", object_name, " does not exist."))
