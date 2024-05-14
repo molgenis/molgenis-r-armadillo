@@ -169,7 +169,7 @@ armadillo.load_table <- function(project, folder, name) { # nolint
 #' Helper function to get the contents of a linkfile
 #'
 #' @param project projectname where the linkfile is stored
-#' @param objectname folder/name of linkfile
+#' @param object_name folder/name of linkfile
 #'
 #' @return the contents of the linkfile
 #'
