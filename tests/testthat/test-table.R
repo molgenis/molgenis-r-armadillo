@@ -103,6 +103,12 @@ test_that("armadillo.move_table calls .move_object", {
 
 test_that("armadillo.load_table calls .load_object", {
   load_object <- mock()
+  
+  stub_request('head', uri = 'https://test.nl//storage/projects/project/objects/folder%2Fname.parquet') %>%
+    wi_th(
+      headers = list('Accept' = 'application/json, text/xml, application/xml, */*', 'Authorization' = 'Bearer token')
+    ) %>%
+    to_return(status = 204)
 
   with_mock(
     armadillo.load_table(
@@ -119,5 +125,54 @@ test_that("armadillo.load_table calls .load_object", {
     name = "name",
     load_function = .load_table,
     extension = ".parquet"
+  )
+})
+
+test_that("armadillo.load_table calls .load_object with linktable loadfunction", {
+  load_object <- mock()
+  
+  stub_request('head', uri = 'https://test.nl//storage/projects/project1/objects/folder%2Fname.parquet') %>%
+    wi_th(
+      headers = list('Accept' = 'application/json, text/xml, application/xml, */*', 'Authorization' = 'Bearer token')
+    ) %>%
+    to_return(status = 404)
+  
+  stub_request('head', uri = 'https://test.nl//storage/projects/project1/objects/folder%2Fname.alf') %>%
+    wi_th(
+      headers = list('Accept' = 'application/json, text/xml, application/xml, */*', 'Authorization' = 'Bearer token')
+    ) %>%
+    to_return(status = 204)
+  
+  stub_request('get', uri = 'https://test.nl//storage/projects/project1/objects/folder%2Fname.alf/info') %>%
+    wi_th(
+      headers = list('Accept' = 'application/json, text/xml, application/xml, */*', 'Authorization' = 'Bearer token')
+    ) %>%
+    to_return(status = 200, headers = list('Content-Type' = 'application/json; charset=utf-8'),
+    body = '{
+              "name": "folder/name.alf",
+              "size": "955 bytes", 
+              "rows": "3000", 
+              "columns": "6", 
+              "sourceLink": "project/folder/name", 
+              "variables": ["coh_country", "recruit_age","cob_m", "ethn1_m","ethn2_m","ethn3_m"]
+    }'
+    )
+  
+  with_mock(
+    armadillo.load_table(
+      "project1",
+      "folder",
+      "name"
+    ),
+    "MolgenisArmadillo:::.load_object" = load_object
+  )
+  
+  expect_args(load_object, 1,
+              project = "project",
+              folder = "folder",
+              name = "name",
+              load_function = .load_linked_table,
+              extension = ".parquet",
+              load_arg = c("coh_country", "recruit_age","cob_m", "ethn1_m","ethn2_m","ethn3_m")
   )
 })

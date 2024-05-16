@@ -132,7 +132,17 @@ armadillo.copy_table <- # nolint
 #'
 #' @export
 armadillo.load_table <- function(project, folder, name) { # nolint
-  .load_object(project, folder, name, .load_table, ".parquet")
+  object_name <- paste0(folder, "/", name)
+  if(.object_exists(project, object_name, ".parquet")){
+    .load_object(project, folder, name, .load_table, ".parquet")
+  } else if(.object_exists(project, object_name, ".alf")) {
+    info <- .get_linkfile_content(project, object_name)
+    variables <- unlist(info$variables)
+    source <- strsplit(info$sourceLink,"/", fixed=T)
+    .load_object(source[[1]][1], source[[1]][2], source[[1]][3], .load_linked_table, ".parquet", variables)
+  } else {
+    stop(paste0("Table ", project, "/", object_name, " does not exist."))
+  }
 }
 
 #' Helper function to extract a parquet file
@@ -143,6 +153,32 @@ armadillo.load_table <- function(project, folder, name) { # nolint
 #'
 .load_table <- function(file) {
   as.data.frame(arrow::read_parquet(file, as_data_frame = FALSE))
+}
+
+#' Helper function to extract the source parquet file in a linkfile
+#'
+#' @param file source table parquet file
+#' @param columns character list of columns to select from source file
+#'
+#' @return the contents of the file, as data frame
+#'
+.load_linked_table <- function(file, columns) {
+  as.data.frame(arrow::read_parquet(file, as_data_frame = FALSE, col_select = columns))
+}
+
+#' Helper function to get the contents of a linkfile
+#'
+#' @param project projectname where the linkfile is stored
+#' @param object_name folder/name of linkfile
+#'
+#' @return the contents of the linkfile
+#'
+.get_linkfile_content <- function(project, object_name) {
+  response <- httr::GET(paste0(.get_url(), 
+                                .to_object_uri(project, object_name, ".alf"), "/info"),
+                         config = c(httr::add_headers(.get_auth_header())))
+  .handle_request_error(response)
+  httr::content(response, as = "parsed")
 }
 
 #' Move the table

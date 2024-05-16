@@ -402,3 +402,39 @@ test_that(".move_object moves object", {
 
   stub_registry_clear()
 })
+
+test_that(".object_exists returns true if status is 204", {
+  stub_request('head', uri = 'https://test.nl//storage/projects/project/objects/core%2Fnonrep.parquet') %>%
+    wi_th(
+      headers = list('Accept' = 'application/json, text/xml, application/xml, */*', 'Authorization' = 'Bearer token')
+    ) %>%
+    to_return(status = 204)
+  
+  expect_true(
+    .object_exists(
+      project = "project",
+      object_name = "core/nonrep",
+      extension = ".parquet"
+    )
+  )
+  
+  stub_registry_clear()
+})
+
+test_that(".object_exists returns true if status is 204", {
+  stub_request('head', uri = 'https://test.nl//storage/projects/project/objects/core%2Fnonrep.parquet') %>%
+    wi_th(
+      headers = list('Accept' = 'application/json, text/xml, application/xml, */*', 'Authorization' = 'Bearer token')
+    ) %>%
+    to_return(status = 404)
+  
+  expect_false(
+    .object_exists(
+      project = "project",
+      object_name = "core/nonrep",
+      extension = ".parquet"
+    )
+  )
+  
+  stub_registry_clear()
+})
