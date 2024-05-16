@@ -29,16 +29,16 @@ library(MolgenisArmadillo)
 ```
 
 ## Logging in
-In order to access the files you need to log in using the URL of the Armadillo server. A browser window will be opened where you can identify yourself with the ID provider.
+In order to access the files, you need to log in using the URL of the Armadillo server. A browser window will be opened where you can identify yourself with the ID provider.
 
 
 
 ```r
 armadillo.login("https://armadillo-demo.molgenis.net/")
-#> [1] "We're opening a browser so you can log in with code 2DQFNG"
+#> [1] "We're opening a browser so you can log in with code 5FLGYF"
 ```
 
-A session will be created and the credentials are stored in the environment.
+A session will be created and the credentials stored in the environment.
 
 ## Creating the subset
 Let's assume you are in a consortium which has data that can not be shared in entirety to researchers. You want to share a subset of the whole dataset with certain researchers that applied for access to your data. There
@@ -76,7 +76,7 @@ subset_definition
 #> 3 2_1-core-1_0    nonrep       core          non_rep      <tibble [5 × 1]>
 ```
 
-After this you can create a new subset using the subset method on the Armadillo. 
+After this you can create a new subset using the subset method within Armadillo. 
 
 
 
