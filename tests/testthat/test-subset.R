@@ -129,7 +129,7 @@ test_that("It throws an error if source_project is NULL", {
       subset_def = "subset_def", source_folder = "source_folder",
       source_table = "source_table", target_project = "target_project",
       target_folder = "target_folder", target_table = "target_table",
-      target_variables = "target_variables", new_project = NULL,
+      target_vars = "target_vars", new_project = NULL,
       dry_run = NULL
     ),
     "You must provide the name of the source project from which you will subset"
@@ -143,7 +143,7 @@ test_that("It throws an error if target_project is NULL", {
       target_project = NULL, subset_def = "subset_def",
       source_folder = "source_folder", source_table = "source_table",
       target_folder = "target_folder", target_table = "target_table",
-      target_variables = "target_variables", new_project = NULL,
+      target_vars = "target_vars", new_project = NULL,
       dry_run = NULL
     ),
     "You must provide a name for the target project"
@@ -157,7 +157,7 @@ test_that("It throws an error if input_source is 'subset_def' but subset_def is 
       target_project = "target_project", subset_def = NULL,
       source_folder = "source_folder", source_table = "source_table",
       target_folder = "target_folder", target_table = "target_table",
-      target_variables = "target_variables", new_project = NULL,
+      target_vars = "target_vars", new_project = NULL,
       dry_run = NULL
     ),
     "You have specified `input_source = subset_ref` but you have not provided an object created by armadillo.subset_definition containing details of the variables and tables to include in the subset"
@@ -171,10 +171,10 @@ test_that("It throws an error if input_source is 'arguments' but required argume
       target_project = "target_project", subset_def = NULL,
       source_folder = NULL, source_table = NULL,
       target_folder = "target_folder", target_table = "target_table",
-      target_variables = "target_variables", new_project = NULL,
+      target_vars = "target_vars", new_project = NULL,
       dry_run = NULL
     ),
-    "You must provide source_folder, source_table, target_folder, target_table and target_variables if input_source = 'arguments'"
+    "You must provide source_folder, source_table, target_folder, target_table and target_vars if input_source = 'arguments'"
   )
 })
 
@@ -185,7 +185,7 @@ test_that("It displays a message if new_project is provided (deprecated)", {
       target_project = "target_project", new_project = "new_project",
       subset_def = "subset_def", source_folder = "source_folder",
       source_table = "source_table", target_folder = "target_folder",
-      target_table = "target_table", target_variables = "target_variables",
+      target_table = "target_table", target_vars = "target_vars",
       dry_run = NULL
     ),
     "Argument `new project` has now been deprecated: please use `target_project` instead"
@@ -199,7 +199,7 @@ test_that("It displays a message if dry_run is provided (defunct)", {
       target_project = "target_project", dry_run = TRUE,
       subset_def = "subset_def", source_folder = "source_folder",
       source_table = "source_table", target_folder = "target_folder",
-      target_table = "target_table", target_variables = "target_variables",
+      target_table = "target_table", target_vars = "target_vars",
       new_project = "new_project"
     ),
     "Argument `dry_run` is now defunct"
