@@ -85,15 +85,15 @@
 
     
     
-<p>When researchers request access to your data they may in many cases
-not be granted access to the whole dataset, but only to a subset. In
-Armadilllo, access is regulated on the project level, so you will need
-to create a new project using a subset of the data. Here are the
-required steps to create these subsets.</p>
+<p>When researchers request access to your data they may not be granted
+access to the whole dataset, but only to the variables which they will
+use in their project. In Armadilllo, access is regulated on the project
+level, so you will need to create a view containing only these
+variables.</p>
 <div class="section level2">
 <h2 id="install-and-load-the-package">Install and load the package<a class="anchor" aria-label="anchor" href="#install-and-load-the-package"></a>
 </h2>
-<p>You need to install and load the package first to be able to create
+<p>You first need to install and load the package to be able to create
 the subsets.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"MolgenisArmadillo"</span><span class="op">)</span></span></code></pre></div>
@@ -103,124 +103,132 @@ the subsets.</p>
 <div class="section level2">
 <h2 id="logging-in">Logging in<a class="anchor" aria-label="anchor" href="#logging-in"></a>
 </h2>
-<p>In order to access the files you need to log in using the URL of the
+<p>In order to access the files, you need to log in using the URL of the
 Armadillo server. A browser window will be opened where you can identify
 yourself with the ID provider.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.login.html">armadillo.login</a></span><span class="op">(</span><span class="st">"https://armadillo-demo.molgenis.net/"</span><span class="op">)</span></span></code></pre></div>
-<p>A session will be created and the credentials are stored in the
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.login.html">armadillo.login</a></span><span class="op">(</span><span class="st">"https://armadillo-demo.molgenis.net/"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "We're opening a browser so you can log in with code 5FLGYF"</span></span></code></pre></div>
+<p>A session will be created and the credentials stored in the
 environment.</p>
 </div>
 <div class="section level2">
-<h2 id="defining-the-subset">Defining the subset<a class="anchor" aria-label="anchor" href="#defining-the-subset"></a>
+<h2 id="creating-the-subset">Creating the subset<a class="anchor" aria-label="anchor" href="#creating-the-subset"></a>
 </h2>
 <p>Let’s assume you are in a consortium which has data that can not be
-shared in total to the researchers. You want to share a subset of the
+shared in entirety to researchers. You want to share a subset of the
 whole dataset with certain researchers that applied for access to your
-data.</p>
-<p>For each research project, we need to define a .csv file containing 3
+data. There are two ways that you can do this.</p>
+<div class="section level3">
+<h3 id="specify-the-required-variables-in-a-separate--csv-file-">Specify the required variables in a separate .csv file.<a class="anchor" aria-label="anchor" href="#specify-the-required-variables-in-a-separate--csv-file-"></a>
+</h3>
+<p>For each research project, you first create a .csv file containing 5
 columns:</p>
 <table class="table">
+<colgroup>
+<col width="20%">
+<col width="17%">
+<col width="20%">
+<col width="19%">
+<col width="20%">
+</colgroup>
 <thead><tr class="header">
-<th>folder</th>
-<th>table</th>
+<th>source_folder</th>
+<th>source_table</th>
+<th>target_folder</th>
+<th>target_table</th>
 <th>variable</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td>2_1_core_1_0</td>
 <td>yearly_rep</td>
+<td>project1</td>
+<td>yearly_vars</td>
 <td>green_dist_</td>
 </tr>
 <tr class="even">
 <td>2_1_core_1_0</td>
 <td>yearly_rep</td>
+<td>project1</td>
+<td>yearly_vars</td>
 <td>green_size_</td>
 </tr>
 <tr class="odd">
 <td>2_1_core_1_0</td>
 <td>yearly_rep</td>
+<td>project1.</td>
+<td>yearly_vars</td>
 <td>green_access_</td>
 </tr>
 </tbody>
 </table>
-<p>‘folder’ refers a folder within the master project; ‘table’ refers to
-the name of a table within this folder, and ‘variable’ refers to one or
-more variables within this table. Note that these columns need to be
-named exactly as above.</p>
-<p>If you defined the tables then you can construct the
-<code>subset_definition</code>. This creates a tibble within R holding
+<p>‘source_folder’ refers a folder within the master project;
+‘source_table’ refers to the name of a table within this folder,
+‘target_folder’ refers to the name for the new folder within the target
+project, ‘target_table’ refers to the name of the new table within
+‘target_folder’ and ‘variable’ refers to one or more variables within
+source_table (‘source_project’ and ‘target_project’ are specified
+later).</p>
+<p>Note that these columns need to be named exactly as above.</p>
+<p>Once you have defined the tables then you can construct the
+’<code>subset_definition</code>. This creates a tibble within R holding
 the details from the .csv file.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">subset_definition</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/armadillo.subset_definition.html">armadillo.subset_definition</a></span><span class="op">(</span></span>
-<span>  vars <span class="op">=</span> <span class="st">"data/subset/vars.csv"</span><span class="op">)</span></span>
+<span>  reference_csv <span class="op">=</span> <span class="st">"data/subset/vars.csv"</span><span class="op">)</span></span>
 <span><span class="va">subset_definition</span></span>
-<span><span class="co">#&gt; # A tibble: 3 × 3</span></span>
-<span><span class="co">#&gt;   folder          table     vars_to_subset   </span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;           &lt;chr&gt;     &lt;list&gt;           </span></span>
-<span><span class="co">#&gt; 1 2_1-core-1_0    yearlyrep &lt;tibble [15 × 1]&gt;</span></span>
-<span><span class="co">#&gt; 2 1_1-outcome-1_0 yearlyrep &lt;tibble [9 × 1]&gt; </span></span>
-<span><span class="co">#&gt; 3 2_1-core-1_0    nonrep    &lt;tibble [7 × 1]&gt;</span></span></code></pre></div>
-<p>After this you can create a new subset using the subset method on the
-Armadillo. First we are going to perform a dry-run to check whether the
-required folder, tables and variables are present.</p>
+<span><span class="co">#&gt; # A tibble: 3 × 5</span></span>
+<span><span class="co">#&gt;   source_folder   source_table target_folder target_table target_vars      </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;           &lt;chr&gt;        &lt;chr&gt;         &lt;chr&gt;        &lt;list&gt;           </span></span>
+<span><span class="co">#&gt; 1 2_1-core-1_0    yearlyrep    core          year_rep     &lt;tibble [14 × 1]&gt;</span></span>
+<span><span class="co">#&gt; 2 1_1-outcome-1_0 yearlyrep    outcome       year_rep     &lt;tibble [9 × 1]&gt; </span></span>
+<span><span class="co">#&gt; 3 2_1-core-1_0    nonrep       core          non_rep      &lt;tibble [5 × 1]&gt;</span></span></code></pre></div>
+<p>After this you can create a new subset using the subset method within
+Armadillo.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">not_available</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/armadillo.subset.html">armadillo.subset</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.subset.html">armadillo.subset</a></span><span class="op">(</span></span>
+<span>  input_source <span class="op">=</span> <span class="st">"subset_def"</span>,</span>
 <span>    source_project <span class="op">=</span> <span class="st">"gecko"</span>,</span>
-<span>    new_project <span class="op">=</span> <span class="st">"study1"</span>,</span>
-<span>    subset_def <span class="op">=</span> <span class="va">subset_definition</span>,</span>
-<span>    dry_run <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>    target_project <span class="op">=</span> <span class="st">"study1"</span>,</span>
+<span>    subset_def <span class="op">=</span> <span class="va">subset_definition</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">not_available</span></span>
-<span><span class="co">#&gt; # A tibble: 23 × 3</span></span>
-<span><span class="co">#&gt;    folder       table     missing      </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt;        </span></span>
-<span><span class="co">#&gt;  1 2_1-core-1_0 yearlyrep green_dist_  </span></span>
-<span><span class="co">#&gt;  2 2_1-core-1_0 yearlyrep green_size_  </span></span>
-<span><span class="co">#&gt;  3 2_1-core-1_0 yearlyrep green_access_</span></span>
-<span><span class="co">#&gt;  4 2_1-core-1_0 yearlyrep ndvi100_     </span></span>
-<span><span class="co">#&gt;  5 2_1-core-1_0 yearlyrep ndvi300_     </span></span>
-<span><span class="co">#&gt;  6 2_1-core-1_0 yearlyrep ndvi500_     </span></span>
-<span><span class="co">#&gt;  7 2_1-core-1_0 yearlyrep blue_dist_   </span></span>
-<span><span class="co">#&gt;  8 2_1-core-1_0 yearlyrep blue_size_   </span></span>
-<span><span class="co">#&gt;  9 2_1-core-1_0 yearlyrep blue_access_ </span></span>
-<span><span class="co">#&gt; 10 2_1-core-1_0 yearlyrep no2_         </span></span>
-<span><span class="co">#&gt; # ℹ 13 more rows</span></span></code></pre></div>
-<p>This outputs a tibble with details of any variables that are missing
-within the actual data. You can check whether you suspected this or this
-is an anomaly.</p>
-<p>If you are confident that it will work you can run the subset method
-without dry_run.</p>
+<span><span class="co">#&gt; Created project 'study1' without users</span></span>
+<span><span class="co">#&gt; ✔ All views were successfully created!</span></span>
+<span><span class="co">#&gt; ✔ View 'core/year_rep' successfully created</span></span>
+<span><span class="co">#&gt; ✔ View 'outcome/year_rep' successfully created</span></span>
+<span><span class="co">#&gt; ✔ View 'core/non_rep' successfully created</span></span></code></pre></div>
+<p>This method is generally the best choice if you need to create
+subsets for multiple tables.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="specifying-the-subset-via-arguments">Specifying the subset via arguments<a class="anchor" aria-label="anchor" href="#specifying-the-subset-via-arguments"></a>
+</h2>
+<p>An alternative is to specify the subset in R, via arguments to the
+<code>armadillo.subset</code> function:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.subset.html">armadillo.subset</a></span><span class="op">(</span></span>
+<span>  input_source <span class="op">=</span> <span class="st">"arguments"</span>,</span>
 <span>    source_project <span class="op">=</span> <span class="st">"gecko"</span>,</span>
-<span>    new_project <span class="op">=</span> <span class="st">"study1"</span>,</span>
-<span>    subset_def <span class="op">=</span> <span class="va">subset_definition</span>, </span>
-<span>    dry_run <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>    source_folder <span class="op">=</span> <span class="st">"2_1-core-1_0"</span>, </span>
+<span>    source_table <span class="op">=</span> <span class="st">"yearlyrep"</span>,</span>
+<span>    target_project <span class="op">=</span> <span class="st">"study2"</span>,</span>
+<span>    target_folder <span class="op">=</span> <span class="st">"core"</span>,</span>
+<span>    target_table <span class="op">=</span> <span class="st">"year_rep"</span>, </span>
+<span>    target_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"occup_f1_"</span>, <span class="st">"occupcode_f2_"</span>, <span class="st">"edu_f1_"</span>, <span class="st">"edu_f1_fath"</span>, <span class="st">"edu_f2_"</span>, <span class="st">"edu_f2_fath"</span>, <span class="st">"pets_"</span>, <span class="st">"cats_"</span>, <span class="st">"cats_quant_"</span>, <span class="st">"dogs_"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Created project 'study1'</span></span>
-<span><span class="co">#&gt; Compressing...</span></span>
-<span><span class="co">#&gt; Uploaded 2_1-core-1_0/yearlyrep</span></span>
-<span><span class="co">#&gt; Compressing...</span></span>
-<span><span class="co">#&gt; Uploaded 1_1-outcome-1_0/yearlyrep</span></span>
-<span><span class="co">#&gt; Compressing...</span></span>
-<span><span class="co">#&gt; Uploaded 2_1-core-1_0/nonrep</span></span>
-<span><span class="co">#&gt; # A tibble: 23 × 3</span></span>
-<span><span class="co">#&gt;    folder       table     missing      </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt;        </span></span>
-<span><span class="co">#&gt;  1 2_1-core-1_0 yearlyrep green_dist_  </span></span>
-<span><span class="co">#&gt;  2 2_1-core-1_0 yearlyrep green_size_  </span></span>
-<span><span class="co">#&gt;  3 2_1-core-1_0 yearlyrep green_access_</span></span>
-<span><span class="co">#&gt;  4 2_1-core-1_0 yearlyrep ndvi100_     </span></span>
-<span><span class="co">#&gt;  5 2_1-core-1_0 yearlyrep ndvi300_     </span></span>
-<span><span class="co">#&gt;  6 2_1-core-1_0 yearlyrep ndvi500_     </span></span>
-<span><span class="co">#&gt;  7 2_1-core-1_0 yearlyrep blue_dist_   </span></span>
-<span><span class="co">#&gt;  8 2_1-core-1_0 yearlyrep blue_size_   </span></span>
-<span><span class="co">#&gt;  9 2_1-core-1_0 yearlyrep blue_access_ </span></span>
-<span><span class="co">#&gt; 10 2_1-core-1_0 yearlyrep no2_         </span></span>
-<span><span class="co">#&gt; # ℹ 13 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt; Created project 'study2' without users</span></span>
+<span><span class="co">#&gt; ✔ All views were successfully created!</span></span>
+<span><span class="co">#&gt; ✔ View 'core/year_rep' successfully created</span></span></code></pre></div>
+<p>This method may be easier if you only need to create one small
+subset.</p>
+<div class="section level3">
+<h3 id="checking-subsets">Checking subsets<a class="anchor" aria-label="anchor" href="#checking-subsets"></a>
+</h3>
 <p>Now you can also take a look at the files in the armadillo user
 interface, if you open it in a browser window.</p>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

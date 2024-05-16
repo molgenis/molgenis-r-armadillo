@@ -68,7 +68,12 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>reference_csv</dt>
-<dd><p><code>.csv</code> file containing vars to subset</p></dd>
+<dd><p><code>.csv</code> file containing details of the variable to subset. Must contain 
+5 columns: 'source_folder' specifying the folder from which to subset, 'souce_table' specifying the
+table from which to subset, 'target_folder' specifying the folder in which to create the subset 
+'target_table' specifying the name of the subset and 'variable' specifying the variable(s) to 
+include in the subset. Note that 'source_project' and 'target_project' are specified as arguments
+to `armadillo.subset`.</p></dd>
 
 
 <dt>vars</dt>
