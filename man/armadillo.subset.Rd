@@ -59,7 +59,7 @@ This automates the process of:
 \dontrun{
 armadillo.subset(
   source_project = "gecko",
-  new_project = "study1",
+  target_project = "study1",
   subset_def = local_subset
 )
 }
