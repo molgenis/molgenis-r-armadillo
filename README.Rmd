@@ -25,10 +25,6 @@ Client to share data in a [MOLGENIS Armadillo DataSHIELD Service](https://github
 ## Purpose
 This library can be used by data managers to share datasets on a
 MOLGENIS Armadillo server.
-Researchers can then analyse these datasets and datasets shared on other servers
-using DataSHIELD.
-Researchers will only be able to access aggregate information and cannot see
-individual rows.
 
 ## Overview
 The datasets are stored in shared folders on a MinIO file store. The MOLGENIS
@@ -56,7 +52,7 @@ Listing the tables.
 armadillo.list_tables("project")
 ```
 
-Removing the data from the storage. First you need to remove the content of a project before you can throw away the project.
+Removing the data from the storage. First you need to remove the content of a project before you can delete the project.
 ``` R
 armadillo.delete_table("project", "folder", "iris")
 armadillo.delete_project("project")
