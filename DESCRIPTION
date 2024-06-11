@@ -30,7 +30,12 @@ Authors@R:
              family = "Swertz",
              role = c("aut"),
              email = "m.a.swertz@rug.nl",
-             comment = c(ORCID = "0000-0002-0979-3401"))
+             comment = c(ORCID = "0000-0002-0979-3401")),
+      person(given = "Tim",
+             family = "Cadman",
+             role = c("aut"),
+             email = "t.j.cadman@umcg.nl",
+             comment = c(ORCID = "0000-0002-7682-5645"))
       )
 Maintainer: Mariska Slofstra <m.k.slofstra@umcg.nl>
 Depends:
