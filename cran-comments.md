@@ -1,5 +1,8 @@
-## 2.3.3
-* #113 Move arrow to the "suggests" to hopefully be able to stay on CRAN
+## 2.6.2
+* #104 fix: warn before overwriting projects
+* #117 update subset function to use new views functionality in armadillo 2.7.1
+* #123 fix: load_table function to work with subsets as well
+* add Tim as author
 
 ## 2.3.0 
 * #80 Create project with users
