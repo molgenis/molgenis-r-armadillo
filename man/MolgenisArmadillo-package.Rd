@@ -26,6 +26,7 @@ Authors:
   \item Tommy de Boer \email{t.de.boer01@umcg.nl} (\href{https://orcid.org/0000-0002-4492-7225}{ORCID})
   \item Fleur Kelpin \email{fleur@kelpin.nl} (\href{https://orcid.org/0000-0003-1527-5130}{ORCID})
   \item Morris Swertz \email{m.a.swertz@rug.nl} (\href{https://orcid.org/0000-0002-0979-3401}{ORCID})
+  \item Tim Cadman \email{t.j.cadman@umcg.nl} (\href{https://orcid.org/0000-0002-7682-5645}{ORCID})
 }
 
 }

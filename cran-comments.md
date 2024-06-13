@@ -1,4 +1,4 @@
-## 2.6.2
+## 2.6.3
 * #104 fix: warn before overwriting projects
 * #117 update subset function to use new views functionality in armadillo 2.7.1
 * #123 fix: load_table function to work with subsets as well
