@@ -9,7 +9,7 @@
 \arguments{
 \item{project}{projectname where the linkfile is stored}
 
-\item{objectname}{folder/name of linkfile}
+\item{object_name}{folder/name of linkfile}
 }
 \value{
 the contents of the linkfile
