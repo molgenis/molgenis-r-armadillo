@@ -302,15 +302,25 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 
 #' Creates the URL for the API request
 #' @param target_project Project to upload subset to.
-#' @importFrom stringr str_ends
 #' @noRd
 .make_post_url <- function(target_project) {
-  server_url <- .get_url()
-  if(!str_ends(server_url, "/")) {
-    server_url <- paste0(server_url, "/")
-  }
-  
+  server_url <- .add_slash_if_missing(.get_url())
   return(sprintf("%sstorage/projects/%s/objects/link", server_url, target_project))
+}
+
+#' Add a Slash to a URL if Missing
+#'
+#' This function ensures that a given URL string ends with a slash ('/'). 
+#' If the URL does not end with a slash, it appends one.
+#'
+#' @param url A character string representing the URL.
+#' @return A character string with a trailing slash if it was missing.
+#' @importFrom stringr str_ends
+.add_slash_if_missing <- function(url) {
+  if(!str_ends(url, "/")) {
+    url <- paste0(url, "/")
+  }
+  return(url)
 }
 
 #' Creates JSON body for the API request
