@@ -533,3 +533,16 @@ test_that("armadillo.subset fails if subset_def is NULL", {
     fixed = TRUE
   )
 })
+
+test_that(".add_slash_if_missing adds a slash to the end of the URL if not present", {
+  expect_equal(
+    .add_slash_if_missing("https://armadillo-demo.molgenis.net"), 
+    "https://armadillo-demo.molgenis.net/"
+  )
+  
+  expect_equal(
+    .add_slash_if_missing("https://armadillo-demo.molgenis.net/"), 
+    "https://armadillo-demo.molgenis.net/"
+  )
+  
+})
