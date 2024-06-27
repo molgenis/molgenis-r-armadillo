@@ -302,9 +302,15 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 
 #' Creates the URL for the API request
 #' @param target_project Project to upload subset to.
+#' @importFrom stringr str_ends
 #' @noRd
 .make_post_url <- function(target_project) {
-  return(sprintf("%sstorage/projects/%s/objects/link", .get_url(), target_project))
+  server_url <- .get_url()
+  if(!str_ends(server_url, "/")) {
+    server_url <- paste0(server_url, "/")
+  }
+  
+  return(sprintf("%sstorage/projects/%s/objects/link", server_url, target_project))
 }
 
 #' Creates JSON body for the API request
