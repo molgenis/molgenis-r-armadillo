@@ -63,8 +63,7 @@ Suggests:
     webmockr,
     mockery,
     datasets,
-    rmarkdown,
-    DSMolgenisArmadillo
+    rmarkdown
 License: LGPL (>= 2.1)
 URL: https://github.com/molgenis/molgenis-r-armadillo/,
   https://molgenis.github.io/molgenis-r-armadillo/
