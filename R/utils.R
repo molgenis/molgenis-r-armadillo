@@ -84,3 +84,15 @@
     )
   }
 }
+
+#' split_and_unlist splits the provided string based on the provided separator and returns the unlisted item
+#'
+#' @param item_to_split string to split
+#' @param separator character to split on
+#' 
+#' @return splitted unlisted item
+#'
+#' @noRd
+.split_and_unlist <- function(item_to_split, separator){
+  return(unlist(strsplit(item_to_split, split=separator, fixed = TRUE)))
+}
