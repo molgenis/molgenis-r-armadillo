@@ -131,7 +131,7 @@ armadillo.delete_project_folder <- function(project, folder) { #nolint
     }
   })
   filtered_objects <- Filter(Negate(is.null), objects)
-  sapply(filtered_objects, .delete_object_from_project)
+  sapply(filtered_objects, .delete_object)
   message(paste0("Deleted '", project, "/", folder, "'"))
 }
 

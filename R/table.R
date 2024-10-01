@@ -72,7 +72,7 @@ armadillo.list_tables <- function(project) { # nolint
 #'
 #' @export
 armadillo.delete_table <- function(project, folder, name) { # nolint
-  .delete_object(project, folder, name, ".parquet")
+  .delete_object_with_extension(project, folder, name, ".parquet")
 }
 
 #' Copy table
