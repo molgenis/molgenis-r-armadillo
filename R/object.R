@@ -55,6 +55,14 @@
   tools::file_path_sans_ext(objects_filtered)
 }
 
+#' List the objects in a project
+#'
+#' @param project the shared project in which the objects are located
+#'
+#' @return the object names, without the extension
+#'
+#' @importFrom httr GET
+#' @noRd
 .list_objects <- function(project) { # nolint
   response <- httr::GET(
     url = .get_url(),
@@ -85,7 +93,7 @@
   return(items)
 }
 
-#' Delete object
+#' Delete object with specific extension
 #'
 #' @param project project to delete the object from
 #' @param folder folder to delete the object from
@@ -94,7 +102,7 @@
 #'
 #' @importFrom httr DELETE
 #' @noRd
-.delete_object <- function(project, folder, name, extension) { # nolint
+.delete_object_with_extension <- function(project, folder, name, extension) { # nolint
   object_name <- paste0(folder, "/", name)
 
   response <- httr::DELETE(
@@ -107,13 +115,14 @@
   message(paste0("Deleted '", object_name, "'"))
 }
 
-#' Delete object from project
-#' @param object_to_delete object to delete, string in format project/folder/name.extension
+#' Delete object
+#' 
+#' @param object object to delete, string in format project/folder/name.extension
 #' 
 #' @noRd
-.delete_object_from_project <- function(object_to_delete) {
-  object_parts <- .get_object_parts(object_to_delete)
-  suppressMessages(.delete_object(object_parts$project, object_parts$folder, object_parts$object, object_parts$extension))
+.delete_object <- function(object) {
+  object_parts <- .get_object_parts(object)
+  suppressMessages(.delete_object_with_extension(object_parts$project, object_parts$folder, object_parts$object, object_parts$extension))
 }
 
 #' Copy object

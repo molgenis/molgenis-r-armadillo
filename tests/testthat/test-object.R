@@ -127,7 +127,7 @@ test_that(".list_objects_by_extension lists the objects in a project", {
   stub_registry_clear()
 })
 
-test_that(".delete_object handles errors", {
+test_that(".delete_object_with_extension handles errors", {
   stub_request("delete",
     uri = paste0(
       "https://test.nl/storage/projects/project/",
@@ -143,14 +143,14 @@ test_that(".delete_object handles errors", {
     )
 
   expect_error(
-    .delete_object("project", "core", "nonrep", ".parquet"),
+    .delete_object_with_extension("project", "core", "nonrep", ".parquet"),
     "object not found"
   )
 
   stub_registry_clear()
 })
 
-test_that(".delete_object deletes an object", {
+test_that(".delete_object_with_extension deletes an object with parquet extension", {
   stub_request("delete",
     uri = paste0(
       "https://test.nl/storage/projects/project/objects/",
@@ -162,7 +162,7 @@ test_that(".delete_object deletes an object", {
     )
 
   expect_message(
-    .delete_object("project", "core", "nonrep", ".parquet"),
+    .delete_object_with_extension("project", "core", "nonrep", ".parquet"),
     "Deleted 'core/nonrep'"
   )
 
