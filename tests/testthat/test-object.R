@@ -438,3 +438,42 @@ test_that(".object_exists returns true if status is 204", {
   
   stub_registry_clear()
 })
+test_that(".object_exists returns true if status is 204", {
+  stub_request('head', uri = 'https://test.nl//storage/projects/project/objects/core%2Fnonrep.parquet') %>%
+    wi_th(
+      headers = list('Accept' = 'application/json, text/xml, application/xml, */*', 'Authorization' = 'Bearer token')
+    ) %>%
+    to_return(status = 404)
+  
+  expect_false(
+    .object_exists(
+      project = "project",
+      object_name = "core/nonrep",
+      extension = ".parquet"
+    )
+  )
+  
+  stub_registry_clear()
+})
+test_that(".get_object_parts returns parts of an object based on an object string", {
+  object_string <- "project/folder/table.parquet"
+  object_parts <- .get_object_parts(object_string)
+  expected <- list()
+  expected$project <- "project"
+  expected$folder <- "folder"
+  expected$object <- "table"
+  expected$extension <- ".parquet"
+  expected$name <- "folder/table"
+  expect_equal(object_parts, expected)
+})
+test_that(".delete_object calls .get_object_parts and .delete_object_with_extension", {
+  delete_obj <- mock()
+  obj_parts <- mock()
+  with_mock( .delete_object_with_extension = delete_obj, .get_object_parts = obj_parts,
+    {
+      .delete_object("project/folder/table.parquet")
+    }
+  )
+  expect_called(delete_obj, 1)
+  expect_called(obj_parts, 1)
+})
