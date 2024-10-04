@@ -469,10 +469,10 @@ test_that(".get_object_parts returns parts of an object based on an object strin
 test_that(".delete_object calls .get_object_parts and .delete_object_with_extension", {
   delete_obj <- mock()
   obj_parts <- mock()
-  with_mock( .delete_object_with_extension = delete_obj, .get_object_parts = obj_parts,
-    {
-      .delete_object("project/folder/table.parquet")
-    }
+  testthat::with_mocked_bindings(
+    .delete_object(object="project/folder/table.parquet"),
+    .delete_object_with_extension = delete_obj, 
+    .get_object_parts = obj_parts
   )
   expect_called(delete_obj, 1)
   expect_called(obj_parts, 1)
