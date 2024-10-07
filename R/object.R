@@ -49,7 +49,21 @@
 #' @noRd
 .list_objects_by_extension <- function(project, extension) { # nolint
   extension_regex <- paste0(extension, "$")
+  content <- .list_objects(project)
+  objects <- sapply(content, function(object) object[1])
+  objects_filtered <- objects[grepl(extension_regex, objects)]
+  tools::file_path_sans_ext(objects_filtered)
+}
 
+#' List the objects in a project
+#'
+#' @param project the shared project in which the objects are located
+#'
+#' @return the object names, without the extension
+#'
+#' @importFrom httr GET
+#' @noRd
+.list_objects <- function(project) { # nolint
   response <- httr::GET(
     url = .get_url(),
     path = paste0("/storage/projects/", project, "/objects"),
@@ -57,14 +71,29 @@
   )
   .handle_request_error(response)
   content <- httr::content(response, as = "parsed")
-
-  objects <- sapply(content, function(object) object[1])
-  objects_filtered <- objects[grepl(extension_regex, objects)]
-  tools::file_path_sans_ext(objects_filtered)
+  return(content)
 }
 
+#' .get_object_parts 
+#'
+#' @param object string with project/folder/file.extension
+#'
+#' @returns list with project, name (folder/object), folder, object and extension
+#' @noRd
+.get_object_parts <- function(object) {
+  items <- list()
+  items$project <- .split_and_unlist(object, "/")[1]
+  object_path <- gsub(paste0(items$project, "/"), "", object)
+  name_and_extension <- .split_and_unlist(object_path, ".")
+  folder_and_object <- .split_and_unlist( name_and_extension[1], "/")
+  items$folder <- folder_and_object[1]
+  items$object <- folder_and_object[2]
+  items$extension <- paste0(".", name_and_extension[2])
+  items$name <- name_and_extension[1]
+  return(items)
+}
 
-#' Delete object
+#' Delete object with specific extension
 #'
 #' @param project project to delete the object from
 #' @param folder folder to delete the object from
@@ -73,7 +102,7 @@
 #'
 #' @importFrom httr DELETE
 #' @noRd
-.delete_object <- function(project, folder, name, extension) { # nolint
+.delete_object_with_extension <- function(project, folder, name, extension) { # nolint
   object_name <- paste0(folder, "/", name)
 
   response <- httr::DELETE(
@@ -84,6 +113,16 @@
   .handle_request_error(response)
 
   message(paste0("Deleted '", object_name, "'"))
+}
+
+#' Delete object
+#' 
+#' @param object object to delete, string in format project/folder/name.extension
+#' 
+#' @noRd
+.delete_object <- function(object) {
+  object_parts <- .get_object_parts(object)
+  suppressMessages(.delete_object_with_extension(object_parts$project, object_parts$folder, object_parts$object, object_parts$extension))
 }
 
 #' Copy object

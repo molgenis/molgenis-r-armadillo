@@ -52,11 +52,11 @@ test_that("armadillo.list_tables calls .list_objects_by_extension", {
   )
 })
 
-test_that("armadillo.delete_table calls .delete_object", {
+test_that("armadillo.delete_table calls .delete_object_with_extension", {
   delete_object <- mock()
 
   with_mock(armadillo.delete_table("project", "folder", "name"),
-    "MolgenisArmadillo:::.delete_object" = delete_object
+    "MolgenisArmadillo:::.delete_object_with_extension" = delete_object
   )
 
   expect_args(delete_object, 1,

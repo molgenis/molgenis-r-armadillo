@@ -5,7 +5,7 @@
 #'
 #' @noRd
 .to_readable_name <- function(bucket_name) {
-  name_parts <- unlist(strsplit(bucket_name, "-"))
+  name_parts <- .split_and_unlist(bucket_name, "-")
   paste0(name_parts[2:length(name_parts)], collapse = "-")
 }
 

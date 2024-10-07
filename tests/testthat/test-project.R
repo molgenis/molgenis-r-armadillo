@@ -381,3 +381,22 @@ test_that(".get_overwrite_choice where overwrite is set to FALSE", {
     .get_overwrite_choice(project_name = "lifecycle", project_exists = TRUE, overwrite_existing = "no"),
   )
 })
+test_that("armadillo.delete_project_folder calls functions to delete folder from project", {
+  delete_obj_mock <- mock()
+  list_obj <- list(
+    "project/folder1/obj1", 
+    "project/folder1/obj2", 
+    "project/folder2/obj3", 
+    "project/folder2/obj4", 
+    "project/folder2/obj5", 
+    "project/folder3/obj6", 
+    "project/folder3/obj7")
+
+  testthat::with_mocked_bindings(
+    armadillo.delete_project_folder(project = "project", folder="folder2"),
+    .list_objects = function(project) {return(list_obj)},
+    .delete_object = delete_obj_mock
+  )
+
+  expect_called(delete_obj_mock, 3)
+})

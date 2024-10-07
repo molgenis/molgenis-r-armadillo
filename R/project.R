@@ -114,6 +114,26 @@ armadillo.get_projects_info <- function() { # nolint
   return(.get_projects_content())
 }
 
+#' Delete project folder
+#'
+#' @param project project to delete the object from
+#' @param folder folder to delete the object from
+#'
+#' @importFrom httr GET
+#' 
+#' @export
+armadillo.delete_project_folder <- function(project, folder) { #nolint
+  content <- .list_objects(project)
+  objects <- sapply(content, function(object) {
+    object_in_folder <- gsub(paste0(project, "/"), "", object)
+    if (startsWith(object_in_folder, folder)) {
+      return(paste0(project, "/", object_in_folder))
+    }
+  })
+  filtered_objects <- Filter(Negate(is.null), objects)
+  sapply(filtered_objects, .delete_object)
+  message(paste0("Deleted '", project, "/", folder, "'"))
+}
 
 #' Gets the users of an given project name
 #'
@@ -150,7 +170,7 @@ armadillo.get_project_users <- function(project_name) { # nolint
   content <- httr::content(response, as = "parsed")
   return(content)
 }
-
+ 
 #' Displays a menu with choices if the project already exists
 #'
 #' @param project_name the name of the target project

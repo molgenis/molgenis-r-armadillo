@@ -70,7 +70,7 @@ armadillo.list_resources <- function(project) { # nolint
 #'
 #' @export
 armadillo.delete_resource <- function(project, folder, name) { # nolint
-  .delete_object(project, folder, name, ".rds")
+  .delete_object_with_extension(project, folder, name, ".rds")
 }
 
 #' Copy resource

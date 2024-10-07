@@ -127,7 +127,7 @@ test_that(".list_objects_by_extension lists the objects in a project", {
   stub_registry_clear()
 })
 
-test_that(".delete_object handles errors", {
+test_that(".delete_object_with_extension handles errors", {
   stub_request("delete",
     uri = paste0(
       "https://test.nl/storage/projects/project/",
@@ -143,14 +143,14 @@ test_that(".delete_object handles errors", {
     )
 
   expect_error(
-    .delete_object("project", "core", "nonrep", ".parquet"),
+    .delete_object_with_extension("project", "core", "nonrep", ".parquet"),
     "object not found"
   )
 
   stub_registry_clear()
 })
 
-test_that(".delete_object deletes an object", {
+test_that(".delete_object_with_extension deletes an object with parquet extension", {
   stub_request("delete",
     uri = paste0(
       "https://test.nl/storage/projects/project/objects/",
@@ -162,7 +162,7 @@ test_that(".delete_object deletes an object", {
     )
 
   expect_message(
-    .delete_object("project", "core", "nonrep", ".parquet"),
+    .delete_object_with_extension("project", "core", "nonrep", ".parquet"),
     "Deleted 'core/nonrep'"
   )
 
@@ -437,4 +437,43 @@ test_that(".object_exists returns true if status is 204", {
   )
   
   stub_registry_clear()
+})
+test_that(".object_exists returns true if status is 204", {
+  stub_request('head', uri = 'https://test.nl//storage/projects/project/objects/core%2Fnonrep.parquet') %>%
+    wi_th(
+      headers = list('Accept' = 'application/json, text/xml, application/xml, */*', 'Authorization' = 'Bearer token')
+    ) %>%
+    to_return(status = 404)
+  
+  expect_false(
+    .object_exists(
+      project = "project",
+      object_name = "core/nonrep",
+      extension = ".parquet"
+    )
+  )
+  
+  stub_registry_clear()
+})
+test_that(".get_object_parts returns parts of an object based on an object string", {
+  object_string <- "project/folder/table.parquet"
+  object_parts <- .get_object_parts(object_string)
+  expected <- list()
+  expected$project <- "project"
+  expected$folder <- "folder"
+  expected$object <- "table"
+  expected$extension <- ".parquet"
+  expected$name <- "folder/table"
+  expect_equal(object_parts, expected)
+})
+test_that(".delete_object calls .get_object_parts and .delete_object_with_extension", {
+  delete_obj <- mock()
+  obj_parts <- mock()
+  testthat::with_mocked_bindings(
+    .delete_object(object="project/folder/table.parquet"),
+    .delete_object_with_extension = delete_obj, 
+    .get_object_parts = obj_parts
+  )
+  expect_called(delete_obj, 1)
+  expect_called(obj_parts, 1)
 })

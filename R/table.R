@@ -72,7 +72,7 @@ armadillo.list_tables <- function(project) { # nolint
 #'
 #' @export
 armadillo.delete_table <- function(project, folder, name) { # nolint
-  .delete_object(project, folder, name, ".parquet")
+  .delete_object_with_extension(project, folder, name, ".parquet")
 }
 
 #' Copy table
@@ -133,13 +133,13 @@ armadillo.copy_table <- # nolint
 #' @export
 armadillo.load_table <- function(project, folder, name) { # nolint
   object_name <- paste0(folder, "/", name)
-  if(.object_exists(project, object_name, ".parquet")){
+  if(.object_exists(project, object_name, ".parquet")) {
     .load_object(project, folder, name, .load_table, ".parquet")
-  } else if(.object_exists(project, object_name, ".alf")) {
+  } else if (.object_exists(project, object_name, ".alf")) {
     info <- .get_linkfile_content(project, object_name)
     variables <- unlist(info$variables)
-    source <- strsplit(info$sourceLink,"/", fixed=T)
-    .load_object(source[[1]][1], source[[1]][2], source[[1]][3], .load_linked_table, ".parquet", variables)
+    source <- .split_and_unlist(info$sourceLink, "/")
+    .load_object(source[1], source[2], source[3], .load_linked_table, ".parquet", variables)
   } else {
     stop(paste0("Table ", project, "/", object_name, " does not exist."))
   }
