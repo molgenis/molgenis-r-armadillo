@@ -1,3 +1,6 @@
+## 2.7.0
+* feat: delete folder from project function called: delete_project_folder
+
 ## 2.6.3
 * #104 fix: warn before overwriting projects
 * #117 update subset function to use new views functionality in armadillo 2.7.1
