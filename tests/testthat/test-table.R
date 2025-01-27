@@ -176,3 +176,50 @@ test_that("armadillo.load_table calls .load_object with linktable loadfunction",
               load_arg = c("coh_country", "recruit_age","cob_m", "ethn1_m","ethn2_m","ethn3_m")
   )
 })
+
+test_that("armadillo.list_table shows .parquet and .alf files", {
+  list_obj <- list(
+    "project/folder1/obj1.parquet", 
+    "project/folder1/obj2.parquet", 
+    "project/folder2/obj3.alf", 
+    "project/folder2/obj4.alf")
+  
+  testthat::with_mocked_bindings(
+    observed <- armadillo.list_tables(project = "project"),
+    .list_objects = function(project) {return(list_obj)},
+  )
+  
+  expected <- c(
+    "project/folder1/obj1", 
+    "project/folder1/obj2", 
+    "project/folder2/obj3", 
+    "project/folder2/obj4")
+  
+  print(observed)
+  expect_equal(observed, as.character(expected))
+})
+
+test_that("armadillo.list_table doesn't show other files", {
+  list_obj <- list(
+    "project/folder1/obj1.parquet", 
+    "project/folder1/obj2.parquet", 
+    "project/folder2/obj3.alf", 
+    "project/folder2/obj4.alf", 
+    "project/folder2/obj5.csv", 
+    "project/folder2/obj6.RData")
+  
+  testthat::with_mocked_bindings(
+    observed <- armadillo.list_tables(project = "project"),
+    .list_objects = function(project) {return(list_obj)},
+  )
+  
+  expected <- c(
+    "project/folder1/obj1", 
+    "project/folder1/obj2", 
+    "project/folder2/obj3", 
+    "project/folder2/obj4")
+  
+  print(observed)
+  expect_equal(observed, as.character(expected))
+})
+
