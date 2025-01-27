@@ -52,7 +52,12 @@ armadillo.upload_table <- function(project, folder, table, name = NULL) { # noli
 #'
 #' @export
 armadillo.list_tables <- function(project) { # nolint
-  .list_objects_by_extension(project, ".parquet")
+  return(
+    c(
+      .list_objects_by_extension(project, ".parquet"),
+      .list_objects_by_extension(project, ".alf")
+    )
+  )
 }
 
 #' Delete table
