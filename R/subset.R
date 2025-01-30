@@ -38,7 +38,7 @@ armadillo.subset <- function(input_source = NULL, subset_def = NULL, source_proj
                              source_table = NULL, target_project = NULL, target_folder = NULL,
                              target_table = NULL, target_vars = NULL, new_project = NULL,
                              dry_run = NULL) {
-  
+  print("This is the new version")
   .check_backend_version()
   .check_args_valid(
     input_source, subset_def, source_project, source_folder, source_table,
