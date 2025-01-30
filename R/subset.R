@@ -523,8 +523,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' This function checks if the Armadillo backend version meets the minimum required version (`4.7.1`).
 #' If the version is below the required threshold, an error is raised with instructions for upgrading.
 #' @details
-#' The function retrieves the Armadillo version from the backend API endpoint
-#' (`https://armadillo-demo.molgenis.net/actuator/info`). If the version is lower than `4.7.1`,
+#' The function retrieves the Armadillo version from the backend API endpoint. If the version is lower than `4.7.1`,
 #' it aborts execution with an informative error message.
 #' @return
 #' @importFrom cli cli_abort
