@@ -533,7 +533,9 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' or raises an error if the version is too low.
 #' @noRd
 .check_backend_version <- function() {
-  armadillo_info <- request("https://armadillo-demo.molgenis.net/actuator/info") |>
+  server_url <- .add_slash_if_missing(.get_url())
+  print(server_url)
+  armadillo_info <- request(paste0(server_url, "actuator/info")) |>
     req_perform()
   version <- resp_body_json(armadillo_info)$build$version
   if(numeric_version(version) < numeric_version("4.7.1")) {
