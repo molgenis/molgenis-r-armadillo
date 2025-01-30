@@ -527,6 +527,8 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' (`https://armadillo-demo.molgenis.net/actuator/info`). If the version is lower than `4.7.1`,
 #' it aborts execution with an informative error message.
 #' @return
+#' @importFrom cli cli_abort
+#' @importFrom httr2 request req_perform resp_body_json
 #' This function does not return a value. It either allows execution to continue if the version is valid
 #' or raises an error if the version is too low.
 #' @noRd
@@ -535,7 +537,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
     req_perform()
   version <- resp_body_json(armadillo_info)$build$version
   if(numeric_version(version) < numeric_version("4.7.1")) {
-    cli_abort(
+    cli::cli_abort(
       c(
         "x" = "`armadillo.subset` is only compatible with Armadillo versions 4.7.1 and above", 
         "i" = "Your Armadillo version is {version}", 
