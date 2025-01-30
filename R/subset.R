@@ -38,6 +38,8 @@ armadillo.subset <- function(input_source = NULL, subset_def = NULL, source_proj
                              source_table = NULL, target_project = NULL, target_folder = NULL,
                              target_table = NULL, target_vars = NULL, new_project = NULL,
                              dry_run = NULL) {
+  
+  .check_backend_version()
   .check_args_valid(
     input_source, subset_def, source_project, source_folder, source_table,
     target_project, target_folder, target_table, target_vars, new_project,
@@ -515,4 +517,29 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 .handle_success_messages <- function(successes) {
   success_neat <- .format_success_message(successes)
   success_neat %>% walk(cli_alert_success)
+}
+
+#' Check Armadillo Backend Version
+#' This function checks if the Armadillo backend version meets the minimum required version (`4.7.1`).
+#' If the version is below the required threshold, an error is raised with instructions for upgrading.
+#' @details
+#' The function retrieves the Armadillo version from the backend API endpoint
+#' (`https://armadillo-demo.molgenis.net/actuator/info`). If the version is lower than `4.7.1`,
+#' it aborts execution with an informative error message.
+#' @return
+#' This function does not return a value. It either allows execution to continue if the version is valid
+#' or raises an error if the version is too low.
+#' @noRd
+.check_backend_version <- function() {
+  armadillo_info <- request("https://armadillo-demo.molgenis.net/actuator/info") |>
+    req_perform()
+  version <- resp_body_json(armadillo_info)$build$version
+  if(numeric_version(version) < numeric_version("4.7.1")) {
+    cli_abort(
+      c(
+        "x" = "`armadillo.subset` is only compatible with Armadillo versions 4.7.1 and above", 
+        "i" = "Your Armadillo version is {version}", 
+        "i" = "To upgrade Armadillo please consult the documentation at https://molgenis.github.io/molgenis-service-armadillo/pages/install_management/"),
+      call = NULL)
+  }
 }
