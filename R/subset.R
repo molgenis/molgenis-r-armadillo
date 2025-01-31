@@ -532,8 +532,8 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @noRd
 .check_backend_version <- function() {
   server_url <- .add_slash_if_missing(.get_url())
-  armadillo_info <- request(paste0(server_url, "actuator/info")) |>
-    req_perform()
+  endpoint_request <- request(paste0(server_url, "actuator/info")) 
+  armadillo_info <- req_perform(endpoint_request)
   version <- resp_body_json(armadillo_info)$build$version
   if(numeric_version(version) < numeric_version("4.7.1")) {
     cli::cli_abort(
