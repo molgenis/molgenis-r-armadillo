@@ -43,6 +43,7 @@ armadillo.subset <- function(input_source = NULL, subset_def = NULL, source_proj
     target_project, target_folder, target_table, target_vars, new_project,
     dry_run
   )
+  .check_backend_version()
 
   if (input_source == "arguments") {
     subset_def <- .create_subset_def_from_arguments(
@@ -515,4 +516,31 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 .handle_success_messages <- function(successes) {
   success_neat <- .format_success_message(successes)
   success_neat %>% walk(cli_alert_success)
+}
+
+#' Check Armadillo Backend Version
+#' This function checks if the Armadillo backend version meets the minimum required version (`4.7.1`).
+#' If the version is below the required threshold, an error is raised with instructions for upgrading.
+#' @details
+#' The function retrieves the Armadillo version from the backend API endpoint. If the version is lower than `4.7.1`,
+#' it aborts execution with an informative error message.
+#' @return
+#' @importFrom cli cli_abort
+#' @importFrom httr2 request req_perform resp_body_json
+#' This function does not return a value. It either allows execution to continue if the version is valid
+#' or raises an error if the version is too low.
+#' @noRd
+.check_backend_version <- function() {
+  server_url <- .add_slash_if_missing(.get_url())
+  endpoint_request <- request(paste0(server_url, "actuator/info")) 
+  armadillo_info <- req_perform(endpoint_request)
+  version <- resp_body_json(armadillo_info)$build$version
+  if(numeric_version(version) < numeric_version("4.7.1")) {
+    cli::cli_abort(
+      c(
+        "x" = "`armadillo.subset` is only compatible with Armadillo versions 4.7.1 and above", 
+        "i" = "Your Armadillo version is {version}", 
+        "i" = "To upgrade Armadillo please consult the documentation at https://molgenis.github.io/molgenis-service-armadillo/pages/install_management/"),
+      call = NULL)
+  }
 }

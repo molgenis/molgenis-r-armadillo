@@ -546,3 +546,53 @@ test_that(".add_slash_if_missing adds a slash to the end of the URL if not prese
   )
   
 })
+
+test_that(".check_backend_version throws an error if version is below 4.7.1", {
+  stub_request('get', uri = 'https://test.nl/actuator/info')
+  info_from_api <- list(
+    build = list(
+      artifact = "molgenis-armadillo",
+      name = "molgenis-armadillo",
+      time = "2024-10-22T10:50:48.110Z",
+      version = "4.1.3",
+      group = "org.molgenis"
+    ),
+    auth = list(
+      issuerUri = "https://lifecycle-auth.molgenis.org",
+      clientId = "b1b52e3c-4505-4326-993b-3d99df64ef6c"
+    )
+  )
+  expect_error(
+    with_mocked_bindings(
+      .check_backend_version(),
+      resp_body_json = function(api_response){info_from_api},
+      request = function(url){},
+      req_perform = function(object){}
+    )
+  )
+})
+
+test_that(".check_backend_version doesn't throw an error if version is equal or above 4.7.1", {
+  stub_request('get', uri = 'https://test.nl/actuator/info')
+  info_from_api <- list(
+    build = list(
+      artifact = "molgenis-armadillo",
+      name = "molgenis-armadillo",
+      time = "2024-10-22T10:50:48.110Z",
+      version = "4.7.1",
+      group = "org.molgenis"
+    ),
+    auth = list(
+      issuerUri = "https://lifecycle-auth.molgenis.org",
+      clientId = "b1b52e3c-4505-4326-993b-3d99df64ef6c"
+    )
+  )
+  expect_silent(
+    with_mocked_bindings(
+      .check_backend_version(),
+      resp_body_json = function(api_response){info_from_api},
+      request = function(url){},
+      req_perform = function(object){}
+    )
+  )
+})
