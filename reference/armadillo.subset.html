@@ -66,7 +66,8 @@ Make the subset
 <span>  target_table <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  target_vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  new_project <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  dry_run <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  dry_run <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  strict <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -120,6 +121,12 @@ Compulsory if input_source = 'arguments'.</p></dd>
 
 <dt id="arg-dry-run">dry_run<a class="anchor" aria-label="anchor" href="#arg-dry-run"></a></dt>
 <dd><p>Defunct: previously enabgled dry-run to check which variables are missing</p></dd>
+
+
+<dt id="arg-strict">strict<a class="anchor" aria-label="anchor" href="#arg-strict"></a></dt>
+<dd><p>Boolean specifying whether to create subset if one or more target variables do not
+exist in the target data. Option FALSE will throw and error, option TRUE (default) creates subset
+and return a warning</p></dd>
 
 </dl></div>
     <div class="section level2">
