@@ -18,6 +18,9 @@
 #' @param target_table table to upload subset to. Compulsory if input_source = 'arguments'.
 #' @param target_vars variables from `source_table` to include in the view.
 #' Compulsory if input_source = 'arguments'.
+#' @param strict Boolean specifying whether to create subset if one or more target variables do not 
+#' exist in the target data. Option FALSE will throw and error, option TRUE (default) creates subset 
+#' and return a warning
 #' @param new_project Deprecated: use \code{target_project} instead
 #' @param dry_run Defunct: previously enabgled dry-run to check which variables are missing
 #' @importFrom cli cli_alert_success
@@ -389,7 +392,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
           target_folder, target_table, unlist(target_vars)
         ) |>
           .put_api_request()
-        missing_vars_exist <- .check_missing_var_message(result)
+        missing_vars_exist <- .check_missing_vars_message(result)
 
         if(missing_vars_exist & strict == F){
           missing_vars <- .extract_missing_vars(result)
@@ -537,10 +540,11 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' The function retrieves the Armadillo version from the backend API endpoint. If the version is lower than `4.7.1`,
 #' it aborts execution with an informative error message.
 #' @return
-#' @importFrom cli cli_abort
-#' @importFrom httr2 request req_perform resp_body_json
 #' This function does not return a value. It either allows execution to continue if the version is valid
 #' or raises an error if the version is too low.
+#' @importFrom cli cli_abort
+#' @importFrom httr2 request req_perform resp_body_json
+
 #' @noRd
 .check_backend_version <- function() {
   server_url <- .add_slash_if_missing(.get_url())
@@ -557,25 +561,63 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
   }
 }
 
-
+#' Extract missing variables from response message
+#'
+#' This function extracts missing variable names from the message field of a response object.
+#' It looks for variable names enclosed in square brackets (e.g., `[var1, var2]`) and returns them 
+#' as a character vector.
+#'
+#' @param result A response object from an `httr2` request.
+#' @return A character vector of missing variable names.
+#' @importFrom httr2 resp_body_json
+#' @importFrom stringr str_extract_all str_split
+#' @noRd
 .extract_missing_vars <- function(result) {
   message <- resp_body_json(result)$message
   str_extract_all(message, "(?<=\\[)[^\\]]+(?=\\])")[[1]] |>
-    str_split(", ", simplify = F) |>
+    str_split(", ", simplify = FALSE) |>
     unlist()
 }
 
+#' Print a message for missing variables
+#'
+#' This function prints a warning message indicating which variables are missing from the source table.
+#'
+#' @param missing_vars A character vector of missing variable names.
+#' @param source_table A character string representing the name of the source table.
+#' @return Invisibly returns NULL after printing the messages.
+#' @importFrom cli cli_alert_warning cli_alert_info
+#' @noRd
 .print_missing_vars_message <- function(missing_vars, source_table) {
   cli_alert_warning("Variable(s) '{missing_vars}' do not exist in object '{source_table}'.")
   cli_alert_info("View was created without these variables")
 }
 
+#' Filter out missing variables from a target variable set
+#'
+#' This function removes variables from the target set that are listed as missing.
+#'
+#' @param target_vars A character vector of target variable names.
+#' @param missing_vars A character vector of missing variable names.
+#' @return A character vector of variables that are not missing.
+#' @importFrom dplyr filter
+#' @noRd
 .define_non_missing_vars <- function(target_vars, missing_vars) {
   target_vars |> dplyr::filter(!target_vars %in% missing_vars)
 }
 
+#' Check if the response message indicates missing variables
+#'
+#' This function checks if the response status is 404 and if the response message indicates that variables are missing from a specified object.
+#'
+#' @param result A response object from an `httr2` request.
+#'
+#' @return Logical: TRUE if the response message indicates missing variables, FALSE otherwise.
+#'
+#' @importFrom httr2 resp_status resp_body_json
+#' @importFrom stringr str_detect
+#' @noRd
 .check_missing_vars_message <- function(result) {
-  browser()
   status <- resp_status(result)
   if(status == 404){
     message <- resp_body_json(result)$message
@@ -588,3 +630,4 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
     return(FALSE)
   }
 }
+    
