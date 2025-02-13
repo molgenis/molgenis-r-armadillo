@@ -37,7 +37,7 @@
 armadillo.subset <- function(input_source = NULL, subset_def = NULL, source_project = NULL, source_folder = NULL,
                              source_table = NULL, target_project = NULL, target_folder = NULL,
                              target_table = NULL, target_vars = NULL, new_project = NULL,
-                             dry_run = NULL) {
+                             dry_run = NULL, strict = FALSE) {
   .check_args_valid(
     input_source, subset_def, source_project, source_folder, source_table,
     target_project, target_folder, target_table, target_vars, new_project,
@@ -53,7 +53,7 @@ armadillo.subset <- function(input_source = NULL, subset_def = NULL, source_proj
   }
 
   armadillo.create_project(target_project, overwrite_existing = "no")
-  posts <- .loop_api_request(subset_def, source_project, target_project)
+  posts <- .loop_api_request(subset_def, source_project, target_project, strict)
   api_post_summary <- .format_api_posts(posts, subset_def)
   api_post_summary_split <- .split_success_failure(api_post_summary)
 
@@ -368,7 +368,6 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
   response <- request |>
     req_error(is_error = \(resp) FALSE) |>
     req_perform()
-
   return(response)
 }
 
@@ -380,14 +379,27 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @importFrom purrr pmap
 #' @noRd
-.loop_api_request <- function(subset_ref, source_project, target_project) {
+.loop_api_request <- function(subset_ref, source_project, target_project, strict) {
   subset_ref %>%
     pmap(function(source_folder, source_table, target_folder, target_table, target_vars) {
-      .make_api_request(
-        source_project, source_folder, source_table, target_project,
-        target_folder, target_table, unlist(target_vars)
-      ) |>
-        .put_api_request()
+      redo_put_request <- TRUE
+      while(redo_put_request){
+        result <- .make_api_request(
+          source_project, source_folder, source_table, target_project,
+          target_folder, target_table, unlist(target_vars)
+        ) |>
+          .put_api_request()
+        missing_vars_exist <- .check_missing_var_message(result)
+
+        if(missing_vars_exist & strict == F){
+          missing_vars <- .extract_missing_vars(result)
+          .print_missing_vars_message(missing_vars, source_table)
+          target_vars <- .define_non_missing_vars(target_vars, missing_vars)
+        } else {
+          redo_put_request <- FALSE
+        }
+      }
+      return(result)
     })
 }
 
@@ -542,5 +554,37 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
         "i" = "Your Armadillo version is {version}", 
         "i" = "To upgrade Armadillo please consult the documentation at https://molgenis.github.io/molgenis-service-armadillo/pages/install_management/"),
       call = NULL)
+  }
+}
+
+
+.extract_missing_vars <- function(result) {
+  message <- resp_body_json(result)$message
+  str_extract_all(message, "(?<=\\[)[^\\]]+(?=\\])")[[1]] |>
+    str_split(", ", simplify = F) |>
+    unlist()
+}
+
+.print_missing_vars_message <- function(missing_vars, source_table) {
+  cli_alert_warning("Variable(s) '{missing_vars}' do not exist in object '{source_table}'.")
+  cli_alert_info("View was created without these variables")
+}
+
+.define_non_missing_vars <- function(target_vars, missing_vars) {
+  target_vars |> dplyr::filter(!target_vars %in% missing_vars)
+}
+
+.check_missing_vars_message <- function(result) {
+  browser()
+  status <- resp_status(result)
+  if(status == 404){
+    message <- resp_body_json(result)$message
+    if(str_detect(message, "do not exist in object")) {
+      return(TRUE)
+    } else {
+      return(FALSE)
+    }
+  } else {
+    return(FALSE)
   }
 }
