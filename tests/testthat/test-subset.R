@@ -334,10 +334,11 @@ response_list <- list(api_data$expected_response, api_data$expected_response)
 test_that(".loop_api_request loops through API requests for each subset", {
   expect_equal(
     with_mocked_bindings(
-      .loop_api_request(two_row_def, "test_source_project", "test_target_project"),
+      .loop_api_request(two_row_def, "test_source_project", "test_target_project", FALSE),
       ".make_post_url" = function(target_project) "mocked_post_url",
       ".get_auth_header" = function() structure("Basic YWRtaW46YWRtaW4=", names = "Authorization"),
-      "req_perform" = function(req) api_data$expected_response
+      "req_perform" = function(req) api_data$expected_response, 
+      ".check_missing_vars_message" = function(result) {FALSE}
     ),
     response_list
   )
@@ -595,4 +596,70 @@ test_that(".check_backend_version doesn't throw an error if version is equal or 
       req_perform = function(object){}
     )
   )
+})
+
+test_that(".extract missing vars extracts variable names from put object", {
+  expect_equal(
+    with_mocked_bindings(
+      .extract_missing_vars(result), 
+      resp_body_json = function(result) {list(message = "Variables '[var_1, var_2, var_3]' do not exist in object 'lifecycle/core/nonrep'")}
+    ), 
+    c("var_1", "var_2", "var_3")
+  )
+})
+
+test_that(".print_missing_vars_message prints correct messages", {
+  missing_vars <- c("var1", "var2", "var3")
+  source_table <- "source_table"
+  
+  expect_message(
+    .print_missing_vars_message(missing_vars, source_table),
+    "Variable\\(s\\) 'var1, var2, and var3' do not exist in object 'source_table'.",
+    fixed = FALSE
+  )
+  
+  expect_message(
+    .print_missing_vars_message(missing_vars, source_table),
+    "View was created without these variables",
+    fixed = TRUE
+  )
+})
+
+test_that(".define_non_missing_vars filters out missing variables from a tibble", {
+  target_vars <- tibble(target_vars = c("var1", "var2", "var3", "var4"))
+  missing_vars <- c("var2", "var4")
+  result <- .define_non_missing_vars(target_vars, missing_vars)
+  expected <- tibble(target_vars = c("var1", "var3"))
+  expect_equal(result, expected)
+})
+
+test_that(".check_missing_vars_message returns TRUE where 404 and target text present", {
+  expect_equal(
+    with_mocked_bindings(
+      .check_missing_vars_message(result), 
+      resp_status = function(result) {404},
+      resp_body_json = function(result) {list(message = "Variables '[var_1, var_2, var_3]' do not exist in object 'lifecycle/core/nonrep'")}
+    ), 
+    TRUE
+  ) 
+})
+
+test_that(".check_missing_vars_message returns FALSE where either 404 or target text not present", {
+  expect_equal(
+    with_mocked_bindings(
+      .check_missing_vars_message(result), 
+      resp_status = function(result) {204},
+      resp_body_json = function(result) {list(message = "Variables '[var_1, var_2, var_3]' do not exist in object 'lifecycle/core/nonrep'")}
+    ), 
+    FALSE
+  ) 
+  
+  expect_equal(
+    with_mocked_bindings(
+      .check_missing_vars_message(result), 
+      resp_status = function(result) {204},
+      resp_body_json = function(result) {list(message = "Other text that we don't care about")}
+    ), 
+    FALSE
+  ) 
 })
