@@ -608,9 +608,13 @@ test_that(".extract missing vars extracts variable names from put object", {
   )
 })
 
+.print_missing_vars_message <- function(missing_vars, source_table, target_folder, target_table)
+  
 test_that(".print_missing_vars_message prints correct messages", {
   missing_vars <- c("var1", "var2", "var3")
   source_table <- "source_table"
+  target_folder <- "target_folder"
+  target_table <- "target_table"
   
   expect_message(
     .print_missing_vars_message(missing_vars, source_table),
@@ -619,17 +623,17 @@ test_that(".print_missing_vars_message prints correct messages", {
   )
   
   expect_message(
-    .print_missing_vars_message(missing_vars, source_table),
+    .print_missing_vars_message(missing_vars, source_table, target_folder, target_table),
     "View was created without these variables",
     fixed = TRUE
   )
 })
 
 test_that(".define_non_missing_vars filters out missing variables from a tibble", {
-  target_vars <- tibble(target_vars = c("var1", "var2", "var3", "var4"))
+  target_vars <- tibble(variable = c("var1", "var2", "var3", "var4"))
   missing_vars <- c("var2", "var4")
   result <- .define_non_missing_vars(target_vars, missing_vars)
-  expected <- tibble(target_vars = c("var1", "var3"))
+  expected <- tibble(variable = c("var1", "var3"))
   expect_equal(result, expected)
 })
 
