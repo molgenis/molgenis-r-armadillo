@@ -398,7 +398,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
           .stop_if_all_missing(missing_vars, source_table, target_vars, source_folder, target_table)
         }
         if(missing_vars_exist & strict == F){
-          .print_missing_vars_message(missing_vars, source_table, target_vars, target_folder, target_table)
+          .print_missing_vars_message(missing_vars, source_table, target_folder, target_table)
           target_vars <- .define_non_missing_vars(target_vars, missing_vars)
         } else {
           redo_put_request <- FALSE
@@ -590,7 +590,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @return Invisibly returns NULL after printing the messages.
 #' @importFrom cli cli_alert_warning cli_alert_info cli_text
 #' @noRd
-.print_missing_vars_message <- function(missing_vars, source_table, target_vars, target_folder, target_table) {
+.print_missing_vars_message <- function(missing_vars, source_table, target_folder, target_table) {
   cli_alert_warning("Variable(s) '{missing_vars}' do not exist in object '{source_table}'.")
   cli_alert_info("Table '{target_folder}/{target_table}' was created without these variables")
   cli::cli_text("")
@@ -634,12 +634,28 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
   }
 }
     
+#' Stop Execution if All Variables Are Missing
+#'
+#' This function checks if all specified variables for the target table are missing.
+#' If none of the variables exist in the source data, it aborts execution with an error message.
+#'
+#' @param missing_vars A character vector of variables that are missing from the source table.
+#' @param source_table A character string specifying the name of the source table.
+#' @param updated_target_vars A data frame or list containing the variables specified for the target table.
+#'   The function checks the length of `updated_target_vars$variable` against `missing_vars`.
+#' @param source_folder A character string specifying the folder where the source table is located.
+#' @param target_table A character string specifying the name of the target table.
+#' @importFrom cli cli_abort
+#' @return This function does not return a value. It stops execution and throws an error if all variables are missing.
+#' @noRd
 .stop_if_all_missing <- function(missing_vars, source_table, updated_target_vars, source_folder, target_table) {
-  if(length(missing_vars) == length(updated_target_vars$variable)) {
+  if (length(missing_vars) == length(updated_target_vars$variable)) {
     cli::cli_abort(
       c(
         "x" = "None of the variables specified for target table '{target_table}' exist in '{source_folder}/{source_table}'.", 
-        "i" = "Please revise your subset definition and try again."),
-      call = NULL)
+        "i" = "Please revise your subset definition and try again."
+      ),
+      call = NULL
+    )
   }
 }
