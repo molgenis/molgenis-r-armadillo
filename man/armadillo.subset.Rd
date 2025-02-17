@@ -15,7 +15,8 @@ armadillo.subset(
   target_table = NULL,
   target_vars = NULL,
   new_project = NULL,
-  dry_run = NULL
+  dry_run = NULL,
+  strict = FALSE
 )
 }
 \arguments{
@@ -44,6 +45,10 @@ Compulsory if input_source = 'arguments'.}
 \item{new_project}{Deprecated: use \code{target_project} instead}
 
 \item{dry_run}{Defunct: previously enabgled dry-run to check which variables are missing}
+
+\item{strict}{Boolean specifying whether to create subset if one or more target variables do not 
+exist in the target data. Option FALSE will throw and error, option TRUE (default) creates subset 
+and return a warning}
 }
 \value{
 missing variables provided in the subset definition
