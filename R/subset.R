@@ -393,10 +393,12 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
         ) |>
           .put_api_request()
         missing_vars_exist <- .check_missing_vars_message(result)
-
-        if(missing_vars_exist & strict == F){
+        if(missing_vars_exist){
           missing_vars <- .extract_missing_vars(result)
-          .print_missing_vars_message(missing_vars, source_table)
+          .stop_if_all_missing(missing_vars, source_table, target_vars, source_folder, target_table)
+        }
+        if(missing_vars_exist & strict == F){
+          .print_missing_vars_message(missing_vars, source_table, target_vars, target_folder, target_table)
           target_vars <- .define_non_missing_vars(target_vars, missing_vars)
         } else {
           redo_put_request <- FALSE
@@ -586,11 +588,12 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @param missing_vars A character vector of missing variable names.
 #' @param source_table A character string representing the name of the source table.
 #' @return Invisibly returns NULL after printing the messages.
-#' @importFrom cli cli_alert_warning cli_alert_info
+#' @importFrom cli cli_alert_warning cli_alert_info cli_text
 #' @noRd
-.print_missing_vars_message <- function(missing_vars, source_table) {
+.print_missing_vars_message <- function(missing_vars, source_table, target_vars, target_folder, target_table) {
   cli_alert_warning("Variable(s) '{missing_vars}' do not exist in object '{source_table}'.")
-  cli_alert_info("View was created without these variables")
+  cli_alert_info("Table '{target_folder}/{target_table}' was created without these variables")
+  cli::cli_text("")
 }
 
 #' Filter out missing variables from a target variable set
@@ -603,7 +606,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @importFrom dplyr filter
 #' @noRd
 .define_non_missing_vars <- function(target_vars, missing_vars) {
-  target_vars |> dplyr::filter(!target_vars %in% missing_vars)
+  revised_vars <- target_vars |> dplyr::filter(!variable %in% missing_vars)
 }
 
 #' Check if the response message indicates missing variables
@@ -631,3 +634,12 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
   }
 }
     
+.stop_if_all_missing <- function(missing_vars, source_table, updated_target_vars, source_folder, target_table) {
+  if(length(missing_vars) == length(updated_target_vars$variable)) {
+    cli::cli_abort(
+      c(
+        "x" = "None of the variables specified for target table '{target_table}' exist in '{source_folder}/{source_table}'.", 
+        "i" = "Please revise your subset definition and try again."),
+      call = NULL)
+  }
+}
