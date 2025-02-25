@@ -606,6 +606,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @importFrom dplyr filter
 #' @noRd
 .define_non_missing_vars <- function(target_vars, missing_vars) {
+  variable <- NULL
   revised_vars <- target_vars |> dplyr::filter(!variable %in% missing_vars)
 }
 
