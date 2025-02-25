@@ -12,19 +12,19 @@
     stop("Forbidden", call. = FALSE)
   } else if (response$status_code == 404) {
     stop(
-      httr::content(response, as = "parsed", encoding = "UTF-8")$message,
+      content(response, as = "parsed", encoding = "UTF-8")$message,
       call. = FALSE
     )
   } else if (response$status_code == 409) {
     stop(
-      httr::content(response, as = "parsed", encoding = "UTF-8")$message,
+      content(response, as = "parsed", encoding = "UTF-8")$message,
       call. = FALSE
     )
   } else if (response$status_code == 500) {
     stop(
       paste0(
         "Internal server error: ",
-        httr::content(response, as = "parsed", encoding = "UTF-8")$message
+        content(response, as = "parsed", encoding = "UTF-8")$message
       ),
       call. = FALSE
     )
@@ -34,7 +34,7 @@
         "Something went wrong (",
         response$status_code,
         "): ",
-        httr::content(response, as = "parsed", encoding = "UTF-8")$message
+        content(response, as = "parsed", encoding = "UTF-8")$message
       ),
       call. = FALSE
     )
