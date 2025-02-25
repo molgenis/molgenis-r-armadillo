@@ -344,6 +344,44 @@ test_that(".loop_api_request loops through API requests for each subset", {
   )
 })
 
+test_that(".loop_api_request stops if all variables are missing", {
+  mock_stop_if_all_missing <- mock()  # Create a mock function to track calls
+  
+  expect_error(
+    with_mocked_bindings(
+      .loop_api_request(two_row_def, "test_source_project", "test_target_project", FALSE),
+      ".make_post_url" = function(target_project) "mocked_post_url",
+      ".get_auth_header" = function() structure("Basic YWRtaW46YWRtaW4=", names = "Authorization"),
+      "req_perform" = function(req) api_data$expected_response, 
+      ".check_missing_vars_message" = function(result) {TRUE},  # Simulate missing vars
+      ".extract_missing_vars" = function(result) c("var1", "var2"),  # Return missing vars
+      ".stop_if_all_missing" = mock_stop_if_all_missing  # Mock function
+    )
+  )
+  
+  expect_called(mock_stop_if_all_missing, 1)  # Ensure .stop_if_all_missing() was called exactly once
+})
+
+test_that(".loop_api_request prints message and updates vars when missing_vars_exist & strict == FALSE", {
+  mock_print_missing_vars_message <- mock()
+  mock_define_non_missing_vars <- mock(data.frame(variable = c("var3")), cycle = TRUE)
+  
+  with_mocked_bindings(
+    .loop_api_request(two_row_def, "test_source_project", "test_target_project", FALSE),
+    ".make_post_url" = function(target_project) "mocked_post_url",
+    ".get_auth_header" = function() structure("Basic YWRtaW46YWRtaW4=", names = "Authorization"),
+    "req_perform" = function(req) api_data$expected_response, 
+    ".check_missing_vars_message" = function(result) {TRUE},  # Simulate missing vars
+    ".extract_missing_vars" = function(result) c("var1", "var2"),  # Return missing vars
+    ".print_missing_vars_message" = mock_print_missing_vars_message,  # Mock print function
+    ".define_non_missing_vars" = mock_define_non_missing_vars  # Mock define function (allows multiple calls)
+  )
+  
+  expect_called(mock_print_missing_vars_message, 1)  # Ensure message is printed
+  expect_called(mock_define_non_missing_vars, at_least_once())  # Ensure vars are updated at least once
+})
+
+
 test_that(".get_status gets the status of API responses", {
   expect_equal(
     with_mocked_bindings(
@@ -703,10 +741,3 @@ test_that(".stop_if_all_missing does not abort when some variables are present",
     .stop_if_all_missing(missing_vars, source_table, updated_target_vars, source_folder, target_table)
   )
 })
-
-
-# test_that(".print_missing_vars_message prints correct message", {
-#   expect_message(
-#     .print_missing_vars_message(c("var_1", "var_2", "var_3"), "test_table", "test_folder", "new_table")
-#   )
-# })
