@@ -59,7 +59,7 @@ Suggests:
     stringi,
     withr,
     knitr,
-    testthat,
+    testthat (>= 3.0.0),
     webmockr,
     mockery,
     datasets,
@@ -71,3 +71,4 @@ BugReports: https://github.com/molgenis/molgenis-r-armadillo/issues/
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 Encoding: UTF-8
+Config/testthat/edition: 3
