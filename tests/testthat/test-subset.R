@@ -679,6 +679,32 @@ test_that(".check_missing_vars_message returns FALSE where either 404 or target 
   ) 
 })
 
+test_that(".stop_if_all_missing aborts when all variables are missing", {
+  missing_vars <- c("var1", "var2", "var3")
+  source_table <- "source_data"
+  updated_target_vars <- data.frame(variable = c("var1", "var2", "var3"))
+  source_folder <- "data_folder"
+  target_table <- "target_data"
+  
+  expect_error(
+    .stop_if_all_missing(missing_vars, source_table, updated_target_vars, source_folder, target_table),
+    "None of the variables specified for target table 'target_data' exist in 'data_folder/source_data'."
+  )
+})
+
+test_that(".stop_if_all_missing does not abort when some variables are present", {
+  missing_vars <- c("var1", "var2")
+  source_table <- "source_data"
+  updated_target_vars <- data.frame(variable = c("var1", "var2", "var3"))
+  source_folder <- "data_folder"
+  target_table <- "target_data"
+  
+  expect_silent(
+    .stop_if_all_missing(missing_vars, source_table, updated_target_vars, source_folder, target_table)
+  )
+})
+
+
 # test_that(".print_missing_vars_message prints correct message", {
 #   expect_message(
 #     .print_missing_vars_message(c("var_1", "var_2", "var_3"), "test_table", "test_folder", "new_table")
