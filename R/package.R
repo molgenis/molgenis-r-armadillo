@@ -35,7 +35,7 @@ armadillo.install_packages <- function(paths, profile = "default") { # nolint
 #' Install an R-package
 #'
 #' @param path a path to one R-package
-#' @importFrom httr upload_file post content_type add_headers POST
+#' @importFrom httr upload_file content_type add_headers POST
 #' @noRd
 .install_package <- function(path) {
   file <- upload_file(path)
