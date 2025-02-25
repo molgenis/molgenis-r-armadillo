@@ -15,12 +15,12 @@ test_that("armadillo.upload_resource checks if folder is provided", {
 test_that("armadillo.upload_resource calls .upload_object", {
   upload_object <- mock()
 
-  with_mock(
+  with_mocked_bindings(
     armadillo.upload_resource("project",
       "folder",
       resource = datasets::iris
     ),
-    "MolgenisArmadillo:::.upload_object" = upload_object
+    .upload_object = upload_object
   )
 
   expect_args(upload_object, 1,
@@ -35,8 +35,8 @@ test_that("armadillo.upload_resource calls .upload_object", {
 test_that("armadillo.list_resources calls .list_objects_by_extension", {
   list_objects <- mock()
 
-  with_mock(armadillo.list_resources("project"),
-    "MolgenisArmadillo:::.list_objects_by_extension" = list_objects
+  with_mocked_bindings(armadillo.list_resources("project"),
+    .list_objects_by_extension = list_objects
   )
 
   expect_args(list_objects, 1,
@@ -48,8 +48,8 @@ test_that("armadillo.list_resources calls .list_objects_by_extension", {
 test_that("armadillo.delete_resource calls .delete_object_with_extension", {
   delete_object <- mock()
 
-  with_mock(armadillo.delete_resource("project", "folder", "name"),
-    "MolgenisArmadillo:::.delete_object_with_extension" = delete_object
+  with_mocked_bindings(armadillo.delete_resource("project", "folder", "name"),
+    .delete_object_with_extension = delete_object
   )
 
   expect_args(delete_object, 1,
@@ -63,8 +63,8 @@ test_that("armadillo.delete_resource calls .delete_object_with_extension", {
 test_that("armadillo.copy_resource calls .copy_object", {
   copy_object <- mock()
 
-  with_mock(armadillo.copy_resource("project", "folder", "name"),
-    "MolgenisArmadillo:::.copy_object" = copy_object
+  with_mocked_bindings(armadillo.copy_resource("project", "folder", "name"),
+    .copy_object = copy_object
   )
 
   expect_args(copy_object, 1,
@@ -80,8 +80,8 @@ test_that("armadillo.copy_resource calls .copy_object", {
 test_that("armadillo.move_resource calls .move_object", {
   move_object <- mock()
 
-  with_mock(armadillo.move_resource("project", "folder", "name"),
-    "MolgenisArmadillo:::.move_object" = move_object
+  with_mocked_bindings(armadillo.move_resource("project", "folder", "name"),
+    .move_object = move_object
   )
 
   expect_args(move_object, 1,
@@ -98,13 +98,13 @@ test_that("armadillo.load_resource calls .load_object", {
   load_object <- mock()
   environment <- new.env()
 
-  with_mock(
+  with_mocked_bindings(
     armadillo.load_resource(
       "project",
       "folder",
       "name"
     ),
-    "MolgenisArmadillo:::.load_object" = load_object
+    .load_object = load_object
   )
 
   expect_args(load_object, 1,
