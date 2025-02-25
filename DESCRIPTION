@@ -71,3 +71,4 @@ BugReports: https://github.com/molgenis/molgenis-r-armadillo/issues/
 RoxygenNote: 7.3.1
 VignetteBuilder: knitr
 Encoding: UTF-8
+Config/testthat/edition: 3
