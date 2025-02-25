@@ -648,6 +648,17 @@ test_that(".check_missing_vars_message returns TRUE where 404 and target text pr
   ) 
 })
 
+test_that(".check_missing_vars_message returns FALSE where 404 present but target text not", {
+  expect_equal(
+    with_mocked_bindings(
+      .check_missing_vars_message(result), 
+      resp_status = function(result) {404},
+      resp_body_json = function(result) {list(message = "Other error message")}
+    ), 
+    FALSE
+  ) 
+})
+
 test_that(".check_missing_vars_message returns FALSE where either 404 or target text not present", {
   expect_equal(
     with_mocked_bindings(
@@ -667,3 +678,9 @@ test_that(".check_missing_vars_message returns FALSE where either 404 or target 
     FALSE
   ) 
 })
+
+# test_that(".print_missing_vars_message prints correct message", {
+#   expect_message(
+#     .print_missing_vars_message(c("var_1", "var_2", "var_3"), "test_table", "test_folder", "new_table")
+#   )
+# })
