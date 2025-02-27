@@ -384,8 +384,6 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 .loop_api_request <- function(subset_ref, source_project, target_project, strict) {
   subset_ref %>%
     pmap(function(source_folder, source_table, target_folder, target_table, target_vars) {
-      redo_put_request <- TRUE
-      while(redo_put_request){
         result <- .make_api_request(
           source_project, source_folder, source_table, target_project,
           target_folder, target_table, unlist(target_vars)
@@ -398,11 +396,12 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
         }
         if(missing_vars_exist & strict == F){
           .print_missing_vars_message(missing_vars, source_table, target_folder, target_table)
-          target_vars <- .define_non_missing_vars(target_vars, missing_vars)
-        } else {
-          redo_put_request <- FALSE
-        }
-      }
+          result <- .make_api_request(
+            source_project, source_folder, source_table, target_project,
+            target_folder, target_table, unlist(.define_non_missing_vars(target_vars, missing_vars))
+          ) |>
+            .put_api_request()
+        } 
       return(result)
     })
 }
