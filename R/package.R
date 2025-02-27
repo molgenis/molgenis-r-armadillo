@@ -6,6 +6,7 @@
 #'
 #' @param paths the path(s) to the package(s), can be a vector or a string
 #' @param profile the selected profile
+#' @importFrom httr POST add_headers
 #'
 #' @export
 armadillo.install_packages <- function(paths, profile = "default") { # nolint
@@ -15,11 +16,11 @@ armadillo.install_packages <- function(paths, profile = "default") { # nolint
   )
   .is_empty(msg, paths)
 
-  response <- httr::POST(
+  response <- POST(
     url = .get_url(),
     path = "/select-profile",
     body = profile,
-    config = httr::add_headers(.get_auth_header())
+    config = add_headers(.get_auth_header())
   )
 
   if (response$status_code == 404 && profile != "default") {
@@ -34,19 +35,19 @@ armadillo.install_packages <- function(paths, profile = "default") { # nolint
 #' Install an R-package
 #'
 #' @param path a path to one R-package
-#'
+#' @importFrom httr upload_file content_type add_headers POST
 #' @noRd
 .install_package <- function(path) {
-  file <- httr::upload_file(path)
+  file <- upload_file(path)
 
   message(paste0("Attempting to install package [ '", path, "' ]"))
-  response <- httr::POST(
+  response <- POST(
     url = .get_url(),
     path = "/install-package",
     body = list(file = file),
     config = c(
-      httr::content_type("multipart/form-data"),
-      httr::add_headers(.get_auth_header())
+      content_type("multipart/form-data"),
+      add_headers(.get_auth_header())
     )
   )
 

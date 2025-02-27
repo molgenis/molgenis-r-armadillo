@@ -524,10 +524,9 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @details
 #' The function retrieves the Armadillo version from the backend API endpoint. If the version is lower than `4.7.1`,
 #' it aborts execution with an informative error message.
-#' @return
 #' @importFrom cli cli_abort
 #' @importFrom httr2 request req_perform resp_body_json
-#' This function does not return a value. It either allows execution to continue if the version is valid
+#' @return This function does not return a value. It either allows execution to continue if the version is valid
 #' or raises an error if the version is too low.
 #' @noRd
 .check_backend_version <- function() {
