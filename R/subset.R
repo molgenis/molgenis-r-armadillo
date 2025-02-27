@@ -124,7 +124,6 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @importFrom readr read_csv
 .read_view_reference <- function(reference_csv) {
   variable <- subset_vars <- NULL
-
   if (is.null(reference_csv)) {
     stop("You must provide a .csv file with variables and tables to subset")
   }
