@@ -587,7 +587,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @param missing_vars A character vector of missing variable names.
 #' @param source_table A character string representing the name of the source table.
 #' @return Invisibly returns NULL after printing the messages.
-#' @importFrom cli cli_alert_warning cli_alert_info cli_text
+#' @importFrom cli cli_inform cli_text
 #' @noRd
 .print_missing_vars_message <- function(missing_vars, source_table, target_folder, target_table) {
   cli_inform(
