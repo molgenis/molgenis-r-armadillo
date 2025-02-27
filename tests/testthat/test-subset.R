@@ -13,7 +13,7 @@ test_that("read_view_reference handles missing .csv file", {
 })
 
 test_that("read_view_reference handles existing .csv file", {
-  expect_s3_class(
+  expect_is(
     with_mocked_bindings(
       .read_view_reference("test_path"),
       "read_csv" = function(file, show_col_types, trim_ws) example_csv
@@ -82,7 +82,7 @@ test_that("It nests the 'target_vars' column in the dataframe", {
 
   subset_ref <- as_tibble(df)
   formatted_df <- .format_reference(subset_ref)
-  expect_equal(class(formatted_df$target_vars), "list")
+  expect_is(formatted_df$target_vars, "list")
   expect_equal(length(formatted_df$target_vars), nrow(formatted_df))
 })
 
@@ -117,7 +117,7 @@ test_that("It returns a tibble when a valid .csv file path is provided", {
     "read_csv" = function(file, show_col_types, trim_ws) example_csv
   )
 
-  expect_s3_class(output_df, "tbl_df")
+  expect_is(output_df, "tbl_df")
   expect_true(all(c("source_folder", "source_table", "target_vars", "target_folder", "target_table") %in% colnames(output_df)))
   expect_equal(nrow(output_df), 3)
 })
@@ -313,7 +313,8 @@ test_that("It builds the API request object correctly", {
       ".make_post_url" = function(target_project) "mocked_post_url",
       ".get_auth_header" = function() structure("Basic YWRtaW46YWRtaW4=", names = "Authorization")
     ),
-    api_data$expected_req
+    api_data$expected_req,
+    fixed = T
   )
 })
 
@@ -407,7 +408,8 @@ failure_message_list <- list(
 test_that(".format_failure_message formats failure messages for display", {
   expect_equal(
     .format_failure_message(failure),
-    failure_message_list
+    failure_message_list,
+    fixed = T
   )
 })
 
@@ -699,45 +701,30 @@ test_that(".stop_if_all_missing does not abort when some variables are present",
   )
 })
 
-# test_that(".loop_api_request prints message and updates vars when missing_vars_exist & strict == FALSE", {
-#   mock_print_missing_vars_message <- mock()
-#   
-#   remaining_vars <- c("var1", "var2", "var3")  # Track missing vars
-#   
-#   mock_define_non_missing_vars <- function(target_vars, missing_vars) {
-#     if (is.data.frame(target_vars)) target_vars <- target_vars$variable
-#     if (is.data.frame(missing_vars)) missing_vars <- missing_vars$variable
-#     
-#     non_missing_vars <- setdiff(target_vars, missing_vars)
-#     
-#     # Keep at least one variable
-#     if (length(non_missing_vars) == 0) non_missing_vars <- target_vars[1]
-#     
-#     data.frame(variable = non_missing_vars)
-#   }
-#   
-#   with_mocked_bindings(
-#     .loop_api_request(two_row_def, "test_source_project", "test_target_project", FALSE),
-#     ".make_post_url" = function(target_project) "mocked_post_url",
-#     ".get_auth_header" = function() structure("Basic YWRtaW46YWRtaW4=", names = "Authorization"),
-#     "req_perform" = function(req) api_data$expected_response,
-#     ".check_missing_vars_message" = function(result) length(remaining_vars) > 0,
-#     ".extract_missing_vars" = function(result) {
-#       vars <- remaining_vars
-#       remaining_vars <<- remaining_vars[-1]  # Gradually remove missing vars
-#       vars
-#     },
-#     ".print_missing_vars_message" = mock_print_missing_vars_message,
-#     ".define_non_missing_vars" = mock_define_non_missing_vars
-#   )
-#   
-#   expect_called(mock_print_missing_vars_message, n = 1)  # Ensure message is printed
-#   expect_called(mock_define_non_missing_vars, n = 1)  # Ensure function was called
-# })
-
-
-
-
-
-
-
+test_that(".loop_api_request returns error message if no variables exist in target table missing_vars_exist", {
+  # Create proper mock objects using `mock()`
+  mock_print_missing_vars_message <- mock()
+  mock_define_non_missing_vars <- mock(data.frame(variable = c("var3")), cycle = TRUE)
+  
+  remaining_vars <- c("var1", "var2")  # Track missing vars
+  
+  expect_error(
+    with_mocked_bindings(
+      .loop_api_request(two_row_def, "test_source_project", "test_target_project", FALSE),
+      ".make_post_url" = function(target_project) "mocked_post_url",
+      ".get_auth_header" = function() structure("Basic YWRtaW46YWRtaW4=", names = "Authorization"),
+      "req_perform" = function(req) api_data$expected_response,  # Simulate API response
+      ".check_missing_vars_message" = function(result) {
+        length(remaining_vars) > 0  # Ensure missing vars exist at least once
+      },
+      ".extract_missing_vars" = function(result) {
+        vars <- remaining_vars
+        remaining_vars <<- remaining_vars[-1]  # Remove one var per loop
+        vars
+      },
+      ".print_missing_vars_message" = mock_print_missing_vars_message,
+      ".define_non_missing_vars" = mock_define_non_missing_vars
+    ), 
+    "None of the variables specified for target table 'target_table' exist in 'source_folder/source_table'"
+  )
+})
