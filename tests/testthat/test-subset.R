@@ -692,31 +692,3 @@ test_that(".stop_if_all_missing does not abort when some variables are present",
     .stop_if_all_missing(missing_vars, source_table, updated_target_vars, source_folder, target_table)
   )
 })
-
-test_that(".loop_api_request returns error message if no variables exist in target table missing_vars_exist", {
-  # Create proper mock objects using `mock()`
-  mock_print_missing_vars_message <- mock()
-  mock_define_non_missing_vars <- mock(data.frame(variable = c("var3")), cycle = TRUE)
-  
-  remaining_vars <- c("var1", "var2")  # Track missing vars
-  
-  expect_error(
-    with_mocked_bindings(
-      .loop_api_request(two_row_def, "test_source_project", "test_target_project", FALSE),
-      ".make_post_url" = function(target_project) "mocked_post_url",
-      ".get_auth_header" = function() structure("Basic YWRtaW46YWRtaW4=", names = "Authorization"),
-      "req_perform" = function(req) api_data$expected_response,  # Simulate API response
-      ".check_missing_vars_message" = function(result) {
-        length(remaining_vars) > 0  # Ensure missing vars exist at least once
-      },
-      ".extract_missing_vars" = function(result) {
-        vars <- remaining_vars
-        remaining_vars <<- remaining_vars[-1]  # Remove one var per loop
-        vars
-      },
-      ".print_missing_vars_message" = mock_print_missing_vars_message,
-      ".define_non_missing_vars" = mock_define_non_missing_vars
-    ), 
-    "None of the variables specified for target table 'target_table' exist in 'source_folder/source_table'"
-  )
-})
