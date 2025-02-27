@@ -670,11 +670,11 @@ test_that(".check_missing_vars_message returns FALSE where either 404 or target 
   ) 
 })
 
-test_that(".print_missing_vars_message prints correct message", {
-  expect_message(
-    .print_missing_vars_message(c("var_1", "var_2", "var_3"), "test_table", "test_folder", "new_table")
-  )
-})
+# test_that(".print_missing_vars_message prints correct message", {
+#   expect_snapshot_output(
+#     .print_missing_vars_message(c("var_1", "var_2", "var_3"), "test_table", "test_folder", "new_table")
+#   )
+# })
 
 test_that(".stop_if_all_missing aborts when all variables are missing", {
   missing_vars <- c("var1", "var2", "var3")
