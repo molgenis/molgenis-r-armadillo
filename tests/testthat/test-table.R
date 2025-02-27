@@ -22,12 +22,9 @@ test_that("armadillo.upload_table checks if folder is provided", {
 test_that("armadillo.upload_table calls .upload_object", {
   upload_object <- mock()
 
-  with_mock(
-    armadillo.upload_table("project",
-      "folder",
-      table = datasets::iris
-    ),
-    "MolgenisArmadillo:::.upload_object" = upload_object
+  with_mocked_bindings(
+    armadillo.upload_table("project", "folder", table = datasets::iris),
+    .upload_object = upload_object
   )
 
   expect_args(upload_object, 1,
@@ -42,8 +39,8 @@ test_that("armadillo.upload_table calls .upload_object", {
 test_that("armadillo.list_tables calls .list_objects_by_extension", {
   list_objects <- mock()
 
-  with_mock(armadillo.list_tables("project"),
-    "MolgenisArmadillo:::.list_objects_by_extension" = list_objects
+  with_mocked_bindings(armadillo.list_tables("project"),
+    .list_objects_by_extension = list_objects
   )
 
   expect_args(list_objects, 1,
@@ -55,8 +52,8 @@ test_that("armadillo.list_tables calls .list_objects_by_extension", {
 test_that("armadillo.delete_table calls .delete_object_with_extension", {
   delete_object <- mock()
 
-  with_mock(armadillo.delete_table("project", "folder", "name"),
-    "MolgenisArmadillo:::.delete_object_with_extension" = delete_object
+  with_mocked_bindings(armadillo.delete_table("project", "folder", "name"),
+    .delete_object_with_extension = delete_object
   )
 
   expect_args(delete_object, 1,
@@ -70,8 +67,8 @@ test_that("armadillo.delete_table calls .delete_object_with_extension", {
 test_that("armadillo.copy_table calls .copy_object", {
   copy_object <- mock()
 
-  with_mock(armadillo.copy_table("project", "folder", "name"),
-    "MolgenisArmadillo:::.copy_object" = copy_object
+  with_mocked_bindings(armadillo.copy_table("project", "folder", "name"),
+    .copy_object = copy_object
   )
 
   expect_args(copy_object, 1,
@@ -87,8 +84,8 @@ test_that("armadillo.copy_table calls .copy_object", {
 test_that("armadillo.move_table calls .move_object", {
   move_object <- mock()
 
-  with_mock(armadillo.move_table("project", "folder", "name"),
-    "MolgenisArmadillo:::.move_object" = move_object
+  with_mocked_bindings(armadillo.move_table("project", "folder", "name"),
+    .move_object = move_object
   )
 
   expect_args(move_object, 1,
@@ -110,13 +107,13 @@ test_that("armadillo.load_table calls .load_object", {
     ) %>%
     to_return(status = 204)
 
-  with_mock(
+  with_mocked_bindings(
     armadillo.load_table(
       "project",
       "folder",
       "name"
     ),
-    "MolgenisArmadillo:::.load_object" = load_object
+    .load_object = load_object
   )
 
   expect_args(load_object, 1,
@@ -158,13 +155,13 @@ test_that("armadillo.load_table calls .load_object with linktable loadfunction",
     }'
     )
   
-  with_mock(
+  with_mocked_bindings(
     armadillo.load_table(
       "project1",
       "folder",
       "name"
     ),
-    "MolgenisArmadillo:::.load_object" = load_object
+    .load_object = load_object
   )
   
   expect_args(load_object, 1,
