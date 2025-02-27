@@ -590,8 +590,11 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @importFrom cli cli_alert_warning cli_alert_info cli_text
 #' @noRd
 .print_missing_vars_message <- function(missing_vars, source_table, target_folder, target_table) {
-  cli_alert_warning("Variable(s) '{missing_vars}' do not exist in object '{source_table}'.")
-  cli_alert_info("Table '{target_folder}/{target_table}' was created without these variables")
+  cli_inform(
+    c(
+      "!" = "Variable(s) '{missing_vars}' do not exist in object '{source_table}'.", 
+      "i" = "Table '{target_folder}/{target_table}' was created without these variables")
+  )
   cli::cli_text("")
 }
 
