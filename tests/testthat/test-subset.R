@@ -13,7 +13,7 @@ test_that("read_view_reference handles missing .csv file", {
 })
 
 test_that("read_view_reference handles existing .csv file", {
-  expect_is(
+  expect_s3_class(
     with_mocked_bindings(
       .read_view_reference("test_path"),
       "read_csv" = function(file, show_col_types, trim_ws) example_csv
@@ -79,10 +79,10 @@ test_that("It nests the 'target_vars' column in the dataframe", {
     source_table = c("table1", "table2"),
     variable = c("var1", "var2")
   )
-
+  
   subset_ref <- as_tibble(df)
   formatted_df <- .format_reference(subset_ref)
-  expect_is(formatted_df$target_vars, "list")
+  expect_equal(class(formatted_df$target_vars), "list")
   expect_equal(length(formatted_df$target_vars), nrow(formatted_df))
 })
 
@@ -117,7 +117,7 @@ test_that("It returns a tibble when a valid .csv file path is provided", {
     "read_csv" = function(file, show_col_types, trim_ws) example_csv
   )
 
-  expect_is(output_df, "tbl_df")
+  expect_s3_class(output_df, "tbl_df")
   expect_true(all(c("source_folder", "source_table", "target_vars", "target_folder", "target_table") %in% colnames(output_df)))
   expect_equal(nrow(output_df), 3)
 })
@@ -313,8 +313,7 @@ test_that("It builds the API request object correctly", {
       ".make_post_url" = function(target_project) "mocked_post_url",
       ".get_auth_header" = function() structure("Basic YWRtaW46YWRtaW4=", names = "Authorization")
     ),
-    api_data$expected_req,
-    fixed = T
+    api_data$expected_req
   )
 })
 
@@ -408,8 +407,7 @@ failure_message_list <- list(
 test_that(".format_failure_message formats failure messages for display", {
   expect_equal(
     .format_failure_message(failure),
-    failure_message_list,
-    fixed = T
+    failure_message_list
   )
 })
 
