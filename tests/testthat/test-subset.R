@@ -703,19 +703,43 @@ test_that(".stop_if_all_missing does not abort when some variables are present",
 
 # test_that(".loop_api_request prints message and updates vars when missing_vars_exist & strict == FALSE", {
 #   mock_print_missing_vars_message <- mock()
-#   mock_define_non_missing_vars <- mock(data.frame(variable = c("var3")), cycle = TRUE)
+#   
+#   remaining_vars <- c("var1", "var2", "var3")  # Track missing vars
+#   
+#   mock_define_non_missing_vars <- function(target_vars, missing_vars) {
+#     if (is.data.frame(target_vars)) target_vars <- target_vars$variable
+#     if (is.data.frame(missing_vars)) missing_vars <- missing_vars$variable
+#     
+#     non_missing_vars <- setdiff(target_vars, missing_vars)
+#     
+#     # Keep at least one variable
+#     if (length(non_missing_vars) == 0) non_missing_vars <- target_vars[1]
+#     
+#     data.frame(variable = non_missing_vars)
+#   }
 #   
 #   with_mocked_bindings(
 #     .loop_api_request(two_row_def, "test_source_project", "test_target_project", FALSE),
 #     ".make_post_url" = function(target_project) "mocked_post_url",
 #     ".get_auth_header" = function() structure("Basic YWRtaW46YWRtaW4=", names = "Authorization"),
-#     "req_perform" = function(req) api_data$expected_response, 
-#     ".check_missing_vars_message" = function(result) {TRUE},  # Simulate missing vars
-#     ".extract_missing_vars" = function(result) c("var1", "var2"),  # Return missing vars
-#     ".print_missing_vars_message" = mock_print_missing_vars_message,  # Mock print function
-#     ".define_non_missing_vars" = mock_define_non_missing_vars  # Mock define function (allows multiple calls)
+#     "req_perform" = function(req) api_data$expected_response,
+#     ".check_missing_vars_message" = function(result) length(remaining_vars) > 0,
+#     ".extract_missing_vars" = function(result) {
+#       vars <- remaining_vars
+#       remaining_vars <<- remaining_vars[-1]  # Gradually remove missing vars
+#       vars
+#     },
+#     ".print_missing_vars_message" = mock_print_missing_vars_message,
+#     ".define_non_missing_vars" = mock_define_non_missing_vars
 #   )
 #   
-#   expect_called(mock_print_missing_vars_message, 1)  # Ensure message is printed
-#   expect_called(mock_define_non_missing_vars, at_least_once())  # Ensure vars are updated at least once
+#   expect_called(mock_print_missing_vars_message, n = 1)  # Ensure message is printed
+#   expect_called(mock_define_non_missing_vars, n = 1)  # Ensure function was called
 # })
+
+
+
+
+
+
+
