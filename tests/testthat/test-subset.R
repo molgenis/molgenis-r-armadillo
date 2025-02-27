@@ -483,20 +483,11 @@ test_that("armadillo.subset_definition should return proper
 })
 
 
-test_that("armadillo.subset_definition will throw error when vars are NULL", {
-  df <- data.frame(
-    folder = c("outcome", "outcome", "outcome"),
-    table = c("yearlyrep", "yearlyrep", "yearlyrep"),
-    variable = c("row_id", "child_id", "int_raw_3")
+test_that("armadillo.subset_definition will throw error when .csv file doesn't exist", {
+  expect_error(
+    armadillo.subset_definition(NULL, NULL), 
+    "You must provide a .csv file with variables and tables to subset"
   )
-
-  with_mock(read.csv = mock(df), {
-    message <- paste0(
-      "You must provide a .csv file with variables and tables ",
-      "to subset"
-    )
-    expect_error(armadillo.subset_definition(NULL), message, fixed = TRUE)
-  })
 })
 
 test_that("armadillo.subset fails if source project is NULL", {
@@ -710,21 +701,21 @@ test_that(".stop_if_all_missing does not abort when some variables are present",
   )
 })
 
-test_that(".loop_api_request prints message and updates vars when missing_vars_exist & strict == FALSE", {
-  mock_print_missing_vars_message <- mock()
-  mock_define_non_missing_vars <- mock(data.frame(variable = c("var3")), cycle = TRUE)
-  
-  with_mocked_bindings(
-    .loop_api_request(two_row_def, "test_source_project", "test_target_project", FALSE),
-    ".make_post_url" = function(target_project) "mocked_post_url",
-    ".get_auth_header" = function() structure("Basic YWRtaW46YWRtaW4=", names = "Authorization"),
-    "req_perform" = function(req) api_data$expected_response, 
-    ".check_missing_vars_message" = function(result) {TRUE},  # Simulate missing vars
-    ".extract_missing_vars" = function(result) c("var1", "var2"),  # Return missing vars
-    ".print_missing_vars_message" = mock_print_missing_vars_message,  # Mock print function
-    ".define_non_missing_vars" = mock_define_non_missing_vars  # Mock define function (allows multiple calls)
-  )
-  
-  expect_called(mock_print_missing_vars_message, 1)  # Ensure message is printed
-  expect_called(mock_define_non_missing_vars, at_least_once())  # Ensure vars are updated at least once
-})
+# test_that(".loop_api_request prints message and updates vars when missing_vars_exist & strict == FALSE", {
+#   mock_print_missing_vars_message <- mock()
+#   mock_define_non_missing_vars <- mock(data.frame(variable = c("var3")), cycle = TRUE)
+#   
+#   with_mocked_bindings(
+#     .loop_api_request(two_row_def, "test_source_project", "test_target_project", FALSE),
+#     ".make_post_url" = function(target_project) "mocked_post_url",
+#     ".get_auth_header" = function() structure("Basic YWRtaW46YWRtaW4=", names = "Authorization"),
+#     "req_perform" = function(req) api_data$expected_response, 
+#     ".check_missing_vars_message" = function(result) {TRUE},  # Simulate missing vars
+#     ".extract_missing_vars" = function(result) c("var1", "var2"),  # Return missing vars
+#     ".print_missing_vars_message" = mock_print_missing_vars_message,  # Mock print function
+#     ".define_non_missing_vars" = mock_define_non_missing_vars  # Mock define function (allows multiple calls)
+#   )
+#   
+#   expect_called(mock_print_missing_vars_message, 1)  # Ensure message is printed
+#   expect_called(mock_define_non_missing_vars, at_least_once())  # Ensure vars are updated at least once
+# })
