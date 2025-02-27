@@ -1,3 +1,6 @@
+# MolgenisArmadillo 2.9.0
+Bug Fix: subset now returns a warning rather than an error if some target variables are not available.
+
 # MolgenisArmadillo 2.1.1
 
 # MolgenisArmadillo 2.1.0
