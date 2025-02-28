@@ -43,11 +43,11 @@ As a datamanager you need to access the Armadillo webinterface to be able to acc
 
 
 ### Upload the resources (in Rstudio)
-A second option to upload data (resources) is on the [Central Analysis Server (CAS)](https://lifecycle.analysis.molgenis.org/) within Rstudio
+A second option to upload data (resources) is using Rstudio.
 As datamanager you first need to login to Armadillo (as `superuser`)
 
 
-```{r, login to the armadillo server}
+```{r, login to the armadillo server, message = F, warning = F}
 armadillo.login("https://armadillo-demo.molgenis.net/")
 ```
 
