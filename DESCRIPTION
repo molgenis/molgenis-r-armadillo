@@ -39,7 +39,7 @@ Authors@R:
       )
 Maintainer: Mariska Slofstra <m.k.slofstra@umcg.nl>
 Depends:
-    R (>= 3.6)
+    R (>= 4.1.0)
 Imports:
     base64enc,
     httr,
