@@ -10,7 +10,7 @@ vignette: >
 
 
 
-```r
+``` r
 library(MolgenisArmadillo)
 ```
 
@@ -39,39 +39,22 @@ As a datamanager you need to access the Armadillo webinterface to be able to acc
 
 
 ### Upload the resources (in Rstudio)
-A second option to upload data (resources) is on the [Central Analysis Server (CAS)](https://lifecycle.analysis.molgenis.org/) within Rstudio
+A second option to upload data (resources) is using Rstudio.
 As datamanager you first need to login to Armadillo (as `superuser`)
 
 
 
-```r
+``` r
 armadillo.login("https://armadillo-demo.molgenis.net/")
+#> [1] "We're opening a browser so you can log in with code 8N8MHJ"
 ```
 
 #### Install prerequisites
 If you want to install a package on the Armadillo Rserver you can execute the following. The selected profile is always `default` if none is specified. If your profile doesn't have the `resourcer` package installed, install it:
 
 
-```r
+``` r
 library(resourcer)
-#> Loading required package: R6
-#> Loading required package: httr
-#> Registering LocalFileResourceGetter...
-#> Registering HttpFileResourceGetter...
-#> Registering ScpFileResourceGetter...
-#> Registering GridFsFileResourceGetter...
-#> Registering OpalFileResourceGetter...
-#> Registering MariaDBResourceConnector...
-#> Registering PostgresResourceConnector...
-#> Registering SparkResourceConnector...
-#> Registering PrestoResourceConnector...
-#> Registering TidyFileResourceResolver...
-#> Registering ShellResourceResolver...
-#> Registering SshResourceResolver...
-#> Registering RDataFileResourceResolver...
-#> Registering RDSFileResourceResolver...
-#> Registering SQLResourceResolver...
-#> Registering NoSQLResourceResolver...
 ```
 
 #### Create resources
@@ -83,7 +66,7 @@ The data files you uploaded to armadillo, can be retrieved via the following URL
 data file is `gse66351_1.rda`.
 
 
-```r
+``` r
 resGSE1 <- resourcer::newResource(
   name = "GSE66351_1",
   url = "https://armadillo-demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
@@ -98,6 +81,9 @@ resGSE2 <- resourcer::newResource(
 armadillo.upload_resource(project="omics", folder="ewas", resource = resGSE1, name = "GSE66351_1")
 #> Compressing...
 #> Uploaded ewas/GSE66351_1
+```
+
+``` r
 armadillo.upload_resource(project="omics", folder="ewas", resource = resGSE2, name = "GSE66351_2")
 #> Compressing...
 #> Uploaded ewas/GSE66351_2
