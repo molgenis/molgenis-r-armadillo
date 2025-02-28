@@ -62,7 +62,7 @@
       <h1>Create resources</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/molgenis/molgenis-r-armadillo/blob/chore/cran-release/vignettes/create_resources.Rmd" class="external-link"><code>vignettes/create_resources.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/molgenis/molgenis-r-armadillo/blob/chore/cran-comments/vignettes/create_resources.Rmd" class="external-link"><code>vignettes/create_resources.Rmd</code></a></small>
       <div class="d-none name"><code>create_resources.Rmd</code></div>
     </div>
 
@@ -112,11 +112,12 @@ upload to the box and click on “Upload”. Upload the omics data.</li>
 <div class="section level3">
 <h3 id="upload-the-resources-in-rstudio">Upload the resources (in Rstudio)<a class="anchor" aria-label="anchor" href="#upload-the-resources-in-rstudio"></a>
 </h3>
-<p>A second option to upload data (resources) is on the <a href="https://lifecycle.analysis.molgenis.org/" class="external-link">Central Analysis Server
-(CAS)</a> within Rstudio As datamanager you first need to login to
-Armadillo (as <code>superuser</code>)</p>
+<p>A second option to upload data (resources) is using Rstudio. As
+datamanager you first need to login to Armadillo (as
+<code>superuser</code>)</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.login.html">armadillo.login</a></span><span class="op">(</span><span class="st">"https://armadillo-demo.molgenis.net/"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.login.html">armadillo.login</a></span><span class="op">(</span><span class="st">"https://armadillo-demo.molgenis.net/"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "We're opening a browser so you can log in with code 8N8MHJ"</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="install-prerequisites">Install prerequisites<a class="anchor" aria-label="anchor" href="#install-prerequisites"></a>
 </h4>
@@ -125,25 +126,7 @@ execute the following. The selected profile is always
 <code>default</code> if none is specified. If your profile doesn’t have
 the <code>resourcer</code> package installed, install it:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">resourcer</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Loading required package: R6</span></span>
-<span><span class="co">#&gt; Loading required package: httr</span></span>
-<span><span class="co">#&gt; Registering LocalFileResourceGetter...</span></span>
-<span><span class="co">#&gt; Registering HttpFileResourceGetter...</span></span>
-<span><span class="co">#&gt; Registering ScpFileResourceGetter...</span></span>
-<span><span class="co">#&gt; Registering GridFsFileResourceGetter...</span></span>
-<span><span class="co">#&gt; Registering OpalFileResourceGetter...</span></span>
-<span><span class="co">#&gt; Registering MariaDBResourceConnector...</span></span>
-<span><span class="co">#&gt; Registering PostgresResourceConnector...</span></span>
-<span><span class="co">#&gt; Registering SparkResourceConnector...</span></span>
-<span><span class="co">#&gt; Registering PrestoResourceConnector...</span></span>
-<span><span class="co">#&gt; Registering TidyFileResourceResolver...</span></span>
-<span><span class="co">#&gt; Registering ShellResourceResolver...</span></span>
-<span><span class="co">#&gt; Registering SshResourceResolver...</span></span>
-<span><span class="co">#&gt; Registering RDataFileResourceResolver...</span></span>
-<span><span class="co">#&gt; Registering RDSFileResourceResolver...</span></span>
-<span><span class="co">#&gt; Registering SQLResourceResolver...</span></span>
-<span><span class="co">#&gt; Registering NoSQLResourceResolver...</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">resourcer</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="create-resources">Create resources<a class="anchor" aria-label="anchor" href="#create-resources"></a>
@@ -171,8 +154,9 @@ the name of the data file is <code>gse66351_1.rda</code>.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/armadillo.upload_resource.html">armadillo.upload_resource</a></span><span class="op">(</span>project<span class="op">=</span><span class="st">"omics"</span>, folder<span class="op">=</span><span class="st">"ewas"</span>, resource <span class="op">=</span> <span class="va">resGSE1</span>, name <span class="op">=</span> <span class="st">"GSE66351_1"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Compressing...</span></span>
-<span><span class="co">#&gt; Uploaded ewas/GSE66351_1</span></span>
-<span><span class="fu"><a href="../reference/armadillo.upload_resource.html">armadillo.upload_resource</a></span><span class="op">(</span>project<span class="op">=</span><span class="st">"omics"</span>, folder<span class="op">=</span><span class="st">"ewas"</span>, resource <span class="op">=</span> <span class="va">resGSE2</span>, name <span class="op">=</span> <span class="st">"GSE66351_2"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Uploaded ewas/GSE66351_1</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/armadillo.upload_resource.html">armadillo.upload_resource</a></span><span class="op">(</span>project<span class="op">=</span><span class="st">"omics"</span>, folder<span class="op">=</span><span class="st">"ewas"</span>, resource <span class="op">=</span> <span class="va">resGSE2</span>, name <span class="op">=</span> <span class="st">"GSE66351_2"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Compressing...</span></span>
 <span><span class="co">#&gt; Uploaded ewas/GSE66351_2</span></span></code></pre></div>
 <p>The data is now available for researcher to assign.</p>
