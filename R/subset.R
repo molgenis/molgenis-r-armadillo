@@ -156,6 +156,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @param reference Reference dataframe
 #' @importFrom purrr map_lgl
+#' @importFrom dplyr %>%
 #' @noRd
 .check_reference_columns <- function(reference) {
   if (!all(c("source_folder", "source_table", "variable") %in% colnames(reference))) {
@@ -180,7 +181,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' Formats the reference file that has been imported
 #'
 #' @param subset_ref Subset reference dataframe
-#' @importFrom dplyr mutate
+#' @importFrom dplyr mutate %>%
 #' @importFrom tidyr nest
 #' @noRd
 .format_reference <- function(subset_ref) {
@@ -287,6 +288,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @param target_table Table to upload subset to.
 #' @param target_vars  Variables from `source_table` to include in the view
 #' @importFrom httr2 request req_body_json req_headers
+#' @importFrom dplyr %>%
 #' @noRd
 .make_api_request <- function(source_project, source_folder, source_table, target_project, target_folder,
                               target_table, target_vars) {
@@ -297,8 +299,8 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
   )
   header_content <- .make_headers()
 
-  req <- request(post_url) |>
-    req_body_json(body_content) |>
+  req <- request(post_url) %>%
+    req_body_json(body_content) %>%
     req_headers(!!!header_content)
   return(req)
 }
@@ -365,10 +367,11 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @param request Request object
 #'
 #' @importFrom httr2 req_perform req_error
+#' @importFrom dplyr %>%
 #' @noRd
 .put_api_request <- function(request) {
-  response <- request |>
-    req_error(is_error = \(resp) FALSE) |>
+  response <- request %>%
+    req_error(is_error = \(resp) FALSE) %>%
     req_perform()
   return(response)
 }
@@ -380,6 +383,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @param target_project Project to upload subset to
 #'
 #' @importFrom purrr pmap
+#' @importFrom dplyr %>%
 #' @noRd
 .loop_api_request <- function(subset_ref, source_project, target_project, strict) {
   subset_ref %>%
@@ -387,7 +391,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
         result <- .make_api_request(
           source_project, source_folder, source_table, target_project,
           target_folder, target_table, unlist(target_vars)
-        ) |>
+        ) %>%
           .put_api_request()
         missing_vars_exist <- .check_missing_vars_message(result)
         if(missing_vars_exist){
@@ -399,7 +403,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
           result <- .make_api_request(
             source_project, source_folder, source_table, target_project,
             target_folder, target_table, unlist(.define_non_missing_vars(target_vars, missing_vars))
-          ) |>
+          ) %>%
             .put_api_request()
         } 
       return(result)
@@ -410,6 +414,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @importFrom purrr map_int
 #' @importFrom httr2 resp_status
+#' @importFrom dplyr %>%
 #' @noRd
 .get_status <- function(posts) {
   status <- posts %>%
@@ -425,6 +430,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @importFrom purrr map
 #' @importFrom httr2 resp_body_json
+#' @importFrom dplyr %>%
 #' @noRd
 .get_failure_messages <- function(posts) {
   messages <- posts %>%
@@ -458,7 +464,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @param api_post_summary API response summary
 #'
-#' @importFrom dplyr filter
+#' @importFrom dplyr filter %>%
 #' @noRd
 .split_success_failure <- function(api_post_summary) {
   success <- failure <- status <- NULL
@@ -494,6 +500,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @noRd
 #' @importFrom purrr pmap
+#' @importFrom dplyr %>%
 .format_success_message <- function(success) {
   success_message <- success %>%
     pmap(function(target_folder, target_table, status, ...) {
@@ -527,6 +534,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @importFrom purrr walk
 #' @importFrom cli cli_alert_success
+#' @importFrom dplyr %>%
 #' @noRd
 .handle_success_messages <- function(successes) {
   success_neat <- .format_success_message(successes)
@@ -571,11 +579,12 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @return A character vector of missing variable names.
 #' @importFrom httr2 resp_body_json
 #' @importFrom stringr str_extract_all str_split
+#' @importFrom dplyr %>%
 #' @noRd
 .extract_missing_vars <- function(result) {
   message <- resp_body_json(result)$message
-  str_extract_all(message, "(?<=\\[)[^\\]]+(?=\\])")[[1]] |>
-    str_split(", ", simplify = FALSE) |>
+  str_extract_all(message, "(?<=\\[)[^\\]]+(?=\\])")[[1]] %>%
+    str_split(", ", simplify = FALSE) %>%
     unlist()
 }
 
@@ -604,11 +613,11 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @param target_vars A character vector of target variable names.
 #' @param missing_vars A character vector of missing variable names.
 #' @return A character vector of variables that are not missing.
-#' @importFrom dplyr filter
+#' @importFrom dplyr filter %>%
 #' @noRd
 .define_non_missing_vars <- function(target_vars, missing_vars) {
   variable <- NULL
-  revised_vars <- target_vars |> dplyr::filter(!variable %in% missing_vars)
+  revised_vars <- target_vars %>% dplyr::filter(!variable %in% missing_vars)
 }
 
 #' Check if the response message indicates missing variables
