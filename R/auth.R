@@ -62,8 +62,8 @@ armadillo.login_basic <- function(armadillo, username, password) { # nolint
 #' @export
 armadillo.get_token <- function(server) { # nolint
   auth_info <- .get_info(server)$auth
-  endpoint <- MolgenisAuth::discover(auth_info$issuerUri)
-  credentials <- MolgenisAuth::device_flow_auth(
+  endpoint <- discover(auth_info$issuerUri)
+  credentials <- device_flow_auth(
     endpoint,
     auth_info$clientId
   )
