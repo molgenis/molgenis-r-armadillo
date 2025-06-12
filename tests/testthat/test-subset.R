@@ -207,7 +207,7 @@ test_that("It displays a message if dry_run is provided (defunct)", {
 })
 
 expected_subset_def <- tibble(
-  target_vars = list(tibble(target_vars = c("var1", "var2", "var3"))),
+  target_vars = list(tibble(variable = c("var1", "var2", "var3"))),
   source_folder = "source_folder",
   source_table = "source_table",
   target_folder = "target_folder",
