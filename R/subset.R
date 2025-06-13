@@ -268,7 +268,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 .create_subset_def_from_arguments <- function(target_vars, source_folder, source_table, target_folder,
                                               target_table) {
   subset_def <- tibble(
-    target_vars = list(tibble(target_vars)),
+    target_vars = list(tibble(variable = target_vars)),
     source_folder = source_folder,
     source_table = source_table,
     target_folder = target_folder,
