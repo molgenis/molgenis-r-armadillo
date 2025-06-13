@@ -1,3 +1,6 @@
+# MolgenisArmadillo 2.9.1
+Bug Fix: subset now works correctly when variables to subset are specified via the argument `target_vars` rather than by `subset_def`.
+
 # MolgenisArmadillo 2.9.0
 Bug Fix: subset now returns a warning rather than an error if some target variables are not available.
 
