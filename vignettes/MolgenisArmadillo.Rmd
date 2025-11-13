@@ -17,7 +17,7 @@ library(MolgenisArmadillo)
 To share your data using Armadillo, you can see the different relevant steps you can take before the shared data can be transferred to the researchers.
 
 ## Login
-In order to access the files as a data manager, you need to log in. The login method needs the URLs of the Armadillo server and the MinIO fileserver. It will open a browser window where you can identify yourself with the ID provider.
+In order to access the files as a data manager, you need to log in. The login method needs the URL of the Armadillo server. It will open a browser window where you can identify yourself with the ID provider.
 
 
 ```r
