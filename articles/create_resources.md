@@ -1,0 +1,99 @@
+# Create resources
+
+``` r
+library(MolgenisArmadillo)
+```
+
+If you want to perform “omics”-like analyses you probably need to upload
+data (resources). By default Armadillo supports file uploads up to
+500MB. If you need to upload larger resources, please contact
+<molgenis-support@umcg.nl>.
+
+There are 2 roles you can assume using the package. The datamanager role
+and the researcher role.
+
+## Datamanager
+
+The datamanager needs to make the data available to the researchers.
+Besides this you need to create the resources to access the data.
+
+## Researcher
+
+The researcher can call DataSHIELD analysis methods on the data uploaded
+by the datamanager.
+
+### Upload the data
+
+As a datamanager you need to access the Armadillo webinterface to be
+able to access the resource.
+
+1.  We are using data from the following sources:
+
+- <https://github.com/isglobal-brge/brge_data_large/blob/master/data/gse66351_1.rda>
+- <https://github.com/isglobal-brge/brge_data_large/blob/master/data/gse66351_2.rda>
+
+2.  Login with your institute account.
+3.  Create a project. For example `omics`.
+4.  Click on the edit project button to the right of the name of your
+    project.
+5.  Create a new folder for your data. For example `ewas`.
+6.  Click on the “Select a file to upload” button or drag your file to
+    upload to the box and click on “Upload”. Upload the omics data.
+
+### Upload the resources (in Rstudio)
+
+A second option to upload data (resources) is using Rstudio. As
+datamanager you first need to login to Armadillo (as `superuser`)
+
+``` r
+armadillo.login("https://armadillo-demo.molgenis.net/")
+#> [1] "We're opening a browser so you can log in with code 8N8MHJ"
+```
+
+#### Install prerequisites
+
+If you want to install a package on the Armadillo Rserver you can
+execute the following. The selected profile is always `default` if none
+is specified. If your profile doesn’t have the `resourcer` package
+installed, install it:
+
+``` r
+library(resourcer)
+```
+
+#### Create resources
+
+In order to be able to assign the data uploaded in the armadillo you
+need to create the resources as well. The data files you uploaded to
+armadillo, can be retrieved via the following URL:
+`yoururl + /storage/projects/{project name}/objects/{folder name}%2F{filename}`
+an example is:
+`https://armadillo-demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda`.
+Here the URL is `https://armadillo-demo.molgenis.net/`, the project name
+is `omics`, the folder is `ewas` and the name of the data file is
+`gse66351_1.rda`.
+
+``` r
+resGSE1 <- resourcer::newResource(
+  name = "GSE66351_1",
+  url = "https://armadillo-demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
+  format = "ExpressionSet"
+)
+resGSE2 <- resourcer::newResource(
+  name = "GSE66351_1",
+  url = "https://armadillo-demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
+  format = "ExpressionSet"
+)
+
+armadillo.upload_resource(project="omics", folder="ewas", resource = resGSE1, name = "GSE66351_1")
+#> Compressing...
+#> Uploaded ewas/GSE66351_1
+```
+
+``` r
+armadillo.upload_resource(project="omics", folder="ewas", resource = resGSE2, name = "GSE66351_2")
+#> Compressing...
+#> Uploaded ewas/GSE66351_2
+```
+
+The data is now available for researcher to assign.

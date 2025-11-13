@@ -1,0 +1,125 @@
+# Creating data subsets
+
+When researchers request access to your data they may not be granted
+access to the whole dataset, but only to the variables which they will
+use in their project. In Armadilllo, access is regulated on the project
+level, so you will need to create a view containing only these
+variables.
+
+## Install and load the package
+
+You first need to install and load the package to be able to create the
+subsets.
+
+``` r
+install.packages("MolgenisArmadillo")
+```
+
+``` r
+library(MolgenisArmadillo)
+```
+
+## Logging in
+
+In order to access the files, you need to log in using the URL of the
+Armadillo server. A browser window will be opened where you can identify
+yourself with the ID provider.
+
+``` r
+armadillo.login("https://armadillo-demo.molgenis.net/")
+#> [1] "We're opening a browser so you can log in with code 5FLGYF"
+```
+
+A session will be created and the credentials stored in the environment.
+
+## Creating the subset
+
+Let’s assume you are in a consortium which has data that can not be
+shared in entirety to researchers. You want to share a subset of the
+whole dataset with certain researchers that applied for access to your
+data. There are two ways that you can do this.
+
+### Specify the required variables in a separate .csv file.
+
+For each research project, you first create a .csv file containing 5
+columns:
+
+| source_folder | source_table | target_folder | target_table | variable       |
+|---------------|--------------|---------------|--------------|----------------|
+| 2_1_core_1_0  | yearly_rep   | project1      | yearly_vars  | green_dist\_   |
+| 2_1_core_1_0  | yearly_rep   | project1      | yearly_vars  | green_size\_   |
+| 2_1_core_1_0  | yearly_rep   | project1.     | yearly_vars  | green_access\_ |
+
+‘source_folder’ refers a folder within the master project;
+‘source_table’ refers to the name of a table within this folder,
+‘target_folder’ refers to the name for the new folder within the target
+project, ‘target_table’ refers to the name of the new table within
+‘target_folder’ and ‘variable’ refers to one or more variables within
+source_table (‘source_project’ and ‘target_project’ are specified
+later).
+
+Note that these columns need to be named exactly as above.
+
+Once you have defined the tables then you can construct the
+’`subset_definition`. This creates a tibble within R holding the details
+from the .csv file.
+
+``` r
+subset_definition <- armadillo.subset_definition(
+  reference_csv = "data/subset/vars.csv")
+subset_definition
+#> # A tibble: 3 × 5
+#>   source_folder   source_table target_folder target_table target_vars      
+#>   <chr>           <chr>        <chr>         <chr>        <list>           
+#> 1 2_1-core-1_0    yearlyrep    core          year_rep     <tibble [14 × 1]>
+#> 2 1_1-outcome-1_0 yearlyrep    outcome       year_rep     <tibble [9 × 1]> 
+#> 3 2_1-core-1_0    nonrep       core          non_rep      <tibble [5 × 1]>
+```
+
+After this you can create a new subset using the subset method within
+Armadillo.
+
+``` r
+armadillo.subset(
+  input_source = "subset_def",
+    source_project = "gecko",
+    target_project = "study1",
+    subset_def = subset_definition
+)
+#> Created project 'study1' without users
+#> ✔ All views were successfully created!
+#> ✔ View 'core/year_rep' successfully created
+#> ✔ View 'outcome/year_rep' successfully created
+#> ✔ View 'core/non_rep' successfully created
+```
+
+This method is generally the best choice if you need to create subsets
+for multiple tables.
+
+## Specifying the subset via arguments
+
+An alternative is to specify the subset in R, via arguments to the
+`armadillo.subset` function:
+
+``` r
+armadillo.subset(
+  input_source = "arguments",
+    source_project = "gecko",
+    source_folder = "2_1-core-1_0", 
+    source_table = "yearlyrep",
+    target_project = "study2",
+    target_folder = "core",
+    target_table = "year_rep", 
+    target_vars = c("occup_f1_", "occupcode_f2_", "edu_f1_", "edu_f1_fath", "edu_f2_", "edu_f2_fath", "pets_", "cats_", "cats_quant_", "dogs_")
+)
+#> Created project 'study2' without users
+#> ✔ All views were successfully created!
+#> ✔ View 'core/year_rep' successfully created
+```
+
+This method may be easier if you only need to create one small subset.
+
+### Checking subsets
+
+Now you can also take a look at the files in the armadillo user
+interface, if you open it in a browser window.
