@@ -96,3 +96,7 @@
 .split_and_unlist <- function(item_to_split, separator){
   return(unlist(strsplit(item_to_split, split=separator, fixed = TRUE)))
 }
+
+## Needed to make tests work
+tempfile <- NULL
+
