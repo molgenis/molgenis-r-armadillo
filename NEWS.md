@@ -1,3 +1,6 @@
+# MolgenisArmadillo 2.9.2
+Test fix: updated mocking in tests to use `with_mocked_bindings`
+
 # MolgenisArmadillo 2.9.1
 Bug Fix: subset now works correctly when variables to subset are specified via the argument `target_vars` rather than by `subset_def`.
 
