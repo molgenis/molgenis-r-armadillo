@@ -1,5 +1,9 @@
 # Changelog
 
+## MolgenisArmadillo 2.9.2
+
+Test fix: updated mocking in tests to use `with_mocked_bindings`
+
 ## MolgenisArmadillo 2.9.1
 
 CRAN release: 2025-06-13
