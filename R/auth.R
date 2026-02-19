@@ -23,6 +23,8 @@ armadillo.login <- function(armadillo) { # nolint
   assign("armadillo_url", armadillo, envir = .pkgglobalenv)
   assign("auth_token", token, envir = .pkgglobalenv)
 
+  .check_admin(armadillo)
+
   invisible(token)
 }
 
@@ -45,6 +47,8 @@ armadillo.login_basic <- function(armadillo, username, password) { # nolint
   assign("armadillo_url", armadillo, envir = .pkgglobalenv)
   assign("auth_username", username, envir = .pkgglobalenv)
   assign("auth_password", password, envir = .pkgglobalenv)
+
+  .check_admin(armadillo)
 }
 
 #' Get ID Token
@@ -83,4 +87,25 @@ armadillo.get_token <- function(server) { # nolint
   response <- httr::GET(info_url)
   httr::stop_for_status(response, task = "fetch server info")
   return(httr::content(response))
+}
+
+#' Check if the logged-in user has admin privileges
+#'
+#' Calls the admin-only /access/projects endpoint. If the server returns 403,
+#' the user is not an admin and an error is raised.
+#'
+#' @param armadillo URL of the Armadillo server
+#'
+#' @noRd
+.check_admin <- function(armadillo) {
+  response <- httr::GET(
+    url = armadillo,
+    path = "/access/projects",
+    config = httr::add_headers(.get_auth_header())
+  )
+  if (response$status_code == 401 || response$status_code == 403) {
+    stop("User does not have admin permissions on this server.",
+      call. = FALSE
+    )
+  }
 }
