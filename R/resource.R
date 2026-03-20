@@ -32,6 +32,7 @@ armadillo.upload_resource <- function(project, folder, resource, name = NULL) { 
 #'
 #' @return the extension of the file
 #'
+#' @noRd
 .compress_resource <- function(resource, file) {
   saveRDS(resource, file = file)
   ".rds"
@@ -171,6 +172,7 @@ armadillo.load_resource <- function(project, folder, name) { # nolint
 #'
 #' @return the contents of the file
 #'
+#' @noRd
 .load_resource <- function(file) {
   readRDS(tools::file_path_as_absolute(file))
 }
