@@ -18,17 +18,17 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/molgenis/molgenis-r-armadillo/blob/fix/check-admin/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/molgenis/molgenis-r-armadillo/blob/fix/hide-internal-docs/DESCRIPTION)
 
 Slofstra M, Haakma S, de Boer T, Kelpin F, Swertz M, Cadman T (2026).
 *MolgenisArmadillo: Armadillo Client for the Armadillo Service*. R
-package version 2.9.3,
+package version 2.9.4,
 <https://github.com/molgenis/molgenis-r-armadillo/>.
 
     @Manual{,
       title = {MolgenisArmadillo: Armadillo Client for the Armadillo Service},
       author = {Mariska Slofstra and Sido Haakma and Tommy {de Boer} and Fleur Kelpin and Morris Swertz and Tim Cadman},
       year = {2026},
-      note = {R package version 2.9.3},
+      note = {R package version 2.9.4},
       url = {https://github.com/molgenis/molgenis-r-armadillo/},
     }
