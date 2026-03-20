@@ -13,6 +13,6 @@
 A character string with a trailing slash if it was missing.
 }
 \description{
-This function ensures that a given URL string ends with a slash ('/'). 
+This function ensures that a given URL string ends with a slash ('/').
 If the URL does not end with a slash, it appends one.
 }
