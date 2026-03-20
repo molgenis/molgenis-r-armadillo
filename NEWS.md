@@ -1,3 +1,6 @@
+# MolgenisArmadillo 2.9.4
+Feature: return error message if user does not have admin rights rather than failing silently.
+
 # MolgenisArmadillo 2.9.2
 Test fix: updated mocking in tests to use `with_mocked_bindings`
 
