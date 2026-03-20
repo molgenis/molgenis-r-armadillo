@@ -96,3 +96,7 @@ test_that("armadillo.login_basic succeeds for admin user", {
 
   stub_registry_clear()
 })
+
+# Restore global state for subsequent test files
+assign("armadillo_url", "https://test.nl/", envir = .pkgglobalenv)
+assign("auth_token", "token", envir = .pkgglobalenv)
