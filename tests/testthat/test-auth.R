@@ -35,6 +35,13 @@ test_that(".check_admin errors on 401 for unauthenticated user", {
   stub_registry_clear()
 })
 
+test_that("armadillo.get_token is defunct", {
+  expect_error(
+    armadillo.get_token("https://test.nl/"),
+    "armadillo.get_token.*is defunct"
+  )
+})
+
 test_that("armadillo.login errors when user is not admin", {
   stub_request("get", uri = "https://test.nl/access/projects") %>%
     to_return(status = 403)
@@ -42,7 +49,7 @@ test_that("armadillo.login errors when user is not admin", {
   expect_error(
     with_mocked_bindings(
       armadillo.login("https://test.nl/"),
-      armadillo.get_token = function(server) "fake-token"
+      .get_token = function(server) "fake-token"
     ),
     "User does not have admin permissions on this server."
   )
@@ -60,7 +67,7 @@ test_that("armadillo.login succeeds for admin user", {
 
   with_mocked_bindings(
     armadillo.login("https://test.nl/"),
-    armadillo.get_token = function(server) "fake-token"
+    .get_token = function(server) "fake-token"
   )
 
   expect_equal(.pkgglobalenv$auth_token, "fake-token")
