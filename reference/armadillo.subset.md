@@ -68,7 +68,7 @@ armadillo.subset(
 
 - target_vars:
 
-  variables from `source_table` to include in the view. Compulsory if
+  variables from \`source_table\` to include in the view. Compulsory if
   input_source = 'arguments'.
 
 - new_project:
