@@ -10,11 +10,11 @@ armadillo.login(armadillo)
 \item{armadillo}{URL of the Armadillo server,}
 }
 \value{
-the id token
+the access token
 }
 \description{
-Interactively obtains an id token and uses it to create a session token for
-an Armadillo Service
+Interactively obtains an access token and uses it to create a session token
+for an Armadillo Service
 }
 \examples{
 \dontrun{

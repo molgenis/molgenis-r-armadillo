@@ -54,7 +54,8 @@ Imports:
     rlist,
     httr2,
     readr,
-    cli
+    cli,
+    lifecycle
 Suggests:
     stringi,
     withr,
@@ -72,3 +73,4 @@ RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 Encoding: UTF-8
 Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)

@@ -39,15 +39,15 @@ Compulsory if input_source = 'arguments'.}
 
 \item{target_table}{table to upload subset to. Compulsory if input_source = 'arguments'.}
 
-\item{target_vars}{variables from `source_table` to include in the view.
+\item{target_vars}{variables from \code{source_table} to include in the view.
 Compulsory if input_source = 'arguments'.}
 
 \item{new_project}{Deprecated: use \code{target_project} instead}
 
 \item{dry_run}{Defunct: previously enabgled dry-run to check which variables are missing}
 
-\item{strict}{Boolean specifying whether to create subset if one or more target variables do not 
-exist in the target data. Option FALSE will throw and error, option TRUE (default) creates subset 
+\item{strict}{Boolean specifying whether to create subset if one or more target variables do not
+exist in the target data. Option FALSE will throw and error, option TRUE (default) creates subset
 and return a warning}
 }
 \value{
@@ -56,8 +56,8 @@ missing variables provided in the subset definition
 \description{
 This automates the process of:
 \enumerate{
- \item Checking what data is available to create subsets
- \item Make the subset
+\item Checking what data is available to create subsets
+\item Make the subset
 }
 }
 \examples{
