@@ -19,7 +19,7 @@ armadillo.subset_definition(reference_csv = NULL, vars = NULL)
   'target_table' specifying the name of the subset and 'variable'
   specifying the variable(s) to include in the subset. Note that
   'source_project' and 'target_project' are specified as arguments to
-  \`armadillo.subset\`.
+  `armadillo.subset`.
 
 - vars:
 
