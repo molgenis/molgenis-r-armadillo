@@ -140,20 +140,6 @@ order to install the `tar.gz` package from the url.
   : Uploads a table to a folder in a project
 - [`.add_slash_if_missing()`](https://molgenis.github.io/molgenis-r-armadillo/reference/dot-add_slash_if_missing.md)
   : Add a Slash to a URL if Missing
-- [`.compress_resource()`](https://molgenis.github.io/molgenis-r-armadillo/reference/dot-compress_resource.md)
-  : Helper function for compressing to an RDS file
-- [`.compress_table()`](https://molgenis.github.io/molgenis-r-armadillo/reference/dot-compress_table.md)
-  : Helper function for compressing to a parquet file
-- [`.format_api_posts()`](https://molgenis.github.io/molgenis-r-armadillo/reference/dot-format_api_posts.md)
-  : Formats API posts based on subset definition
-- [`.get_linkfile_content()`](https://molgenis.github.io/molgenis-r-armadillo/reference/dot-get_linkfile_content.md)
-  : Helper function to get the contents of a linkfile
-- [`.load_linked_table()`](https://molgenis.github.io/molgenis-r-armadillo/reference/dot-load_linked_table.md)
-  : Helper function to extract the source parquet file in a linkfile
-- [`.load_resource()`](https://molgenis.github.io/molgenis-r-armadillo/reference/dot-load_resource.md)
-  : Helper function to extract an RDS file
-- [`.load_table()`](https://molgenis.github.io/molgenis-r-armadillo/reference/dot-load_table.md)
-  : Helper function to extract a parquet file
 
 # Articles
 
