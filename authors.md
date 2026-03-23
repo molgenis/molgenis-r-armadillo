@@ -18,7 +18,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/molgenis/molgenis-r-armadillo/blob/test/fix-auth-cleanup/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/molgenis/molgenis-r-armadillo/blob/fix/hide-internal-docs/DESCRIPTION)
 
 Slofstra M, Haakma S, de Boer T, Kelpin F, Swertz M, Cadman T (2026).
 *MolgenisArmadillo: Armadillo Client for the Armadillo Service*. R
