@@ -34,6 +34,7 @@ armadillo.upload_table <- function(project, folder, table, name = NULL) { # noli
 #'
 #' @return the extension of the file
 #'
+#' @noRd
 .compress_table <- function(table, file) {
   arrow::write_parquet(table, file)
   ".parquet"
@@ -156,6 +157,7 @@ armadillo.load_table <- function(project, folder, name) { # nolint
 #'
 #' @return the contents of the file, as data frame
 #'
+#' @noRd
 .load_table <- function(file) {
   as.data.frame(arrow::read_parquet(file, as_data_frame = FALSE))
 }
@@ -167,6 +169,7 @@ armadillo.load_table <- function(project, folder, name) { # nolint
 #'
 #' @return the contents of the file, as data frame
 #'
+#' @noRd
 .load_linked_table <- function(file, columns) {
   as.data.frame(arrow::read_parquet(file, as_data_frame = FALSE, col_select = columns))
 }
@@ -178,6 +181,7 @@ armadillo.load_table <- function(project, folder, name) { # nolint
 #'
 #' @return the contents of the linkfile
 #'
+#' @noRd
 .get_linkfile_content <- function(project, object_name) {
   response <- httr::GET(paste0(.get_url(), 
                                 .to_object_uri(project, object_name, ".alf"), "/info"),

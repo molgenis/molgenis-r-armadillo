@@ -321,6 +321,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @param url A character string representing the URL.
 #' @return A character string with a trailing slash if it was missing.
 #' @importFrom stringr str_ends
+#' @noRd
 .add_slash_if_missing <- function(url) {
   if(!str_ends(url, "/")) {
     url <- paste0(url, "/")
@@ -448,8 +449,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @return A tibble consisting of original subset_def with columns 'posts' and 'status' appended.
 #'
 #' @importFrom dplyr mutate select %>%
-#' @export
-#'
+#' @noRd
 .format_api_posts <- function(posts, subset_def) {
   target_folder <- target_table <- post <- status <- NULL
   subset_def %>%
