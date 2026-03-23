@@ -13,11 +13,11 @@ armadillo.create_project(
 \arguments{
 \item{project_name}{The name of the project to create. The project name
 \itemize{
-  \item{cannot be empty.}
-  \item{must be no more than 56 characters.}
-  \item{cannot end with a \code{-}.}
-  \item{must consist of lowercase letters and numbers.}
-  }}
+\item{cannot be empty.}
+\item{must be no more than 56 characters.}
+\item{cannot end with a \code{-}.}
+\item{must consist of lowercase letters and numbers.}
+}}
 
 \item{users}{A list collection of the users that should have access to the project}
 
