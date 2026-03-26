@@ -1,7 +1,7 @@
 # MolgenisArmadillo
 
 Client to share data in a [MOLGENIS Armadillo DataSHIELD
-Service](https://github.com/molgenis/molgenis-service-armadillo/).
+Service](https://github.com/molgenis/molgenis-service-armadillo/).Make
 
 ## Purpose
 
@@ -138,8 +138,6 @@ order to install the `tar.gz` package from the url.
   : Uploads a resource to a folder in a project
 - [`armadillo.upload_table()`](https://molgenis.github.io/molgenis-r-armadillo/reference/armadillo.upload_table.md)
   : Uploads a table to a folder in a project
-- [`.add_slash_if_missing()`](https://molgenis.github.io/molgenis-r-armadillo/reference/dot-add_slash_if_missing.md)
-  : Add a Slash to a URL if Missing
 
 # Articles
 

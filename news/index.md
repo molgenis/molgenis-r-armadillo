@@ -1,5 +1,11 @@
 # Changelog
 
+## MolgenisArmadillo 3.0.0
+
+Defunct: armadllo.get_token is defunct, from now on use
+armadillo.get_credentials Fix: return error message if attemping to log
+in without admin rights (previously failed silently)
+
 ## MolgenisArmadillo 2.9.2
 
 Test fix: updated mocking in tests to use `with_mocked_bindings`

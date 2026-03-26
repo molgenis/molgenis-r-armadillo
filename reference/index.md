@@ -48,5 +48,3 @@
   : Uploads a resource to a folder in a project
 - [`armadillo.upload_table()`](https://molgenis.github.io/molgenis-r-armadillo/reference/armadillo.upload_table.md)
   : Uploads a table to a folder in a project
-- [`.add_slash_if_missing()`](https://molgenis.github.io/molgenis-r-armadillo/reference/dot-add_slash_if_missing.md)
-  : Add a Slash to a URL if Missing
