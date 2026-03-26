@@ -15,3 +15,4 @@ adr
 ^dev$
 ^\.github$
 ^CONTRIBUTING.md$
+.idea
