@@ -20,7 +20,6 @@
 <url><loc>https://molgenis.github.io/molgenis-r-armadillo/reference/armadillo.delete_table.html</loc></url>
 <url><loc>https://molgenis.github.io/molgenis-r-armadillo/reference/armadillo.get_project_users.html</loc></url>
 <url><loc>https://molgenis.github.io/molgenis-r-armadillo/reference/armadillo.get_projects_info.html</loc></url>
-<url><loc>https://molgenis.github.io/molgenis-r-armadillo/reference/armadillo.get_token.html</loc></url>
 <url><loc>https://molgenis.github.io/molgenis-r-armadillo/reference/armadillo.install_packages.html</loc></url>
 <url><loc>https://molgenis.github.io/molgenis-r-armadillo/reference/armadillo.list_projects.html</loc></url>
 <url><loc>https://molgenis.github.io/molgenis-r-armadillo/reference/armadillo.list_resources.html</loc></url>
@@ -35,7 +34,6 @@
 <url><loc>https://molgenis.github.io/molgenis-r-armadillo/reference/armadillo.subset_definition.html</loc></url>
 <url><loc>https://molgenis.github.io/molgenis-r-armadillo/reference/armadillo.upload_resource.html</loc></url>
 <url><loc>https://molgenis.github.io/molgenis-r-armadillo/reference/armadillo.upload_table.html</loc></url>
-<url><loc>https://molgenis.github.io/molgenis-r-armadillo/reference/dot-add_slash_if_missing.html</loc></url>
 <url><loc>https://molgenis.github.io/molgenis-r-armadillo/reference/index.html</loc></url>
 </urlset>
 
