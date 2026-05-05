@@ -1,6 +1,7 @@
 # Install packages
 
 ``` r
+
 library(MolgenisArmadillo)
 ```
 
@@ -16,6 +17,7 @@ other to use the install_packages function.
 You first need to login to the Armadillo (as `superuser`)
 
 ``` r
+
 armadillo.login("https://armadillo.dev.molgenis.org",
       "https://armadillo-minio.dev.molgenis.org")
 #> Error in armadillo.login("https://armadillo.dev.molgenis.org", "https://armadillo-minio.dev.molgenis.org"): unused argument ("https://armadillo-minio.dev.molgenis.org")
@@ -28,6 +30,7 @@ execute the following endpoint. The selected profile is always `default`
 if none is specified.
 
 ``` r
+
 armadillo.install_packages("data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz")
 #> Error in httr::upload_file(path): file.exists(path) is not TRUE
 ```
@@ -36,12 +39,14 @@ In order to install the packages on a specific profile you can specify
 the profile.
 
 ``` r
+
 armadillo.install_packages("data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz", profile = "exposome")
 ```
 
 You can install multiple packages as well by specifying a vector
 
 ``` r
+
 armadillo.install_packages(c("data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz", "data/packages/dsBase_6.1.0.9000.tar.gz"))
 ```
 
@@ -51,6 +56,7 @@ To be able to use new packages in the Armadillo you need to add them to
 the whitelist. You can do this by executing the following method.
 
 ``` r
+
 armadillo.whitelist_packages("MolgenisArmadillo")
 #> Error in armadillo.whitelist_packages("MolgenisArmadillo"): could not find function "armadillo.whitelist_packages"
 ```
@@ -59,6 +65,7 @@ You are able to whilist mulitple packages as well using the following
 line:
 
 ``` r
+
 armadillo.whitelist_packages(c("MolgenisArmadillo", "dsBase"))
 #> Error in armadillo.whitelist_packages(c("MolgenisArmadillo", "dsBase")): could not find function "armadillo.whitelist_packages"
 ```

@@ -1,7 +1,7 @@
 # MolgenisArmadillo
 
 Client to share data in a [MOLGENIS Armadillo DataSHIELD
-Service](https://github.com/molgenis/molgenis-service-armadillo/).Make
+Service](https://github.com/molgenis/molgenis-service-armadillo/).
 
 ## Purpose
 
@@ -23,6 +23,7 @@ call DataSHIELD analysis methods on the data.
 Login to the service.
 
 ``` r
+
 library('MolgenisArmadillo')
 armadillo.login("https://armadillo-url-example.org")
 ```
@@ -31,6 +32,7 @@ Now you can create a project and upload tables to the project to share
 them for analysis.
 
 ``` r
+
 library(datasets)
 armadillo.create_project("project")
 armadillo.upload_table("project", "folder", iris)
@@ -39,6 +41,7 @@ armadillo.upload_table("project", "folder", iris)
 Listing the tables.
 
 ``` r
+
 armadillo.list_tables("project")
 ```
 
@@ -46,6 +49,7 @@ Removing the data from the storage. First you need to remove the content
 of a project before you can throw away the project.
 
 ``` r
+
 armadillo.delete_table("project", "folder", "iris")
 armadillo.delete_project("project")
 ```
@@ -63,6 +67,7 @@ the 1.1.13 version of MolgenisArmadillo. You can install this specific
 version using the following commands:
 
 ``` r
+
 packageurl <- "https://cran.r-project.org/src/contrib/Archive/MolgenisArmadillo/MolgenisArmadillo_1.1.3.tar.gz"
 install.packages(packageurl, repos=NULL, type="source")
 ```
@@ -71,6 +76,7 @@ If you already installed another version of the package, you might want
 to run this first:
 
 ``` r
+
 remove.packages("MolgenisArmadillo")
 ```
 

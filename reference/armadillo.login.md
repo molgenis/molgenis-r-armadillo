@@ -1,7 +1,7 @@
 # Login
 
-Interactively obtains an access token and uses it to create a session
-token for an Armadillo Service
+Interactively obtains an id token and uses it to create a session token
+for an Armadillo Service
 
 ## Usage
 
@@ -17,7 +17,7 @@ armadillo.login(armadillo)
 
 ## Value
 
-the access token
+the id token
 
 ## Examples
 
