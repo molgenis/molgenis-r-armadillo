@@ -1,6 +1,7 @@
 # Create resources
 
 ``` r
+
 library(MolgenisArmadillo)
 ```
 
@@ -46,6 +47,7 @@ A second option to upload data (resources) is using Rstudio. As
 datamanager you first need to login to Armadillo (as `superuser`)
 
 ``` r
+
 armadillo.login("https://armadillo-demo.molgenis.net/")
 #> [1] "We're opening a browser so you can log in with code 8N8MHJ"
 ```
@@ -58,6 +60,7 @@ is specified. If your profile doesn’t have the `resourcer` package
 installed, install it:
 
 ``` r
+
 library(resourcer)
 ```
 
@@ -74,6 +77,7 @@ is `omics`, the folder is `ewas` and the name of the data file is
 `gse66351_1.rda`.
 
 ``` r
+
 resGSE1 <- resourcer::newResource(
   name = "GSE66351_1",
   url = "https://armadillo-demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda",
@@ -91,6 +95,7 @@ armadillo.upload_resource(project="omics", folder="ewas", resource = resGSE1, na
 ```
 
 ``` r
+
 armadillo.upload_resource(project="omics", folder="ewas", resource = resGSE2, name = "GSE66351_2")
 #> Compressing...
 #> Uploaded ewas/GSE66351_2

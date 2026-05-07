@@ -2,6 +2,8 @@
 
 ## MolgenisArmadillo 3.0.0
 
+CRAN release: 2026-03-26
+
 Defunct: armadllo.get_token is defunct, from now on use
 armadillo.get_credentials Fix: return error message if attemping to log
 in without admin rights (previously failed silently)

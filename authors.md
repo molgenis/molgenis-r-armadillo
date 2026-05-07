@@ -18,7 +18,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/molgenis/molgenis-r-armadillo/blob/chore/cran-release/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/molgenis/molgenis-r-armadillo/blob/fix/ci/DESCRIPTION)
 
 Slofstra M, Haakma S, de Boer T, Kelpin F, Swertz M, Cadman T (2026).
 *MolgenisArmadillo: Armadillo Client for the Armadillo Service*. R

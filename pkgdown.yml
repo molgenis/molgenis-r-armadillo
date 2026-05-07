@@ -1,4 +1,4 @@
-pandoc: 3.1.11
+pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
@@ -6,7 +6,7 @@ articles:
   creating_data_subsets: creating_data_subsets.html
   install_packages: install_packages.html
   MolgenisArmadillo: MolgenisArmadillo.html
-last_built: 2026-03-26T08:57Z
+last_built: 2026-05-07T08:33Z
 urls:
   reference: https://molgenis.github.io/molgenis-r-armadillo/reference
   article: https://molgenis.github.io/molgenis-r-armadillo/articles

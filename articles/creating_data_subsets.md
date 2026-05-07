@@ -12,10 +12,12 @@ You first need to install and load the package to be able to create the
 subsets.
 
 ``` r
+
 install.packages("MolgenisArmadillo")
 ```
 
 ``` r
+
 library(MolgenisArmadillo)
 ```
 
@@ -26,6 +28,7 @@ Armadillo server. A browser window will be opened where you can identify
 yourself with the ID provider.
 
 ``` r
+
 armadillo.login("https://armadillo-demo.molgenis.net/")
 #> [1] "We're opening a browser so you can log in with code 5FLGYF"
 ```
@@ -65,6 +68,7 @@ Once you have defined the tables then you can construct the
 from the .csv file.
 
 ``` r
+
 subset_definition <- armadillo.subset_definition(
   reference_csv = "data/subset/vars.csv")
 subset_definition
@@ -80,6 +84,7 @@ After this you can create a new subset using the subset method within
 Armadillo.
 
 ``` r
+
 armadillo.subset(
   input_source = "subset_def",
     source_project = "gecko",
@@ -102,6 +107,7 @@ An alternative is to specify the subset in R, via arguments to the
 `armadillo.subset` function:
 
 ``` r
+
 armadillo.subset(
   input_source = "arguments",
     source_project = "gecko",

@@ -1,6 +1,7 @@
 # MolgenisArmadillo
 
 ``` r
+
 library(MolgenisArmadillo)
 ```
 
@@ -15,6 +16,7 @@ login method needs the URL of the Armadillo server. It will open a
 browser window where you can identify yourself with the ID provider.
 
 ``` r
+
 armadillo.login("https://armadillo-demo.molgenis.net/")
 ```
 
@@ -60,6 +62,7 @@ all researchers which applied to access your data.
 First we will create the project. In our case “cohort1”.
 
 ``` r
+
 armadillo.create_project("cohort1")
 #> Created project 'cohort1'
 ```
@@ -70,6 +73,7 @@ will take any object that has a table like structure to upload into the
 Armadillo. This can be SPSS, STATA, SAS or R-based data as well.
 
 ``` r
+
 library(arrow)
 #> 
 #> Attaching package: 'arrow'
@@ -92,6 +96,7 @@ y_y-#variable-type#-x_x
 y_y = datamodel version x_x = data version
 
 ``` r
+
 # upload the core variables
 armadillo.upload_table("cohort1", "2_1-core-1_0", nonrep)
 #> Compressing...
@@ -112,6 +117,7 @@ drop the data frames in memory and then you can reassign them. See the
 example below.
 
 ``` r
+
 # drop the old assignments
 rm(nonrep, yearlyrep, monthlyrep, trimesterrep)
 
@@ -134,6 +140,7 @@ There are helper functions to help you determine what is in the storage
 server. You can list projects and tables to what’s in the storage.
 
 ``` r
+
 # listing tables per project
 armadillo.list_projects()
 #>  [1] "longitools"   "genr"         "gecko"        "test"         "omics"       
@@ -141,6 +148,7 @@ armadillo.list_projects()
 ```
 
 ``` r
+
 # listing tables per project
 armadillo.list_tables("cohort1")
 #> [1] "cohort1/2_1-core-1_0/trimesterrep" "cohort1/2_1-core-1_0/nonrep"      
@@ -151,6 +159,7 @@ armadillo.list_tables("cohort1")
 You can download the data in the R-environment as well.
 
 ``` r
+
 # download table to local R environment
 trimesterrep <- armadillo.load_table("cohort1", "2_1-core-1_0", "trimesterrep")
 
@@ -168,6 +177,7 @@ MinIO fileserver if you open the MinIO server URL in a browser window.
 To delete the data you need to throw away the contents first.
 
 ``` r
+
 # throw away the core tables
 armadillo.delete_table("cohort1", "2_1-core-1_0", "nonrep")
 #> Deleted '2_1-core-1_0/nonrep'
@@ -188,6 +198,7 @@ armadillo.delete_table("cohort1", "1_1-outcome-1_0", "yearlyrep")
 Now you can delete the project.
 
 ``` r
+
 armadillo.delete_project("cohort1")
 #> Deleted project 'cohort1'
 ```
