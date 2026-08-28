@@ -559,7 +559,8 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
   endpoint_request <- request(paste0(server_url, "actuator/info")) 
   armadillo_info <- req_perform(endpoint_request)
   version <- resp_body_json(armadillo_info)$build$version
-  if(numeric_version(version) < numeric_version("4.7.1")) {
+  # from armadillo 5.17 on, dev mode of armadillo will have version "dev", this version does have the subset functionality
+  if(version != "dev" && numeric_version(version) < numeric_version("4.7.1")) {
     cli::cli_abort(
       c(
         "x" = "`armadillo.subset` is only compatible with Armadillo versions 4.7.1 and above", 
