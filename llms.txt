@@ -1,7 +1,8 @@
 # MolgenisArmadillo
 
 Client to share data in a [MOLGENIS Armadillo DataSHIELD
-Service](https://github.com/molgenis/molgenis-service-armadillo/).Make
+Service](https://github.com/molgenis/molgenis-service-armadillo/).MakeWhat
+d
 
 ## Purpose
 
