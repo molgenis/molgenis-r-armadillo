@@ -25,48 +25,64 @@ export(armadillo.subset_definition)
 export(armadillo.upload_resource)
 export(armadillo.upload_table)
 import(rlist)
-importFrom(MolgenisAuth,device_flow_auth)
-importFrom(MolgenisAuth,discover)
-importFrom(arrow,read_parquet)
-importFrom(arrow,write_parquet)
+importFrom(MolgenisAuth,
+  device_flow_auth,
+  discover
+)
+importFrom(arrow,
+  read_parquet,
+  write_parquet
+)
 importFrom(base64enc,base64encode)
-importFrom(cli,cli_abort)
-importFrom(cli,cli_alert_danger)
-importFrom(cli,cli_alert_success)
-importFrom(cli,cli_inform)
-importFrom(cli,cli_text)
-importFrom(dplyr,"%>%")
-importFrom(dplyr,case_when)
-importFrom(dplyr,filter)
-importFrom(dplyr,mutate)
-importFrom(dplyr,select)
-importFrom(httr,DELETE)
-importFrom(httr,GET)
-importFrom(httr,POST)
-importFrom(httr,PUT)
-importFrom(httr,add_headers)
-importFrom(httr,content)
-importFrom(httr,content_type)
-importFrom(httr,upload_file)
-importFrom(httr2,req_body_json)
-importFrom(httr2,req_error)
-importFrom(httr2,req_headers)
-importFrom(httr2,req_perform)
-importFrom(httr2,request)
-importFrom(httr2,resp_body_json)
-importFrom(httr2,resp_status)
+importFrom(cli,
+  cli_abort,
+  cli_alert_danger,
+  cli_alert_success,
+  cli_inform,
+  cli_text
+)
+importFrom(dplyr,
+  "%>%",
+  case_when,
+  filter,
+  mutate,
+  select
+)
+importFrom(httr,
+  DELETE,
+  GET,
+  POST,
+  PUT,
+  add_headers,
+  content,
+  content_type,
+  upload_file
+)
+importFrom(httr2,
+  req_body_json,
+  req_error,
+  req_headers,
+  req_perform,
+  request,
+  resp_body_json,
+  resp_status
+)
 importFrom(lifecycle,deprecated)
-importFrom(purrr,map)
-importFrom(purrr,map_int)
-importFrom(purrr,map_lgl)
-importFrom(purrr,pmap)
-importFrom(purrr,walk)
+importFrom(purrr,
+  map,
+  map_int,
+  map_lgl,
+  pmap,
+  walk
+)
 importFrom(readr,read_csv)
-importFrom(stringr,str_detect)
-importFrom(stringr,str_ends)
-importFrom(stringr,str_extract_all)
-importFrom(stringr,str_replace)
-importFrom(stringr,str_split)
+importFrom(stringr,
+  str_detect,
+  str_ends,
+  str_extract_all,
+  str_replace,
+  str_split
+)
 importFrom(tibble,tibble)
 importFrom(tidyr,nest)
 importFrom(utils,askYesNo)
