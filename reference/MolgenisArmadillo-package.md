@@ -21,6 +21,9 @@ Useful links:
 
 Authors:
 
+- Mariska Slofstra <m.k.slofstra@umcg.nl>
+  ([ORCID](https://orcid.org/0000-0002-0400-0468))
+
 - Sido Haakma <s.haakma@rug.nl>
   ([ORCID](https://orcid.org/0000-0003-1278-9144))
 

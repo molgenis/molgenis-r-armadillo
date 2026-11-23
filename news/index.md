@@ -1,5 +1,11 @@
 # Changelog
 
+## MolgenisArmadillo 3.0.1
+
+Fix: version ‘dev’ is now a valid Armadillo version for the subset
+function. Fix: the subset version check now works when the version is
+prefixed with ‘v’ or suffixed with ‘-SNAPSHOT’.
+
 ## MolgenisArmadillo 3.0.0
 
 CRAN release: 2026-03-26
